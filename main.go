@@ -3,9 +3,7 @@ package main
 import (
 	"fmt"
 	//"database/sql"
-	"io/ioutil"
 	//_ "github.com/lib/pq"
-	"github.com/gin-gonic/gin"
 	"./settings"
 )
 
@@ -51,15 +49,3 @@ func main() {
 	return true;
 }*/
 
-
-func ginInit() {
-	gin.SetMode(gin.ReleaseMode); //disable debug logs
-	gin.DefaultWriter = ioutil.Discard; //disable output
-	r := gin.Default();
-	r.MaxMultipartMemory = 1 << 20;
-
-	r.GET("/ping", HttpReqPing);
-	
-	fmt.Printf("Starting web server\n");
-	go r.Run(":"+settings.ListenPort); //Listen on port
-}
