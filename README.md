@@ -1,2 +1,2 @@
 # l4d2_pug_system
-A ranked PUG system for L4D2
+## The backend layer of the ranked PUG system for Left 4 Dead 2
