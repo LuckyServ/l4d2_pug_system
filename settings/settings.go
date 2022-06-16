@@ -9,6 +9,7 @@ import (
 
 var FilePath string;
 var ListenPort string;
+var BackendAuthKey string;
 
 func Parse() bool {
 	CommandLine();
@@ -32,6 +33,12 @@ func ConfigFile() bool {
 	var errError error;
 
 	ListenPort, errError = jsonparser.GetString(byData, "port");
+	if (errError != nil) {
+		fmt.Printf("Error reading config file: %s\n", errError);
+		return false;
+	}
+
+	BackendAuthKey, errError = jsonparser.GetString(byData, "auth");
 	if (errError != nil) {
 		fmt.Printf("Error reading config file: %s\n", errError);
 		return false;

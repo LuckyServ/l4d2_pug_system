@@ -7,6 +7,9 @@ import (
 	"./settings"
 )
 
+var bStateShutdown bool;
+var chShutdown chan bool = make(chan bool);
+
 /*var dbConn *sql.DB;
 var dbErr error;
 var sDbConn_string = "postgres://user:password@address:port/database";*/ //PostgreSQL connection credentials
@@ -29,8 +32,8 @@ func main() {
 	ginInit();
 
 
-	//Block forever
-	select{};
+	//Block until shutdown command is received
+	fmt.Printf("End: %v\n", <-chShutdown);
 }
 
 
