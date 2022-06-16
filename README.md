@@ -12,6 +12,7 @@ Response parameters:
 | <strong>success</strong> | _bool_ | Always returns "true" |
 | <strong>shutdown</strong> | _bool_ | Tells if the program is goind to be shutdown soon (no new lobbies allowed, etc) |
 
+
 ### GET /shutdown
 ##### Send the shutdown command to the program. It will wait until all lobbies end, and then exit the process.
 Request parameters:
