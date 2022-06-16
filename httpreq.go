@@ -6,6 +6,7 @@ import (
 	"./auth"
 	"io/ioutil"
 	"fmt"
+	"time"
 )
 
 
@@ -28,6 +29,7 @@ func HttpReqStatus(c *gin.Context) {
 	mapResponse := map[string]interface{}{
 		"success": true,
 		"shutdown": bStateShutdown,
+		"time": time.Now().UnixMilli(),
 	};
 	c.JSON(200, mapResponse);
 }

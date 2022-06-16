@@ -17,7 +17,7 @@ func Parse() bool {
 }
 
 func CommandLine() {
-	oFilePath := flag.String("-config-path", "./settings.json", "Path to the settings.json file");
+	oFilePath := flag.String("config-path", "./settings.json", "Path to the settings.json file");
 
 	flag.Parse();
 

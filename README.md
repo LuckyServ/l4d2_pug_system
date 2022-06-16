@@ -11,6 +11,7 @@ Response parameters:
 | ------ | ------ | ------ |
 | <strong>success</strong> | _bool_ | Always returns "true" |
 | <strong>shutdown</strong> | _bool_ | Tells if the program is goind to be shutdown soon (no new lobbies allowed, etc) |
+| <strong>time</strong> | _int64_ | System time in milliseconds |
 
 <br/><br/>
 
