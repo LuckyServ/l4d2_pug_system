@@ -2,7 +2,7 @@
 # l4d2_pug_system
 ## The backend layer of the ranked PUG system for Left 4 Dead 2
 
-### GET /status
+### POST /status
 ##### Get necessary info about program status
 Request parameters: none
 
@@ -14,7 +14,7 @@ Response parameters:
 
 <br/><br/>
 
-### GET /shutdown
+### POST /shutdown
 ##### Send the shutdown command to the program. It will wait until all lobbies end, and then exit the process.
 Request parameters:
 | Key | Type | Description
