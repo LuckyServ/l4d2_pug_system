@@ -27,3 +27,21 @@ Response parameters:
 | ------ | ------ | ------ |
 | <strong>success</strong> | _bool_ | "true" if command accepted, "false" otherwise |
 | <strong>error</strong> | _string_ | Outputs the reason if the request is rejected |
+
+<br/><br/>
+
+### POST /addauth
+##### Add authorization record
+Request parameters:
+| Key | Type | Description
+| ------ | ------ | ------ |
+| <strong>backend_auth</strong> | _string_ | Auth key |
+| <strong>steamid64</strong> | _string_ | Steam ID 64 (Profile ID) |
+| <strong>nickname_base64</strong> | _string_ | Base64 encoded nickname |
+
+Response parameters:
+| Key | Type | Description
+| ------ | ------ | ------ |
+| <strong>success</strong> | _bool_ | "true" if authorization added, "false" otherwise |
+| <strong>session_id</strong> | _string_ | Returns the session id if the authorization got accepted |
+| <strong>error</strong> | _string_ | Outputs the reason if the authorization got declined |

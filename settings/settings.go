@@ -10,6 +10,7 @@ import (
 var FilePath string;
 var ListenPort string;
 var BackendAuthKey string;
+var DefaultMmrUncertainty int;
 
 func Parse() bool {
 	CommandLine();
@@ -31,6 +32,7 @@ func ConfigFile() bool {
 		return false;
 	}
 	var errError error;
+	var i64Buffer int64;
 
 	ListenPort, errError = jsonparser.GetString(byData, "port");
 	if (errError != nil) {
@@ -43,6 +45,13 @@ func ConfigFile() bool {
 		fmt.Printf("Error reading config file: %s\n", errError);
 		return false;
 	}
+
+	i64Buffer, errError = jsonparser.GetInt(byData, "mmr_uncertainty");
+	if (errError != nil) {
+		fmt.Printf("Error reading config file: %s\n", errError);
+		return false;
+	}
+	DefaultMmrUncertainty = int(i64Buffer);
 
 	return true;
 }
