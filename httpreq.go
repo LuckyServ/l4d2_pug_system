@@ -63,13 +63,20 @@ func HttpReqShutdown(c *gin.Context) {
 func HttpReqAddAuth(c *gin.Context) {
 
 	mapResponse := make(map[string]interface{});
-
+	
+	if (bStateShutdown) {
+		mapResponse["success"] = false;
+		mapResponse["error"] = "Server shutting down";
+		c.JSON(200, mapResponse);
+		return;
+	}
 	if (!auth.Backend(c.PostForm("backend_auth"))) {
 		mapResponse["success"] = false;
 		mapResponse["error"] = "Bad auth key";
 		c.JSON(200, mapResponse);
 		return;
 	}
+
 
 	sSteamID64 := c.PostForm("steamid64");
 	sNicknameBase64 := c.PostForm("nickname_base64");
