@@ -26,6 +26,7 @@ func AddPlayerAuth(sSteamID64 string, sNicknameBase64 string) string {
 			SteamID64:		sSteamID64,
 		};
 		globals.MapPlayers[sSteamID64] = pPlayer;
+		globals.I64LastPlayerlistUpdate = time.Now().UnixMilli();
 
 		globals.MuPlayers.Unlock();
 	} else {
@@ -38,7 +39,10 @@ func AddPlayerAuth(sSteamID64 string, sNicknameBase64 string) string {
 
 	globals.MuPlayers.Lock();
 	pPlayer := globals.MapPlayers[sSteamID64];
-	pPlayer.NicknameBase64 = sNicknameBase64;
+	if (pPlayer.NicknameBase64 != sNicknameBase64) {
+		pPlayer.NicknameBase64 = sNicknameBase64;
+		globals.I64LastPlayerlistUpdate = time.Now().UnixMilli();
+	}
 	globals.MuPlayers.Unlock();
 
 	oSession := EntSession{

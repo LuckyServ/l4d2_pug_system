@@ -17,3 +17,4 @@ type EntPlayer struct {
 
 var MapPlayers map[string]*EntPlayer = make(map[string]*EntPlayer);
 var MuPlayers sync.Mutex;
+var I64LastPlayerlistUpdate int64;

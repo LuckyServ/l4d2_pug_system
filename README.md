@@ -12,6 +12,7 @@ Response parameters:
 | <strong>success</strong> | _bool_ | Always returns "true" |
 | <strong>shutdown</strong> | _bool_ | Tells if the program is goind to be shutdown soon (no new lobbies allowed, etc) |
 | <strong>time</strong> | _int64_ | System time in milliseconds |
+| <strong>players_updated</strong> | _int64_ | Last time players list was updated (in milliseconds) |
 
 <br/><br/>
 
