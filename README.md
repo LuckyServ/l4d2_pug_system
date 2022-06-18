@@ -98,26 +98,18 @@ Response parameters:
 | ------ | ------ | ------ |
 | <strong>success</strong> | _bool_ | "true" if info available, "false" otherwise |
 | <strong>error</strong> | _string_ | Outputs the reason if the operation fails |
-| <strong>player</strong> | _string_ | Array of the player's info |
-
-Example of the response:
-```json
-{
-	"player":{
-		"SteamID64":"012345678901234567",
-		"NicknameBase64":"dGVzdA==",
-		"Mmr":1500,
-		"MmrUncertainty":152,
-		"Access":0,
-		"ProfValidated":false,
-		"Pings":null,
-		"PingsUpdated":0,
-		"LastActivity":1655561957275,
-		"IsOnline":false,
-		"IsInGame":false,
-		"IsInLobby":false,
-		"LastUpdated":0
-	},
-	"success":true
-}
-```
+| <strong>player</strong> | _array_ | Array of the player's info |
+| <strong>player["SteamID64"]</strong> | _string_ | Steam ID 64 (Profile ID) |
+| <strong>player["NicknameBase64"]</strong> | _string_ | Base64 encoded nickname |
+| <strong>player["Mmr"]</strong> | _int_ | Player's rating |
+| <strong>player["MmrUncertainty"]</strong> | _int_ | How uncertain the system is about the player's rating |
+| <strong>player["Access"]</strong> | _int_ | Player's access level. -2 - completely banned, -1 - chat banned, 0 - regular player, 1 - behaviour moderator, 2 - cheat moderator, 3 - behaviour+cheat moderator, 4 - full admin access |
+| <strong>player["ProfValidated"]</strong> | _bool_ | New players must validate their profiles before playing |
+| <strong>player["Pings"]</strong> | _array_ | Array of player's pings to every gameserver. Used to choose the best gameserver |
+| <strong>player["Pings"]["</strong>127.0.0.1<strong>"]</strong> | _int_ | The ping |
+| <strong>player["PingsUpdated"]</strong> | _int64_ | Last time player's pings were updated (in milliseconds) |
+| <strong>player["LastActivity"]</strong> | _int64_ | Last time player showed any activity |
+| <strong>player["IsOnline"]</strong> | _bool_ | Is player online right now |
+| <strong>player["IsInGame"]</strong> | _bool_ | Is player in game right now |
+| <strong>player["IsInLobby"]</strong> | _bool_ | Is player in lobby right now |
+| <strong>player["LastUpdated"]</strong> | _int64_ | Last time player's info was changed (except LastActivity) (in milliseconds) |
