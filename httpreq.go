@@ -7,7 +7,7 @@ import (
 	"io/ioutil"
 	"fmt"
 	"time"
-	"./globals"
+	"./players"
 )
 
 
@@ -33,7 +33,7 @@ func HttpReqStatus(c *gin.Context) {
 		"success": true,
 		"shutdown": bStateShutdown,
 		"time": time.Now().UnixMilli(),
-		"players_updated": globals.I64LastPlayerlistUpdate,
+		"players_updated": players.I64LastPlayerlistUpdate,
 	};
 	c.JSON(200, mapResponse);
 }
