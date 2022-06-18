@@ -27,24 +27,24 @@ var MuPlayers sync.Mutex;
 var I64LastPlayerlistUpdate int64;
 
 
-func UpdatePlayerActivity(sSteamID64 string) (bool, string) {
+func UpdatePlayerActivity(sSteamID64 string) (bool, int) {
 	MuPlayers.Lock();
 	if _, ok := MapPlayers[sSteamID64]; !ok {
 		MuPlayers.Unlock();
-		return false, "This player does not exist";
+		return false, 3;
 	}
 	MapPlayers[sSteamID64].LastActivity = time.Now().UnixMilli();
 	MuPlayers.Unlock();
-	return true, "";
+	return true, 0;
 }
 
-func GetPlayer(sSteamID64 string) (*EntPlayer, string) {
+func GetPlayer(sSteamID64 string) (*EntPlayer, int) {
 	MuPlayers.Lock();
 	if _, ok := MapPlayers[sSteamID64]; !ok {
 		MuPlayers.Unlock();
-		return nil, "This player does not exist";
+		return nil, 3;
 	}
 	pPlayer := MapPlayers[sSteamID64];
 	MuPlayers.Unlock();
-	return pPlayer, "";
+	return pPlayer, 0;
 }

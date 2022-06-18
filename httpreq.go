@@ -35,7 +35,7 @@ func HttpReqStatus(c *gin.Context) {
 	mapResponse := make(map[string]interface{});
 	if (!auth.Backend(c.PostForm("backend_auth"))) {
 		mapResponse["success"] = false;
-		mapResponse["error"] = "Bad auth key";
+		mapResponse["error"] = 1;
 		c.JSON(200, mapResponse);
 		return;
 	}
@@ -61,15 +61,15 @@ func HttpReqShutdown(c *gin.Context) {
 
 	if (!auth.Backend(c.PostForm("backend_auth"))) {
 		mapResponse["success"] = false;
-		mapResponse["error"] = "Bad auth key";
+		mapResponse["error"] = 1;
 		c.JSON(200, mapResponse);
 		return;
 	}
 
-	bSetShutdown, sError := SetShutDown();
+	bSetShutdown, iError := SetShutDown();
 	if (!bSetShutdown) {
 		mapResponse["success"] = false;
-		mapResponse["error"] = sError;
+		mapResponse["error"] = iError;
 	} else {
 		mapResponse["success"] = true;
 	}
@@ -84,7 +84,7 @@ func HttpReqAddAuth(c *gin.Context) {
 	
 	if (!auth.Backend(c.PostForm("backend_auth"))) {
 		mapResponse["success"] = false;
-		mapResponse["error"] = "Bad auth key";
+		mapResponse["error"] = 1;
 		c.JSON(200, mapResponse);
 		return;
 	}
@@ -94,7 +94,7 @@ func HttpReqAddAuth(c *gin.Context) {
 	sNicknameBase64 := c.PostForm("nickname_base64");
 	if (sSteamID64 == "" || sNicknameBase64 == "") {
 		mapResponse["success"] = false;
-		mapResponse["error"] = "Not all required parameters present";
+		mapResponse["error"] = 2;
 		c.JSON(200, mapResponse);
 		return;
 	}
@@ -112,7 +112,7 @@ func HttpReqRemoveAuth(c *gin.Context) {
 	
 	if (!auth.Backend(c.PostForm("backend_auth"))) {
 		mapResponse["success"] = false;
-		mapResponse["error"] = "Bad auth key";
+		mapResponse["error"] = 1;
 		c.JSON(200, mapResponse);
 		return;
 	}
@@ -121,15 +121,15 @@ func HttpReqRemoveAuth(c *gin.Context) {
 	sSessID := c.PostForm("session_id");
 	if (sSessID == "") {
 		mapResponse["success"] = false;
-		mapResponse["error"] = "Not all required parameters present";
+		mapResponse["error"] = 2;
 		c.JSON(200, mapResponse);
 		return;
 	}
 
-	bSuccess, sError := auth.RemovePlayerAuth(sSessID);
+	bSuccess, iError := auth.RemovePlayerAuth(sSessID);
 	mapResponse["success"] = bSuccess;
 	if (!bSuccess) {
-		mapResponse["error"] = sError;
+		mapResponse["error"] = iError;
 	}
 	
 	c.JSON(200, mapResponse);
@@ -141,7 +141,7 @@ func HttpReqUpdateActivity(c *gin.Context) {
 	
 	if (!auth.Backend(c.PostForm("backend_auth"))) {
 		mapResponse["success"] = false;
-		mapResponse["error"] = "Bad auth key";
+		mapResponse["error"] = 1;
 		c.JSON(200, mapResponse);
 		return;
 	}
@@ -150,15 +150,15 @@ func HttpReqUpdateActivity(c *gin.Context) {
 	sSteamID64 := c.PostForm("steamid64");
 	if (sSteamID64 == "") {
 		mapResponse["success"] = false;
-		mapResponse["error"] = "Not all required parameters present";
+		mapResponse["error"] = 2;
 		c.JSON(200, mapResponse);
 		return;
 	}
 
-	bSuccess, sError := players.UpdatePlayerActivity(sSteamID64);
+	bSuccess, iError := players.UpdatePlayerActivity(sSteamID64);
 	mapResponse["success"] = bSuccess;
 	if (!bSuccess) {
-		mapResponse["error"] = sError;
+		mapResponse["error"] = iError;
 	}
 	
 	c.JSON(200, mapResponse);
@@ -170,7 +170,7 @@ func HttpReqGetPlayer(c *gin.Context) {
 	
 	if (!auth.Backend(c.PostForm("backend_auth"))) {
 		mapResponse["success"] = false;
-		mapResponse["error"] = "Bad auth key";
+		mapResponse["error"] = 1;
 		c.JSON(200, mapResponse);
 		return;
 	}
@@ -179,15 +179,15 @@ func HttpReqGetPlayer(c *gin.Context) {
 	sSteamID64 := c.PostForm("steamid64");
 	if (sSteamID64 == "") {
 		mapResponse["success"] = false;
-		mapResponse["error"] = "Not all required parameters present";
+		mapResponse["error"] = 2;
 		c.JSON(200, mapResponse);
 		return;
 	}
 
-	pPlayer, sError := players.GetPlayer(sSteamID64);
+	pPlayer, iError := players.GetPlayer(sSteamID64);
 	if (pPlayer == nil) {
 		mapResponse["success"] = false;
-		mapResponse["error"] = sError;
+		mapResponse["error"] = iError;
 	} else {
 		mapResponse["success"] = true;
 		mapResponse["player"] = pPlayer;

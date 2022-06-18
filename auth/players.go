@@ -56,15 +56,15 @@ func AddPlayerAuth(sSteamID64 string, sNicknameBase64 string) string {
 	return sSessionKey;
 }
 
-func RemovePlayerAuth(sSessID string) (bool, string) {
+func RemovePlayerAuth(sSessID string) (bool, int) {
 
 	MuSessions.Lock();
 	if _, ok := MapSessions[sSessID]; !ok {
 		MuSessions.Unlock();
-		return false, "Session ID does not exist";
+		return false, 3;
 	}
 	delete(MapSessions, sSessID);
 	MuSessions.Unlock();
 
-	return true, "";
+	return true, 0;
 }

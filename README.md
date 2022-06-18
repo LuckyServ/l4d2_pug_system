@@ -13,10 +13,11 @@ Request parameters:
 Response parameters:
 | Key | Type | Description
 | ------ | ------ | ------ |
-| <strong>success</strong> | _bool_ | Always returns "true" |
+| <strong>success</strong> | _bool_ | True if request succeeded, false otherwise |
 | <strong>shutdown</strong> | _bool_ | Tells if the program is goind to be shutdown soon (no new lobbies allowed, etc) |
 | <strong>time</strong> | _int64_ | System time in milliseconds |
 | <strong>players_updated</strong> | _int64_ | Last time players list was updated (in milliseconds) |
+| <strong>error</strong> | _int_ | Outputs the reason if the request is rejected.<br>1 - bad auth |
 
 <br/><br/>
 
@@ -31,7 +32,7 @@ Response parameters:
 | Key | Type | Description
 | ------ | ------ | ------ |
 | <strong>success</strong> | _bool_ | "true" if command accepted, "false" otherwise |
-| <strong>error</strong> | _string_ | Outputs the reason if the request is rejected |
+| <strong>error</strong> | _int_ | Outputs the reason if the request is rejected.<br>1 - bad auth, 2 - already shutting down |
 
 <br/><br/>
 
@@ -49,7 +50,7 @@ Response parameters:
 | ------ | ------ | ------ |
 | <strong>success</strong> | _bool_ | "true" if authorization added, "false" otherwise |
 | <strong>session_id</strong> | _string_ | Returns the session id if the authorization got accepted |
-| <strong>error</strong> | _string_ | Outputs the reason if the authorization got declined |
+| <strong>error</strong> | _int_ | Outputs the reason if the authorization got declined.<br>1 - bad auth, 2 - bad parameters |
 
 <br/><br/>
 
@@ -65,7 +66,7 @@ Response parameters:
 | Key | Type | Description
 | ------ | ------ | ------ |
 | <strong>success</strong> | _bool_ | "true" if authorization removed, "false" otherwise |
-| <strong>error</strong> | _string_ | Outputs the reason if the operation fails |
+| <strong>error</strong> | _int_ | Outputs the reason if the operation fails.<br>1 - bad auth, 2 - bad parameters, 3 - no such auth key |
 
 <br/><br/>
 
@@ -81,7 +82,7 @@ Response parameters:
 | Key | Type | Description
 | ------ | ------ | ------ |
 | <strong>success</strong> | _bool_ | "true" if activity timestamp updated, "false" otherwise |
-| <strong>error</strong> | _string_ | Outputs the reason if the operation fails |
+| <strong>error</strong> | _int_ | Outputs the reason if the operation fails.<br>1 - bad auth, 2 - bad parameters, 3 - no such player |
 
 <br/><br/>
 
@@ -97,7 +98,7 @@ Response parameters:
 | Key | Type | Description
 | ------ | ------ | ------ |
 | <strong>success</strong> | _bool_ | "true" if info available, "false" otherwise |
-| <strong>error</strong> | _string_ | Outputs the reason if the operation fails |
+| <strong>error</strong> | _int_ | Outputs the reason if the operation fails.<br>1 - bad auth, 2 - bad parameters, 3 - no such player |
 | <strong>player</strong> | _array_ | Array of the player's info |
 | <strong>player["SteamID64"]</strong> | _string_ | Steam ID 64 (Profile ID) |
 | <strong>player["NicknameBase64"]</strong> | _string_ | Base64 encoded nickname |

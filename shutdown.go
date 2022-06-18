@@ -3,12 +3,12 @@ package main
 import (
 )
 
-func SetShutDown() (bool, string) {
+func SetShutDown() (bool, int) {
 	if (bStateShutdown) {
-		return false, "Already shutting down";
+		return false, 2;
 	}
 	bStateShutdown = true;
-	return true, "";
+	return true, 0;
 }
 
 func PerformShutDown() {
