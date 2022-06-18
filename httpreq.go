@@ -20,6 +20,7 @@ func ginInit() {
 	r.POST("/status", HttpReqStatus);
 	r.POST("/shutdown", HttpReqShutdown);
 	r.POST("/addauth", HttpReqAddAuth);
+	r.POST("/removeauth", HttpReqRemoveAuth);
 	
 	fmt.Printf("Starting web server\n");
 	go r.Run(":"+settings.ListenPort); //Listen on port
@@ -90,6 +91,41 @@ func HttpReqAddAuth(c *gin.Context) {
 	sSessionID := auth.AddPlayerAuth(sSteamID64, sNicknameBase64);
 	mapResponse["success"] = true;
 	mapResponse["session_id"] = sSessionID;
+	
+	c.JSON(200, mapResponse);
+}
+
+func HttpReqRemoveAuth(c *gin.Context) {
+
+	mapResponse := make(map[string]interface{});
+	
+	if (bStateShutdown) {
+		mapResponse["success"] = false;
+		mapResponse["error"] = "Server shutting down";
+		c.JSON(200, mapResponse);
+		return;
+	}
+	if (!auth.Backend(c.PostForm("backend_auth"))) {
+		mapResponse["success"] = false;
+		mapResponse["error"] = "Bad auth key";
+		c.JSON(200, mapResponse);
+		return;
+	}
+
+
+	sSessID := c.PostForm("session_id");
+	if (sSessID == "") {
+		mapResponse["success"] = false;
+		mapResponse["error"] = "Not all required parameters present";
+		c.JSON(200, mapResponse);
+		return;
+	}
+
+	bSuccess, sError := auth.RemovePlayerAuth(sSessID);
+	mapResponse["success"] = bSuccess;
+	if (!bSuccess) {
+		mapResponse["error"] = sError;
+	}
 	
 	c.JSON(200, mapResponse);
 }

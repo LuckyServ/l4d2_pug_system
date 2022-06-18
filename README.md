@@ -32,7 +32,7 @@ Response parameters:
 <br/><br/>
 
 ### POST /addauth
-##### Add authorization record
+##### Add player authorization record
 Request parameters:
 | Key | Type | Description
 | ------ | ------ | ------ |
@@ -46,3 +46,19 @@ Response parameters:
 | <strong>success</strong> | _bool_ | "true" if authorization added, "false" otherwise |
 | <strong>session_id</strong> | _string_ | Returns the session id if the authorization got accepted |
 | <strong>error</strong> | _string_ | Outputs the reason if the authorization got declined |
+
+<br/><br/>
+
+### POST /removeauth
+##### Remove player authorization record
+Request parameters:
+| Key | Type | Description
+| ------ | ------ | ------ |
+| <strong>backend_auth</strong> | _string_ | Auth key |
+| <strong>session_id</strong> | _string_ | Session ID which should be removed |
+
+Response parameters:
+| Key | Type | Description
+| ------ | ------ | ------ |
+| <strong>success</strong> | _bool_ | "true" if authorization removed, "false" otherwise |
+| <strong>error</strong> | _string_ | Outputs the reason if the operation fails |
