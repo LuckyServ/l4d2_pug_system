@@ -4,7 +4,11 @@
 
 ### POST /status
 ##### Get necessary info about program status
-Request parameters: none
+Request parameters:
+| Key | Type | Description
+| ------ | ------ | ------ |
+| <strong>backend_auth</strong> | _string_ | Auth key |
+| <strong>steamid64</strong> (optional) | _string_ | Steam ID 64 (Profile ID) of the authorized player |
 
 Response parameters:
 | Key | Type | Description
@@ -76,5 +80,22 @@ Request parameters:
 Response parameters:
 | Key | Type | Description
 | ------ | ------ | ------ |
-| <strong>success</strong> | _bool_ | "true" activity timestamp updated, "false" otherwise |
+| <strong>success</strong> | _bool_ | "true" if activity timestamp updated, "false" otherwise |
 | <strong>error</strong> | _string_ | Outputs the reason if the operation fails |
+
+<br/><br/>
+
+### POST /getplayer
+##### Get info about a player
+Request parameters:
+| Key | Type | Description
+| ------ | ------ | ------ |
+| <strong>backend_auth</strong> | _string_ | Auth key |
+| <strong>steamid64</strong> | _string_ | Steam ID 64 (Profile ID) |
+
+Response parameters:
+| Key | Type | Description
+| ------ | ------ | ------ |
+| <strong>success</strong> | _bool_ | "true" if info available, "false" otherwise |
+| <strong>error</strong> | _string_ | Outputs the reason if the operation fails |
+| <strong>player</strong> | _string_ | Array of the player's info |

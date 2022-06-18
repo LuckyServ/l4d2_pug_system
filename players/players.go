@@ -18,6 +18,7 @@ type EntPlayer struct {
 	IsOnline		bool
 	IsInGame		bool
 	IsInLobby		bool
+	LastUpdated		int64 //Last time player info was changed, except LastActivity //unix timestamp in milliseconds
 }
 
 var MapPlayers map[string]*EntPlayer = make(map[string]*EntPlayer);
@@ -35,4 +36,15 @@ func UpdatePlayerActivity(sSteamID64 string) (bool, string) {
 	MapPlayers[sSteamID64].LastActivity = time.Now().UnixMilli();
 	MuPlayers.Unlock();
 	return true, "";
+}
+
+func GetPlayer(sSteamID64 string) (*EntPlayer, string) {
+	MuPlayers.Lock();
+	if _, ok := MapPlayers[sSteamID64]; !ok {
+		MuPlayers.Unlock();
+		return nil, "This player does not exist";
+	}
+	pPlayer := MapPlayers[sSteamID64];
+	MuPlayers.Unlock();
+	return pPlayer, "";
 }
