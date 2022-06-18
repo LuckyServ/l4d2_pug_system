@@ -62,3 +62,19 @@ Response parameters:
 | ------ | ------ | ------ |
 | <strong>success</strong> | _bool_ | "true" if authorization removed, "false" otherwise |
 | <strong>error</strong> | _string_ | Outputs the reason if the operation fails |
+
+<br/><br/>
+
+### POST /updateactivity
+##### Update player's last activity. This is needed to keep record of online players.
+Request parameters:
+| Key | Type | Description
+| ------ | ------ | ------ |
+| <strong>backend_auth</strong> | _string_ | Auth key |
+| <strong>steamid64</strong> | _string_ | Steam ID 64 (Profile ID) |
+
+Response parameters:
+| Key | Type | Description
+| ------ | ------ | ------ |
+| <strong>success</strong> | _bool_ | "true" activity timestamp updated, "false" otherwise |
+| <strong>error</strong> | _string_ | Outputs the reason if the operation fails |

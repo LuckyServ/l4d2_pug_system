@@ -2,6 +2,7 @@ package players
 
 import (
 	"sync"
+	"time"
 )
 
 type EntPlayer struct {
@@ -23,3 +24,15 @@ var MapPlayers map[string]*EntPlayer = make(map[string]*EntPlayer);
 var MuPlayers sync.Mutex;
 
 var I64LastPlayerlistUpdate int64;
+
+
+func UpdatePlayerActivity(sSteamID64 string) (bool, string) {
+	MuPlayers.Lock();
+	if _, ok := MapPlayers[sSteamID64]; !ok {
+		MuPlayers.Unlock();
+		return false, "This player does not exist";
+	}
+	MapPlayers[sSteamID64].LastActivity = time.Now().UnixMilli();
+	MuPlayers.Unlock();
+	return true, "";
+}
