@@ -106,7 +106,7 @@ Response parameters:
 | <strong>player["MmrUncertainty"]</strong> | _int_ | How uncertain the system is about the player's rating |
 | <strong>player["Access"]</strong> | _int_ | Player's access level. -2 - completely banned, -1 - chat banned, 0 - regular player, 1 - behaviour moderator, 2 - cheat moderator, 3 - behaviour+cheat moderator, 4 - full admin access |
 | <strong>player["ProfValidated"]</strong> | _bool_ | New players must validate their profiles before playing |
-| <strong>player["Pings"]</strong> | _array_ | Array of player's pings to every gameserver. Used to choose the best gameserver |
+| <strong>player["Pings"]</strong> | _array_ | Array of player's pings to every gameserver, nil/null if none. Used to choose the best gameserver |
 | <strong>player["PingsUpdated"]</strong> | _bool_ | Does the player have all gameservers pinged |
 | <strong>player["Pings"]["</strong>127.0.0.1<strong>"]</strong> | _int_ | The ping |
 | <strong>player["LastPingsUpdate"]</strong> | _int64_ | Last time player's pings were updated (in milliseconds) |
