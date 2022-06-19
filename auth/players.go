@@ -4,6 +4,7 @@ import (
 	"sync"
 	"../utils"
 	"../players"
+	"../settings"
 	"time"
 )
 
@@ -23,7 +24,8 @@ func AddPlayerAuth(sSteamID64 string, sNicknameBase64 string) string {
 	if _, ok := players.MapPlayers[sSteamID64]; !ok {
 
 		pPlayer := &players.EntPlayer{
-			SteamID64:		sSteamID64,
+			SteamID64:			sSteamID64,
+			MmrUncertainty:		settings.DefaultMmrUncertainty,
 		};
 		players.MapPlayers[sSteamID64] = pPlayer;
 		players.I64LastPlayerlistUpdate = time.Now().UnixMilli();

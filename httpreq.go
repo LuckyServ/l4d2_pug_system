@@ -47,9 +47,9 @@ func HttpReqStatus(c *gin.Context) {
 
 	sSteamID64 := c.PostForm("steamid64");
 	if (sSteamID64 != "") {
-		pPlayer, _ := players.GetPlayer(sSteamID64);
-		if (pPlayer != nil) {
-			mapResponse["player_updated"] = pPlayer.LastUpdated;
+		bSuccess, oPlayer, _ := players.GetPlayerResponse(sSteamID64);
+		if (bSuccess) {
+			mapResponse["player_updated"] = oPlayer.LastUpdated;
 		}
 	}
 	c.JSON(200, mapResponse);
@@ -184,15 +184,14 @@ func HttpReqGetPlayer(c *gin.Context) {
 		return;
 	}
 
-	pPlayer, iError := players.GetPlayer(sSteamID64);
-	if (pPlayer == nil) {
+	bSuccess, oPlayer, iError := players.GetPlayerResponse(sSteamID64);
+	if (!bSuccess) {
 		mapResponse["success"] = false;
 		mapResponse["error"] = iError;
 	} else {
 		mapResponse["success"] = true;
-		mapResponse["player"] = pPlayer;
+		mapResponse["player"] = oPlayer;
 	}
 	
 	c.JSON(200, mapResponse);
 }
-

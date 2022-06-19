@@ -11,6 +11,8 @@ var FilePath string;
 var ListenPort string;
 var BackendAuthKey string;
 var DefaultMmrUncertainty int;
+var MmrStable int;
+var PingsMaxAge int64; //in milliseconds
 
 func Parse() bool {
 	CommandLine();
@@ -52,6 +54,20 @@ func ConfigFile() bool {
 		return false;
 	}
 	DefaultMmrUncertainty = int(i64Buffer);
+
+	i64Buffer, errError = jsonparser.GetInt(byData, "mmr_stable");
+	if (errError != nil) {
+		fmt.Printf("Error reading config file: %s\n", errError);
+		return false;
+	}
+	MmrStable = int(i64Buffer);
+
+	i64Buffer, errError = jsonparser.GetInt(byData, "pings_max_age");
+	if (errError != nil) {
+		fmt.Printf("Error reading config file: %s\n", errError);
+		return false;
+	}
+	PingsMaxAge = 1000*60*60*i64Buffer; //3600000 ms in 1 hour
 
 	return true;
 }
