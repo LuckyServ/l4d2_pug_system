@@ -107,8 +107,9 @@ Response parameters:
 | <strong>player["Access"]</strong> | _int_ | Player's access level. -2 - completely banned, -1 - chat banned, 0 - regular player, 1 - behaviour moderator, 2 - cheat moderator, 3 - behaviour+cheat moderator, 4 - full admin access |
 | <strong>player["ProfValidated"]</strong> | _bool_ | New players must validate their profiles before playing |
 | <strong>player["Pings"]</strong> | _array_ | Array of player's pings to every gameserver. Used to choose the best gameserver |
+| <strong>player["PingsUpdated"]</strong> | _bool_ | Does the player have all gameservers pinged |
 | <strong>player["Pings"]["</strong>127.0.0.1<strong>"]</strong> | _int_ | The ping |
-| <strong>player["PingsUpdated"]</strong> | _int64_ | Last time player's pings were updated (in milliseconds) |
+| <strong>player["LastPingsUpdate"]</strong> | _int64_ | Last time player's pings were updated (in milliseconds) |
 | <strong>player["LastActivity"]</strong> | _int64_ | Last time player showed any activity |
 | <strong>player["IsOnline"]</strong> | _bool_ | Is player online right now |
 | <strong>player["IsInGame"]</strong> | _bool_ | Is player in game right now |
