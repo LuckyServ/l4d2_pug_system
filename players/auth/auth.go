@@ -2,14 +2,11 @@ package auth
 
 import (
 	"sync"
-	"../utils"
-	"../players"
-	"../settings"
-	"time"
+	"../../settings"
 )
 
 type EntSession struct {
-	Player		*players.EntPlayer
+	SteamID64	string
 	Since		int64 //unix timestamp in milliseconds
 }
 
@@ -17,7 +14,26 @@ var MapSessions map[string]EntSession = make(map[string]EntSession);
 var MuSessions sync.Mutex;
 
 
-func AddPlayerAuth(sSteamID64 string, sNicknameBase64 string) string {
+func GetSession(sSessID string) (EntSession, bool) {
+	MuSessions.Lock();
+	if _, ok := MapSessions[sSessID]; !ok {
+		MuSessions.Unlock();
+		return EntSession{}, false;
+	}
+	oSession := MapSessions[sSessID];
+	MuSessions.Unlock();
+	return oSession, true;
+}
+
+func Backend(sKey string) bool {
+	if (sKey == settings.BackendAuthKey) {
+		return true;
+	}
+	return false;
+}
+
+
+/*func AddPlayerAuth(sSteamID64 string, sNicknameBase64 string) string {
 
 	//Register player if does not exist
 	players.MuPlayers.Lock();
@@ -56,9 +72,9 @@ func AddPlayerAuth(sSteamID64 string, sNicknameBase64 string) string {
 	MuSessions.Unlock();
 
 	return sSessionKey;
-}
+}*/
 
-func RemovePlayerAuth(sSessID string) (bool, int) {
+/*func RemovePlayerAuth(sSessID string) (bool, int) {
 
 	MuSessions.Lock();
 	if _, ok := MapSessions[sSessID]; !ok {
@@ -69,4 +85,4 @@ func RemovePlayerAuth(sSessID string) (bool, int) {
 	MuSessions.Unlock();
 
 	return true, 0;
-}
+}*/

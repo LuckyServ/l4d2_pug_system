@@ -3,7 +3,6 @@ package players
 import (
 	"sync"
 	"time"
-	"../settings"
 )
 
 type EntPlayer struct {
@@ -13,16 +12,17 @@ type EntPlayer struct {
 	MmrUncertainty	int
 	Access			int //-2 - completely banned, -1 - chat banned, 0 - regular player, 1 - behaviour moderator, 2 - cheat moderator, 3 - behaviour+cheat moderator, 4 - full admin access
 	ProfValidated	bool //Steam profile validated
+	RulesAccepted	bool //Rules accepted
 	Pings			map[string]int
 	LastPingsUpdate	int64 //unix timestamp in milliseconds
 	LastActivity	int64 //unix timestamp in milliseconds
 	IsOnline		bool
 	IsInGame		bool
 	IsInLobby		bool
-	LastUpdated		int64 //Last time player info was changed //unix timestamp in milliseconds
+	LastChanged		int64 //Last time player info was changed //unix timestamp in milliseconds
 }
 
-type SinglePlayerHTTPResponse struct {
+/*type SinglePlayerHTTPResponse struct {
 	NicknameBase64	string
 	Mmr				int
 	MmrUncertainty	int
@@ -33,8 +33,8 @@ type SinglePlayerHTTPResponse struct {
 	IsOnline		bool
 	IsInGame		bool
 	IsInLobby		bool
-	LastUpdated		int64 //Last time player info was changed //unix timestamp in milliseconds
-}
+	LastChanged		int64 //Last time player info was changed //unix timestamp in milliseconds
+}*/
 
 var MapPlayers map[string]*EntPlayer = make(map[string]*EntPlayer);
 var MuPlayers sync.Mutex;
@@ -42,18 +42,19 @@ var MuPlayers sync.Mutex;
 var I64LastPlayerlistUpdate int64;
 
 
-func UpdatePlayerActivity(sSteamID64 string) (bool, int) {
+func UpdatePlayerActivity(sSteamID64 string) {
 	MuPlayers.Lock();
 	if _, ok := MapPlayers[sSteamID64]; !ok {
 		MuPlayers.Unlock();
-		return false, 3;
+		return;
 	}
 	MapPlayers[sSteamID64].LastActivity = time.Now().UnixMilli();
 	MuPlayers.Unlock();
-	return true, 0;
 }
 
-func GetPlayerResponse(sSteamID64 string) (bool, SinglePlayerHTTPResponse, int) {
+
+
+/*func GetPlayerResponse(sSteamID64 string) (bool, SinglePlayerHTTPResponse, int) {
 
 	MuPlayers.Lock();
 	if _, ok := MapPlayers[sSteamID64]; !ok {
@@ -84,9 +85,10 @@ func GetPlayerResponse(sSteamID64 string) (bool, SinglePlayerHTTPResponse, int) 
 		IsOnline:		MapPlayers[sSteamID64].IsOnline,
 		IsInGame:		MapPlayers[sSteamID64].IsInGame,
 		IsInLobby:		MapPlayers[sSteamID64].IsInLobby,
-		LastUpdated:	MapPlayers[sSteamID64].LastUpdated,
+		LastChanged:	MapPlayers[sSteamID64].LastChanged,
 	};
 
 	MuPlayers.Unlock();
 	return true, oPlayer, 0;
 }
+*/

@@ -5,6 +5,9 @@ import (
 	//"database/sql"
 	//_ "github.com/lib/pq"
 	"./settings"
+	"./players"
+	"./players/auth"
+	"time"
 )
 
 var bStateShutdown bool;
@@ -30,6 +33,22 @@ func main() {
 
 	//HTTP server init
 	ginInit();
+
+
+
+	//for testing purposes
+	pPlayer := &players.EntPlayer{
+		SteamID64:			"12345678901234567",
+		MmrUncertainty:		settings.DefaultMmrUncertainty,
+		NicknameBase64:		"dGVzdA==",
+	};
+	players.MapPlayers["12345678901234567"] = pPlayer;
+	oSession := auth.EntSession{
+		SteamID64:	"12345678901234567",
+		Since:		time.Now().UnixMilli(),
+	};
+	auth.MapSessions["REPbkTFvYfKczgXMkrVrJWtNmL54AVmm"] = oSession;
+
 
 
 	//Block until shutdown command is received

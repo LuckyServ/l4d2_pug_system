@@ -1,3 +1,5 @@
 - [ ] Rewrite api
+- [ ] SSL cert
+- [ ] Steam auth
 - [ ] Manage online status of player
 - [x] a
