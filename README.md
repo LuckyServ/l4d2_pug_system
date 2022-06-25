@@ -17,7 +17,7 @@ Response parameters:
 
 <br/><br/>
 
-### POST /status
+### GET /status
 ##### Get necessary info about program status
 Request parameters: None
 
@@ -34,7 +34,7 @@ Response parameters:
 
 <br/><br/>
 
-### POST /updateactivity
+### GET /updateactivity
 ##### Update player's last activity. This is needed to keep record of online players.
 Request parameters: None
 
@@ -45,7 +45,7 @@ Response parameters:
 
 <br/><br/>
 
-### POST /getme
+### GET /getme
 ##### Get info about an authorized player
 Request parameters: None
 

@@ -18,10 +18,10 @@ func ginInit() {
 	r := gin.Default();
 	r.MaxMultipartMemory = 1 << 20;
 
-	r.POST("/status", HttpReqStatus);
+	r.GET("/status", HttpReqStatus);
 	r.POST("/shutdown", HttpReqShutdown);
-	r.POST("/updateactivity", HttpReqUpdateActivity);
-	r.POST("/getme", HttpReqGetMe);
+	r.GET("/updateactivity", HttpReqUpdateActivity);
+	r.GET("/getme", HttpReqGetMe);
 	
 	fmt.Printf("Starting web server\n");
 	go r.Run(":"+settings.ListenPort); //Listen on port
