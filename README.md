@@ -2,8 +2,6 @@
 # l4d2_pug_system
 ## The backend layer of the ranked PUG system for Left 4 Dead 2
 
-<br/><br/>
-
 ### POST /shutdown
 ##### Send the shutdown command to the program. It will wait until all lobbies end, and then exit the process.
 Request parameters:
@@ -16,6 +14,8 @@ Response parameters:
 | ------ | ------ | ------ |
 | <strong>success</strong> | _bool_ | "true" if command accepted, "false" otherwise |
 | <strong>error</strong> | _int_ | Outputs the reason if the request is rejected.<br>1 - bad auth, 2 - already shutting down |
+
+<br/><br/>
 
 ### POST /status
 ##### Get necessary info about program status
