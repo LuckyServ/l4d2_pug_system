@@ -56,7 +56,7 @@ Response parameters:
 
 
 
-Old bad api:
+<br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>Old bad api:
 
 ### POST /shutdown
 ##### Send the shutdown command to the program. It will wait until all lobbies end, and then exit the process.
