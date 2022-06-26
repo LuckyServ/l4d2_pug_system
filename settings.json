@@ -3,5 +3,7 @@
 	"auth": "Verystrongbackendauthorizationkey",
 	"mmr_uncertainty": 485, //default mmr uncertainty
 	"mmr_stable": 15, //What mmr_uncertainty is considered stable rating
-	"pings_max_age": 24 //Maximum pings info age (in hours)
+	"pings_max_age": 24, //Maximum pings info age (in hours)
+	"home_domain": "localhost", //Home page domain
+	"backend_domain": "localhost" //Backend domain
 }

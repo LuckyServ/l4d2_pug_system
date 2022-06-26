@@ -5,9 +5,9 @@ import (
 	//"database/sql"
 	//_ "github.com/lib/pq"
 	"./settings"
-	"./players"
-	"./players/auth"
-	"time"
+	//"./players"
+	//"./players/auth"
+	//"time"
 )
 
 var bStateShutdown bool;
@@ -37,7 +37,7 @@ func main() {
 
 
 	//for testing purposes
-	pPlayer := &players.EntPlayer{
+	/*pPlayer := &players.EntPlayer{
 		SteamID64:			"12345678901234567",
 		MmrUncertainty:		settings.DefaultMmrUncertainty,
 		NicknameBase64:		"dGVzdA==",
@@ -47,7 +47,7 @@ func main() {
 		SteamID64:	"12345678901234567",
 		Since:		time.Now().UnixMilli(),
 	};
-	auth.MapSessions["REPbkTFvYfKczgXMkrVrJWtNmL54AVmm"] = oSession;
+	auth.MapSessions["REPbkTFvYfKczgXMkrVrJWtNmL54AVmm"] = oSession;*/
 
 
 

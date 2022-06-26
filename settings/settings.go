@@ -13,6 +13,8 @@ var BackendAuthKey string;
 var DefaultMmrUncertainty int;
 var MmrStable int;
 var PingsMaxAge int64; //in milliseconds
+var HomeDomain string;
+var BackendDomain string;
 
 func Parse() bool {
 	CommandLine();
@@ -68,6 +70,18 @@ func ConfigFile() bool {
 		return false;
 	}
 	PingsMaxAge = 1000*60*60*i64Buffer; //3600000 ms in 1 hour
+
+	HomeDomain, errError = jsonparser.GetString(byData, "home_domain");
+	if (errError != nil) {
+		fmt.Printf("Error reading config file: %s\n", errError);
+		return false;
+	}
+
+	BackendDomain, errError = jsonparser.GetString(byData, "backend_domain");
+	if (errError != nil) {
+		fmt.Printf("Error reading config file: %s\n", errError);
+		return false;
+	}
 
 	return true;
 }

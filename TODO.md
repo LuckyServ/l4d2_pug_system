@@ -1,4 +1,6 @@
-- [ ] SSL cert
 - [ ] Steam auth
+- [ ] Avatar links
+- [ ] Log out
+- [ ] Manage authorization expire
 - [ ] Manage online status of player
 - [x] Rewrite api
