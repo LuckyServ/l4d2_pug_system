@@ -4,3 +4,4 @@
 - [ ] Manage online status of player
 - [x] Rewrite api
 - [x] Steam auth
+- [x] test
