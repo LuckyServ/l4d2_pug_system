@@ -1,3 +1,4 @@
+- [ ] "Broken" mode
 - [ ] Avatar links
 - [ ] Log out
 - [ ] Manage authorization expire
