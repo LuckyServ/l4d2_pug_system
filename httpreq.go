@@ -58,6 +58,7 @@ func HttpReqStatus(c *gin.Context) {
 
 	mapResponse["success"] = true;
 	mapResponse["shutdown"] = bStateShutdown;
+	mapResponse["brokenmode"] = settings.BrokenMode;
 	mapResponse["time"] = i64CurTime;
 	if (i64CookiePlayersUpdatedAt <= players.I64LastPlayerlistUpdate) {
 		mapResponse["need_update_players"] = true;

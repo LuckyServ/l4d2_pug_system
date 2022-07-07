@@ -1,4 +1,3 @@
-- [ ] "Broken" mode
 - [ ] Avatar links
 - [ ] Log out
 - [ ] Manage authorization expire
@@ -6,3 +5,4 @@
 - [ ] Return more info in /getme
 - [x] Rewrite api
 - [x] Steam auth
+- [x] "Broken" mode

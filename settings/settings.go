@@ -15,6 +15,7 @@ var MmrStable int;
 var PingsMaxAge int64; //in milliseconds
 var HomeDomain string;
 var BackendDomain string;
+var BrokenMode bool;
 
 func Parse() bool {
 	CommandLine();
@@ -78,6 +79,12 @@ func ConfigFile() bool {
 	}
 
 	BackendDomain, errError = jsonparser.GetString(byData, "backend_domain");
+	if (errError != nil) {
+		fmt.Printf("Error reading config file: %s\n", errError);
+		return false;
+	}
+
+	BrokenMode, errError = jsonparser.GetBoolean(byData, "broken");
 	if (errError != nil) {
 		fmt.Printf("Error reading config file: %s\n", errError);
 		return false;
