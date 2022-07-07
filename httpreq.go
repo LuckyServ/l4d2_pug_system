@@ -119,6 +119,7 @@ func HttpReqGetMe(c *gin.Context) {
 		oSession, bAuthorized := auth.GetSession(sCookieSessID);
 		if (bAuthorized) {
 			mapResponse["success"] = true;
+			mapResponse["steamid64"] = 	oSession.SteamID64;
 
 			players.MuPlayers.Lock();
 

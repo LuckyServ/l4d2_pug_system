@@ -54,6 +54,7 @@ Response parameters:
 | Key | Type | Description
 | ------ | ------ | ------ |
 | <strong>success</strong> | _bool_ | "true" if info available, "false" otherwise (not authorized) |
+| <strong>steamid64</strong> | _string_ | Steam ID 64 |
 | <strong>nickname_base64</strong> | _string_ | Base64 encoded nickname |
 | <strong>mmr</strong> | _int_ | Player's rating |
 | <strong>mmr_uncertainty</strong> | _int_ | How uncertain the system is about the player's rating |

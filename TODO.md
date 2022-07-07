@@ -2,7 +2,7 @@
 - [ ] Log out
 - [ ] Manage authorization expire
 - [ ] Manage online status of player
-- [ ] Return more info in /getme
+- [x] Return more info in /getme
 - [x] Rewrite api
 - [x] Steam auth
 - [x] "Broken" mode
