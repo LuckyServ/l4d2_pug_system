@@ -26,6 +26,7 @@ Response parameters:
 | ------ | ------ | ------ |
 | <strong>success</strong> | _bool_ | Always true |
 | <strong>shutdown</strong> | _bool_ | Tells if the program is goind to be shutdown soon (no new lobbies allowed, etc) |
+| <strong>brokenmode</strong> | _bool_ | In the broken mode gameservers are not able to communicate with http requests |
 | <strong>time</strong> | _int64_ | System time in milliseconds |
 | <strong>need_update_players</strong> | _bool_ | Should update players or not |
 | <strong>authorized</strong> | _bool_ | Authorized or not |
