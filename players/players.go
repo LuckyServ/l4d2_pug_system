@@ -35,12 +35,19 @@ func UpdatePlayerActivity(sSteamID64 string) {
 		MuPlayers.Unlock();
 		return;
 	}
-	MapPlayers[sSteamID64].LastActivity = time.Now().UnixMilli();
+	i64CurTime := time.Now().UnixMilli();
+	MapPlayers[sSteamID64].LastActivity = i64CurTime;
+	if (MapPlayers[sSteamID64].IsOnline == false) {
+		MapPlayers[sSteamID64].IsOnline = true;
+		MapPlayers[sSteamID64].LastChanged = i64CurTime;
+		I64LastPlayerlistUpdate = i64CurTime;
+	}
 	MuPlayers.Unlock();
 }
 
 
 func AddPlayerAuth(sSteamID64 string, sNicknameBase64 string) string {
+	i64CurTime := time.Now().UnixMilli();
 
 	//Register player if does not exist
 	MuPlayers.Lock();
@@ -49,9 +56,10 @@ func AddPlayerAuth(sSteamID64 string, sNicknameBase64 string) string {
 		pPlayer := &EntPlayer{
 			SteamID64:			sSteamID64,
 			MmrUncertainty:		settings.DefaultMmrUncertainty,
+			LastChanged:		i64CurTime,
 		};
 		MapPlayers[sSteamID64] = pPlayer;
-		I64LastPlayerlistUpdate = time.Now().UnixMilli();
+		I64LastPlayerlistUpdate = i64CurTime;
 
 		MuPlayers.Unlock();
 	} else {
@@ -65,13 +73,13 @@ func AddPlayerAuth(sSteamID64 string, sNicknameBase64 string) string {
 	MuPlayers.Lock();
 	if (MapPlayers[sSteamID64].NicknameBase64 != sNicknameBase64) {
 		MapPlayers[sSteamID64].NicknameBase64 = sNicknameBase64;
-		I64LastPlayerlistUpdate = time.Now().UnixMilli();
+		I64LastPlayerlistUpdate = i64CurTime;
 	}
 	MuPlayers.Unlock();
 
 	oSession := auth.EntSession{
 		SteamID64:	sSteamID64,
-		Since:		time.Now().UnixMilli(),
+		Since:		i64CurTime,
 	};
 
 	auth.MapSessions[sSessionKey] = oSession;

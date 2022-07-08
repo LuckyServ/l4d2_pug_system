@@ -14,6 +14,7 @@ import (
 	"github.com/antchfx/xmlquery"
 	"encoding/base64"
 	"net/http"
+	"net/url"
 	"strings"
 )
 
@@ -52,9 +53,9 @@ func HttpReqStatus(c *gin.Context) {
 
 	sCookieSessID, errCookieSessID := c.Cookie("session_id");
 	sCookiePlayersUpdatedAt, _ := c.Cookie("players_updated_at");
-	i64CookiePlayersUpdatedAt, _ := strconv.ParseInt(sCookiePlayersUpdatedAt, 10, 64)
+	i64CookiePlayersUpdatedAt, _ := strconv.ParseInt(sCookiePlayersUpdatedAt, 10, 64);
 	sCookiePlayerUpdatedAt, _ := c.Cookie("player_updated_at");
-	i64CookiePlayerUpdatedAt, _ := strconv.ParseInt(sCookiePlayerUpdatedAt, 10, 64)
+	i64CookiePlayerUpdatedAt, _ := strconv.ParseInt(sCookiePlayerUpdatedAt, 10, 64);
 
 	mapResponse["success"] = true;
 	mapResponse["shutdown"] = bStateShutdown;
@@ -180,7 +181,7 @@ func HttpReqOpenID(c *gin.Context) {
 	sReqString := "?dummy=1";
 	for sKey, arValues := range arParameters {
 		if (sKey != "openid.mode") {
-			sReqString = fmt.Sprintf("%s&%s=%s", sReqString, sKey, arValues[0]);
+			sReqString = fmt.Sprintf("%s&%s=%s", sReqString, sKey, url.QueryEscape(arValues[0]));
 		}
 	}
 	fullURL := "https://"+settings.BackendDomain + c.Request.URL.Path + sReqString;

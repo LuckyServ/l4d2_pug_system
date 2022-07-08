@@ -5,7 +5,7 @@ import (
 	//"database/sql"
 	//_ "github.com/lib/pq"
 	"./settings"
-	//"./players"
+	"./players"
 	//"./players/auth"
 	//"time"
 )
@@ -34,7 +34,7 @@ func main() {
 	//HTTP server init
 	ginInit();
 
-
+	go players.WatchOnline();
 
 	//for testing purposes
 	/*pPlayer := &players.EntPlayer{
