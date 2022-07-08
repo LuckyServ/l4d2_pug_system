@@ -1,5 +1,5 @@
 - [ ] Database
-- [ ] Set cookies after updating info
+- [ ] Merge /status and /updateactivity
 - [ ] Avatar links
 - [ ] Log out
 - [ ] Manage authorization expire
@@ -9,3 +9,4 @@
 - [x] Steam auth
 - [x] "Broken" mode
 - [x] Rethink regular pinging
+- [x] Set cookies after updating info
