@@ -16,8 +16,6 @@ type EntPlayer struct {
 	Access			int //-2 - completely banned, -1 - chat banned, 0 - regular player, 1 - behaviour moderator, 2 - cheat moderator, 3 - behaviour+cheat moderator, 4 - full admin access
 	ProfValidated	bool //Steam profile validated
 	RulesAccepted	bool //Rules accepted
-	Pings			map[string]int
-	LastPingsUpdate	int64 //unix timestamp in milliseconds
 	LastActivity	int64 //unix timestamp in milliseconds
 	IsOnline		bool
 	IsInGame		bool

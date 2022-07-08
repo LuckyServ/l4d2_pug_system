@@ -31,7 +31,6 @@ Response parameters:
 | <strong>need_update_players</strong> | _bool_ | Should update players or not |
 | <strong>authorized</strong> | _bool_ | Authorized or not |
 | <strong>need_update_player</strong> | _bool_ | Should update player or not (only present if authorized) |
-| <strong>need_update_pings</strong> | _bool_ | Does the player need to update their pings to the gameservers (only present if authorized) |
 
 <br/><br/>
 

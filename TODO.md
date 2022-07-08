@@ -1,4 +1,3 @@
-- [ ] Rethink regular pinging
 - [ ] Avatar links
 - [ ] Log out
 - [ ] Manage authorization expire
@@ -7,3 +6,4 @@
 - [x] Rewrite api
 - [x] Steam auth
 - [x] "Broken" mode
+- [x] Rethink regular pinging

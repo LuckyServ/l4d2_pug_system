@@ -77,11 +77,6 @@ func HttpReqStatus(c *gin.Context) {
 			} else {
 				mapResponse["need_update_player"] = false;
 			}
-			if ((time.Now().UnixMilli() - players.MapPlayers[oSession.SteamID64].LastPingsUpdate) <= settings.PingsMaxAge) {
-				mapResponse["need_update_pings"] = false;
-			} else {
-				mapResponse["need_update_pings"] = true;
-			}
 			players.MuPlayers.Unlock();
 		}
 	}
