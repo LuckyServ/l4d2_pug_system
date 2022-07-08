@@ -35,7 +35,6 @@ func ginInit() {
 
 	r.GET("/status", HttpReqStatus);
 	r.POST("/shutdown", HttpReqShutdown);
-	r.GET("/updateactivity", HttpReqUpdateActivity);
 	r.GET("/getme", HttpReqGetMe);
 	r.GET("/openidcallback", HttpReqOpenID);
 	
@@ -73,6 +72,7 @@ func HttpReqStatus(c *gin.Context) {
 		if (bAuthorized) {
 			mapResponse["authorized"] = true;
 			players.MuPlayers.Lock();
+			players.UpdatePlayerActivity(oSession.SteamID64);
 			if (i64CookiePlayerUpdatedAt <= players.MapPlayers[oSession.SteamID64].LastChanged) {
 				mapResponse["need_update_player"] = true;
 			} else {
@@ -82,26 +82,6 @@ func HttpReqStatus(c *gin.Context) {
 		}
 	}
 
-	c.Header("Access-Control-Allow-Origin", "*");
-	c.JSON(200, mapResponse);
-}
-
-
-func HttpReqUpdateActivity(c *gin.Context) {
-
-	mapResponse := make(map[string]interface{});
-
-	sCookieSessID, errCookieSessID := c.Cookie("session_id");
-
-	mapResponse["success"] = false;
-	if (errCookieSessID == nil && sCookieSessID != "") {
-		oSession, bAuthorized := auth.GetSession(sCookieSessID);
-		if (bAuthorized) {
-			players.UpdatePlayerActivity(oSession.SteamID64);
-			mapResponse["success"] = true;
-		}
-	}
-	
 	c.Header("Access-Control-Allow-Origin", "*");
 	c.JSON(200, mapResponse);
 }

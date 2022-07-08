@@ -29,10 +29,8 @@ var MuPlayers sync.Mutex;
 var I64LastPlayerlistUpdate int64;
 
 
-func UpdatePlayerActivity(sSteamID64 string) {
-	MuPlayers.Lock();
+func UpdatePlayerActivity(sSteamID64 string) { //Maps must be locked outside!!!
 	if _, ok := MapPlayers[sSteamID64]; !ok {
-		MuPlayers.Unlock();
 		return;
 	}
 	i64CurTime := time.Now().UnixMilli();
@@ -42,7 +40,6 @@ func UpdatePlayerActivity(sSteamID64 string) {
 		MapPlayers[sSteamID64].LastChanged = i64CurTime;
 		I64LastPlayerlistUpdate = i64CurTime;
 	}
-	MuPlayers.Unlock();
 }
 
 

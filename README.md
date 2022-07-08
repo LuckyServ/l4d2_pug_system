@@ -18,7 +18,7 @@ Response parameters:
 <br/><br/>
 
 ### GET /status
-##### Get necessary info about program status
+##### Get necessary info about program status, and signal about online status
 Request parameters: None
 
 Response parameters:
@@ -26,22 +26,11 @@ Response parameters:
 | ------ | ------ | ------ |
 | <strong>success</strong> | _bool_ | Always true |
 | <strong>shutdown</strong> | _bool_ | Tells if the program is goind to be shutdown soon (no new lobbies allowed, etc) |
-| <strong>brokenmode</strong> | _bool_ | In the broken mode gameservers are not able to communicate with http requests |
+| <strong>brokenmode</strong> | _bool_ | Tells if competitive plugins are broken by some L4D2 update. In this mode the gameservers are vanilla + Sourcemod. |
 | <strong>time</strong> | _int64_ | System time in milliseconds |
 | <strong>need_update_players</strong> | _bool_ | Should update players or not |
 | <strong>authorized</strong> | _bool_ | Authorized or not |
 | <strong>need_update_player</strong> | _bool_ | Should update player or not (only present if authorized) |
-
-<br/><br/>
-
-### GET /updateactivity
-##### Update player's last activity. This is needed to keep record of online players.
-Request parameters: None
-
-Response parameters:
-| Key | Type | Description
-| ------ | ------ | ------ |
-| <strong>success</strong> | _bool_ | "true" if activity timestamp updated, "false" otherwise (not authorized) |
 
 <br/><br/>
 
