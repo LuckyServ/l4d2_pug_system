@@ -82,6 +82,7 @@ func HttpReqStatus(c *gin.Context) {
 		}
 	}
 
+	c.Header("Access-Control-Allow-Origin", "*");
 	c.JSON(200, mapResponse);
 }
 
@@ -101,6 +102,7 @@ func HttpReqUpdateActivity(c *gin.Context) {
 		}
 	}
 	
+	c.Header("Access-Control-Allow-Origin", "*");
 	c.JSON(200, mapResponse);
 }
 
@@ -139,6 +141,7 @@ func HttpReqGetMe(c *gin.Context) {
 		}
 	}
 	
+	c.Header("Access-Control-Allow-Origin", "*");
 	c.JSON(200, mapResponse);
 }
 
@@ -161,6 +164,7 @@ func HttpReqShutdown(c *gin.Context) {
 		mapResponse["success"] = true;
 	}
 
+	c.Header("Access-Control-Allow-Origin", "*");
 	c.JSON(200, mapResponse);
 	go PerformShutDown();
 }
@@ -242,5 +246,6 @@ func HttpReqOpenID(c *gin.Context) {
 	c.SetCookie("session_id", sSessionID, 2592000, "/", "", true, false);
 
 	//Redirect to home page
+	c.Header("Access-Control-Allow-Origin", "*");
 	c.Redirect(303, "https://"+settings.HomeDomain);
 }
