@@ -1,3 +1,5 @@
+- [ ] Database
+- [ ] Set cookies after updating info
 - [ ] Avatar links
 - [ ] Log out
 - [ ] Manage authorization expire
