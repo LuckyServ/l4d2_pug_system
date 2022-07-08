@@ -1,3 +1,4 @@
+- [ ] Rethink regular pinging
 - [ ] Avatar links
 - [ ] Log out
 - [ ] Manage authorization expire
