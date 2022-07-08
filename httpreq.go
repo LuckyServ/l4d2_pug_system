@@ -185,7 +185,7 @@ func HttpReqOpenID(c *gin.Context) {
 	//Validate auth request with Steam
 	sReqString := "?dummy=1";
 	for sKey, arValues := range arParameters {
-		if (sKey != "openid.mode") {
+		if (len(arValues) > 0 && sKey != "openid.mode") {
 			sReqString = fmt.Sprintf("%s&%s=%s", sReqString, sKey, url.QueryEscape(arValues[0]));
 		}
 	}
