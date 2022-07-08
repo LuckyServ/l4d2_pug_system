@@ -169,10 +169,15 @@ func HttpReqOpenID(c *gin.Context) {
 	arParameters := c.Request.URL.Query();
 
 	//Check if Steam url valid
-	if (arParameters["openid.claimed_id"][0] != arParameters["openid.identity"][0] ||
-	arParameters["openid.op_endpoint"][0] != "https://steamcommunity.com/openid/login" ||
-	arParameters["openid.ns"][0] != "http://specs.openid.net/auth/2.0" ||
-	arParameters["openid.return_to"][0] != "https://"+settings.BackendDomain+"/openidcallback") {
+	if _, ok := arParameters["openid.op_endpoint"]; !ok {
+		c.Redirect(303, "https://"+settings.HomeDomain);
+		return;
+	}
+	if (len(arParameters["openid.op_endpoint"]) <= 0) {
+		c.Redirect(303, "https://"+settings.HomeDomain);
+		return;
+	}
+	if (arParameters["openid.op_endpoint"][0] != "https://steamcommunity.com/openid/login") {
 		c.Redirect(303, "https://"+settings.HomeDomain);
 		return;
 	}
