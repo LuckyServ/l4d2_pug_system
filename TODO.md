@@ -1,7 +1,7 @@
 - [ ] Avatar links
 - [ ] Log out
 - [ ] Manage authorization expire
-- [ ] Manage online status of player
+- [x] Manage online status of player
 - [x] Return more info in /getme
 - [x] Rewrite api
 - [x] Steam auth
