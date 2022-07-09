@@ -181,13 +181,13 @@ func HttpReqOpenID(c *gin.Context) {
 		return;
 	}
 	vRegEx := regexp.MustCompile(`[0-9]{17}`);
-	bSteamID64 := vRegEx.Find([]byte(id));
-	if (bSteamID64 == nil) {
+	bySteamID64 := vRegEx.Find([]byte(id));
+	if (bySteamID64 == nil) {
 		c.Redirect(303, "https://"+settings.HomeDomain);
 	}
 
 	//Here is authorized SteamID64
-	sSteamID64 := string(bSteamID64);
+	sSteamID64 := string(bySteamID64);
 
 	//Get nickname
 	sNickname := "unknown";
