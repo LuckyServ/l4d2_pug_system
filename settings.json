@@ -1,9 +1,20 @@
 {
-	"port": "8080", //Listen on this port
-	"auth": "Verystrongbackendauthorizationkey",
-	"broken": false, //Is Sourcemod/Confogl broken (after some l4d2 update)
-	"mmr_uncertainty": 485, //default mmr uncertainty
-	"mmr_stable": 15, //What mmr_uncertainty is considered stable rating
-	"home_domain": "localhost", //Home page domain
-	"backend_domain": "localhost" //Backend domain
+	"listen_port": "8080",
+	"backend_auth_key": "Verystrongbackendauthorizationkey",
+	"broken_state": false,
+	"mmr": {
+		"default_uncertainty": 485,
+		"consider_stable": 15
+	},
+	"domain": {
+		"home": "localhost",
+		"backend": "localhost"
+	},
+	"database": {
+		"host": "localhost",
+		"port": "5432",
+		"user": "postgres",
+		"password": "defaultpassword",
+		"name": "databasename"
+	}
 }

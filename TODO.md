@@ -1,4 +1,6 @@
-- [ ] Database
+- [ ] Log on database write failure
+- [ ] Validate profile
+- [ ] Smurf traces + connect logging
 - [ ] Avatar links
 - [ ] Log out
 - [ ] Manage authorization expire
@@ -10,3 +12,4 @@
 - [x] Rethink regular pinging
 - [x] Set cookies after updating info
 - [x] Merge /status and /updateactivity
+- [x] Database

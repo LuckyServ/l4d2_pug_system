@@ -5,6 +5,7 @@ import (
 	"time"
 	"../settings"
 	"../utils"
+	"../database"
 	"./auth"
 )
 
@@ -42,9 +43,29 @@ func UpdatePlayerActivity(sSteamID64 string) { //Maps must be locked outside!!!
 	}
 }
 
+func RestorePlayers() bool { //no need to lock maps
+	arDatabasePlayers := database.RestorePlayers();
+	/*if (len(arDatabasePlayers) == 0) {
+		return false;
+	}*/
+	for _, oDBPlayer := range arDatabasePlayers {
+		pPlayer := &EntPlayer{
+			SteamID64:			oDBPlayer.SteamID64,
+			NicknameBase64:		oDBPlayer.NicknameBase64,
+			Mmr:				oDBPlayer.Mmr,
+			MmrUncertainty:		oDBPlayer.MmrUncertainty,
+			Access:				oDBPlayer.Access,
+			ProfValidated:		oDBPlayer.ProfValidated,
+			RulesAccepted:		oDBPlayer.RulesAccepted,
+			LastChanged:		time.Now().UnixMilli(),
+		};
+		MapPlayers[oDBPlayer.SteamID64] = pPlayer;
+	}
+	return true;
+}
+
 
 func AddPlayerAuth(sSteamID64 string, sNicknameBase64 string) string {
-	i64CurTime := time.Now().UnixMilli();
 
 	//Register player if does not exist
 	MuPlayers.Lock();
@@ -53,12 +74,19 @@ func AddPlayerAuth(sSteamID64 string, sNicknameBase64 string) string {
 		pPlayer := &EntPlayer{
 			SteamID64:			sSteamID64,
 			MmrUncertainty:		settings.DefaultMmrUncertainty,
-			LastChanged:		i64CurTime,
+			LastChanged:		time.Now().UnixMilli(),
 		};
 		MapPlayers[sSteamID64] = pPlayer;
-		I64LastPlayerlistUpdate = i64CurTime;
+		I64LastPlayerlistUpdate = time.Now().UnixMilli();
 
+		oDatabasePlayer := database.DatabasePlayer{
+			SteamID64:			sSteamID64,
+			MmrUncertainty:		settings.DefaultMmrUncertainty,
+		};
 		MuPlayers.Unlock();
+
+		database.AddPlayer(oDatabasePlayer);
+
 	} else {
 		MuPlayers.Unlock();
 	}
@@ -69,17 +97,34 @@ func AddPlayerAuth(sSteamID64 string, sNicknameBase64 string) string {
 
 	MuPlayers.Lock();
 	if (MapPlayers[sSteamID64].NicknameBase64 != sNicknameBase64) {
+
 		MapPlayers[sSteamID64].NicknameBase64 = sNicknameBase64;
-		I64LastPlayerlistUpdate = i64CurTime;
+		MapPlayers[sSteamID64].LastChanged = time.Now().UnixMilli();
+		I64LastPlayerlistUpdate = time.Now().UnixMilli();
+
+		go database.UpdatePlayer(database.DatabasePlayer{
+			SteamID64:			MapPlayers[sSteamID64].SteamID64,
+			NicknameBase64:		MapPlayers[sSteamID64].NicknameBase64,
+			Mmr:				MapPlayers[sSteamID64].Mmr,
+			MmrUncertainty:		MapPlayers[sSteamID64].MmrUncertainty,
+			Access:				MapPlayers[sSteamID64].Access,
+			ProfValidated:		MapPlayers[sSteamID64].ProfValidated,
+			RulesAccepted:		MapPlayers[sSteamID64].RulesAccepted,
+			});
 	}
 	MuPlayers.Unlock();
 
 	oSession := auth.EntSession{
 		SteamID64:	sSteamID64,
-		Since:		i64CurTime,
+		Since:		time.Now().UnixMilli(),
 	};
 
 	auth.MapSessions[sSessionKey] = oSession;
+	go database.AddSession(database.DatabaseSession{
+		SessionID:			sSessionKey,
+		SteamID64:			auth.MapSessions[sSessionKey].SteamID64,
+		Since:				auth.MapSessions[sSessionKey].Since,
+		});
 	auth.MuSessions.Unlock();
 
 	return sSessionKey;

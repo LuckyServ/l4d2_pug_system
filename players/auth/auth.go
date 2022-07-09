@@ -3,6 +3,7 @@ package auth
 import (
 	"sync"
 	"../../settings"
+	"../../database"
 )
 
 type EntSession struct {
@@ -23,6 +24,18 @@ func GetSession(sSessID string) (EntSession, bool) {
 	oSession := MapSessions[sSessID];
 	MuSessions.Unlock();
 	return oSession, true;
+}
+
+func RestoreSessions() bool { //no need to lock maps
+	arDatabaseSessions := database.RestoreSessions();
+	for _, oDBSession := range arDatabaseSessions {
+		oSession := EntSession{
+			SteamID64:	oDBSession.SteamID64,
+			Since:		oDBSession.Since,
+		};
+		MapSessions[oDBSession.SessionID] = oSession;
+	}
+	return true;
 }
 
 func Backend(sKey string) bool {
