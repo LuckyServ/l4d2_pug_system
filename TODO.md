@@ -1,3 +1,4 @@
+- [ ] Change mmr uncertainty to float
 - [ ] Log on database write failure
 - [ ] Validate profile
 - [ ] Smurf traces + connect logging
