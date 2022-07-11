@@ -3,8 +3,8 @@
 	"backend_auth_key": "Verystrongbackendauthorizationkey",
 	"broken_state": false,
 	"mmr": {
-		"default_uncertainty": 485,
-		"consider_stable": 15
+		"default_uncertainty": 33.3333,
+		"consider_stable": 2.0
 	},
 	"domain": {
 		"home": "localhost",

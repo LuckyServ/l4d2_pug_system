@@ -45,7 +45,7 @@ Response parameters:
 | <strong>steamid64</strong> | _string_ | Steam ID 64 |
 | <strong>nickname_base64</strong> | _string_ | Base64 encoded nickname |
 | <strong>mmr</strong> | _int_ | Player's rating |
-| <strong>mmr_uncertainty</strong> | _int_ | How uncertain the system is about the player's rating |
+| <strong>mmr_uncertainty</strong> | _float32_ | How uncertain the system is about the player's rating |
 | <strong>mmr_certain</strong> | _bool_ | Is the system certain about the player's rating |
 | <strong>access</strong> | _int_ | Player's access level. -2 - completely banned, -1 - chat banned, 0 - regular player, 1 - behaviour moderator, 2 - cheat moderator, 3 - behaviour+cheat moderator, 4 - full admin access |
 | <strong>profile_validated</strong> | _bool_ | New players must validate their profiles before playing |

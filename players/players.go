@@ -13,7 +13,7 @@ type EntPlayer struct {
 	SteamID64		string
 	NicknameBase64	string
 	Mmr				int
-	MmrUncertainty	int
+	MmrUncertainty	float32
 	Access			int //-2 - completely banned, -1 - chat banned, 0 - regular player, 1 - behaviour moderator, 2 - cheat moderator, 3 - behaviour+cheat moderator, 4 - full admin access
 	ProfValidated	bool //Steam profile validated
 	RulesAccepted	bool //Rules accepted

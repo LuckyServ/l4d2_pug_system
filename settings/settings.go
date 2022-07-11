@@ -10,8 +10,8 @@ import (
 var FilePath string;
 var ListenPort string;
 var BackendAuthKey string;
-var DefaultMmrUncertainty int;
-var MmrStable int;
+var DefaultMmrUncertainty float32;
+var MmrStable float32;
 var HomeDomain string;
 var BackendDomain string;
 var BrokenMode bool;
@@ -44,7 +44,7 @@ func ConfigFile() bool {
 		return false;
 	}
 	var errError error;
-	var i64Buffer int64;
+	var f64Buffer float64;
 
 	ListenPort, errError = jsonparser.GetString(byData, "listen_port");
 	if (errError != nil) {
@@ -58,19 +58,19 @@ func ConfigFile() bool {
 		return false;
 	}
 
-	i64Buffer, errError = jsonparser.GetInt(byData, "mmr", "default_uncertainty");
+	f64Buffer, errError = jsonparser.GetFloat(byData, "mmr", "default_uncertainty");
 	if (errError != nil) {
 		fmt.Printf("Error reading config file: %s\n", errError);
 		return false;
 	}
-	DefaultMmrUncertainty = int(i64Buffer);
+	DefaultMmrUncertainty = float32(f64Buffer);
 
-	i64Buffer, errError = jsonparser.GetInt(byData, "mmr", "consider_stable");
+	f64Buffer, errError = jsonparser.GetFloat(byData, "mmr", "consider_stable");
 	if (errError != nil) {
 		fmt.Printf("Error reading config file: %s\n", errError);
 		return false;
 	}
-	MmrStable = int(i64Buffer);
+	MmrStable = float32(f64Buffer);
 
 	HomeDomain, errError = jsonparser.GetString(byData, "domain", "home");
 	if (errError != nil) {

@@ -1,4 +1,3 @@
-- [ ] Change mmr uncertainty to float
 - [ ] Log on database write failure
 - [ ] Validate profile
 - [ ] Smurf traces + connect logging
@@ -14,3 +13,4 @@
 - [x] Set cookies after updating info
 - [x] Merge /status and /updateactivity
 - [x] Database
+- [x] Change mmr uncertainty to float
