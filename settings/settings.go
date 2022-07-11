@@ -15,6 +15,7 @@ var MmrStable float32;
 var HomeDomain string;
 var BackendDomain string;
 var BrokenMode bool;
+var NoNewLobbies bool;
 
 //database settings
 var DatabaseHost string;
@@ -85,6 +86,12 @@ func ConfigFile() bool {
 	}
 
 	BrokenMode, errError = jsonparser.GetBoolean(byData, "broken_state");
+	if (errError != nil) {
+		fmt.Printf("Error reading config file: %s\n", errError);
+		return false;
+	}
+
+	NoNewLobbies, errError = jsonparser.GetBoolean(byData, "no_new_lobbies");
 	if (errError != nil) {
 		fmt.Printf("Error reading config file: %s\n", errError);
 		return false;

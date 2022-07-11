@@ -25,7 +25,7 @@ Response parameters:
 | Key | Type | Description
 | ------ | ------ | ------ |
 | <strong>success</strong> | _bool_ | Always true |
-| <strong>shutdown</strong> | _bool_ | Tells if the program is goind to be shutdown soon (no new lobbies allowed, etc) |
+| <strong>no_new_lobbies</strong> | _bool_ | Tells if creating new lobbies is blocked |
 | <strong>brokenmode</strong> | _bool_ | Tells if competitive plugins are broken by some L4D2 update. In this mode the gameservers are vanilla + Sourcemod. |
 | <strong>time</strong> | _int64_ | System time in milliseconds |
 | <strong>need_update_players</strong> | _bool_ | Should update players or not |

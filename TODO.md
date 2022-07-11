@@ -1,9 +1,11 @@
-- [ ] Log on database write failure
 - [ ] Validate profile
 - [ ] Smurf traces + connect logging
 - [ ] Avatar links
 - [ ] Log out
 - [ ] Manage authorization expire
+- [ ] Log on database write failure
+- [ ] Restarting mechanism
+
 - [x] Manage online status of player
 - [x] Return more info in /getme
 - [x] Rewrite api

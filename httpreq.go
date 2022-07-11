@@ -57,7 +57,7 @@ func HttpReqStatus(c *gin.Context) {
 	i64CookiePlayerUpdatedAt, _ := strconv.ParseInt(sCookiePlayerUpdatedAt, 10, 64);
 
 	mapResponse["success"] = true;
-	mapResponse["shutdown"] = bStateShutdown;
+	mapResponse["no_new_lobbies"] = settings.NoNewLobbies;
 	mapResponse["brokenmode"] = settings.BrokenMode;
 	mapResponse["time"] = i64CurTime;
 	if (i64CookiePlayersUpdatedAt <= players.I64LastPlayerlistUpdate) {
@@ -137,13 +137,7 @@ func HttpReqShutdown(c *gin.Context) {
 		return;
 	}
 
-	bSetShutdown, iError := SetShutDown();
-	if (!bSetShutdown) {
-		mapResponse["success"] = false;
-		mapResponse["error"] = iError;
-	} else {
-		mapResponse["success"] = true;
-	}
+	mapResponse["success"] = true;
 
 	c.Header("Access-Control-Allow-Origin", "*");
 	c.JSON(200, mapResponse);

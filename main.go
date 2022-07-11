@@ -9,7 +9,6 @@ import (
 	//"time"
 )
 
-var bStateShutdown bool;
 var chShutdown chan bool = make(chan bool);
 
 
@@ -41,4 +40,8 @@ func main() {
 
 	//Block until shutdown command is received
 	fmt.Printf("End: %v\n", <-chShutdown);
+}
+
+func PerformShutDown() {
+	chShutdown <- true;
 }

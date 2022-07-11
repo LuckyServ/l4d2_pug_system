@@ -2,6 +2,7 @@
 	"listen_port": "8080",
 	"backend_auth_key": "Verystrongbackendauthorizationkey",
 	"broken_state": false,
+	"no_new_lobbies": false,
 	"mmr": {
 		"default_uncertainty": 33.3333,
 		"consider_stable": 2.0
