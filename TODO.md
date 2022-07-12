@@ -1,4 +1,3 @@
-- [ ] Validate profile
 - [ ] Smurf traces + connect logging
 - [ ] Avatar links
 - [ ] Log out
@@ -6,6 +5,7 @@
 - [ ] Log on database write failure
 - [ ] Restarting mechanism
 
+- [x] Validate profile
 - [x] Manage online status of player
 - [x] Return more info in /getme
 - [x] Rewrite api

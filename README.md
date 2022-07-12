@@ -13,7 +13,6 @@ Response parameters:
 | Key | Type | Description
 | ------ | ------ | ------ |
 | <strong>success</strong> | _bool_ | "true" if command accepted, "false" otherwise |
-| <strong>error</strong> | _int_ | Outputs the reason if the request is rejected.<br>1 - bad auth, 2 - already shutting down |
 
 <br/><br/>
 
@@ -53,3 +52,15 @@ Response parameters:
 | <strong>is_online</strong> | _bool_ | Is player online right now |
 | <strong>is_ingame</strong> | _bool_ | Is player in game right now |
 | <strong>is_inlobby</strong> | _bool_ | Is player in lobby right now |
+
+<br/><br/>
+
+### GET /validateprofile
+##### Ask to validate client profile
+Request parameters: None
+
+Response parameters:
+| Key | Type | Description
+| ------ | ------ | ------ |
+| <strong>success</strong> | _bool_ | "true" if profile validated, "false" otherwise |
+| <strong>error</strong> | _int_ | Outputs the reason if the request is rejected.<br>1 - unauthorized, 2 - already validated, 3 - too many requests, 4 - Stats isn't public or Steam down, 5 - Not enough games played or JSON parsing error |

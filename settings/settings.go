@@ -23,6 +23,9 @@ var DatabasePort string;
 var DatabaseUsername string;
 var DatabasePassword string;
 var DatabaseName string;
+var SteamApiKey string;
+var MinVersusGamesPlayed int;
+var DefaultMaxMmr int;
 
 
 func Parse() bool {
@@ -46,6 +49,7 @@ func ConfigFile() bool {
 	}
 	var errError error;
 	var f64Buffer float64;
+	var i64Buffer int64;
 
 	ListenPort, errError = jsonparser.GetString(byData, "listen_port");
 	if (errError != nil) {
@@ -126,6 +130,26 @@ func ConfigFile() bool {
 		fmt.Printf("Error reading config file: %s\n", errError);
 		return false;
 	}
+
+	SteamApiKey, errError = jsonparser.GetString(byData, "steam_api_key");
+	if (errError != nil) {
+		fmt.Printf("Error reading config file: %s\n", errError);
+		return false;
+	}
+
+	i64Buffer, errError = jsonparser.GetInt(byData, "min_versus_games_played");
+	if (errError != nil) {
+		fmt.Printf("Error reading config file: %s\n", errError);
+		return false;
+	}
+	MinVersusGamesPlayed = int(i64Buffer);
+
+	i64Buffer, errError = jsonparser.GetInt(byData, "mmr", "default_max");
+	if (errError != nil) {
+		fmt.Printf("Error reading config file: %s\n", errError);
+		return false;
+	}
+	DefaultMaxMmr = int(i64Buffer);
 
 	return true;
 }

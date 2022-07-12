@@ -22,6 +22,7 @@ type EntPlayer struct {
 	IsInGame		bool
 	IsInLobby		bool
 	LastChanged		int64 //Last time player info was changed //unix timestamp in milliseconds
+	LastValidateReq	int64 //Last profile validation request //unix timestamp in milliseconds
 }
 
 var MapPlayers map[string]*EntPlayer = make(map[string]*EntPlayer);
@@ -45,9 +46,9 @@ func UpdatePlayerActivity(sSteamID64 string) { //Maps must be locked outside!!!
 
 func RestorePlayers() bool { //no need to lock maps
 	arDatabasePlayers := database.RestorePlayers();
-	/*if (len(arDatabasePlayers) == 0) {
+	if (len(arDatabasePlayers) == 0) {
 		return false;
-	}*/
+	}
 	for _, oDBPlayer := range arDatabasePlayers {
 		pPlayer := &EntPlayer{
 			SteamID64:			oDBPlayer.SteamID64,
