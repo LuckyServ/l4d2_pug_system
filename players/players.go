@@ -46,9 +46,9 @@ func UpdatePlayerActivity(sSteamID64 string) { //Maps must be locked outside!!!
 
 func RestorePlayers() bool { //no need to lock maps
 	arDatabasePlayers := database.RestorePlayers();
-	if (len(arDatabasePlayers) == 0) {
+	/*if (len(arDatabasePlayers) == 0) {
 		return false;
-	}
+	}*/
 	for _, oDBPlayer := range arDatabasePlayers {
 		pPlayer := &EntPlayer{
 			SteamID64:			oDBPlayer.SteamID64,
