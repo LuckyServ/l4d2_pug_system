@@ -1,5 +1,6 @@
 - [ ] Ban system
-- [ ] Add timestamp into auth key
+- [ ] /getplayers
+- [ ] Add timestamp into session key
 - [ ] Smurf traces + connect logging
 - [ ] Avatar links
 - [ ] Log out
