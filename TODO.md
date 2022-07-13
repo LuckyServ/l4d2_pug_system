@@ -1,5 +1,5 @@
+- [ ] Accept rules command
 - [ ] Ban system
-- [ ] /getplayers
 - [ ] Add timestamp into session key
 - [ ] Smurf traces + connect logging
 - [ ] Avatar links
@@ -8,6 +8,7 @@
 - [ ] Log on database write failure
 - [ ] Restarting mechanism
 
+- [x] /getplayers
 - [x] Validate profile
 - [x] Manage online status of player
 - [x] Return more info in /getme
