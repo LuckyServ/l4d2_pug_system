@@ -67,7 +67,7 @@ Response parameters:
 <br/><br/>
 
 ### GET /getonlineplayers
-##### Ask to validate client profile
+##### Get list of online players
 Request parameters: None
 
 Response parameters:
