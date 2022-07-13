@@ -1,3 +1,5 @@
+- [ ] Ban system
+- [ ] Add timestamp into auth key
 - [ ] Smurf traces + connect logging
 - [ ] Avatar links
 - [ ] Log out
