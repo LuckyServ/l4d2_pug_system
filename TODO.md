@@ -7,6 +7,7 @@
 - [ ] Manage authorization expire
 - [ ] Log on database write failure
 - [ ] Restarting mechanism
+- [ ] Regularly increase mmr uncertainty value
 
 - [x] /getplayers
 - [x] Validate profile
