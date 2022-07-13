@@ -26,6 +26,7 @@ type EntPlayer struct {
 }
 
 var MapPlayers map[string]*EntPlayer = make(map[string]*EntPlayer);
+var ArrayPlayers []*EntPlayer; //duplicate of MapPlayers, for faster iterating
 var MuPlayers sync.Mutex;
 
 var I64LastPlayerlistUpdate int64;
@@ -61,6 +62,7 @@ func RestorePlayers() bool { //no need to lock maps
 			LastChanged:		time.Now().UnixMilli(),
 		};
 		MapPlayers[oDBPlayer.SteamID64] = pPlayer;
+		ArrayPlayers = append(ArrayPlayers, pPlayer);
 	}
 	return true;
 }
@@ -78,6 +80,7 @@ func AddPlayerAuth(sSteamID64 string, sNicknameBase64 string) string {
 			LastChanged:		time.Now().UnixMilli(),
 		};
 		MapPlayers[sSteamID64] = pPlayer;
+		ArrayPlayers = append(ArrayPlayers, pPlayer);
 		I64LastPlayerlistUpdate = time.Now().UnixMilli();
 
 		oDatabasePlayer := database.DatabasePlayer{

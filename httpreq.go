@@ -147,25 +147,25 @@ func HttpReqShutdown(c *gin.Context) {
 }
 
 func HttpReqOpenID(c *gin.Context) {
-	arParameters := c.Request.URL.Query();
+	mapParameters := c.Request.URL.Query();
 
 	//Check if Steam url valid
-	if _, ok := arParameters["openid.op_endpoint"]; !ok {
+	if _, ok := mapParameters["openid.op_endpoint"]; !ok {
 		c.Redirect(303, "https://"+settings.HomeDomain);
 		return;
 	}
-	if (len(arParameters["openid.op_endpoint"]) <= 0) {
+	if (len(mapParameters["openid.op_endpoint"]) <= 0) {
 		c.Redirect(303, "https://"+settings.HomeDomain);
 		return;
 	}
-	if (arParameters["openid.op_endpoint"][0] != "https://steamcommunity.com/openid/login") {
+	if (mapParameters["openid.op_endpoint"][0] != "https://steamcommunity.com/openid/login") {
 		c.Redirect(303, "https://"+settings.HomeDomain);
 		return;
 	}
 
 	//Validate auth request with Steam
 	sReqString := "?dummy=1";
-	for sKey, arValues := range arParameters {
+	for sKey, arValues := range mapParameters {
 		if (len(arValues) > 0 && sKey != "openid.mode") {
 			sReqString = fmt.Sprintf("%s&%s=%s", sReqString, sKey, url.QueryEscape(arValues[0]));
 		}
