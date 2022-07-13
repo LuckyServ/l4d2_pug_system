@@ -1,3 +1,4 @@
+- [ ] Move http requests to separate package
 - [ ] Accept rules command
 - [ ] Ban system
 - [ ] Add timestamp into session key
