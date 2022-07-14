@@ -1,4 +1,3 @@
-- [ ] Move http requests to separate package
 - [ ] Accept rules command
 - [ ] Ban system
 - [ ] Add timestamp into session key
@@ -10,6 +9,7 @@
 - [ ] Restarting mechanism
 - [ ] Regularly increase mmr uncertainty value
 
+- [x] Move http requests to separate package
 - [x] /getplayers
 - [x] Validate profile
 - [x] Manage online status of player
