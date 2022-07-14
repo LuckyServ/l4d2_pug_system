@@ -5,11 +5,10 @@ import (
 	"./settings"
 	"./players"
 	"./database"
+	"./api"
 	"./players/auth"
 	//"time"
 )
-
-var chShutdown chan bool = make(chan bool);
 
 
 func main() {
@@ -34,14 +33,10 @@ func main() {
 	}
 
 	//HTTP server init
-	ginInit();
+	api.GinInit();
 
 	go players.WatchOnline();
 
 	//Block until shutdown command is received
-	fmt.Printf("End: %v\n", <-chShutdown);
-}
-
-func PerformShutDown() {
-	chShutdown <- true;
+	fmt.Printf("End: %v\n", <-api.ChShutdown);
 }
