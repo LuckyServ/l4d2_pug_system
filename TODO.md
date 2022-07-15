@@ -1,4 +1,3 @@
-- [ ] Accept rules command
 - [ ] Ban system
 - [ ] Add timestamp into session key
 - [ ] Smurf traces + connect logging
@@ -9,6 +8,7 @@
 - [ ] Restarting mechanism
 - [ ] Regularly increase mmr uncertainty value
 
+- [x] Accept rules command
 - [x] When requesting /status, tell if browser window is active
 - [x] Move http requests to separate package
 - [x] /getplayers

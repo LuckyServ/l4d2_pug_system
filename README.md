@@ -69,6 +69,18 @@ Response parameters:
 
 <br/><br/>
 
+### GET /acceptrules
+##### Accept rules of the project
+Request parameters: None
+
+Response parameters:
+| Key | Type | Description
+| ------ | ------ | ------ |
+| <strong>success</strong> | _bool_ | "true" if rules accepted, "false" otherwise |
+| <strong>error</strong> | _int_ | Outputs the reason if the request is rejected.<br>1 - unauthorized, 2 - already accepted |
+
+<br/><br/>
+
 ### GET /getonlineplayers
 ##### Get list of online players
 Request parameters: None
