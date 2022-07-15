@@ -1,4 +1,3 @@
-- [ ] When requesting /status, tell if browser window is active
 - [ ] Accept rules command
 - [ ] Ban system
 - [ ] Add timestamp into session key
@@ -10,6 +9,7 @@
 - [ ] Restarting mechanism
 - [ ] Regularly increase mmr uncertainty value
 
+- [x] When requesting /status, tell if browser window is active
 - [x] Move http requests to separate package
 - [x] /getplayers
 - [x] Validate profile

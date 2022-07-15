@@ -21,16 +21,12 @@ func HttpReqStatus(c *gin.Context) {
 	i64CookiePlayersUpdatedAt, _ := strconv.ParseInt(sCookiePlayersUpdatedAt, 10, 64);
 	sCookiePlayerUpdatedAt, _ := c.Cookie("player_updated_at");
 	i64CookiePlayerUpdatedAt, _ := strconv.ParseInt(sCookiePlayerUpdatedAt, 10, 64);
+	sWindowActive := c.Query("active");
 
 	mapResponse["success"] = true;
 	mapResponse["no_new_lobbies"] = settings.NoNewLobbies;
 	mapResponse["brokenmode"] = settings.BrokenMode;
 	mapResponse["time"] = i64CurTime;
-	if (i64CookiePlayersUpdatedAt <= players.I64LastPlayerlistUpdate) {
-		mapResponse["need_update_players"] = true;
-	} else {
-		mapResponse["need_update_players"] = false;
-	}
 
 	mapResponse["authorized"] = false;
 	if (errCookieSessID == nil && sCookieSessID != "") {
@@ -38,7 +34,9 @@ func HttpReqStatus(c *gin.Context) {
 		if (bAuthorized) {
 			mapResponse["authorized"] = true;
 			players.MuPlayers.Lock();
-			players.UpdatePlayerActivity(oSession.SteamID64);
+			if (sWindowActive == "true") {
+				players.UpdatePlayerActivity(oSession.SteamID64);
+			}
 			if (i64CookiePlayerUpdatedAt <= players.MapPlayers[oSession.SteamID64].LastChanged) {
 				mapResponse["need_update_player"] = true;
 			} else {
@@ -46,6 +44,12 @@ func HttpReqStatus(c *gin.Context) {
 			}
 			players.MuPlayers.Unlock();
 		}
+	}
+
+	if (i64CookiePlayersUpdatedAt <= players.I64LastPlayerlistUpdate) {
+		mapResponse["need_update_players"] = true;
+	} else {
+		mapResponse["need_update_players"] = false;
 	}
 
 	c.Header("Access-Control-Allow-Origin", "*");
