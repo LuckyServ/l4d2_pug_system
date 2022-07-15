@@ -7,6 +7,7 @@ import (
 	"../utils"
 	"../database"
 	"./auth"
+	"strconv"
 )
 
 type EntPlayer struct {
@@ -96,6 +97,7 @@ func AddPlayerAuth(sSteamID64 string, sNicknameBase64 string) string {
 	}
 
 	sSessionKey, _ := utils.GenerateRandomString(32);
+	sSessionKey = sSessionKey+strconv.FormatInt(time.Now().UnixNano(), 10);
 
 	auth.MuSessions.Lock();
 

@@ -1,5 +1,4 @@
 - [ ] Ban system
-- [ ] Add timestamp into session key
 - [ ] Smurf traces + connect logging
 - [ ] Avatar links
 - [ ] Log out
@@ -8,6 +7,7 @@
 - [ ] Restarting mechanism
 - [ ] Regularly increase mmr uncertainty value
 
+- [x] Add timestamp into session key
 - [x] Accept rules command
 - [x] When requesting /status, tell if browser window is active
 - [x] Move http requests to separate package
