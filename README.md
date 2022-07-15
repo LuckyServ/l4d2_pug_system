@@ -3,7 +3,7 @@
 ## The backend layer of the ranked PUG system for Left 4 Dead 2
 
 ### POST /shutdown
-##### Send the shutdown command to the program. It will wait until all lobbies end, and then exit the process.
+##### Send the shutdown command to the program. It will properly exit the process.
 Request parameters:
 | Key | Type | Description
 | ------ | ------ | ------ |
