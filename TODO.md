@@ -1,3 +1,4 @@
+- [ ] When requesting /status, tell if browser window is active
 - [ ] Accept rules command
 - [ ] Ban system
 - [ ] Add timestamp into session key
