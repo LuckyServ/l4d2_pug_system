@@ -5,6 +5,9 @@ import (
 	"flag"
 	"github.com/buger/jsonparser"
 	"io/ioutil"
+	"sort"
+	"strings"
+	"strconv"
 )
 
 var FilePath string;
@@ -17,15 +20,19 @@ var BackendDomain string;
 var BrokenMode bool;
 var NoNewLobbies bool;
 
-//database settings
 var DatabaseHost string;
 var DatabasePort string;
 var DatabaseUsername string;
 var DatabasePassword string;
 var DatabaseName string;
+
 var SteamApiKey string;
 var MinVersusGamesPlayed int;
 var DefaultMaxMmr int;
+var OnlineMmrRange int;
+
+var MapConfoglConfigs map[int]string = make(map[int]string);
+var ArrayConfoglConfigsMmrs []int;
 
 
 func Parse() bool {
@@ -150,6 +157,40 @@ func ConfigFile() bool {
 		return false;
 	}
 	DefaultMaxMmr = int(i64Buffer);
+
+	i64Buffer, errError = jsonparser.GetInt(byData, "lobby", "online_mmr_range");
+	if (errError != nil) {
+		fmt.Printf("Error reading config file: %s\n", errError);
+		return false;
+	}
+	OnlineMmrRange = int(i64Buffer);
+
+
+	//Confogl configs section
+	sConfoglMmrs, errConfoglMmrs := jsonparser.GetString(byData, "lobby", "confogl_configs", "mmr");
+	sConfoglConfigs, errConfoglConfigs := jsonparser.GetString(byData, "lobby", "confogl_configs", "config");
+	if (errConfoglMmrs != nil || errConfoglConfigs != nil) {
+		fmt.Printf("Error reading config file: %s\n", errError);
+		return false;
+	}
+	arConfoglMmrs := strings.Split(sConfoglMmrs, ",");
+	arConfoglConfigs := strings.Split(sConfoglConfigs, ",");
+	if (len(arConfoglMmrs) != len(arConfoglConfigs) || len(arConfoglMmrs) == 0 || len(arConfoglConfigs) == 0) {
+		fmt.Printf("Error reading config file: %s\n", errError);
+		return false;
+	}
+	for i, _ := range arConfoglMmrs {
+		iConfMmr, errConfMmr := strconv.Atoi(arConfoglMmrs[i]);
+		sConf := arConfoglConfigs[i];
+		if (errConfMmr != nil || iConfMmr <= 0 || sConf == "") {
+			fmt.Printf("Error reading config file: %s\n", errError);
+			return false;
+		}
+		MapConfoglConfigs[iConfMmr] = sConf;
+		ArrayConfoglConfigsMmrs = append(ArrayConfoglConfigsMmrs, iConfMmr);
+	}
+	sort.Ints(ArrayConfoglConfigsMmrs);
+
 
 	return true;
 }

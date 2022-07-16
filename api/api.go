@@ -21,6 +21,8 @@ func GinInit() {
 	r.GET("/openidcallback", HttpReqOpenID);
 	r.GET("/validateprofile", HttpReqValidateProf);
 	r.GET("/acceptrules", HttpReqAcceptRules);
+
+	r.GET("/createlobby", HttpReqCreateLobby);
 	
 	fmt.Printf("Starting web server\n");
 	go r.Run(":"+settings.ListenPort); //Listen on port

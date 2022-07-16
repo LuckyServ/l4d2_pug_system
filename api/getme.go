@@ -33,6 +33,7 @@ func HttpReqGetMe(c *gin.Context) {
 			mapResponse["is_online"] = 			players.MapPlayers[oSession.SteamID64].IsOnline;
 			mapResponse["is_ingame"] = 			players.MapPlayers[oSession.SteamID64].IsInGame;
 			mapResponse["is_inlobby"] = 		players.MapPlayers[oSession.SteamID64].IsInLobby;
+			mapResponse["is_ready_in_lobby"] = 	players.MapPlayers[oSession.SteamID64].ReadyInLobby;
 
 			if (players.MapPlayers[oSession.SteamID64].MmrUncertainty <= settings.MmrStable) {
 				mapResponse["mmr_certain"] = true;

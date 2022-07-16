@@ -22,6 +22,7 @@ type EntPlayer struct {
 	IsOnline		bool
 	IsInGame		bool
 	IsInLobby		bool
+	ReadyInLobby	bool
 	LastChanged		int64 //Last time player info was changed //unix timestamp in milliseconds
 	LastValidateReq	int64 //Last profile validation request //unix timestamp in milliseconds
 }
@@ -96,7 +97,7 @@ func AddPlayerAuth(sSteamID64 string, sNicknameBase64 string) string {
 		MuPlayers.Unlock();
 	}
 
-	sSessionKey, _ := utils.GenerateRandomString(32);
+	sSessionKey, _ := utils.GenerateRandomString(32, "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz");
 	sSessionKey = sSessionKey+strconv.FormatInt(time.Now().UnixNano(), 10);
 
 	auth.MuSessions.Lock();

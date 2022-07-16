@@ -1,3 +1,8 @@
+- [ ] Lobby timeouts
+- [ ] Lobby update info to /status
+- [ ] Optimize selecting from maps multiple times in a row
+- [ ] When calculating lobby mmr limits, include those players who are finishing a game soon
+- [ ] Allow new lobby only if the player doesn't match any existing lobby
 - [ ] Ban system
 - [ ] Smurf traces + connect logging
 - [ ] Avatar links
@@ -7,6 +12,8 @@
 - [ ] Restarting mechanism
 - [ ] Regularly increase mmr uncertainty value
 
+- [x] Do not allow to create lobbies if player banned
+- [x] Do not allow to create lobbies if player not online
 - [x] Add timestamp into session key
 - [x] Accept rules command
 - [x] When requesting /status, tell if browser window is active

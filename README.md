@@ -54,6 +54,7 @@ Response parameters:
 | <strong>is_online</strong> | _bool_ | Is player online right now |
 | <strong>is_ingame</strong> | _bool_ | Is player in game right now |
 | <strong>is_inlobby</strong> | _bool_ | Is player in lobby right now |
+| <strong>is_ready_in_lobby</strong> | _bool_ | Is player ready in a lobby |
 
 <br/><br/>
 
@@ -101,3 +102,16 @@ Response parameters:
 | &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>access</strong> | _int_ | Player's access level<br>-2 - completely banned, -1 - chat banned, 0 - regular player, 1 - behaviour moderator, 2 - cheat moderator, 3 - behaviour+cheat moderator, 4 - full admin access |
 | &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>is_ingame</strong> | _bool_ | Is player in game right now |
 | &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>is_inlobby</strong> | _bool_ | Is player in lobby right now |
+| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>is_ready_in_lobby</strong> | _bool_ | Is player ready in a lobby |
+
+<br/><br/>
+
+### GET /createlobby
+##### Create lobby and join it
+Request parameters: None
+
+Response parameters:
+| Key | Type | Description
+| ------ | ------ | ------ |
+| <strong>success</strong> | _bool_ | "true" if lobby created, "false" otherwise |
+| <strong>error</strong> | _int_ | Outputs the reason if the request is rejected.<br>1 - unauthorized, 2 - already in lobby, 3 - not online, 4 - banned, 5 - error creating lobby |

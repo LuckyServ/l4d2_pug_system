@@ -15,6 +15,7 @@ type PlayerResponse struct {
 	IsInGame		bool		`json:"is_ingame"`
 	IsInLobby		bool		`json:"is_inlobby"`
 	MmrCertain		bool		`json:"mmr_certain"`
+	ReadyInLobby	bool		`json:"is_ready_in_lobby"`
 }
 
 
@@ -35,6 +36,7 @@ func HttpReqGetOnlinePlayers(c *gin.Context) {
 				Access:			oPlayer.Access,
 				IsInGame:		oPlayer.IsInGame,
 				IsInLobby:		oPlayer.IsInLobby,
+				ReadyInLobby:	oPlayer.ReadyInLobby,
 			});
 			if (oPlayer.IsInGame) {
 				iInGameCount++;

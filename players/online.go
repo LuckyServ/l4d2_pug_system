@@ -12,7 +12,7 @@ func WatchOnline() {
 
 		MuPlayers.Lock();
 		for _, oPlayer := range ArrayPlayers {
-			if (i64CurTime - oPlayer.LastActivity >= 60000/*1min*/) {
+			if (i64CurTime - oPlayer.LastActivity >= 120 * 1000/*2min*/) {
 				if (oPlayer.IsOnline) {
 					oPlayer.IsOnline = false;
 					oPlayer.LastChanged = i64CurTime;
