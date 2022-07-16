@@ -1,6 +1,7 @@
+- [ ] Optimize selecting from maps multiple times in a row
 - [ ] Lobby timeouts
 - [ ] Lobby update info to /status
-- [ ] Optimize selecting from maps multiple times in a row
+- [ ] Lobby filled and comes to readyup state
 - [ ] When calculating lobby mmr limits, include those players who are finishing a game soon
 - [ ] Allow new lobby only if the player doesn't match any existing lobby
 - [ ] Ban system
