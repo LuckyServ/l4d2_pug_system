@@ -25,17 +25,18 @@ func HttpReqGetMe(c *gin.Context) {
 
 			players.MuPlayers.Lock();
 
-			mapResponse["nickname_base64"] = 	players.MapPlayers[oSession.SteamID64].NicknameBase64;
-			mapResponse["mmr"] = 				players.MapPlayers[oSession.SteamID64].Mmr;
-			mapResponse["access"] = 			players.MapPlayers[oSession.SteamID64].Access;
-			mapResponse["profile_validated"] = 	players.MapPlayers[oSession.SteamID64].ProfValidated;
-			mapResponse["rules_accepted"] = 	players.MapPlayers[oSession.SteamID64].RulesAccepted;
-			mapResponse["is_online"] = 			players.MapPlayers[oSession.SteamID64].IsOnline;
-			mapResponse["is_ingame"] = 			players.MapPlayers[oSession.SteamID64].IsInGame;
-			mapResponse["is_inlobby"] = 		players.MapPlayers[oSession.SteamID64].IsInLobby;
-			mapResponse["is_ready_in_lobby"] = 	players.MapPlayers[oSession.SteamID64].ReadyInLobby;
+			pPlayer := players.MapPlayers[oSession.SteamID64];
+			mapResponse["nickname_base64"] = 	pPlayer.NicknameBase64;
+			mapResponse["mmr"] = 				pPlayer.Mmr;
+			mapResponse["access"] = 			pPlayer.Access;
+			mapResponse["profile_validated"] = 	pPlayer.ProfValidated;
+			mapResponse["rules_accepted"] = 	pPlayer.RulesAccepted;
+			mapResponse["is_online"] = 			pPlayer.IsOnline;
+			mapResponse["is_ingame"] = 			pPlayer.IsInGame;
+			mapResponse["is_inlobby"] = 		pPlayer.IsInLobby;
+			mapResponse["is_ready_in_lobby"] = 	pPlayer.ReadyInLobby;
 
-			if (players.MapPlayers[oSession.SteamID64].MmrUncertainty <= settings.MmrStable) {
+			if (pPlayer.MmrUncertainty <= settings.MmrStable) {
 				mapResponse["mmr_certain"] = true;
 			} else {
 				mapResponse["mmr_certain"] = false;

@@ -27,22 +27,22 @@ func HttpReqGetOnlinePlayers(c *gin.Context) {
 	var iActiveCount, iOnlineCount, iInLobbyCount, iInGameCount int;
 
 	players.MuPlayers.Lock();
-	for _, oPlayer := range players.ArrayPlayers {
-		if ((oPlayer.IsOnline || oPlayer.IsInGame || oPlayer.IsInLobby) && oPlayer.ProfValidated && oPlayer.RulesAccepted && oPlayer.Access >= -1/*not banned*/) {
+	for _, pPlayer := range players.ArrayPlayers {
+		if ((pPlayer.IsOnline || pPlayer.IsInGame || pPlayer.IsInLobby) && pPlayer.ProfValidated && pPlayer.RulesAccepted && pPlayer.Access >= -1/*not banned*/) {
 			arPlayers = append(arPlayers, PlayerResponse{
-				SteamID64:		oPlayer.SteamID64,
-				NicknameBase64:	oPlayer.NicknameBase64,
-				Mmr:			oPlayer.Mmr,
-				Access:			oPlayer.Access,
-				IsInGame:		oPlayer.IsInGame,
-				IsInLobby:		oPlayer.IsInLobby,
-				ReadyInLobby:	oPlayer.ReadyInLobby,
+				SteamID64:		pPlayer.SteamID64,
+				NicknameBase64:	pPlayer.NicknameBase64,
+				Mmr:			pPlayer.Mmr,
+				Access:			pPlayer.Access,
+				IsInGame:		pPlayer.IsInGame,
+				IsInLobby:		pPlayer.IsInLobby,
+				ReadyInLobby:	pPlayer.ReadyInLobby,
 			});
-			if (oPlayer.IsInGame) {
+			if (pPlayer.IsInGame) {
 				iInGameCount++;
-			} else if (oPlayer.IsInLobby) {
+			} else if (pPlayer.IsInLobby) {
 				iInLobbyCount++;
-			} else if (oPlayer.IsOnline) {
+			} else if (pPlayer.IsOnline) {
 				iOnlineCount++;
 			}
 		}

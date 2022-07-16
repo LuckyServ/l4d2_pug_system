@@ -24,14 +24,15 @@ func HttpReqValidateProf(c *gin.Context) {
 		oSession, bAuthorized := auth.GetSession(sCookieSessID);
 		if (bAuthorized) {
 			players.MuPlayers.Lock();
-			if (players.MapPlayers[oSession.SteamID64].ProfValidated) {
+			pPlayer := players.MapPlayers[oSession.SteamID64];
+			if (pPlayer.ProfValidated) {
 				players.MuPlayers.Unlock();
 				mapResponse["error"] = 2; //already validated
-			} else if (players.MapPlayers[oSession.SteamID64].LastValidateReq + 60000/*60sec*/ > time.Now().UnixMilli()) {
+			} else if (pPlayer.LastValidateReq + 60000/*60sec*/ > time.Now().UnixMilli()) {
 				players.MuPlayers.Unlock();
 				mapResponse["error"] = 3; //too many requests, wait
 			} else {
-				players.MapPlayers[oSession.SteamID64].LastValidateReq = time.Now().UnixMilli();
+				pPlayer.LastValidateReq = time.Now().UnixMilli();
 				players.MuPlayers.Unlock();
 
 				clientSteam := http.Client{
@@ -70,22 +71,22 @@ func HttpReqValidateProf(c *gin.Context) {
 								mapResponse["success"] = true;
 
 								players.MuPlayers.Lock();
-								players.MapPlayers[oSession.SteamID64].ProfValidated = true;
-								players.MapPlayers[oSession.SteamID64].LastChanged = time.Now().UnixMilli();
+								pPlayer.ProfValidated = true;
+								pPlayer.LastChanged = time.Now().UnixMilli();
 								players.I64LastPlayerlistUpdate = time.Now().UnixMilli();
 								iNewMmr := settings.DefaultMaxMmr;
 								if (iVersusGamePlayed < settings.DefaultMaxMmr) {
 									iNewMmr = iVersusGamePlayed;
 								}
-								players.MapPlayers[oSession.SteamID64].Mmr = iNewMmr;
+								pPlayer.Mmr = iNewMmr;
 								go database.UpdatePlayer(database.DatabasePlayer{
-									SteamID64:			players.MapPlayers[oSession.SteamID64].SteamID64,
-									NicknameBase64:		players.MapPlayers[oSession.SteamID64].NicknameBase64,
-									Mmr:				players.MapPlayers[oSession.SteamID64].Mmr,
-									MmrUncertainty:		players.MapPlayers[oSession.SteamID64].MmrUncertainty,
-									Access:				players.MapPlayers[oSession.SteamID64].Access,
-									ProfValidated:		players.MapPlayers[oSession.SteamID64].ProfValidated,
-									RulesAccepted:		players.MapPlayers[oSession.SteamID64].RulesAccepted,
+									SteamID64:			pPlayer.SteamID64,
+									NicknameBase64:		pPlayer.NicknameBase64,
+									Mmr:				pPlayer.Mmr,
+									MmrUncertainty:		pPlayer.MmrUncertainty,
+									Access:				pPlayer.Access,
+									ProfValidated:		pPlayer.ProfValidated,
+									RulesAccepted:		pPlayer.RulesAccepted,
 								});
 								players.MuPlayers.Unlock();
 

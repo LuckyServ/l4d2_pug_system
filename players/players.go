@@ -39,10 +39,11 @@ func UpdatePlayerActivity(sSteamID64 string) { //Maps must be locked outside!!!
 		return;
 	}
 	i64CurTime := time.Now().UnixMilli();
-	MapPlayers[sSteamID64].LastActivity = i64CurTime;
-	if (MapPlayers[sSteamID64].IsOnline == false) {
-		MapPlayers[sSteamID64].IsOnline = true;
-		MapPlayers[sSteamID64].LastChanged = i64CurTime;
+	pPlayer := MapPlayers[sSteamID64];
+	pPlayer.LastActivity = i64CurTime;
+	if (!pPlayer.IsOnline) {
+		pPlayer.IsOnline = true;
+		pPlayer.LastChanged = i64CurTime;
 		I64LastPlayerlistUpdate = i64CurTime;
 	}
 }
@@ -103,20 +104,21 @@ func AddPlayerAuth(sSteamID64 string, sNicknameBase64 string) string {
 	auth.MuSessions.Lock();
 
 	MuPlayers.Lock();
-	if (MapPlayers[sSteamID64].NicknameBase64 != sNicknameBase64) {
+	pPlayer := MapPlayers[sSteamID64];
+	if (pPlayer.NicknameBase64 != sNicknameBase64) {
 
-		MapPlayers[sSteamID64].NicknameBase64 = sNicknameBase64;
-		MapPlayers[sSteamID64].LastChanged = time.Now().UnixMilli();
+		pPlayer.NicknameBase64 = sNicknameBase64;
+		pPlayer.LastChanged = time.Now().UnixMilli();
 		I64LastPlayerlistUpdate = time.Now().UnixMilli();
 
 		go database.UpdatePlayer(database.DatabasePlayer{
-			SteamID64:			MapPlayers[sSteamID64].SteamID64,
-			NicknameBase64:		MapPlayers[sSteamID64].NicknameBase64,
-			Mmr:				MapPlayers[sSteamID64].Mmr,
-			MmrUncertainty:		MapPlayers[sSteamID64].MmrUncertainty,
-			Access:				MapPlayers[sSteamID64].Access,
-			ProfValidated:		MapPlayers[sSteamID64].ProfValidated,
-			RulesAccepted:		MapPlayers[sSteamID64].RulesAccepted,
+			SteamID64:			pPlayer.SteamID64,
+			NicknameBase64:		pPlayer.NicknameBase64,
+			Mmr:				pPlayer.Mmr,
+			MmrUncertainty:		pPlayer.MmrUncertainty,
+			Access:				pPlayer.Access,
+			ProfValidated:		pPlayer.ProfValidated,
+			RulesAccepted:		pPlayer.RulesAccepted,
 			});
 	}
 	MuPlayers.Unlock();
@@ -129,8 +131,8 @@ func AddPlayerAuth(sSteamID64 string, sNicknameBase64 string) string {
 	auth.MapSessions[sSessionKey] = oSession;
 	go database.AddSession(database.DatabaseSession{
 		SessionID:			sSessionKey,
-		SteamID64:			auth.MapSessions[sSessionKey].SteamID64,
-		Since:				auth.MapSessions[sSessionKey].Since,
+		SteamID64:			oSession.SteamID64,
+		Since:				oSession.Since,
 		});
 	auth.MuSessions.Unlock();
 

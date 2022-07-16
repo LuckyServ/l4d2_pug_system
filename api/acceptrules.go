@@ -20,19 +20,20 @@ func HttpReqAcceptRules(c *gin.Context) {
 		oSession, bAuthorized := auth.GetSession(sCookieSessID);
 		if (bAuthorized) {
 			players.MuPlayers.Lock();
-			if (!players.MapPlayers[oSession.SteamID64].RulesAccepted) {
+			pPlayer := players.MapPlayers[oSession.SteamID64];
+			if (!pPlayer.RulesAccepted) {
 				mapResponse["success"] = true;
-				players.MapPlayers[oSession.SteamID64].RulesAccepted = true;
+				pPlayer.RulesAccepted = true;
 				go database.UpdatePlayer(database.DatabasePlayer{
-					SteamID64:			players.MapPlayers[oSession.SteamID64].SteamID64,
-					NicknameBase64:		players.MapPlayers[oSession.SteamID64].NicknameBase64,
-					Mmr:				players.MapPlayers[oSession.SteamID64].Mmr,
-					MmrUncertainty:		players.MapPlayers[oSession.SteamID64].MmrUncertainty,
-					Access:				players.MapPlayers[oSession.SteamID64].Access,
-					ProfValidated:		players.MapPlayers[oSession.SteamID64].ProfValidated,
-					RulesAccepted:		players.MapPlayers[oSession.SteamID64].RulesAccepted,
+					SteamID64:			pPlayer.SteamID64,
+					NicknameBase64:		pPlayer.NicknameBase64,
+					Mmr:				pPlayer.Mmr,
+					MmrUncertainty:		pPlayer.MmrUncertainty,
+					Access:				pPlayer.Access,
+					ProfValidated:		pPlayer.ProfValidated,
+					RulesAccepted:		pPlayer.RulesAccepted,
 					});
-				players.MapPlayers[oSession.SteamID64].LastChanged = time.Now().UnixMilli();
+				pPlayer.LastChanged = time.Now().UnixMilli();
 				players.I64LastPlayerlistUpdate = time.Now().UnixMilli();
 			} else {
 				mapResponse["error"] = 2; //already accepted

@@ -1,4 +1,4 @@
-- [ ] Optimize selecting from maps multiple times in a row
+- [ ] Ratelimit /createlobby, and check what should be ratelimites as well
 - [ ] Lobby timeouts
 - [ ] Lobby update info to /status
 - [ ] Lobby filled and comes to readyup state
@@ -13,6 +13,7 @@
 - [ ] Restarting mechanism
 - [ ] Regularly increase mmr uncertainty value
 
+- [x] Optimize selecting from maps multiple times in a row
 - [x] Do not allow to create lobbies if player banned
 - [x] Do not allow to create lobbies if player not online
 - [x] Add timestamp into session key
