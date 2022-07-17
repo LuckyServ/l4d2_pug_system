@@ -42,11 +42,7 @@ func HttpReqStatus(c *gin.Context) {
 				players.UpdatePlayerActivity(oSession.SteamID64);
 			}
 
-			pPlayer := players.MapPlayers[oSession.SteamID64];
-
-			mapResponse["readyup_requested"] = pPlayer.ReadyUpRequested;
-			
-			if (i64CookiePlayerUpdatedAt <= pPlayer.LastChanged) {
+			if (i64CookiePlayerUpdatedAt <= players.MapPlayers[oSession.SteamID64].LastChanged) {
 				mapResponse["need_update_player"] = true;
 			} else {
 				mapResponse["need_update_player"] = false;

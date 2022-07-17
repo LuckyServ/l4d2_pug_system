@@ -15,6 +15,7 @@ type EntLobby struct {
 	Players			[]*players.EntPlayer
 	PlayerCount		int
 	GameConfig		string
+	ReadyUpState	bool
 }
 var MapLobbies map[string]*EntLobby = make(map[string]*EntLobby);
 var ArrayLobbies []*EntLobby; //duplicate of MapLobbies, for faster iterating

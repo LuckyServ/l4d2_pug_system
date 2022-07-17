@@ -36,6 +36,7 @@ func HttpReqGetMe(c *gin.Context) {
 			mapResponse["is_ingame"] = 			pPlayer.IsInGame;
 			mapResponse["is_inlobby"] = 		pPlayer.IsInLobby;
 			if (pPlayer.IsInLobby) {
+				mapResponse["is_ready_in_lobby"] = pPlayer.IsReadyInLobby;
 				lobby.MuLobbies.Lock();
 				pLobby := lobby.MapLobbies[pPlayer.LobbyID];
 				mapResponse["lobby"] = LobbyResponse{
@@ -45,6 +46,7 @@ func HttpReqGetMe(c *gin.Context) {
 					CreatedAt:		pLobby.CreatedAt,
 					GameConfig:		pLobby.GameConfig,
 					PlayerCount:	pLobby.PlayerCount,
+					ReadyUpState:	pLobby.ReadyUpState,
 				};
 				lobby.MuLobbies.Unlock();
 			}

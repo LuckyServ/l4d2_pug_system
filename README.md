@@ -34,7 +34,6 @@ Response parameters:
 | <strong>need_update_lobbies</strong> | _bool_ | Should update lobbies or not |
 | <strong>authorized</strong> | _bool_ | Authorized or not |
 | <strong>need_update_player</strong> | _bool_ | Should update player or not (only present if authorized) |
-| <strong>readyup_requested</strong> | _bool_ | If yes, then the player is required to ready up (only present if authorized) |
 
 <br/><br/>
 
@@ -56,13 +55,15 @@ Response parameters:
 | <strong>is_online</strong> | _bool_ | Is player online right now |
 | <strong>is_ingame</strong> | _bool_ | Is player in game right now |
 | <strong>is_inlobby</strong> | _bool_ | Is player in lobby right now |
-| <strong>lobby</strong> |  | Info of the lobby the player participates in. Only present if is_inlobby == true |
+| <strong>is_ready_in_lobby</strong> | _bool_ | Is player ready in lobby (only present if is_inlobby == true) |
+| <strong>lobby</strong> |  | Info of the lobby the player participates in (only present if is_inlobby == true) |
 | &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>id</strong> | _string_ | ID |
 | &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>mmr_min</strong> | _int_ | Lowest allowed mmr, -2000000000 if unbounded |
 | &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>mmr_max</strong> | _int_ | Highest allowed mmr, 2000000000 if unbounded |
 | &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>created_at</strong> | _int64_ | Time of the creation (unix timestamp in milliseconds) |
 | &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>confogl_config</strong> | _string_ | Confogl config to be played |
 | &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>player_count</strong> | _int_ | Number of players in the lobby |
+| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>readyup_state</strong> | _bool_ | Is lobby in readyup state |
 
 <br/><br/>
 
@@ -168,3 +169,4 @@ Response parameters:
 | &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>created_at</strong> | _int64_ | Time of the creation (unix timestamp in milliseconds) |
 | &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>confogl_config</strong> | _string_ | Confogl config to be played |
 | &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>player_count</strong> | _int_ | Number of players in the lobby |
+| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>readyup_state</strong> | _bool_ | Is lobby in readyup state |

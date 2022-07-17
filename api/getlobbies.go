@@ -14,6 +14,7 @@ type LobbyResponse struct {
 	CreatedAt		int64		`json:"created_at"` //milliseconds
 	GameConfig		string		`json:"confogl_config"`
 	PlayerCount		int			`json:"player_count"`
+	ReadyUpState	bool		`json:"readyup_state"`
 }
 
 
@@ -34,6 +35,7 @@ func HttpReqGetLobbies(c *gin.Context) {
 			CreatedAt:		pLobby.CreatedAt,
 			GameConfig:		pLobby.GameConfig,
 			PlayerCount:	pLobby.PlayerCount,
+			ReadyUpState:	pLobby.ReadyUpState,
 		});
 		iLobbiesCount++;
 	}

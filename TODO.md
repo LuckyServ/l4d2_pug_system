@@ -5,6 +5,7 @@
 - [ ] Lobby timeouts
 - [ ] When calculating lobby mmr limits, include those players who are finishing a game soon
 - [ ] Allow new lobby only if the player doesn't match any existing lobby
+- [ ] Chat system
 - [ ] Ban system
 - [ ] Smurf traces + connect logging
 - [ ] Avatar links
