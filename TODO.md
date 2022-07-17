@@ -1,5 +1,6 @@
 - [ ] Ratelimit /createlobby, and check what should be ratelimites as well
 - [ ] Lobby timeouts
+- [ ] Lobby info to /getme
 - [ ] Lobby update info to /status
 - [ ] Lobby filled and comes to readyup state
 - [ ] When calculating lobby mmr limits, include those players who are finishing a game soon
