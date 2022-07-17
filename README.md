@@ -34,7 +34,7 @@ Response parameters:
 | <strong>need_update_lobbies</strong> | _bool_ | Should update lobbies or not |
 | <strong>authorized</strong> | _bool_ | Authorized or not |
 | <strong>need_update_player</strong> | _bool_ | Should update player or not (only present if authorized) |
-| <strong>readyup_requested</strong> | _bool_ | If yes, then the player is required to ready up |
+| <strong>readyup_requested</strong> | _bool_ | If yes, then the player is required to ready up (only present if authorized) |
 
 <br/><br/>
 
