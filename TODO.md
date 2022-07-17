@@ -1,8 +1,11 @@
+- [ ] /joinlobby
+- [ ] /leavelobby
+- [ ] /getlobbies
+- [ ] Lobby filled and comes to readyup state
 - [ ] Ratelimit /createlobby, and check what should be ratelimites as well
 - [ ] Lobby timeouts
 - [ ] Lobby info to /getme
 - [ ] Lobby update info to /status
-- [ ] Lobby filled and comes to readyup state
 - [ ] When calculating lobby mmr limits, include those players who are finishing a game soon
 - [ ] Allow new lobby only if the player doesn't match any existing lobby
 - [ ] Ban system
