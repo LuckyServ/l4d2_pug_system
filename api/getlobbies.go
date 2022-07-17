@@ -42,6 +42,22 @@ func HttpReqGetLobbies(c *gin.Context) {
 
 	lobby.MuLobbies.Unlock();
 
+	
+	//sort
+	iSize := len(arRespLobbies);
+	if (iSize > 1) {
+		bSorted := false;
+		for !bSorted {
+			bSorted = true;
+			for i := 1; i < iSize; i++ {
+				if (arRespLobbies[i].CreatedAt < arRespLobbies[i - 1].CreatedAt) {
+					arRespLobbies[i], arRespLobbies[i - 1] = arRespLobbies[i - 1], arRespLobbies[i]; //switch
+					bSorted = false;
+				}
+			}
+		}
+	}
+
 
 	mapResponse["success"] = true;
 	mapResponse["count"] = iLobbiesCount;

@@ -1,4 +1,3 @@
-- [ ] Sort lobbies in /getlobbies
 - [ ] Join any lobby
 - [ ] Lobby filled and comes to readyup state
 - [ ] Ratelimit /createlobby, and check what should be ratelimites as well
@@ -15,6 +14,7 @@
 - [ ] Restarting mechanism
 - [ ] Regularly increase mmr uncertainty value
 
+- [x] Sort lobbies in /getlobbies
 - [x] Lobby info to /getme
 - [x] Lobby update info to /status
 - [x] /getlobbies
