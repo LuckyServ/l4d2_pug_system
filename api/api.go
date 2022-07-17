@@ -18,11 +18,15 @@ func GinInit() {
 	r.POST("/shutdown", HttpReqShutdown);
 	r.GET("/getme", HttpReqGetMe);
 	r.GET("/getonlineplayers", HttpReqGetOnlinePlayers);
-	r.GET("/openidcallback", HttpReqOpenID);
 	r.GET("/validateprofile", HttpReqValidateProf);
 	r.GET("/acceptrules", HttpReqAcceptRules);
 
+	r.GET("/openidcallback", HttpReqOpenID);
+
 	r.GET("/createlobby", HttpReqCreateLobby);
+	r.GET("/joinlobby", HttpReqJoinLobby);
+	r.GET("/leavelobby", HttpReqLeaveLobby);
+	r.GET("/getlobbies", HttpReqGetLobbies);
 	
 	fmt.Printf("Starting web server\n");
 	go r.Run(":"+settings.ListenPort); //Listen on port

@@ -4,6 +4,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"../players/auth"
 	"../players"
+	"../lobby"
 	"../settings"
 	"fmt"
 	"time"
@@ -21,7 +22,7 @@ func HttpReqGetMe(c *gin.Context) {
 		oSession, bAuthorized := auth.GetSession(sCookieSessID);
 		if (bAuthorized) {
 			mapResponse["success"] = true;
-			mapResponse["steamid64"] = 	oSession.SteamID64;
+			mapResponse["steamid64"] = oSession.SteamID64;
 
 			players.MuPlayers.Lock();
 
@@ -34,7 +35,19 @@ func HttpReqGetMe(c *gin.Context) {
 			mapResponse["is_online"] = 			pPlayer.IsOnline;
 			mapResponse["is_ingame"] = 			pPlayer.IsInGame;
 			mapResponse["is_inlobby"] = 		pPlayer.IsInLobby;
-			mapResponse["is_ready_in_lobby"] = 	pPlayer.ReadyInLobby;
+			if (pPlayer.IsInLobby) {
+				lobby.MuLobbies.Lock();
+				pLobby := lobby.MapLobbies[pPlayer.LobbyID];
+				mapResponse["lobby"] = LobbyResponse{
+					ID:				pLobby.ID,
+					MmrMin:			pLobby.MmrMin,
+					MmrMax:			pLobby.MmrMax,
+					CreatedAt:		pLobby.CreatedAt,
+					GameConfig:		pLobby.GameConfig,
+					PlayerCount:	pLobby.PlayerCount,
+				};
+				lobby.MuLobbies.Unlock();
+			}
 
 			if (pPlayer.MmrUncertainty <= settings.MmrStable) {
 				mapResponse["mmr_certain"] = true;

@@ -11,20 +11,21 @@ import (
 )
 
 type EntPlayer struct {
-	SteamID64		string
-	NicknameBase64	string
-	Mmr				int
-	MmrUncertainty	float32
-	Access			int //-2 - completely banned, -1 - chat banned, 0 - regular player, 1 - behaviour moderator, 2 - cheat moderator, 3 - behaviour+cheat moderator, 4 - full admin access
-	ProfValidated	bool //Steam profile validated
-	RulesAccepted	bool //Rules accepted
-	LastActivity	int64 //unix timestamp in milliseconds
-	IsOnline		bool
-	IsInGame		bool
-	IsInLobby		bool
-	ReadyInLobby	bool
-	LastChanged		int64 //Last time player info was changed //unix timestamp in milliseconds
-	LastValidateReq	int64 //Last profile validation request //unix timestamp in milliseconds
+	SteamID64			string
+	NicknameBase64		string
+	Mmr					int
+	MmrUncertainty		float32
+	Access				int //-2 - completely banned, -1 - chat banned, 0 - regular player, 1 - behaviour moderator, 2 - cheat moderator, 3 - behaviour+cheat moderator, 4 - full admin access
+	ProfValidated		bool //Steam profile validated
+	RulesAccepted		bool //Rules accepted
+	LastActivity		int64 //unix timestamp in milliseconds
+	IsOnline			bool
+	IsInGame			bool
+	IsInLobby			bool
+	LobbyID				string
+	ReadyUpRequested	bool
+	LastChanged			int64 //Last time player info was changed //unix timestamp in milliseconds
+	LastValidateReq		int64 //Last profile validation request //unix timestamp in milliseconds
 }
 
 var MapPlayers map[string]*EntPlayer = make(map[string]*EntPlayer);

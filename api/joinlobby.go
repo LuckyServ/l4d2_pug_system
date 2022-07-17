@@ -8,11 +8,12 @@ import (
 )
 
 
-func HttpReqCreateLobby(c *gin.Context) {
+func HttpReqJoinLobby(c *gin.Context) {
 
 	mapResponse := make(map[string]interface{});
 	
 	sCookieSessID, errCookieSessID := c.Cookie("session_id");
+	sLobbyID := c.Query("lobby_id");
 
 	mapResponse["success"] = false;
 	if (errCookieSessID == nil && sCookieSessID != "") {
@@ -26,12 +27,14 @@ func HttpReqCreateLobby(c *gin.Context) {
 				mapResponse["error"] = 3; //not online, wtf bro?
 			} else if (pPlayer.Access == -2) {
 				mapResponse["error"] = 4; //banned
+			} else if (sLobbyID == "") {
+				mapResponse["error"] = 5; //lobby id not set
 			} else {
-				//Create lobby
-				if (lobby.Create(pPlayer)) {
+				//Join lobby
+				if (lobby.Join(pPlayer, sLobbyID)) {
 					mapResponse["success"] = true;
 				} else {
-					mapResponse["error"] = 5; //Error creating lobby, shouldn't ever happen
+					mapResponse["error"] = 6; //lobby doesn't exist or lobby full
 				}
 			}
 			players.MuPlayers.Unlock();

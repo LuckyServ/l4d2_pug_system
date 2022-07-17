@@ -31,8 +31,10 @@ Response parameters:
 | <strong>brokenmode</strong> | _bool_ | Tells if competitive plugins are broken by some L4D2 update. In this mode the gameservers are vanilla + Sourcemod. |
 | <strong>time</strong> | _int64_ | System time in milliseconds |
 | <strong>need_update_players</strong> | _bool_ | Should update players or not |
+| <strong>need_update_lobbies</strong> | _bool_ | Should update lobbies or not |
 | <strong>authorized</strong> | _bool_ | Authorized or not |
 | <strong>need_update_player</strong> | _bool_ | Should update player or not (only present if authorized) |
+| <strong>readyup_requested</strong> | _bool_ | If yes, then the player is required to ready up |
 
 <br/><br/>
 
@@ -54,7 +56,13 @@ Response parameters:
 | <strong>is_online</strong> | _bool_ | Is player online right now |
 | <strong>is_ingame</strong> | _bool_ | Is player in game right now |
 | <strong>is_inlobby</strong> | _bool_ | Is player in lobby right now |
-| <strong>is_ready_in_lobby</strong> | _bool_ | Is player ready in a lobby |
+| <strong>lobby</strong> |  | Info of the lobby the player participates in. Only present if is_inlobby == true |
+| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>id</strong> | _string_ | ID |
+| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>mmr_min</strong> | _int_ | Lowest allowed mmr, -2000000000 if unbounded |
+| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>mmr_max</strong> | _int_ | Highest allowed mmr, 2000000000 if unbounded |
+| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>created_at</strong> | _int64_ | Time of the creation (unix timestamp in milliseconds) |
+| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>confogl_config</strong> | _string_ | Confogl config to be played |
+| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>player_count</strong> | _int_ | Number of players in the lobby |
 
 <br/><br/>
 
@@ -102,7 +110,6 @@ Response parameters:
 | &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>access</strong> | _int_ | Player's access level<br>-2 - completely banned, -1 - chat banned, 0 - regular player, 1 - behaviour moderator, 2 - cheat moderator, 3 - behaviour+cheat moderator, 4 - full admin access |
 | &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>is_ingame</strong> | _bool_ | Is player in game right now |
 | &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>is_inlobby</strong> | _bool_ | Is player in lobby right now |
-| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>is_ready_in_lobby</strong> | _bool_ | Is player ready in a lobby |
 
 <br/><br/>
 
@@ -115,3 +122,49 @@ Response parameters:
 | ------ | ------ | ------ |
 | <strong>success</strong> | _bool_ | "true" if lobby created, "false" otherwise |
 | <strong>error</strong> | _int_ | Outputs the reason if the request is rejected.<br>1 - unauthorized, 2 - already in lobby, 3 - not online, 4 - banned, 5 - error creating lobby |
+
+<br/><br/>
+
+### GET /joinlobby
+##### Join a specific lobby
+Request parameters:
+| Key | Type | Description
+| ------ | ------ | ------ |
+| <strong>lobby_id</strong> | _string_ | ID of the lobby you want to join |
+
+Response parameters:
+| Key | Type | Description
+| ------ | ------ | ------ |
+| <strong>success</strong> | _bool_ | "true" if joined the lobby, "false" otherwise |
+| <strong>error</strong> | _int_ | Outputs the reason if the request is rejected.<br>1 - unauthorized, 2 - already in lobby, 3 - not online, 4 - banned, 5 - lobby_id not set, 6 - lobby doesn't exist or lobby full |
+
+<br/><br/>
+
+### GET /leavelobby
+##### Leave lobby
+Request parameters: None
+
+Response parameters:
+| Key | Type | Description
+| ------ | ------ | ------ |
+| <strong>success</strong> | _bool_ | "true" if left from lobby, "false" otherwise |
+| <strong>error</strong> | _int_ | Outputs the reason if the request is rejected.<br>1 - unauthorized, 2 - not in lobby, 3 - not online, 4 - unknown error |
+
+<br/><br/>
+
+### GET /getlobbies
+##### Get lobby list
+Request parameters: None
+
+Response parameters:
+| Key | Type | Description
+| ------ | ------ | ------ |
+| <strong>success</strong> | _bool_ | Always "true" |
+| <strong>count</strong> | _int_ | Number of lobbies |
+| <strong>lobbies</strong> | _[]_ | Array of lobbies |
+| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>id</strong> | _string_ | ID |
+| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>mmr_min</strong> | _int_ | Lowest allowed mmr, -2000000000 if unbounded |
+| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>mmr_max</strong> | _int_ | Highest allowed mmr, 2000000000 if unbounded |
+| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>created_at</strong> | _int64_ | Time of the creation (unix timestamp in milliseconds) |
+| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>confogl_config</strong> | _string_ | Confogl config to be played |
+| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>player_count</strong> | _int_ | Number of players in the lobby |

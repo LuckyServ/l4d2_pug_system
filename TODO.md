@@ -1,11 +1,8 @@
-- [ ] /joinlobby
-- [ ] /leavelobby
-- [ ] /getlobbies
+- [ ] Sort lobbies in /getlobbies
+- [ ] Join any lobby
 - [ ] Lobby filled and comes to readyup state
 - [ ] Ratelimit /createlobby, and check what should be ratelimites as well
 - [ ] Lobby timeouts
-- [ ] Lobby info to /getme
-- [ ] Lobby update info to /status
 - [ ] When calculating lobby mmr limits, include those players who are finishing a game soon
 - [ ] Allow new lobby only if the player doesn't match any existing lobby
 - [ ] Ban system
@@ -17,6 +14,11 @@
 - [ ] Restarting mechanism
 - [ ] Regularly increase mmr uncertainty value
 
+- [x] Lobby info to /getme
+- [x] Lobby update info to /status
+- [x] /getlobbies
+- [x] /leavelobby
+- [x] /joinlobby
 - [x] Optimize selecting from maps multiple times in a row
 - [x] Do not allow to create lobbies if player banned
 - [x] Do not allow to create lobbies if player not online

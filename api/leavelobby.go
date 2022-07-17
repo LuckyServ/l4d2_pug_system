@@ -8,7 +8,7 @@ import (
 )
 
 
-func HttpReqCreateLobby(c *gin.Context) {
+func HttpReqLeaveLobby(c *gin.Context) {
 
 	mapResponse := make(map[string]interface{});
 	
@@ -20,18 +20,16 @@ func HttpReqCreateLobby(c *gin.Context) {
 		if (bAuthorized) {
 			players.MuPlayers.Lock();
 			pPlayer := players.MapPlayers[oSession.SteamID64];
-			if (pPlayer.IsInLobby) {
-				mapResponse["error"] = 2; //already in lobby
+			if (!pPlayer.IsInLobby) {
+				mapResponse["error"] = 2; //isn't in lobby
 			} else if (!pPlayer.IsOnline) {
 				mapResponse["error"] = 3; //not online, wtf bro?
-			} else if (pPlayer.Access == -2) {
-				mapResponse["error"] = 4; //banned
 			} else {
-				//Create lobby
-				if (lobby.Create(pPlayer)) {
+				//Leave lobby
+				if (lobby.Leave(pPlayer)) {
 					mapResponse["success"] = true;
 				} else {
-					mapResponse["error"] = 5; //Error creating lobby, shouldn't ever happen
+					mapResponse["error"] = 4; //???
 				}
 			}
 			players.MuPlayers.Unlock();
