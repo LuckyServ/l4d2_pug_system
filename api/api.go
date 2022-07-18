@@ -27,6 +27,7 @@ func GinInit() {
 	r.GET("/joinlobby", HttpReqJoinLobby);
 	r.GET("/leavelobby", HttpReqLeaveLobby);
 	r.GET("/getlobbies", HttpReqGetLobbies);
+	r.GET("/joinanylobby", HttpReqJoinAnyLobby);
 	
 	fmt.Printf("Starting web server\n");
 	go r.Run(":"+settings.ListenPort); //Listen on port

@@ -25,17 +25,35 @@ func HttpReqJoinLobby(c *gin.Context) {
 				mapResponse["error"] = 2; //already in lobby
 			} else if (!pPlayer.IsOnline) {
 				mapResponse["error"] = 3; //not online, wtf bro?
+			} else if (!pPlayer.ProfValidated) {
+				mapResponse["error"] = 4; //profile not validated
+			} else if (!pPlayer.RulesAccepted) {
+				mapResponse["error"] = 5; //rules not accepted
 			} else if (pPlayer.Access == -2) {
-				mapResponse["error"] = 4; //banned
+				mapResponse["error"] = 6; //banned
 			} else if (sLobbyID == "") {
-				mapResponse["error"] = 5; //lobby id not set
+				mapResponse["error"] = 7; //lobby id not set
 			} else {
 				//Join lobby
-				if (lobby.Join(pPlayer, sLobbyID)) {
-					mapResponse["success"] = true;
+				lobby.MuLobbies.Lock();
+
+				pLobby, bExists := lobby.MapLobbies[sLobbyID];
+				if (!bExists) {
+					mapResponse["error"] = 8; //lobby doesn't exist
+				} else if (pLobby.PlayerCount >= 8/*hardcoded for 4v4*/) {
+					mapResponse["error"] = 9; //no slots
+				} else if (pPlayer.Mmr < pLobby.MmrMin || pPlayer.Mmr > pLobby.MmrMax) {
+					mapResponse["error"] = 10; //not applicable mmr
 				} else {
-					mapResponse["error"] = 6; //lobby doesn't exist or lobby full
+					if (lobby.Join(pPlayer, sLobbyID)) {
+						mapResponse["success"] = true;
+					} else {
+						mapResponse["error"] = 11; //? repeat the request
+					}
 				}
+
+				lobby.MuLobbies.Unlock();
+
 			}
 			players.MuPlayers.Unlock();
 		} else {

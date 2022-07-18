@@ -118,3 +118,13 @@ func ChooseConfoglConfig(iMmr int) string {
 	}
 	return "zonemod"; //shouldn't happen
 }
+
+func GetJoinableLobbies(iMmr int) []*EntLobby { //MuLobbies must be locked outside
+	var arLobbies []*EntLobby;
+	for _, pLobby := range ArrayLobbies {
+		if (iMmr >= pLobby.MmrMin && iMmr <= pLobby.MmrMax && pLobby.PlayerCount < 8/*hardcoded for 4v4*/) {
+			arLobbies = append(arLobbies, pLobby);
+		}
+	}
+	return arLobbies;
+}

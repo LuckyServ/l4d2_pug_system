@@ -1,10 +1,7 @@
-- [ ] Notifications for users
-- [ ] Join any lobby
 - [ ] Lobby filled and comes to readyup state
 - [ ] Ratelimit /createlobby, and check what should be ratelimites as well
 - [ ] Lobby timeouts
 - [ ] When calculating lobby mmr limits, include those players who are finishing a game soon
-- [ ] Allow new lobby only if the player doesn't match any existing lobby
 - [ ] Chat system
 - [ ] Ban system
 - [ ] Smurf traces + connect logging
@@ -15,6 +12,10 @@
 - [ ] Restarting mechanism
 - [ ] Regularly increase mmr uncertainty value
 
+- [x] Join any lobby
+- [x] Allow new lobby only if the player doesn't match any existing lobby
+- [x] Allow joining lobby only if mmr is applicable, and slots < 8
+- [x] Don't allow into a lobby if profile not validated and rules not accepted
 - [x] Sort lobbies in /getlobbies
 - [x] Lobby info to /getme
 - [x] Lobby update info to /status

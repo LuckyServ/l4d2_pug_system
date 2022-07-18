@@ -106,6 +106,18 @@ Response parameters:
 
 <br/><br/>
 
+### GET /joinanylobby
+##### Join any lobby, or create new one, if can't join
+Request parameters: None
+
+Response parameters:
+| Key | Type | Description
+| ------ | ------ | ------ |
+| <strong>success</strong> | _bool_ | "true" if joined/created the lobby, "false" otherwise |
+| <strong>error</strong> | _int_ | Outputs the reason if the request is rejected.<br>1 - unauthorized, 2 - already in lobby, 3 - not online, 4 - profile not validated, 5 - rules not accepted, 6 - banned, 7 - error creating lobby, 8 - error joining lobby |
+
+<br/><br/>
+
 ### GET /createlobby
 ##### Create lobby and join it
 Request parameters: None
@@ -114,7 +126,7 @@ Response parameters:
 | Key | Type | Description
 | ------ | ------ | ------ |
 | <strong>success</strong> | _bool_ | "true" if lobby created, "false" otherwise |
-| <strong>error</strong> | _int_ | Outputs the reason if the request is rejected.<br>1 - unauthorized, 2 - already in lobby, 3 - not online, 4 - banned, 5 - error creating lobby |
+| <strong>error</strong> | _int_ | Outputs the reason if the request is rejected.<br>1 - unauthorized, 2 - already in lobby, 3 - not online, 4 - profile not validated, 5 - rules not accepted, 6 - banned, 7 - error creating lobby, 8 - found lobbies player can join |
 
 <br/><br/>
 
@@ -129,7 +141,7 @@ Response parameters:
 | Key | Type | Description
 | ------ | ------ | ------ |
 | <strong>success</strong> | _bool_ | "true" if joined the lobby, "false" otherwise |
-| <strong>error</strong> | _int_ | Outputs the reason if the request is rejected.<br>1 - unauthorized, 2 - already in lobby, 3 - not online, 4 - banned, 5 - lobby_id not set, 6 - lobby doesn't exist or lobby full |
+| <strong>error</strong> | _int_ | Outputs the reason if the request is rejected.<br>1 - unauthorized, 2 - already in lobby, 3 - not online, 4 - profile not validated, 5 - rules not accepted, 6 - banned, 7 - lobby_id not set, 8 - lobby doesn't exist, 9 - no slots, 10 - not applicable mmr, 11 - error joining lobby |
 
 <br/><br/>
 

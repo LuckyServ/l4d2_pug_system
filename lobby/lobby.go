@@ -23,7 +23,12 @@ var MuLobbies sync.Mutex;
 var I64LastLobbyListUpdate int64;
 
 
-func Create(pPlayer *players.EntPlayer) (bool) { //MuPlayers must be locked outside
+func Create(pPlayer *players.EntPlayer) (bool) { //MuPlayers and MuLobbies must be locked outside
+
+	//Repeat some critical checks
+	if (pPlayer.IsInLobby) {
+		return false;
+	}
 
 	//calculate mmr limits
 	iMmrMin, iMmrMax, errMmrLimits := CalcMmrLimits(pPlayer.Mmr);
@@ -36,7 +41,6 @@ func Create(pPlayer *players.EntPlayer) (bool) { //MuPlayers must be locked outs
 
 
 	//Write lobby
-	MuLobbies.Lock();
 	i64CurTime := time.Now().UnixMilli();
 	sLobbyID := GenerateID();
 
@@ -52,7 +56,6 @@ func Create(pPlayer *players.EntPlayer) (bool) { //MuPlayers must be locked outs
 	pLobby.Players = append(pLobby.Players, pPlayer); //join lobby
 	pLobby.PlayerCount++;
 	I64LastLobbyListUpdate = i64CurTime;
-	MuLobbies.Unlock();
 	pPlayer.IsInLobby = true;
 	pPlayer.LobbyID = sLobbyID;
 	pPlayer.LastChanged = i64CurTime;
@@ -61,26 +64,30 @@ func Create(pPlayer *players.EntPlayer) (bool) { //MuPlayers must be locked outs
 	return true;
 }
 
-func Join(pPlayer *players.EntPlayer, sLobbyID string) bool { //MuPlayers must be locked outside
-	MuLobbies.Lock();
+func Join(pPlayer *players.EntPlayer, sLobbyID string) bool { //MuPlayers and MuLobbies must be locked outside
 
 	pLobby, bExists := MapLobbies[sLobbyID];
+
+	//Repeat some critical checks
 	if (!bExists) {
-		MuLobbies.Unlock();
+		return false;
+	}
+	if (pPlayer.IsInLobby) {
 		return false;
 	}
 	if (len(pLobby.Players) >= 8) { //hardcoded for 4v4 games
-		MuLobbies.Unlock();
 		return false;
 	}
+	if (pPlayer.Mmr < pLobby.MmrMin || pPlayer.Mmr > pLobby.MmrMax) {
+		return false;
+	}
+
 	pLobby.Players = append(pLobby.Players, pPlayer);
 	pLobby.PlayerCount++;
 
 	i64CurTime := time.Now().UnixMilli();
 	I64LastLobbyListUpdate = i64CurTime;
 
-	MuLobbies.Unlock();
-
 	pPlayer.IsInLobby = true;
 	pPlayer.LobbyID = sLobbyID;
 	pPlayer.LastChanged = i64CurTime;
@@ -88,8 +95,12 @@ func Join(pPlayer *players.EntPlayer, sLobbyID string) bool { //MuPlayers must b
 	return true;
 }
 
-func Leave(pPlayer *players.EntPlayer) bool { //MuPlayers must be locked outside
-	MuLobbies.Lock();
+func Leave(pPlayer *players.EntPlayer) bool { //MuPlayers and MuLobbies must be locked outside
+
+	//Repeat some critical checks
+	if (!pPlayer.IsInLobby) {
+		return false;
+	}
 
 	//find lobby
 	var pLobby *EntLobby;
@@ -107,7 +118,6 @@ func Leave(pPlayer *players.EntPlayer) bool { //MuPlayers must be locked outside
 		}
 	}
 	if (!bFound) {
-		MuLobbies.Unlock();
 		return false;
 	}
 	
@@ -123,7 +133,6 @@ func Leave(pPlayer *players.EntPlayer) bool { //MuPlayers must be locked outside
 		}
 	}
 	if (!bRemoved) {
-		MuLobbies.Unlock();
 		return false;
 	} else {
 		pLobby.PlayerCount--;
@@ -144,8 +153,6 @@ func Leave(pPlayer *players.EntPlayer) bool { //MuPlayers must be locked outside
 
 	i64CurTime := time.Now().UnixMilli();
 	I64LastLobbyListUpdate = i64CurTime;
-
-	MuLobbies.Unlock();
 
 	pPlayer.IsInLobby = false;
 	pPlayer.LobbyID = "";

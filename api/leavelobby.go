@@ -26,11 +26,13 @@ func HttpReqLeaveLobby(c *gin.Context) {
 				mapResponse["error"] = 3; //not online, wtf bro?
 			} else {
 				//Leave lobby
+				lobby.MuLobbies.Lock();
 				if (lobby.Leave(pPlayer)) {
 					mapResponse["success"] = true;
 				} else {
 					mapResponse["error"] = 4; //???
 				}
+				lobby.MuLobbies.Unlock();
 			}
 			players.MuPlayers.Unlock();
 		} else {
