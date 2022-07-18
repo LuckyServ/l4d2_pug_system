@@ -5,9 +5,10 @@ import (
 	"./settings"
 	"./players"
 	"./database"
+	"./lobby"
 	"./api"
 	"./players/auth"
-	//"time"
+	"time"
 )
 
 
@@ -31,6 +32,7 @@ func main() {
 	if (!auth.RestoreSessions()) {
 		return;
 	}
+	lobby.I64LastLobbyListUpdate = time.Now().UnixMilli();
 
 	//HTTP server init
 	api.GinInit();

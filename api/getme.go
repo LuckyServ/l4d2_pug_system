@@ -4,7 +4,6 @@ import (
 	"github.com/gin-gonic/gin"
 	"../players/auth"
 	"../players"
-	"../lobby"
 	"../settings"
 	"fmt"
 	"time"
@@ -37,18 +36,6 @@ func HttpReqGetMe(c *gin.Context) {
 			mapResponse["is_inlobby"] = 		pPlayer.IsInLobby;
 			if (pPlayer.IsInLobby) {
 				mapResponse["is_ready_in_lobby"] = pPlayer.IsReadyInLobby;
-				lobby.MuLobbies.Lock();
-				pLobby := lobby.MapLobbies[pPlayer.LobbyID];
-				mapResponse["lobby"] = LobbyResponse{
-					ID:				pLobby.ID,
-					MmrMin:			pLobby.MmrMin,
-					MmrMax:			pLobby.MmrMax,
-					CreatedAt:		pLobby.CreatedAt,
-					GameConfig:		pLobby.GameConfig,
-					PlayerCount:	pLobby.PlayerCount,
-					ReadyUpState:	pLobby.ReadyUpState,
-				};
-				lobby.MuLobbies.Unlock();
 			}
 
 			if (pPlayer.MmrUncertainty <= settings.MmrStable) {

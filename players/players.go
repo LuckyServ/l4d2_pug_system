@@ -68,6 +68,7 @@ func RestorePlayers() bool { //no need to lock maps
 		MapPlayers[oDBPlayer.SteamID64] = pPlayer;
 		ArrayPlayers = append(ArrayPlayers, pPlayer);
 	}
+	I64LastPlayerlistUpdate = time.Now().UnixMilli();
 	return true;
 }
 

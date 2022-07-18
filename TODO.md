@@ -1,3 +1,4 @@
+- [ ] Notifications for users
 - [ ] Join any lobby
 - [ ] Lobby filled and comes to readyup state
 - [ ] Ratelimit /createlobby, and check what should be ratelimites as well
