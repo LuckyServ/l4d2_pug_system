@@ -18,10 +18,7 @@ Response parameters:
 
 ### GET /status
 ##### Get necessary info about program status, and signal about online status
-Request parameters:
-| Key | Type | Description
-| ------ | ------ | ------ |
-| <strong>active</strong> | _bool_ | Tell if the browser tab is currently active |
+Request parameters: None
 
 Response parameters:
 | Key | Type | Description

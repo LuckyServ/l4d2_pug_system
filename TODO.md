@@ -1,6 +1,7 @@
-- [ ] Lobby filled and comes to readyup state
+- [ ] Text errors instead of codes
 - [ ] Ratelimit /createlobby, and check what should be ratelimites as well
 - [ ] Lobby timeouts
+- [ ] Lobby filled and comes to readyup state
 - [ ] When calculating lobby mmr limits, include those players who are finishing a game soon
 - [ ] Chat system
 - [ ] Ban system
@@ -12,6 +13,7 @@
 - [ ] Restarting mechanism
 - [ ] Regularly increase mmr uncertainty value
 
+- [x] Inactive players are online too
 - [x] Join any lobby
 - [x] Allow new lobby only if the player doesn't match any existing lobby
 - [x] Allow joining lobby only if mmr is applicable, and slots < 8

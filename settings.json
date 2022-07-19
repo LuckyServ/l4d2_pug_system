@@ -11,7 +11,7 @@
 		"consider_stable": 2.0
 	},
 	"lobby": {
-		"online_mmr_range": 10,
+		"online_mmr_range": 15,
 		"confogl_configs": {
 			"mmr": "1000,2000000000",
 			"config": "t1,zonemod"
