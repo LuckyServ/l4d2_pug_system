@@ -36,14 +36,14 @@ func HttpReqAcceptRules(c *gin.Context) {
 				pPlayer.LastChanged = time.Now().UnixMilli();
 				players.I64LastPlayerlistUpdate = time.Now().UnixMilli();
 			} else {
-				mapResponse["error"] = 2; //already accepted
+				mapResponse["error"] = "The rules are already accepted";
 			}			
 			players.MuPlayers.Unlock();
 		} else {
-			mapResponse["error"] = 1; //unauthorized
+			mapResponse["error"] = "Please authorize first";
 		}
 	} else {
-		mapResponse["error"] = 1; //unauthorized
+		mapResponse["error"] = "Please authorize first";
 	}
 
 	c.Header("Access-Control-Allow-Origin", "*");

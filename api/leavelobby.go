@@ -21,25 +21,25 @@ func HttpReqLeaveLobby(c *gin.Context) {
 			players.MuPlayers.Lock();
 			pPlayer := players.MapPlayers[oSession.SteamID64];
 			if (!pPlayer.IsInLobby) {
-				mapResponse["error"] = 2; //isn't in lobby
+				mapResponse["error"] = "You are not in a lobby";
 			} else if (!pPlayer.IsOnline) {
-				mapResponse["error"] = 3; //not online, wtf bro?
+				mapResponse["error"] = "Somehow you are not Online, try to refresh the page";
 			} else {
 				//Leave lobby
 				lobby.MuLobbies.Lock();
 				if (lobby.Leave(pPlayer)) {
 					mapResponse["success"] = true;
 				} else {
-					mapResponse["error"] = 4; //???
+					mapResponse["error"] = "Race condition. Try again.";
 				}
 				lobby.MuLobbies.Unlock();
 			}
 			players.MuPlayers.Unlock();
 		} else {
-			mapResponse["error"] = 1; //unauthorized
+			mapResponse["error"] = "Please authorize first";
 		}
 	} else {
-		mapResponse["error"] = 1; //unauthorized
+		mapResponse["error"] = "Please authorize first";
 	}
 	
 	c.Header("Access-Control-Allow-Origin", "*");

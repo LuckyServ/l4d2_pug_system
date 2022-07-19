@@ -64,7 +64,7 @@ Response parameters:
 | Key | Type | Description
 | ------ | ------ | ------ |
 | <strong>success</strong> | _bool_ | "true" if profile validated, "false" otherwise |
-| <strong>error</strong> | _int_ | Outputs the reason if the request is rejected.<br>1 - unauthorized, 2 - already validated, 3 - too many requests, 4 - Stats isn't public or Steam down, 5 - Not enough games played or JSON parsing error |
+| <strong>error</strong> | _string_ | Outputs the reason if the request is rejected |
 
 <br/><br/>
 
@@ -76,7 +76,7 @@ Response parameters:
 | Key | Type | Description
 | ------ | ------ | ------ |
 | <strong>success</strong> | _bool_ | "true" if rules accepted, "false" otherwise |
-| <strong>error</strong> | _int_ | Outputs the reason if the request is rejected.<br>1 - unauthorized, 2 - already accepted |
+| <strong>error</strong> | _string_ | Outputs the reason if the request is rejected |
 
 <br/><br/>
 
@@ -111,7 +111,7 @@ Response parameters:
 | Key | Type | Description
 | ------ | ------ | ------ |
 | <strong>success</strong> | _bool_ | "true" if joined/created the lobby, "false" otherwise |
-| <strong>error</strong> | _int_ | Outputs the reason if the request is rejected.<br>1 - unauthorized, 2 - already in lobby, 3 - not online, 4 - profile not validated, 5 - rules not accepted, 6 - banned, 7 - error creating lobby, 8 - error joining lobby |
+| <strong>error</strong> | _string_ | Outputs the reason if the request is rejected |
 
 <br/><br/>
 
@@ -123,7 +123,7 @@ Response parameters:
 | Key | Type | Description
 | ------ | ------ | ------ |
 | <strong>success</strong> | _bool_ | "true" if lobby created, "false" otherwise |
-| <strong>error</strong> | _int_ | Outputs the reason if the request is rejected.<br>1 - unauthorized, 2 - already in lobby, 3 - not online, 4 - profile not validated, 5 - rules not accepted, 6 - banned, 7 - error creating lobby, 8 - found lobbies player can join |
+| <strong>error</strong> | _string_ | Outputs the reason if the request is rejected |
 
 <br/><br/>
 
@@ -138,7 +138,7 @@ Response parameters:
 | Key | Type | Description
 | ------ | ------ | ------ |
 | <strong>success</strong> | _bool_ | "true" if joined the lobby, "false" otherwise |
-| <strong>error</strong> | _int_ | Outputs the reason if the request is rejected.<br>1 - unauthorized, 2 - already in lobby, 3 - not online, 4 - profile not validated, 5 - rules not accepted, 6 - banned, 7 - lobby_id not set, 8 - lobby doesn't exist, 9 - no slots, 10 - not applicable mmr, 11 - error joining lobby |
+| <strong>error</strong> | _string_ | Outputs the reason if the request is rejected |
 
 <br/><br/>
 
@@ -150,7 +150,7 @@ Response parameters:
 | Key | Type | Description
 | ------ | ------ | ------ |
 | <strong>success</strong> | _bool_ | "true" if left from lobby, "false" otherwise |
-| <strong>error</strong> | _int_ | Outputs the reason if the request is rejected.<br>1 - unauthorized, 2 - not in lobby, 3 - not online, 4 - unknown error |
+| <strong>error</strong> | _string_ | Outputs the reason if the request is rejected |
 
 <br/><br/>
 

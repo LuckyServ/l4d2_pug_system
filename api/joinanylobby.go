@@ -23,15 +23,15 @@ func HttpReqJoinAnyLobby(c *gin.Context) {
 
 			pPlayer := players.MapPlayers[oSession.SteamID64];
 			if (pPlayer.IsInLobby) {
-				mapResponse["error"] = 2; //already in lobby
+				mapResponse["error"] = "You are already in a lobby";
 			} else if (!pPlayer.IsOnline) {
-				mapResponse["error"] = 3; //not online, wtf bro?
+				mapResponse["error"] = "Somehow you are not Online, try to refresh the page";
 			} else if (!pPlayer.ProfValidated) {
-				mapResponse["error"] = 4; //profile not validated
+				mapResponse["error"] = "Please validate your profile first";
 			} else if (!pPlayer.RulesAccepted) {
-				mapResponse["error"] = 5; //rules not accepted
+				mapResponse["error"] = "Please accept our rules first";
 			} else if (pPlayer.Access == -2) {
-				mapResponse["error"] = 6; //banned
+				mapResponse["error"] = "Sorry, you are banned, you gotta wait until it expires";
 			} else {
 				lobby.MuLobbies.Lock();
 
@@ -42,7 +42,7 @@ func HttpReqJoinAnyLobby(c *gin.Context) {
 					if (lobby.Create(pPlayer)) {
 						mapResponse["success"] = true;
 					} else {
-						mapResponse["error"] = 7; //Error creating lobby, shouldn't ever happen
+						mapResponse["error"] = "Race condition on lobby creation. Try again.";
 					}
 
 				} else {
@@ -64,7 +64,7 @@ func HttpReqJoinAnyLobby(c *gin.Context) {
 					if (lobby.Join(pPlayer, sLobbyID)) {
 						mapResponse["success"] = true;
 					} else {
-						mapResponse["error"] = 8; //Error joining existing lobby
+						mapResponse["error"] = "Race condition on lobby join. Try again.";
 					}
 				}
 				lobby.MuLobbies.Unlock();
@@ -72,10 +72,10 @@ func HttpReqJoinAnyLobby(c *gin.Context) {
 			players.MuPlayers.Unlock();
 
 		} else {
-			mapResponse["error"] = 1; //unauthorized
+			mapResponse["error"] = "Please authorize first";
 		}
 	} else {
-		mapResponse["error"] = 1; //unauthorized
+		mapResponse["error"] = "Please authorize first";
 	}
 	
 	c.Header("Access-Control-Allow-Origin", "*");

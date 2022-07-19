@@ -22,33 +22,33 @@ func HttpReqJoinLobby(c *gin.Context) {
 			players.MuPlayers.Lock();
 			pPlayer := players.MapPlayers[oSession.SteamID64];
 			if (pPlayer.IsInLobby) {
-				mapResponse["error"] = 2; //already in lobby
+				mapResponse["error"] = "You are already in a lobby";
 			} else if (!pPlayer.IsOnline) {
-				mapResponse["error"] = 3; //not online, wtf bro?
+				mapResponse["error"] = "Somehow you are not Online, try to refresh the page";
 			} else if (!pPlayer.ProfValidated) {
-				mapResponse["error"] = 4; //profile not validated
+				mapResponse["error"] = "Please validate your profile first";
 			} else if (!pPlayer.RulesAccepted) {
-				mapResponse["error"] = 5; //rules not accepted
+				mapResponse["error"] = "Please accept our rules first";
 			} else if (pPlayer.Access == -2) {
-				mapResponse["error"] = 6; //banned
+				mapResponse["error"] = "Sorry, you are banned, you gotta wait until it expires";
 			} else if (sLobbyID == "") {
-				mapResponse["error"] = 7; //lobby id not set
+				mapResponse["error"] = "lobby_id parameter isnt set";
 			} else {
 				//Join lobby
 				lobby.MuLobbies.Lock();
 
 				pLobby, bExists := lobby.MapLobbies[sLobbyID];
 				if (!bExists) {
-					mapResponse["error"] = 8; //lobby doesn't exist
+					mapResponse["error"] = "This lobby doesnt exist anymore";
 				} else if (pLobby.PlayerCount >= 8/*hardcoded for 4v4*/) {
-					mapResponse["error"] = 9; //no slots
+					mapResponse["error"] = "No slots";
 				} else if (pPlayer.Mmr < pLobby.MmrMin || pPlayer.Mmr > pLobby.MmrMax) {
-					mapResponse["error"] = 10; //not applicable mmr
+					mapResponse["error"] = "Your mmr isnt applicable for this lobby";
 				} else {
 					if (lobby.Join(pPlayer, sLobbyID)) {
 						mapResponse["success"] = true;
 					} else {
-						mapResponse["error"] = 11; //? repeat the request
+						mapResponse["error"] = "Race condition. Try again.";
 					}
 				}
 
@@ -57,10 +57,10 @@ func HttpReqJoinLobby(c *gin.Context) {
 			}
 			players.MuPlayers.Unlock();
 		} else {
-			mapResponse["error"] = 1; //unauthorized
+			mapResponse["error"] = "Please authorize first";
 		}
 	} else {
-		mapResponse["error"] = 1; //unauthorized
+		mapResponse["error"] = "Please authorize first";
 	}
 	
 	c.Header("Access-Control-Allow-Origin", "*");

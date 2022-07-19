@@ -1,4 +1,3 @@
-- [ ] Text errors instead of codes
 - [ ] Ratelimit /createlobby, and check what should be ratelimites as well
 - [ ] Lobby timeouts
 - [ ] Lobby filled and comes to readyup state
@@ -13,6 +12,7 @@
 - [ ] Restarting mechanism
 - [ ] Regularly increase mmr uncertainty value
 
+- [x] Text errors instead of codes
 - [x] Inactive players are online too
 - [x] Join any lobby
 - [x] Allow new lobby only if the player doesn't match any existing lobby
