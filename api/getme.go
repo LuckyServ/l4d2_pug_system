@@ -34,9 +34,6 @@ func HttpReqGetMe(c *gin.Context) {
 			mapResponse["is_online"] = 			pPlayer.IsOnline;
 			mapResponse["is_ingame"] = 			pPlayer.IsInGame;
 			mapResponse["is_inlobby"] = 		pPlayer.IsInLobby;
-			if (pPlayer.IsInLobby) {
-				mapResponse["is_ready_in_lobby"] = pPlayer.IsReadyInLobby;
-			}
 
 			if (pPlayer.MmrUncertainty <= settings.MmrStable) {
 				mapResponse["mmr_certain"] = true;

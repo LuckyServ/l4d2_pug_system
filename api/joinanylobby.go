@@ -40,6 +40,7 @@ func HttpReqJoinAnyLobby(c *gin.Context) {
 				if (iSize == 0) {
 
 					if (lobby.Create(pPlayer)) {
+						pPlayer.IsAutoSearching = true;
 						mapResponse["success"] = true;
 					} else {
 						mapResponse["error"] = "Race condition on lobby creation. Try again.";
@@ -62,6 +63,7 @@ func HttpReqJoinAnyLobby(c *gin.Context) {
 					sLobbyID := arLobbies[0].ID;
 
 					if (lobby.Join(pPlayer, sLobbyID)) {
+						pPlayer.IsAutoSearching = true;
 						mapResponse["success"] = true;
 					} else {
 						mapResponse["error"] = "Race condition on lobby join. Try again.";

@@ -52,7 +52,6 @@ Response parameters:
 | <strong>is_online</strong> | _bool_ | Is player online right now |
 | <strong>is_ingame</strong> | _bool_ | Is player in game right now |
 | <strong>is_inlobby</strong> | _bool_ | Is player in lobby right now |
-| <strong>is_ready_in_lobby</strong> | _bool_ | Is player ready in lobby (only present if is_inlobby == true) |
 
 <br/><br/>
 
