@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"../settings"
+	"github.com/gin-contrib/gzip"
 )
 
 
@@ -12,6 +13,7 @@ func GinInit() {
 	gin.SetMode(gin.ReleaseMode); //disable debug logs
 	gin.DefaultWriter = ioutil.Discard; //disable output
 	r := gin.Default();
+	r.Use(gzip.Gzip(gzip.DefaultCompression));
 	r.MaxMultipartMemory = 1 << 20;
 
 	r.GET("/status", HttpReqStatus);
