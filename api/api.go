@@ -30,7 +30,14 @@ func GinInit() {
 	r.GET("/leavelobby", HttpReqLeaveLobby);
 	r.GET("/getlobbies", HttpReqGetLobbies);
 	r.GET("/joinanylobby", HttpReqJoinAnyLobby);
+
+	r.GET("/myip", HttpReqMyIP);
 	
 	fmt.Printf("Starting web server\n");
 	go r.Run(":"+settings.ListenPort); //Listen on port
+}
+
+func HttpReqMyIP(c *gin.Context) {
+	c.Header("Access-Control-Allow-Origin", "*");
+	c.String(200, c.ClientIP());
 }

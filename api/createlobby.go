@@ -5,6 +5,7 @@ import (
 	"../players/auth"
 	"../players"
 	"../lobby"
+	"time"
 )
 
 
@@ -22,6 +23,8 @@ func HttpReqCreateLobby(c *gin.Context) {
 			pPlayer := players.MapPlayers[oSession.SteamID64];
 			if (pPlayer.IsInLobby) {
 				mapResponse["error"] = "You are already in a lobby";
+			} else if (pPlayer.LastLobbyJoin + 5000/*5sec*/ > time.Now().UnixMilli()) {
+				mapResponse["error"] = "You cant join lobbies that often. Please wait 5 seconds.";
 			} else if (!pPlayer.IsOnline) {
 				mapResponse["error"] = "Somehow you are not Online, try to refresh the page";
 			} else if (!pPlayer.ProfValidated) {
@@ -36,6 +39,7 @@ func HttpReqCreateLobby(c *gin.Context) {
 				arLobbies := lobby.GetJoinableLobbies(pPlayer.Mmr);
 				if (len(arLobbies) == 0) {
 					if (lobby.Create(pPlayer)) {
+						pPlayer.LastLobbyJoin = time.Now().UnixMilli();
 						mapResponse["success"] = true;
 					} else {
 						mapResponse["error"] = "Race condition. Try again.";

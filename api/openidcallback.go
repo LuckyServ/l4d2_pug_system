@@ -23,10 +23,57 @@ func (n *NoOpDiscoveryCache) Put(id string, info openid.DiscoveredInfo) {}
 func (n *NoOpDiscoveryCache) Get(id string) openid.DiscoveredInfo {
 	return nil;
 }
+var chClear chan bool = make(chan bool);
+var chGetCountInList chan string = make(chan string);
+var chCountInListResult chan int = make(chan int);
+var chAddToList chan string = make(chan string);
+
+//Limit authorizations per hour per IP
+func AuthRatelimits() {
+	mapIPs := make(map[string]int);
+	go ClearIPs();
+	for {
+		select {
+		case <-chClear:
+			mapIPs = make(map[string]int);
+		case sIP := <-chGetCountInList:
+			iCount, bExists := mapIPs[sIP];
+			if (bExists) {
+				chCountInListResult <- iCount;
+			} else {
+				chCountInListResult <- 0;
+			}
+		case sIP := <-chAddToList:
+			iCount, bExists := mapIPs[sIP];
+			if (bExists) {
+				mapIPs[sIP] = iCount + 1;
+			} else {
+				mapIPs[sIP] = 1;
+			}
+		}
+	}
+}
+
+func ClearIPs() {
+	for {
+		time.Sleep(3600 * time.Second); //1 hour
+		chClear <- true;
+	}
+}
 
 
 func HttpReqOpenID(c *gin.Context) {
 	mapParameters := c.Request.URL.Query();
+
+	//Ratelimits
+	sClientIP := c.ClientIP();
+	chGetCountInList <- sClientIP;
+	iCount := <-chCountInListResult;
+	if (iCount >= 5) {
+		c.String(200, "Too many authorization requests. Wait an hour before trying again.");
+		return;
+	}
+	chAddToList <- sClientIP;
 
 	//Check if Steam url valid
 	if _, ok := mapParameters["openid.op_endpoint"]; !ok {

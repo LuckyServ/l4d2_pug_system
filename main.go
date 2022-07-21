@@ -41,7 +41,8 @@ func main() {
 	//HTTP server init
 	api.GinInit();
 
-	go players.WatchOnline();
+	go players.WatchOnline(); //send players to offline mode
+	go api.AuthRatelimits(); //limit authorization requests per ip
 
 
 

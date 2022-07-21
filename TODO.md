@@ -1,4 +1,3 @@
-- [ ] Ratelimit /createlobby, and check what should be ratelimites as well
 - [ ] Lobby timeouts
 - [ ] Lobby filled and comes to readyup state
 - [ ] When calculating lobby mmr limits, include those players who are finishing a game soon
@@ -12,6 +11,7 @@
 - [ ] Restarting mechanism
 - [ ] Regularly increase mmr uncertainty value
 
+- [x] Ratelimit /createlobby, and check what should be ratelimites as well
 - [x] Text errors instead of codes
 - [x] Inactive players are online too
 - [x] Join any lobby

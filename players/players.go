@@ -26,6 +26,7 @@ type EntPlayer struct {
 	LobbyID				string
 	LastChanged			int64 //Last time player info was changed //unix timestamp in milliseconds
 	LastValidateReq		int64 //Last profile validation request //unix timestamp in milliseconds
+	LastLobbyJoin		int64 //Last lobby join //unix timestamp in milliseconds
 }
 
 var MapPlayers map[string]*EntPlayer = make(map[string]*EntPlayer);
