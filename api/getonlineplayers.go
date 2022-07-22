@@ -3,6 +3,7 @@ package api
 import (
 	"github.com/gin-gonic/gin"
 	"../players"
+	"../utils"
 	"fmt"
 	"time"
 )
@@ -13,6 +14,7 @@ type PlayerResponse struct {
 	Mmr				int			`json:"mmr"`
 	Access			int 		`json:"access"` //-2 - completely banned, -1 - chat banned, 0 - regular player, 1 - behaviour moderator, 2 - cheat moderator, 3 - behaviour+cheat moderator, 4 - full admin access
 	IsInGame		bool		`json:"is_ingame"`
+	IsIdle			bool		`json:"is_idle"`
 	IsInLobby		bool		`json:"is_inlobby"`
 	MmrCertain		bool		`json:"mmr_certain"`
 }
@@ -23,11 +25,19 @@ func HttpReqGetOnlinePlayers(c *gin.Context) {
 	mapResponse := make(map[string]interface{});
 
 	var arPlayers []PlayerResponse;
-	var iActiveCount, iOnlineCount, iInLobbyCount, iInGameCount int;
+	var iActiveCount, iOnlineCount, iInLobbyCount, iInGameCount, iIdleCount int;
 
 	players.MuPlayers.Lock();
+	i64CurTime := time.Now().UnixMilli();
 	for _, pPlayer := range players.ArrayPlayers {
 		if ((pPlayer.IsOnline || pPlayer.IsInGame || pPlayer.IsInLobby) && pPlayer.ProfValidated && pPlayer.RulesAccepted && pPlayer.Access >= -1/*not banned*/) {
+			bIdle := false;
+			if (pPlayer.IsOnline && !pPlayer.IsInGame && !pPlayer.IsInLobby) {
+				iLastAction := utils.MaxValInt64(pPlayer.OnlineSince, pPlayer.LastLobbyActivity);
+				if ((i64CurTime - iLastAction) >= 10*60*1000) {
+					bIdle = true;
+				}
+			}
 			arPlayers = append(arPlayers, PlayerResponse{
 				SteamID64:		pPlayer.SteamID64,
 				NicknameBase64:	pPlayer.NicknameBase64,
@@ -35,6 +45,7 @@ func HttpReqGetOnlinePlayers(c *gin.Context) {
 				Access:			pPlayer.Access,
 				IsInGame:		pPlayer.IsInGame,
 				IsInLobby:		pPlayer.IsInLobby,
+				IsIdle:			bIdle,
 			});
 			if (pPlayer.IsInGame) {
 				iInGameCount++;
@@ -42,6 +53,9 @@ func HttpReqGetOnlinePlayers(c *gin.Context) {
 				iInLobbyCount++;
 			} else if (pPlayer.IsOnline) {
 				iOnlineCount++;
+				if (bIdle) {
+					iIdleCount++;
+				}
 			}
 		}
 	}
@@ -65,11 +79,11 @@ func HttpReqGetOnlinePlayers(c *gin.Context) {
 
 
 	mapResponse["success"] = true;
-	mapResponse["count"] = map[string]int{"online": iActiveCount, "in_lobby": iInLobbyCount, "in_game": iInGameCount};
+	mapResponse["count"] = map[string]int{"online": iActiveCount, "in_lobby": iInLobbyCount, "in_game": iInGameCount, "idle": iIdleCount};
 	mapResponse["list"] = arPlayers;
 
 	
 	c.Header("Access-Control-Allow-Origin", "*");
-	c.SetCookie("players_updated_at", fmt.Sprintf("%d", time.Now().UnixMilli()), 2592000, "/", "", true, false);
+	c.SetCookie("players_updated_at", fmt.Sprintf("%d", i64CurTime), 2592000, "/", "", true, false);
 	c.JSON(200, mapResponse);
 }

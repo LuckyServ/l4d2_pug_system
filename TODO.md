@@ -1,3 +1,5 @@
+- [ ] Exclude idle players when calculating mmr ranges for lobby
+- [ ] Add to settings.json ratelimit values, online expire, and idle timers
 - [ ] Lobby timeouts
 - [ ] Lobby filled and comes to readyup state
 - [ ] When calculating lobby mmr limits, include those players who are finishing a game soon
@@ -11,6 +13,7 @@
 - [ ] Restarting mechanism
 - [ ] Regularly increase mmr uncertainty value
 
+- [x] IDLE players
 - [x] Ratelimit /createlobby, and check what should be ratelimites as well
 - [x] Text errors instead of codes
 - [x] Inactive players are online too

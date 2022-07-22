@@ -16,3 +16,10 @@ func GenerateRandomString(n int, letters string) (string, error) {
 	}
 	return string(ret), nil;
 }
+
+func MaxValInt64(val1 int64, val2 int64) int64 {
+	if (val1 > val2) {
+		return val1;
+	}
+	return val2;
+}

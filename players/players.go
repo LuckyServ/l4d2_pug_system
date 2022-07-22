@@ -20,13 +20,14 @@ type EntPlayer struct {
 	RulesAccepted		bool //Rules accepted
 	LastActivity		int64 //unix timestamp in milliseconds
 	IsOnline			bool
+	OnlineSince			int64 //unix timestamp in milliseconds
 	IsInGame			bool
 	IsInLobby			bool
 	IsAutoSearching		bool
 	LobbyID				string
 	LastChanged			int64 //Last time player info was changed //unix timestamp in milliseconds
 	LastValidateReq		int64 //Last profile validation request //unix timestamp in milliseconds
-	LastLobbyJoin		int64 //Last lobby join //unix timestamp in milliseconds
+	LastLobbyActivity	int64 //Last lobby activity //unix timestamp in milliseconds
 }
 
 var MapPlayers map[string]*EntPlayer = make(map[string]*EntPlayer);
@@ -45,6 +46,7 @@ func UpdatePlayerActivity(sSteamID64 string) { //Maps must be locked outside!!!
 	pPlayer.LastActivity = i64CurTime;
 	if (!pPlayer.IsOnline) {
 		pPlayer.IsOnline = true;
+		pPlayer.OnlineSince = i64CurTime;
 		pPlayer.LastChanged = i64CurTime;
 		I64LastPlayerlistUpdate = i64CurTime;
 	}

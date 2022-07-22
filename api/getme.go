@@ -7,6 +7,7 @@ import (
 	"../settings"
 	"fmt"
 	"time"
+	"../utils"
 )
 
 
@@ -26,6 +27,16 @@ func HttpReqGetMe(c *gin.Context) {
 			players.MuPlayers.Lock();
 
 			pPlayer := players.MapPlayers[oSession.SteamID64];
+			i64CurTime := time.Now().UnixMilli();
+
+			bIdle := false;
+			if (pPlayer.IsOnline && !pPlayer.IsInGame && !pPlayer.IsInLobby) {
+				iLastAction := utils.MaxValInt64(pPlayer.OnlineSince, pPlayer.LastLobbyActivity);
+				if ((i64CurTime - iLastAction) >= 10*60*1000) {
+					bIdle = true;
+				}
+			}
+
 			mapResponse["nickname_base64"] = 	pPlayer.NicknameBase64;
 			mapResponse["mmr"] = 				pPlayer.Mmr;
 			mapResponse["access"] = 			pPlayer.Access;
@@ -34,6 +45,7 @@ func HttpReqGetMe(c *gin.Context) {
 			mapResponse["is_online"] = 			pPlayer.IsOnline;
 			mapResponse["is_ingame"] = 			pPlayer.IsInGame;
 			mapResponse["is_inlobby"] = 		pPlayer.IsInLobby;
+			mapResponse["is_idle"] = 			bIdle;
 
 			if (pPlayer.MmrUncertainty <= settings.MmrStable) {
 				mapResponse["mmr_certain"] = true;

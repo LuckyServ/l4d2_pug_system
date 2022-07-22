@@ -52,6 +52,7 @@ Response parameters:
 | <strong>is_online</strong> | _bool_ | Is player online right now |
 | <strong>is_ingame</strong> | _bool_ | Is player in game right now |
 | <strong>is_inlobby</strong> | _bool_ | Is player in lobby right now |
+| <strong>is_idle</strong> | _bool_ | Is player online, but not doing anything |
 
 <br/><br/>
 
@@ -99,6 +100,7 @@ Response parameters:
 | &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>access</strong> | _int_ | Player's access level<br>-2 - completely banned, -1 - chat banned, 0 - regular player, 1 - behaviour moderator, 2 - cheat moderator, 3 - behaviour+cheat moderator, 4 - full admin access |
 | &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>is_ingame</strong> | _bool_ | Is player in game right now |
 | &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>is_inlobby</strong> | _bool_ | Is player in lobby right now |
+| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>is_idle</strong> | _bool_ | Is player online, but not doing anything |
 
 <br/><br/>
 

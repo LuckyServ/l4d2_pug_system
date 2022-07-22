@@ -25,7 +25,7 @@ func HttpReqJoinAnyLobby(c *gin.Context) {
 			pPlayer := players.MapPlayers[oSession.SteamID64];
 			if (pPlayer.IsInLobby) {
 				mapResponse["error"] = "You are already in a lobby";
-			} else if (pPlayer.LastLobbyJoin + 30000/*30sec*/ > time.Now().UnixMilli()) {
+			} else if (pPlayer.LastLobbyActivity + 30000/*30sec*/ > time.Now().UnixMilli()) {
 				mapResponse["error"] = "You cant join lobbies that often. Please wait 30 seconds.";
 			} else if (!pPlayer.IsOnline) {
 				mapResponse["error"] = "Somehow you are not Online, try to refresh the page";
@@ -43,7 +43,7 @@ func HttpReqJoinAnyLobby(c *gin.Context) {
 				if (iSize == 0) {
 
 					if (lobby.Create(pPlayer)) {
-						pPlayer.LastLobbyJoin = time.Now().UnixMilli();
+						pPlayer.LastLobbyActivity = time.Now().UnixMilli();
 						pPlayer.IsAutoSearching = true;
 						mapResponse["success"] = true;
 					} else {
@@ -67,7 +67,7 @@ func HttpReqJoinAnyLobby(c *gin.Context) {
 					sLobbyID := arLobbies[0].ID;
 
 					if (lobby.Join(pPlayer, sLobbyID)) {
-						pPlayer.LastLobbyJoin = time.Now().UnixMilli();
+						pPlayer.LastLobbyActivity = time.Now().UnixMilli();
 						pPlayer.IsAutoSearching = true;
 						mapResponse["success"] = true;
 					} else {
