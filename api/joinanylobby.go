@@ -7,6 +7,7 @@ import (
 	"../settings"
 	"../lobby"
 	"time"
+	"fmt"
 )
 
 
@@ -23,11 +24,12 @@ func HttpReqJoinAnyLobby(c *gin.Context) {
 
 			players.MuPlayers.Lock();
 
+			i64CurTime := time.Now().UnixMilli();
 			pPlayer := players.MapPlayers[oSession.SteamID64];
 			if (pPlayer.IsInLobby) {
 				mapResponse["error"] = "You are already in a lobby";
-			} else if (pPlayer.LastLobbyActivity + settings.JoinLobbyCooldown > time.Now().UnixMilli()) {
-				mapResponse["error"] = "You cant join lobbies that often. Please wait 30 seconds.";
+			} else if (pPlayer.LastLobbyActivity + settings.JoinLobbyCooldown > i64CurTime) {
+				mapResponse["error"] = fmt.Sprintf("You cant join lobbies that often. Please wait %d seconds.", ((pPlayer.LastLobbyActivity + settings.JoinLobbyCooldown) - i64CurTime) / 1000);
 			} else if (!pPlayer.IsOnline) {
 				mapResponse["error"] = "Somehow you are not Online, try to refresh the page";
 			} else if (!pPlayer.ProfValidated) {
