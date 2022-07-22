@@ -31,7 +31,7 @@ func Create(pPlayer *players.EntPlayer) (bool) { //MuPlayers and MuLobbies must 
 	}
 
 	//calculate mmr limits
-	iMmrMin, iMmrMax, errMmrLimits := CalcMmrLimits(pPlayer.Mmr);
+	iMmrMin, iMmrMax, errMmrLimits := CalcMmrLimits(pPlayer);
 	if (errMmrLimits != nil) {
 		return false; //error calculating mmr range, shouldn't ever happen
 	}

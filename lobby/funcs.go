@@ -28,14 +28,17 @@ func GenerateID() string { //MuLobbies must be blocked outside
 	return sLobbyID;
 }
 
-func CalcMmrLimits(iMmr int) (int, int, error) { //MuPlayers must be locked outside
+func CalcMmrLimits(pLobbyCreator *players.EntPlayer) (int, int, error) { //MuPlayers must be locked outside
 	//get list of online mmr's
 	var arOnlineMmrs []int;
 	var iOnlineCount int;
 	for _, pPlayer := range players.ArrayPlayers {
-		if ((pPlayer.IsOnline || pPlayer.IsInLobby) && !pPlayer.IsInGame && pPlayer.ProfValidated && pPlayer.RulesAccepted && pPlayer.Access >= -1/*not banned*/) {
+		if ((pPlayer.IsOnline || pPlayer.IsInLobby) && !pPlayer.IsIdle && !pPlayer.IsInGame && pPlayer.ProfValidated && pPlayer.RulesAccepted && pPlayer.Access >= -1/*not banned*/) {
 			arOnlineMmrs = append(arOnlineMmrs, pPlayer.Mmr);
 		}
+	}
+	if (pLobbyCreator.IsIdle) {
+		arOnlineMmrs = append(arOnlineMmrs, pLobbyCreator.Mmr);
 	}
 	iOnlineCount = len(arOnlineMmrs);
 
@@ -48,7 +51,7 @@ func CalcMmrLimits(iMmr int) (int, int, error) { //MuPlayers must be locked outs
 	sort.Ints(arOnlineMmrs);
 
 	//find index in the array of the lobby initial mmr
-	iIndex := FindInitLobbyIndex(iMmr, arOnlineMmrs);
+	iIndex := FindInitLobbyIndex(pLobbyCreator.Mmr, arOnlineMmrs);
 	if (iIndex == -1) {
 		return -1, -1, errors.New("Error calculating players range");
 	}
