@@ -20,6 +20,7 @@ type EntPlayer struct {
 	RulesAccepted		bool //Rules accepted
 	LastActivity		int64 //unix timestamp in milliseconds
 	IsOnline			bool
+	IsIdle				bool
 	OnlineSince			int64 //unix timestamp in milliseconds
 	IsInGame			bool
 	IsInLobby			bool
@@ -47,6 +48,7 @@ func UpdatePlayerActivity(sSteamID64 string) { //Maps must be locked outside!!!
 	if (!pPlayer.IsOnline) {
 		pPlayer.IsOnline = true;
 		pPlayer.OnlineSince = i64CurTime;
+		pPlayer.IsIdle = false;
 		pPlayer.LastChanged = i64CurTime;
 		I64LastPlayerlistUpdate = i64CurTime;
 	}

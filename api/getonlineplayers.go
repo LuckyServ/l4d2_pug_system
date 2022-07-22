@@ -3,8 +3,6 @@ package api
 import (
 	"github.com/gin-gonic/gin"
 	"../players"
-	"../utils"
-	"../settings"
 	"fmt"
 	"time"
 )
@@ -32,13 +30,6 @@ func HttpReqGetOnlinePlayers(c *gin.Context) {
 	i64CurTime := time.Now().UnixMilli();
 	for _, pPlayer := range players.ArrayPlayers {
 		if ((pPlayer.IsOnline || pPlayer.IsInGame || pPlayer.IsInLobby) && pPlayer.ProfValidated && pPlayer.RulesAccepted && pPlayer.Access >= -1/*not banned*/) {
-			bIdle := false;
-			if (pPlayer.IsOnline && !pPlayer.IsInGame && !pPlayer.IsInLobby) {
-				iLastAction := utils.MaxValInt64(pPlayer.OnlineSince, pPlayer.LastLobbyActivity);
-				if ((i64CurTime - iLastAction) >= settings.IdleTimeout) {
-					bIdle = true;
-				}
-			}
 			arPlayers = append(arPlayers, PlayerResponse{
 				SteamID64:		pPlayer.SteamID64,
 				NicknameBase64:	pPlayer.NicknameBase64,
@@ -46,7 +37,7 @@ func HttpReqGetOnlinePlayers(c *gin.Context) {
 				Access:			pPlayer.Access,
 				IsInGame:		pPlayer.IsInGame,
 				IsInLobby:		pPlayer.IsInLobby,
-				IsIdle:			bIdle,
+				IsIdle:			pPlayer.IsIdle,
 			});
 			if (pPlayer.IsInGame) {
 				iInGameCount++;
@@ -54,7 +45,7 @@ func HttpReqGetOnlinePlayers(c *gin.Context) {
 				iInLobbyCount++;
 			} else if (pPlayer.IsOnline) {
 				iOnlineCount++;
-				if (bIdle) {
+				if (pPlayer.IsIdle) {
 					iIdleCount++;
 				}
 			}

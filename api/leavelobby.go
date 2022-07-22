@@ -5,7 +5,6 @@ import (
 	"../players/auth"
 	"../players"
 	"../lobby"
-	"time"
 )
 
 
@@ -30,7 +29,6 @@ func HttpReqLeaveLobby(c *gin.Context) {
 				lobby.MuLobbies.Lock();
 				if (lobby.Leave(pPlayer)) {
 					pPlayer.IsAutoSearching = false;
-					pPlayer.LastLobbyActivity = time.Now().UnixMilli();
 					mapResponse["success"] = true;
 				} else {
 					mapResponse["error"] = "Race condition. Try again.";

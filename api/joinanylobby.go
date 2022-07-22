@@ -46,7 +46,6 @@ func HttpReqJoinAnyLobby(c *gin.Context) {
 				if (iSize == 0) {
 
 					if (lobby.Create(pPlayer)) {
-						pPlayer.LastLobbyActivity = time.Now().UnixMilli();
 						pPlayer.IsAutoSearching = true;
 						mapResponse["success"] = true;
 					} else {
@@ -70,7 +69,6 @@ func HttpReqJoinAnyLobby(c *gin.Context) {
 					sLobbyID := arLobbies[0].ID;
 
 					if (lobby.Join(pPlayer, sLobbyID)) {
-						pPlayer.LastLobbyActivity = time.Now().UnixMilli();
 						pPlayer.IsAutoSearching = true;
 						mapResponse["success"] = true;
 					} else {

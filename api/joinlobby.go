@@ -52,7 +52,6 @@ func HttpReqJoinLobby(c *gin.Context) {
 					mapResponse["error"] = "Your mmr isnt applicable for this lobby";
 				} else {
 					if (lobby.Join(pPlayer, sLobbyID)) {
-						pPlayer.LastLobbyActivity = time.Now().UnixMilli();
 						mapResponse["success"] = true;
 					} else {
 						mapResponse["error"] = "Race condition. Try again.";

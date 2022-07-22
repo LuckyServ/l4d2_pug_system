@@ -3,22 +3,25 @@ package players
 import (
 	"time"
 	"../settings"
+	"../utils"
 )
 
 func WatchOnline() {
 	for {
 		time.Sleep(5 * time.Second);
 
-		i64CurTime := time.Now().UnixMilli();
-
 		MuPlayers.Lock();
-		for _, oPlayer := range ArrayPlayers {
-			if (i64CurTime - oPlayer.LastActivity >= settings.OnlineTimeout) {
-				if (oPlayer.IsOnline) {
-					oPlayer.IsOnline = false;
-					oPlayer.LastChanged = i64CurTime;
-					I64LastPlayerlistUpdate = i64CurTime;
-				}
+		i64CurTime := time.Now().UnixMilli();
+		for _, pPlayer := range ArrayPlayers {
+			if (pPlayer.IsOnline && i64CurTime - pPlayer.LastActivity >= settings.OnlineTimeout) { //offline
+				pPlayer.IsOnline = false;
+				pPlayer.IsIdle = false;
+				pPlayer.LastChanged = i64CurTime;
+				I64LastPlayerlistUpdate = i64CurTime;
+			} else if (pPlayer.IsOnline && !pPlayer.IsIdle && !pPlayer.IsInGame && !pPlayer.IsInLobby && (i64CurTime - utils.MaxValInt64(pPlayer.OnlineSince, pPlayer.LastLobbyActivity)) >= settings.IdleTimeout) { //idle
+				pPlayer.IsIdle = true;
+				pPlayer.LastChanged = i64CurTime;
+				I64LastPlayerlistUpdate = i64CurTime;
 			}
 		}
 		MuPlayers.Unlock();

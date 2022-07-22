@@ -32,9 +32,9 @@ func CalcMmrLimits(iMmr int) (int, int, error) { //MuPlayers must be locked outs
 	//get list of online mmr's
 	var arOnlineMmrs []int;
 	var iOnlineCount int;
-	for _, oPlayer := range players.ArrayPlayers {
-		if ((oPlayer.IsOnline || oPlayer.IsInLobby) && !oPlayer.IsInGame && oPlayer.ProfValidated && oPlayer.RulesAccepted && oPlayer.Access >= -1/*not banned*/) {
-			arOnlineMmrs = append(arOnlineMmrs, oPlayer.Mmr);
+	for _, pPlayer := range players.ArrayPlayers {
+		if ((pPlayer.IsOnline || pPlayer.IsInLobby) && !pPlayer.IsInGame && pPlayer.ProfValidated && pPlayer.RulesAccepted && pPlayer.Access >= -1/*not banned*/) {
+			arOnlineMmrs = append(arOnlineMmrs, pPlayer.Mmr);
 		}
 	}
 	iOnlineCount = len(arOnlineMmrs);

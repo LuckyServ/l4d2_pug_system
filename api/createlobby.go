@@ -42,7 +42,6 @@ func HttpReqCreateLobby(c *gin.Context) {
 				arLobbies := lobby.GetJoinableLobbies(pPlayer.Mmr);
 				if (len(arLobbies) == 0) {
 					if (lobby.Create(pPlayer)) {
-						pPlayer.LastLobbyActivity = time.Now().UnixMilli();
 						mapResponse["success"] = true;
 					} else {
 						mapResponse["error"] = "Race condition. Try again.";
