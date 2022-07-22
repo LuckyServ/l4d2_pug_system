@@ -11,10 +11,10 @@
 		"consider_stable": 2.0
 	},
 	"lobby": {
-		"online_mmr_range": 15,
+		"online_mmr_range": 8,
 		"confogl_configs": {
-			"mmr": "1000,2000000000",
-			"config": "t1,zonemod"
+			"mmr": "150,1000,2000000000",
+			"config": "t2,t1,zonemod"
 		}
 	},
 	"domain": {
@@ -27,5 +27,14 @@
 		"user": "postgres",
 		"password": "defaultpassword",
 		"name": "databasename"
+	},
+	"timeouts": {
+		"online_minutes": 2,
+		"idle_minutes": 10
+	},
+	"ratelimits": {
+		"lobby_join_cooldown_sec": 30,
+		"prof_validate_cooldown_sec": 60,
+		"auth_per_hour": 5
 	}
 }

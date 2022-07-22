@@ -29,7 +29,7 @@ func HttpReqValidateProf(c *gin.Context) {
 			if (pPlayer.ProfValidated) {
 				players.MuPlayers.Unlock();
 				mapResponse["error"] = "Your profile is already validated";
-			} else if (pPlayer.LastValidateReq + 60000/*60sec*/ > time.Now().UnixMilli()) {
+			} else if (pPlayer.LastValidateReq + settings.ProfValidateCooldown > time.Now().UnixMilli()) {
 				players.MuPlayers.Unlock();
 				mapResponse["error"] = "Too many validation requests. Try again in a minute.";
 			} else {

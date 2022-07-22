@@ -2,6 +2,7 @@ package players
 
 import (
 	"time"
+	"../settings"
 )
 
 func WatchOnline() {
@@ -12,7 +13,7 @@ func WatchOnline() {
 
 		MuPlayers.Lock();
 		for _, oPlayer := range ArrayPlayers {
-			if (i64CurTime - oPlayer.LastActivity >= 120 * 1000/*2min*/) {
+			if (i64CurTime - oPlayer.LastActivity >= settings.OnlineTimeout) {
 				if (oPlayer.IsOnline) {
 					oPlayer.IsOnline = false;
 					oPlayer.LastChanged = i64CurTime;

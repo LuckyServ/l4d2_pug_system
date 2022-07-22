@@ -69,7 +69,7 @@ func HttpReqOpenID(c *gin.Context) {
 	sClientIP := c.ClientIP();
 	chGetCountInList <- sClientIP;
 	iCount := <-chCountInListResult;
-	if (iCount >= 5) {
+	if (iCount >= settings.AuthPerHour) {
 		c.String(200, "Too many authorization requests. Wait an hour before trying again.");
 		return;
 	}

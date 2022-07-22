@@ -32,7 +32,7 @@ func HttpReqGetMe(c *gin.Context) {
 			bIdle := false;
 			if (pPlayer.IsOnline && !pPlayer.IsInGame && !pPlayer.IsInLobby) {
 				iLastAction := utils.MaxValInt64(pPlayer.OnlineSince, pPlayer.LastLobbyActivity);
-				if ((i64CurTime - iLastAction) >= 10*60*1000) {
+				if ((i64CurTime - iLastAction) >= settings.IdleTimeout) {
 					bIdle = true;
 				}
 			}

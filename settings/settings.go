@@ -31,6 +31,13 @@ var MinVersusGamesPlayed int;
 var DefaultMaxMmr int;
 var OnlineMmrRange int;
 
+var IdleTimeout int64;
+var OnlineTimeout int64;
+
+var JoinLobbyCooldown int64;
+var AuthPerHour int;
+var ProfValidateCooldown int64;
+
 var MapConfoglConfigs map[int]string = make(map[int]string);
 var ArrayConfoglConfigsMmrs []int;
 
@@ -164,6 +171,41 @@ func ConfigFile() bool {
 		return false;
 	}
 	OnlineMmrRange = int(i64Buffer);
+
+	i64Buffer, errError = jsonparser.GetInt(byData, "timeouts", "online_minutes");
+	if (errError != nil) {
+		fmt.Printf("Error reading config file: %s\n", errError);
+		return false;
+	}
+	OnlineTimeout = i64Buffer * 60 * 1000;
+
+	i64Buffer, errError = jsonparser.GetInt(byData, "timeouts", "idle_minutes");
+	if (errError != nil) {
+		fmt.Printf("Error reading config file: %s\n", errError);
+		return false;
+	}
+	IdleTimeout = i64Buffer * 60 * 1000;
+
+	i64Buffer, errError = jsonparser.GetInt(byData, "ratelimits", "lobby_join_cooldown_sec");
+	if (errError != nil) {
+		fmt.Printf("Error reading config file: %s\n", errError);
+		return false;
+	}
+	JoinLobbyCooldown = i64Buffer * 1000;
+
+	i64Buffer, errError = jsonparser.GetInt(byData, "ratelimits", "auth_per_hour");
+	if (errError != nil) {
+		fmt.Printf("Error reading config file: %s\n", errError);
+		return false;
+	}
+	AuthPerHour = int(i64Buffer);
+
+	i64Buffer, errError = jsonparser.GetInt(byData, "ratelimits", "prof_validate_cooldown_sec");
+	if (errError != nil) {
+		fmt.Printf("Error reading config file: %s\n", errError);
+		return false;
+	}
+	ProfValidateCooldown = i64Buffer * 1000;
 
 
 	//Confogl configs section
