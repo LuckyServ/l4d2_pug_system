@@ -34,6 +34,7 @@ var OnlineMmrRange int;
 var IdleTimeout int64;
 var OnlineTimeout int64;
 var ReadyUpTimeout int64;
+var LobbyFillTimeout int64;
 
 var JoinLobbyCooldown int64;
 var AuthPerHour int;
@@ -214,6 +215,13 @@ func ConfigFile() bool {
 		return false;
 	}
 	ReadyUpTimeout = i64Buffer * 1000;
+
+	i64Buffer, errError = jsonparser.GetInt(byData, "timeouts", "lobby_fill_minutes");
+	if (errError != nil) {
+		fmt.Printf("Error reading config file: %s\n", errError);
+		return false;
+	}
+	LobbyFillTimeout = i64Buffer * 60 * 1000;
 
 
 	//Confogl configs section

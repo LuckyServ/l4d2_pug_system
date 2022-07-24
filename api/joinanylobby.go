@@ -41,40 +41,13 @@ func HttpReqJoinAnyLobby(c *gin.Context) {
 			} else {
 				lobby.MuLobbies.Lock();
 
-				arLobbies := lobby.GetJoinableLobbies(pPlayer.Mmr);
-				iSize := len(arLobbies);
-				if (iSize == 0) {
-
-					if (lobby.Create(pPlayer)) {
-						pPlayer.IsAutoSearching = true;
-						mapResponse["success"] = true;
-					} else {
-						mapResponse["error"] = "Race condition on lobby creation. Try again.";
-					}
-
+				if (lobby.JoinAny(pPlayer)) {
+					mapResponse["success"] = true;
+					pPlayer.IsAutoSearching = true;
 				} else {
-					//sort
-					if (iSize > 1) {
-						bSorted := false;
-						for !bSorted {
-							bSorted = true;
-							for i := 1; i < iSize; i++ {
-								if (arLobbies[i].CreatedAt < arLobbies[i - 1].CreatedAt) {
-									arLobbies[i], arLobbies[i - 1] = arLobbies[i - 1], arLobbies[i]; //switch
-									bSorted = false;
-								}
-							}
-						}
-					}
-					sLobbyID := arLobbies[0].ID;
-
-					if (lobby.Join(pPlayer, sLobbyID)) {
-						pPlayer.IsAutoSearching = true;
-						mapResponse["success"] = true;
-					} else {
-						mapResponse["error"] = "Race condition on lobby join. Try again.";
-					}
+					mapResponse["error"] = "Race condition. Try again.";
 				}
+
 				lobby.MuLobbies.Unlock();
 			}
 			players.MuPlayers.Unlock();

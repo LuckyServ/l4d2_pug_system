@@ -1,5 +1,4 @@
 - [ ] Re-check what apis are unavailable if player in game
-- [ ] Lobby timeouts
 - [ ] When calculating lobby mmr limits, include those players who are finishing a game soon
 - [ ] Chat system
 - [ ] Ban system
@@ -11,6 +10,7 @@
 - [ ] Restarting mechanism
 - [ ] Regularly increase mmr uncertainty value
 
+- [x] Lobby timeouts
 - [x] Lobby filled and comes to readyup state
 - [x] ReadyUp timeouts
 - [x] Ping endpoint, for passing Cloudflare challenge

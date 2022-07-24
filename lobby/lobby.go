@@ -24,7 +24,41 @@ var MuLobbies sync.Mutex;
 var I64LastLobbyListUpdate int64;
 
 
-func Create(pPlayer *players.EntPlayer) (bool) { //MuPlayers and MuLobbies must be locked outside
+func JoinAny(pPlayer *players.EntPlayer) bool { //MuPlayers and MuLobbies must be locked outside
+	arLobbies := GetJoinableLobbies(pPlayer.Mmr);
+	iSize := len(arLobbies);
+	if (iSize == 0) {
+
+		if (Create(pPlayer)) {
+			return true;
+		}
+		return false;
+
+	} else {
+		//sort
+		if (iSize > 1) {
+			bSorted := false;
+			for !bSorted {
+				bSorted = true;
+				for i := 1; i < iSize; i++ {
+					if (arLobbies[i].CreatedAt < arLobbies[i - 1].CreatedAt) {
+						arLobbies[i], arLobbies[i - 1] = arLobbies[i - 1], arLobbies[i]; //switch
+						bSorted = false;
+					}
+				}
+			}
+		}
+		sLobbyID := arLobbies[0].ID;
+
+		if (Join(pPlayer, sLobbyID)) {
+			return true;
+		}
+		return false;
+	}
+	return false;
+}
+
+func Create(pPlayer *players.EntPlayer) bool { //MuPlayers and MuLobbies must be locked outside
 
 	//Repeat some critical checks
 	if (pPlayer.IsInLobby) {

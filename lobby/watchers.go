@@ -13,7 +13,8 @@ func WatchLobbies() {
 		MuLobbies.Lock();
 		players.MuPlayers.Lock();
 
-		var arReadyLobbies, arUnreadyPlayers []string;
+		var arReadyLobbies []string;
+		var arUnreadyPlayers, arTimedoutLobbiesPlayers, arJoinLobbyPlayers []*players.EntPlayer;
 		
 		i64CurTime := time.Now().UnixMilli();
 
@@ -22,7 +23,11 @@ func WatchLobbies() {
 				arReadyLobbies = append(arReadyLobbies, pLobby.ID);
 			} else if (pLobby.PlayerCount == 8 && pLobby.ReadyPlayers < 8 && i64CurTime - pLobby.ReadyUpSince >= settings.ReadyUpTimeout) {
 				for _, pPlayer := range pLobby.Players {
-					arUnreadyPlayers = append(arUnreadyPlayers, pPlayer.SteamID64);
+					arUnreadyPlayers = append(arUnreadyPlayers, pPlayer);
+				}
+			} else if (pLobby.PlayerCount < 8 && i64CurTime - pLobby.CreatedAt >= settings.LobbyFillTimeout) {
+				for _, pPlayer := range pLobby.Players {
+					arTimedoutLobbiesPlayers = append(arTimedoutLobbiesPlayers, pPlayer);
 				}
 			}
 		}
@@ -33,11 +38,17 @@ func WatchLobbies() {
 				//Kill lobby and create game
 			}
 		}
-		for _, sSteamID64 := range arUnreadyPlayers {
-			pPlayer, bExists := players.MapPlayers[sSteamID64];
-			if (bExists) {
-				Leave(pPlayer);
+		for _, pPlayer := range arUnreadyPlayers {
+			Leave(pPlayer);
+			pPlayer.IsAutoSearching = false;
+		}
+		for _, pPlayer := range arTimedoutLobbiesPlayers {
+			if (Leave(pPlayer) && pPlayer.IsAutoSearching) {
+				arJoinLobbyPlayers = append(arJoinLobbyPlayers, pPlayer);
 			}
+		}
+		for _, pPlayer := range arJoinLobbyPlayers {
+			JoinAny(pPlayer);
 		}
 
 		MuLobbies.Unlock();
