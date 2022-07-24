@@ -164,6 +164,7 @@ Response parameters:
 | ------ | ------ | ------ |
 | <strong>success</strong> | _bool_ | Always "true" |
 | <strong>count</strong> | _int_ | Number of lobbies |
+| <strong>need_readyup</strong> | _bool_ | Should request readyup or not |
 | <strong>mylobby</strong> |  | The lobby the player participates in (only present if authorized and in lobby) |
 | &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>id</strong> | _string_ | ID |
 | &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>mmr_min</strong> | _int_ | Lowest allowed mmr, -2000000000 if unbounded |
