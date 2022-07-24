@@ -17,7 +17,7 @@ type LobbyResponse struct {
 	GameConfig		string		`json:"confogl_config"`
 	PlayerCount		int			`json:"player_count"`
 	ReadyUpState	bool		`json:"readyup_state"`
-	ReadyPlayers	bool		`json:"ready_players"`
+	ReadyPlayers	int			`json:"ready_players"`
 }
 
 
@@ -48,6 +48,7 @@ func HttpReqGetLobbies(c *gin.Context) {
 					GameConfig:		pLobby.GameConfig,
 					PlayerCount:	pLobby.PlayerCount,
 					ReadyUpState:	(pLobby.PlayerCount >= 8),
+					ReadyPlayers:	pLobby.ReadyPlayers,
 				};
 				if (pLobby.PlayerCount >= 8 && !pPlayer.IsReadyInLobby) {
 					bNeedReadyUp = true;
@@ -66,6 +67,7 @@ func HttpReqGetLobbies(c *gin.Context) {
 			GameConfig:		pLobby.GameConfig,
 			PlayerCount:	pLobby.PlayerCount,
 			ReadyUpState:	(pLobby.PlayerCount >= 8),
+			ReadyPlayers:	pLobby.ReadyPlayers,
 		});
 		iLobbiesCount++;
 	}
