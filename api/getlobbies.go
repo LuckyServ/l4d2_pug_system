@@ -17,6 +17,7 @@ type LobbyResponse struct {
 	GameConfig		string		`json:"confogl_config"`
 	PlayerCount		int			`json:"player_count"`
 	ReadyUpState	bool		`json:"readyup_state"`
+	ReadyPlayers	bool		`json:"ready_players"`
 }
 
 
@@ -28,12 +29,14 @@ func HttpReqGetLobbies(c *gin.Context) {
 
 	var arRespLobbies []LobbyResponse;
 	var iLobbiesCount int;
+	var bNeedReadyUp bool;
 
 	lobby.MuLobbies.Lock();
 
 	if (errCookieSessID == nil && sCookieSessID != "") {
 		oSession, bAuthorized := auth.GetSession(sCookieSessID);
 		if (bAuthorized) {
+			players.MuPlayers.Lock();
 			pPlayer := players.MapPlayers[oSession.SteamID64];
 			if (pPlayer.IsInLobby) {
 				pLobby := lobby.MapLobbies[pPlayer.LobbyID];
@@ -44,9 +47,13 @@ func HttpReqGetLobbies(c *gin.Context) {
 					CreatedAt:		pLobby.CreatedAt,
 					GameConfig:		pLobby.GameConfig,
 					PlayerCount:	pLobby.PlayerCount,
-					ReadyUpState:	pLobby.ReadyUpState,
+					ReadyUpState:	(pLobby.PlayerCount >= 8),
 				};
+				if (pLobby.PlayerCount >= 8 && !pPlayer.IsReadyInLobby) {
+					bNeedReadyUp = true;
+				}
 			}
+			players.MuPlayers.Unlock();
 		}
 	}
 
@@ -58,7 +65,7 @@ func HttpReqGetLobbies(c *gin.Context) {
 			CreatedAt:		pLobby.CreatedAt,
 			GameConfig:		pLobby.GameConfig,
 			PlayerCount:	pLobby.PlayerCount,
-			ReadyUpState:	pLobby.ReadyUpState,
+			ReadyUpState:	(pLobby.PlayerCount >= 8),
 		});
 		iLobbiesCount++;
 	}
@@ -84,6 +91,7 @@ func HttpReqGetLobbies(c *gin.Context) {
 
 	mapResponse["success"] = true;
 	mapResponse["count"] = iLobbiesCount;
+	mapResponse["need_readyup"] = bNeedReadyUp;
 	mapResponse["lobbies"] = arRespLobbies;
 
 	

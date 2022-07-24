@@ -29,8 +29,9 @@
 		"name": "databasename"
 	},
 	"timeouts": {
-		"online_minutes": 2,
-		"idle_minutes": 10
+		"online_minutes": 5,
+		"idle_minutes": 60,
+		"readyup_seconds": 25
 	},
 	"ratelimits": {
 		"lobby_join_cooldown_sec": 30,

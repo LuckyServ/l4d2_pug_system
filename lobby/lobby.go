@@ -15,7 +15,8 @@ type EntLobby struct {
 	Players			[]*players.EntPlayer
 	PlayerCount		int
 	GameConfig		string
-	ReadyUpState	bool
+	ReadyPlayers	int
+	ReadyUpSince	int64 //timestamp of initiation of the readyup state //milliseconds
 }
 var MapLobbies map[string]*EntLobby = make(map[string]*EntLobby);
 var ArrayLobbies []*EntLobby; //duplicate of MapLobbies, for faster iterating
@@ -77,7 +78,7 @@ func Join(pPlayer *players.EntPlayer, sLobbyID string) bool { //MuPlayers and Mu
 	if (pPlayer.IsInLobby) {
 		return false;
 	}
-	if (len(pLobby.Players) >= 8) { //hardcoded for 4v4 games
+	if (pLobby.PlayerCount >= 8) { //hardcoded for 4v4 games
 		return false;
 	}
 	if (pPlayer.Mmr < pLobby.MmrMin || pPlayer.Mmr > pLobby.MmrMax) {
@@ -88,6 +89,10 @@ func Join(pPlayer *players.EntPlayer, sLobbyID string) bool { //MuPlayers and Mu
 	pLobby.PlayerCount++;
 
 	i64CurTime := time.Now().UnixMilli();
+	if (pLobby.PlayerCount == 8) { //hardcoded for 4v4 games
+		pLobby.ReadyUpSince = i64CurTime;
+	}
+
 	I64LastLobbyListUpdate = i64CurTime;
 
 	pPlayer.IsInLobby = true;
@@ -107,31 +112,17 @@ func Leave(pPlayer *players.EntPlayer) bool { //MuPlayers and MuLobbies must be 
 	}
 
 	//find lobby
-	var pLobby *EntLobby;
-	bFound := false;
-	for _, pLobbyBuffer := range ArrayLobbies {
-		for _, pPlayerBuffer := range pLobbyBuffer.Players {
-			if (pPlayerBuffer.SteamID64 == pPlayer.SteamID64) {
-				bFound = true;
-				break;
-			}
-		}
-		if (bFound) {
-			pLobby = pLobbyBuffer;
-			break;
-		}
-	}
+	pLobby, bFound := MapLobbies[pPlayer.LobbyID];
 	if (!bFound) {
 		return false;
 	}
 	
 	//remove player from array
-	iMaxLP := len(pLobby.Players);
 	bRemoved := false;
-	for i := 0; i < iMaxLP; i++ {
+	for i := 0; i < pLobby.PlayerCount; i++ {
 		if (pLobby.Players[i].SteamID64 == pPlayer.SteamID64) {
-			pLobby.Players[i] = pLobby.Players[iMaxLP - 1];
-			pLobby.Players = pLobby.Players[:(iMaxLP - 1)];
+			pLobby.Players[i] = pLobby.Players[pLobby.PlayerCount - 1];
+			pLobby.Players = pLobby.Players[:(pLobby.PlayerCount - 1)];
 			bRemoved = true;
 			break;
 		}
@@ -142,8 +133,8 @@ func Leave(pPlayer *players.EntPlayer) bool { //MuPlayers and MuLobbies must be 
 		pLobby.PlayerCount--;
 	}
 
-	//destroy lobby if it's empty
-	if (len(pLobby.Players) == 0) {
+
+	if (pLobby.PlayerCount == 0) { //destroy lobby if it's empty
 		delete(MapLobbies, pLobby.ID);
 		iMaxL := len(ArrayLobbies);
 		for i := 0; i < iMaxL; i++ {
@@ -152,6 +143,10 @@ func Leave(pPlayer *players.EntPlayer) bool { //MuPlayers and MuLobbies must be 
 				ArrayLobbies = ArrayLobbies[:(iMaxL - 1)];
 				break;
 			}
+		}
+	} else if (pLobby.PlayerCount == 7) { //Remove ReadyUp traces if the lobby was in ReadyUp state
+		for i := 0; i < pLobby.PlayerCount; i++ {
+			pLobby.Players[i].IsReadyInLobby = false;
 		}
 	}
 
@@ -164,5 +159,36 @@ func Leave(pPlayer *players.EntPlayer) bool { //MuPlayers and MuLobbies must be 
 	pPlayer.LobbyID = "";
 	pPlayer.LastChanged = i64CurTime;
 	players.I64LastPlayerlistUpdate = i64CurTime;
+	return true;
+}
+
+func Ready(pPlayer *players.EntPlayer) bool { //MuPlayers and MuLobbies must be locked outside
+
+	//Repeat some critical checks
+	if (!pPlayer.IsInLobby) {
+		return false;
+	} else if (pPlayer.IsReadyInLobby) {
+		return false;
+	}
+
+	//find lobby
+	pLobby, bFound := MapLobbies[pPlayer.LobbyID];
+	if (!bFound) {
+		return false;
+	}
+
+	//Is lobby in readyup state
+	if (pLobby.PlayerCount != 8) { //hardcode for 4v4
+		return false;
+	}
+
+	i64CurTime := time.Now().UnixMilli();
+
+	//Set ready
+	pPlayer.IsReadyInLobby = true;
+	pLobby.ReadyPlayers++;
+
+	I64LastLobbyListUpdate = i64CurTime;
+
 	return true;
 }

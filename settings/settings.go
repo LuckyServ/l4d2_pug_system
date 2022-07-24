@@ -33,6 +33,7 @@ var OnlineMmrRange int;
 
 var IdleTimeout int64;
 var OnlineTimeout int64;
+var ReadyUpTimeout int64;
 
 var JoinLobbyCooldown int64;
 var AuthPerHour int;
@@ -206,6 +207,13 @@ func ConfigFile() bool {
 		return false;
 	}
 	ProfValidateCooldown = i64Buffer * 1000;
+
+	i64Buffer, errError = jsonparser.GetInt(byData, "timeouts", "readyup_seconds");
+	if (errError != nil) {
+		fmt.Printf("Error reading config file: %s\n", errError);
+		return false;
+	}
+	ReadyUpTimeout = i64Buffer * 1000;
 
 
 	//Confogl configs section
