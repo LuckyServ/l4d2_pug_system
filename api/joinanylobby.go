@@ -44,6 +44,7 @@ func HttpReqJoinAnyLobby(c *gin.Context) {
 				if (lobby.JoinAny(pPlayer)) {
 					mapResponse["success"] = true;
 					pPlayer.IsAutoSearching = true;
+					pPlayer.AutoSearchingSince = time.Now().UnixMilli();
 				} else {
 					mapResponse["error"] = "Race condition. Try again.";
 				}

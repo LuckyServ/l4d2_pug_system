@@ -25,6 +25,7 @@ type EntPlayer struct {
 	IsInGame			bool
 	IsInLobby			bool
 	IsAutoSearching		bool
+	AutoSearchingSince	int64 //unix timestamp in milliseconds
 	LobbyID				string
 	IsReadyInLobby		bool
 	LastChanged			int64 //Last time player info was changed //unix timestamp in milliseconds

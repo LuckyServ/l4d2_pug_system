@@ -1,4 +1,3 @@
-- [ ] Sort players by the amount of time they spent in lobbies when autojoining a lobby
 - [ ] Re-check what apis are unavailable if player in game
 - [ ] When calculating lobby mmr limits, include those players who are finishing a game soon
 - [ ] Chat system
@@ -11,6 +10,7 @@
 - [ ] Restarting mechanism
 - [ ] Regularly increase mmr uncertainty value
 
+- [x] Sort players by the amount of time they spent in lobbies when autojoining a lobby
 - [x] Lobby timeouts
 - [x] Lobby filled and comes to readyup state
 - [x] ReadyUp timeouts

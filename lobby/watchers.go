@@ -42,9 +42,24 @@ func WatchLobbies() {
 			Leave(pPlayer);
 			pPlayer.IsAutoSearching = false;
 		}
+
 		for _, pPlayer := range arTimedoutLobbiesPlayers {
 			if (Leave(pPlayer) && pPlayer.IsAutoSearching) {
 				arJoinLobbyPlayers = append(arJoinLobbyPlayers, pPlayer);
+			}
+		}
+		//sort
+		iSize := len(arJoinLobbyPlayers);
+		if (iSize > 1) {
+			bSorted := false;
+			for !bSorted {
+				bSorted = true;
+				for i := 1; i < iSize; i++ {
+					if (arJoinLobbyPlayers[i].AutoSearchingSince < arJoinLobbyPlayers[i - 1].AutoSearchingSince) {
+						arJoinLobbyPlayers[i], arJoinLobbyPlayers[i - 1] = arJoinLobbyPlayers[i - 1], arJoinLobbyPlayers[i]; //switch
+						bSorted = false;
+					}
+				}
 			}
 		}
 		for _, pPlayer := range arJoinLobbyPlayers {
