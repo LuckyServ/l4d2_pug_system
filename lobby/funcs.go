@@ -110,6 +110,9 @@ func FindInitLobbyIndex(iMmr int, arOnlineMmrs []int) int {
 }
 
 func ChooseConfoglConfig(iMmr int) string {
+	if (settings.BrokenMode) {
+		return "default";
+	}
 	iLen := len(settings.ArrayConfoglConfigsMmrs);
 	if (iLen == 1) {
 		return settings.MapConfoglConfigs[settings.ArrayConfoglConfigsMmrs[0]];
