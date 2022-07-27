@@ -1,6 +1,6 @@
-- [ ] Re-check what apis are unavailable if player in game
-- [ ] When calculating lobby mmr limits, include those players who are finishing a game soon
+- [ ] Games
 - [ ] Chat system
+- [ ] When calculating lobby mmr limits, include those players who are finishing a game soon
 - [ ] Ban system
 - [ ] Smurf traces + connect logging
 - [ ] Avatar links
@@ -10,6 +10,7 @@
 - [ ] Restarting mechanism
 - [ ] Regularly increase mmr uncertainty value
 
+- [x] Re-check what apis are unavailable if player in game
 - [x] Sort players by the amount of time they spent in lobbies when autojoining a lobby
 - [x] Lobby timeouts
 - [x] Lobby filled and comes to readyup state

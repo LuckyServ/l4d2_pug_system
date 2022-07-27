@@ -31,7 +31,12 @@ var chAddToList chan string = make(chan string);
 //Limit authorizations per hour per IP
 func AuthRatelimits() {
 	mapIPs := make(map[string]int);
-	go ClearIPs();
+	go func() {
+		for {
+			time.Sleep(3600 * time.Second); //1 hour
+			chClear <- true;
+		}
+	}();
 	for {
 		select {
 		case <-chClear:
@@ -51,13 +56,6 @@ func AuthRatelimits() {
 				mapIPs[sIP] = 1;
 			}
 		}
-	}
-}
-
-func ClearIPs() {
-	for {
-		time.Sleep(3600 * time.Second); //1 hour
-		chClear <- true;
 	}
 }
 
