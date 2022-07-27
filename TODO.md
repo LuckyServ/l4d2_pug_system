@@ -1,5 +1,6 @@
 - [ ] Games
 - [ ] Chat system
+- [ ] Merge /getme and /getonlineplayers
 - [ ] When calculating lobby mmr limits, include those players who are finishing a game soon
 - [ ] Ban system
 - [ ] Smurf traces + connect logging

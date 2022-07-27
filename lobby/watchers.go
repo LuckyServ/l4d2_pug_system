@@ -3,6 +3,7 @@ package lobby
 import (
 	"../players"
 	"../settings"
+	"../games"
 	"time"
 )
 
@@ -14,7 +15,7 @@ func WatchLobbies() {
 		players.MuPlayers.Lock();
 
 		var arReadyLobbies []string;
-		var arUnreadyPlayers, arTimedoutLobbiesPlayers, arJoinLobbyPlayers []*players.EntPlayer;
+		var arUnreadyPlayers, arTimedoutLobbiesPlayers, arJoinLobbyPlayers, arGamePlayers []*players.EntPlayer;
 		
 		i64CurTime := time.Now().UnixMilli();
 
@@ -32,17 +33,11 @@ func WatchLobbies() {
 			}
 		}
 
-		for _, sLobbyID := range arReadyLobbies {
-			_, bExists := MapLobbies[sLobbyID];
-			if (bExists) {
-				//Kill lobby and create game
-			}
-		}
+
 		for _, pPlayer := range arUnreadyPlayers {
 			Leave(pPlayer);
 			pPlayer.IsAutoSearching = false;
 		}
-
 		for _, pPlayer := range arTimedoutLobbiesPlayers {
 			if (Leave(pPlayer) && pPlayer.IsAutoSearching) {
 				arJoinLobbyPlayers = append(arJoinLobbyPlayers, pPlayer);
@@ -64,6 +59,36 @@ func WatchLobbies() {
 		}
 		for _, pPlayer := range arJoinLobbyPlayers {
 			JoinAny(pPlayer);
+		}
+
+
+		games.MuGames.Lock();
+		for _, sLobbyID := range arReadyLobbies {
+			pLobby, bExists := MapLobbies[sLobbyID];
+			if (bExists) {
+
+				pGame := &games.EntGame{
+					ID:					<-games.ChanNewGameID,
+					CreatedAt:			time.Now().UnixMilli(),
+					GameConfig:			pLobby.GameConfig,
+					State:				games.StateCreating,
+				};
+
+				for _, pPlayer := range pLobby.Players {
+					arGamePlayers = append(arGamePlayers, pPlayer);
+				}
+
+				pGame.PlayersUnpaired = arGamePlayers;
+
+				go games.Control(pGame);
+
+			}
+		}
+		games.MuGames.Unlock();
+
+		for _, pPlayer := range arGamePlayers {
+			Leave(pPlayer);
+			pPlayer.IsAutoSearching = false;
 		}
 
 		MuLobbies.Unlock();

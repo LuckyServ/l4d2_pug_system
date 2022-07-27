@@ -7,6 +7,7 @@ import (
 	"./database"
 	"./lobby"
 	"./api"
+	"./games"
 	"./players/auth"
 	"time"
 	//"./utils"
@@ -44,6 +45,7 @@ func main() {
 	go players.WatchOnline(); //send players to offline mode
 	go api.AuthRatelimits(); //limit authorization requests per ip
 	go lobby.WatchLobbies(); //watch lobbies for ready and timeout
+	go games.ChannelWatchers(); //watch various game related channels
 
 
 
