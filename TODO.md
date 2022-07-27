@@ -1,4 +1,3 @@
-- [ ] Games
 - [ ] Chat system
 - [ ] Merge /getme and /getonlineplayers
 - [ ] When calculating lobby mmr limits, include those players who are finishing a game soon
@@ -11,6 +10,7 @@
 - [ ] Restarting mechanism
 - [ ] Regularly increase mmr uncertainty value
 
+- [x] Games
 - [x] Re-check what apis are unavailable if player in game
 - [x] Sort players by the amount of time they spent in lobbies when autojoining a lobby
 - [x] Lobby timeouts

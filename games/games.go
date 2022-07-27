@@ -21,6 +21,7 @@ type EntGame struct {
 const ( //game states
 	StateDummy int = iota
 	StateCreating
+	StateCreated
 	StatePinging
 	StateLookingForServ
 )
@@ -44,4 +45,15 @@ func HandleUniqID() {
 		}
 		time.Sleep(1 * time.Nanosecond);
 	}
+}
+
+
+func Create(pGame *EntGame) { //MuGames and MuPlayers must be locked outside
+	MapGames[pGame.ID] = pGame;
+	ArrayGames = append(ArrayGames, pGame);
+	for _, pPlayer := range pGame.PlayersUnpaired {
+		pPlayer.IsInGame = true;
+		pPlayer.GameID = pGame.ID;
+	}
+	players.I64LastPlayerlistUpdate = time.Now().UnixMilli();
 }
