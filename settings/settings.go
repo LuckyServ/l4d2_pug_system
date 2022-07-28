@@ -43,6 +43,10 @@ var ProfValidateCooldown int64;
 var MapConfoglConfigs map[int]string = make(map[int]string);
 var ArrayConfoglConfigsMmrs []int;
 
+var MapPool [][]string;
+var CampaignNames []string; //parallel with MapPool
+
+
 
 func Parse() bool {
 	CommandLine();
@@ -248,6 +252,32 @@ func ConfigFile() bool {
 		ArrayConfoglConfigsMmrs = append(ArrayConfoglConfigsMmrs, iConfMmr);
 	}
 	sort.Ints(ArrayConfoglConfigsMmrs);
+
+
+	//Map pool section
+	bErrorReadingMapPool := false;
+	jsonparser.ArrayEach(byData, func(valueCampaign []byte, dataType jsonparser.ValueType, offset int, err error) {
+		sCampaignName, _ := jsonparser.GetString(valueCampaign, "name");
+		var arCampaign []string;
+		jsonparser.ArrayEach(valueCampaign, func(valueMap []byte, dataType jsonparser.ValueType, offset int, err error) {
+			sMap := string(valueMap);
+			if (sMap != "") {
+				arCampaign = append(arCampaign, sMap);
+			} else {
+				bErrorReadingMapPool = true;
+			}
+		}, "maps");
+		if (len(arCampaign) > 0 && sCampaignName != "") {
+			MapPool = append(MapPool, arCampaign);
+			CampaignNames = append(CampaignNames, sCampaignName);
+		} else {
+			bErrorReadingMapPool = true;
+		}
+	}, "map_pool");
+	if (bErrorReadingMapPool) {
+		fmt.Printf("Error reading config file on map pool section\n");
+		return false;
+	}
 
 
 	return true;

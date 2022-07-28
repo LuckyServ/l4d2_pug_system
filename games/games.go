@@ -14,6 +14,7 @@ type EntGame struct {
 	PlayersA			[]*players.EntPlayer
 	PlayersB			[]*players.EntPlayer
 	GameConfig			string
+	CampaignName		string
 	Maps				[]string
 	State				int
 }
@@ -22,8 +23,7 @@ const ( //game states
 	StateDummy int = iota
 	StateCreating
 	StateCreated
-	StatePinging
-	StateLookingForServ
+	CampaignChosen
 )
 
 var MapGames map[string]*EntGame = make(map[string]*EntGame);

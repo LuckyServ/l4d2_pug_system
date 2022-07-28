@@ -1,5 +1,7 @@
+- [ ] Proceed with Game logic
 - [ ] Chat system
 - [ ] Merge /getme and /getonlineplayers
+- [ ] Change Confogl configs list on settings, include config beautiful name
 - [ ] When calculating lobby mmr limits, include those players who are finishing a game soon
 - [ ] Ban system
 - [ ] Smurf traces + connect logging
