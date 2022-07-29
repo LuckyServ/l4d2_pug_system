@@ -81,6 +81,7 @@ Response parameters:
 | &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>online</strong> | _int_ | Number of online players |
 | &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>in_game</strong> | _int_ | Number of players in games |
 | &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>in_lobby</strong> | _int_ | Number of players in lobbies |
+| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>idle</strong> | _int_ | Number of idle players |
 | <strong>list</strong> | _[]_ | Array of players |
 | &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>steamid64</strong> | _string_ | Player Steam ID 64 |
 | &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>nickname_base64</strong> | _string_ | Base64 encoded nickname |

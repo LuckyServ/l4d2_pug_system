@@ -143,6 +143,8 @@ func HttpReqOpenID(c *gin.Context) {
 	//Add auth to the database
 	sSessionID := players.AddPlayerAuth(sSteamID64, base64.StdEncoding.EncodeToString([]byte(sNickname)));
 
+	fmt.Printf("New auth: %s, %s\n", sSteamID64, sNickname);
+
 	//Set cookie
 	c.SetCookie("session_id", sSessionID, 2592000, "/", "", true, false);
 
