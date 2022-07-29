@@ -60,6 +60,7 @@ func HttpReqStatus(c *gin.Context) {
 		mapResponse["need_update_lobbies"] = false;
 	}
 
-	c.Header("Access-Control-Allow-Origin", "*");
+	c.Header("Access-Control-Allow-Origin", "https://"+settings.HomeDomain);
+	c.Header("Access-Control-Allow-Credentials", "true");
 	c.JSON(200, mapResponse);
 }

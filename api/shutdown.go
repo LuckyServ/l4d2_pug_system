@@ -20,7 +20,6 @@ func HttpReqShutdown(c *gin.Context) {
 
 	mapResponse["success"] = true;
 
-	c.Header("Access-Control-Allow-Origin", "*");
 	c.JSON(200, mapResponse);
 	go PerformShutDown();
 }

@@ -47,7 +47,8 @@ func HttpReqGetMe(c *gin.Context) {
 		}
 	}
 	
-	c.Header("Access-Control-Allow-Origin", "*");
+	c.Header("Access-Control-Allow-Origin", "https://"+settings.HomeDomain);
+	c.Header("Access-Control-Allow-Credentials", "true");
 	c.SetCookie("player_updated_at", fmt.Sprintf("%d", time.Now().UnixMilli()), 2592000, "/", "", true, false);
 	c.JSON(200, mapResponse);
 }

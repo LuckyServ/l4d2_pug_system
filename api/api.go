@@ -41,11 +41,13 @@ func GinInit() {
 }
 
 func HttpReqMyIP(c *gin.Context) {
-	c.Header("Access-Control-Allow-Origin", "*");
+	c.Header("Access-Control-Allow-Origin", "https://"+settings.HomeDomain);
+	c.Header("Access-Control-Allow-Credentials", "true");
 	c.String(200, c.ClientIP());
 }
 
 func HttpReqHome(c *gin.Context) {
-	c.Header("Access-Control-Allow-Origin", "*");
+	c.Header("Access-Control-Allow-Origin", "https://"+settings.HomeDomain);
+	c.Header("Access-Control-Allow-Credentials", "true");
 	c.Redirect(303, "https://"+settings.HomeDomain);
 }
