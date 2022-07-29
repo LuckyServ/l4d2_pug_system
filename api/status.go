@@ -20,8 +20,6 @@ func HttpReqStatus(c *gin.Context) {
 	sCookieSessID, errCookieSessID := c.Cookie("session_id");
 	sCookiePlayersUpdatedAt, _ := c.Cookie("players_updated_at");
 	i64CookiePlayersUpdatedAt, _ := strconv.ParseInt(sCookiePlayersUpdatedAt, 10, 64);
-	sCookiePlayerUpdatedAt, _ := c.Cookie("player_updated_at");
-	i64CookiePlayerUpdatedAt, _ := strconv.ParseInt(sCookiePlayerUpdatedAt, 10, 64);
 	sCookieLobbiesUpdatedAt, _ := c.Cookie("lobbies_updated_at");
 	i64CookieLobbiesUpdatedAt, _ := strconv.ParseInt(sCookieLobbiesUpdatedAt, 10, 64);
 
@@ -36,15 +34,7 @@ func HttpReqStatus(c *gin.Context) {
 		if (bAuthorized) {
 			mapResponse["authorized"] = true;
 			players.MuPlayers.Lock();
-
 			players.UpdatePlayerActivity(oSession.SteamID64);
-
-			if (i64CookiePlayerUpdatedAt <= players.MapPlayers[oSession.SteamID64].LastChanged) {
-				mapResponse["need_update_player"] = true;
-			} else {
-				mapResponse["need_update_player"] = false;
-			}
-
 			players.MuPlayers.Unlock();
 		}
 	}

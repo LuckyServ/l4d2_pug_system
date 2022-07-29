@@ -1,6 +1,5 @@
 - [ ] Proceed with Game logic
 - [ ] Chat system
-- [ ] Merge /getme and /getonlineplayers
 - [ ] Change Confogl configs list on settings, include config beautiful name
 - [ ] When calculating lobby mmr limits, include those players who are finishing a game soon
 - [ ] Ban system
@@ -12,6 +11,7 @@
 - [ ] Restarting mechanism
 - [ ] Regularly increase mmr uncertainty value
 
+- [x] Merge /getme and /getonlineplayers
 - [x] Games
 - [x] Re-check what apis are unavailable if player in game
 - [x] Sort players by the amount of time they spent in lobbies when autojoining a lobby

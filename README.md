@@ -34,28 +34,6 @@ Response parameters:
 
 <br/><br/>
 
-### GET /getme
-##### Get info about an authorized player
-Request parameters: None
-
-Response parameters:
-| Key | Type | Description
-| ------ | ------ | ------ |
-| <strong>success</strong> | _bool_ | "true" if info available, "false" otherwise (not authorized) |
-| <strong>steamid64</strong> | _string_ | Steam ID 64 |
-| <strong>nickname_base64</strong> | _string_ | Base64 encoded nickname |
-| <strong>mmr</strong> | _int_ | Player's rating |
-| <strong>mmr_certain</strong> | _bool_ | Is the system certain about the player's rating |
-| <strong>access</strong> | _int_ | Player's access level<br>-2 - completely banned, -1 - chat banned, 0 - regular player, 1 - behaviour moderator, 2 - cheat moderator, 3 - behaviour+cheat moderator, 4 - full admin access |
-| <strong>profile_validated</strong> | _bool_ | New players must validate their profiles before playing |
-| <strong>rules_accepted</strong> | _bool_ | New players must accept the rules before playing |
-| <strong>is_online</strong> | _bool_ | Is player online right now |
-| <strong>is_ingame</strong> | _bool_ | Is player in game right now |
-| <strong>is_inlobby</strong> | _bool_ | Is player in lobby right now |
-| <strong>is_idle</strong> | _bool_ | Is player online, but not doing anything |
-
-<br/><br/>
-
 ### GET /validateprofile
 ##### Ask to validate client profile
 Request parameters: None
@@ -88,6 +66,8 @@ Response parameters:
 | Key | Type | Description
 | ------ | ------ | ------ |
 | <strong>success</strong> | _bool_ | Always "true" |
+| <strong>authorized</strong> | _bool_ | Authorized or not |
+| <strong>me</strong> |  | Info about an authorized player (only present if authorized) |
 | <strong>count</strong> |  | Numbers |
 | &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>online</strong> | _int_ | Number of online players |
 | &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>in_game</strong> | _int_ | Number of players in games |
@@ -163,6 +143,7 @@ Response parameters:
 | Key | Type | Description
 | ------ | ------ | ------ |
 | <strong>success</strong> | _bool_ | Always "true" |
+| <strong>authorized</strong> | _bool_ | Authorized or not |
 | <strong>count</strong> | _int_ | Number of lobbies |
 | <strong>need_readyup</strong> | _bool_ | Should request readyup or not |
 | <strong>mylobby</strong> |  | The lobby the player participates in (only present if authorized and in lobby) |
@@ -182,3 +163,4 @@ Response parameters:
 | &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>confogl_config</strong> | _string_ | Confogl config to be played |
 | &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>player_count</strong> | _int_ | Number of players in the lobby |
 | &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>readyup_state</strong> | _bool_ | Is lobby in readyup state |
+| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>ready_players</strong> | _int_ | Number of ready players |

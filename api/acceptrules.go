@@ -34,7 +34,6 @@ func HttpReqAcceptRules(c *gin.Context) {
 					ProfValidated:		pPlayer.ProfValidated,
 					RulesAccepted:		pPlayer.RulesAccepted,
 					});
-				pPlayer.LastChanged = time.Now().UnixMilli();
 				players.I64LastPlayerlistUpdate = time.Now().UnixMilli();
 			} else {
 				mapResponse["error"] = "The rules are already accepted";

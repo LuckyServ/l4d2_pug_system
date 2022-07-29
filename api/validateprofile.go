@@ -74,7 +74,6 @@ func HttpReqValidateProf(c *gin.Context) {
 
 								players.MuPlayers.Lock();
 								pPlayer.ProfValidated = true;
-								pPlayer.LastChanged = time.Now().UnixMilli();
 								players.I64LastPlayerlistUpdate = time.Now().UnixMilli();
 								iNewMmr := settings.DefaultMaxMmr;
 								if (iVersusGamePlayed < settings.DefaultMaxMmr) {

@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"time"
 	"../settings"
+	"../players/auth"
 )
 
 type PlayerResponse struct {
@@ -19,10 +20,54 @@ type PlayerResponse struct {
 	MmrCertain		bool		`json:"mmr_certain"`
 }
 
+type PlayerResponseMe struct {
+	SteamID64		string		`json:"steamid64"`
+	NicknameBase64	string		`json:"nickname_base64"`
+	Mmr				int			`json:"mmr"`
+	Access			int 		`json:"access"` //-2 - completely banned, -1 - chat banned, 0 - regular player, 1 - behaviour moderator, 2 - cheat moderator, 3 - behaviour+cheat moderator, 4 - full admin access
+	IsInGame		bool		`json:"is_ingame"`
+	IsIdle			bool		`json:"is_idle"`
+	IsInLobby		bool		`json:"is_inlobby"`
+	MmrCertain		bool		`json:"mmr_certain"`
+	ProfValidated	bool		`json:"profile_validated"` //Steam profile validated
+	RulesAccepted	bool		`json:"rules_accepted"` //Rules accepted
+}
+
 
 func HttpReqGetOnlinePlayers(c *gin.Context) {
 
 	mapResponse := make(map[string]interface{});
+
+	sCookieSessID, errCookieSessID := c.Cookie("session_id");
+
+	mapResponse["authorized"] = false;
+	if (errCookieSessID == nil && sCookieSessID != "") {
+		oSession, bAuthorized := auth.GetSession(sCookieSessID);
+		if (bAuthorized) {
+			mapResponse["authorized"] = true;
+			mapResponse["steamid64"] = oSession.SteamID64;
+
+			players.MuPlayers.Lock();
+
+			pPlayer := players.MapPlayers[oSession.SteamID64];
+
+			mapResponse["me"] = PlayerResponseMe{
+				SteamID64:		pPlayer.SteamID64,
+				NicknameBase64:	pPlayer.NicknameBase64,
+				Mmr:			pPlayer.Mmr,
+				Access:			pPlayer.Access,
+				IsInGame:		pPlayer.IsInGame,
+				IsInLobby:		pPlayer.IsInLobby,
+				IsIdle:			pPlayer.IsIdle,
+				MmrCertain:		(pPlayer.MmrUncertainty <= settings.MmrStable),
+				ProfValidated:	pPlayer.ProfValidated,
+				RulesAccepted:	pPlayer.RulesAccepted,
+			};
+
+			players.MuPlayers.Unlock();
+
+		}
+	}
 
 	var arPlayers []PlayerResponse;
 	var iActiveCount, iOnlineCount, iInLobbyCount, iInGameCount, iIdleCount int;
@@ -37,6 +82,7 @@ func HttpReqGetOnlinePlayers(c *gin.Context) {
 				Mmr:			pPlayer.Mmr,
 				Access:			pPlayer.Access,
 				IsInGame:		pPlayer.IsInGame,
+				MmrCertain:		(pPlayer.MmrUncertainty <= settings.MmrStable),
 				IsInLobby:		pPlayer.IsInLobby,
 				IsIdle:			pPlayer.IsIdle,
 			});

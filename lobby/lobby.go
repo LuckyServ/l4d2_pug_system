@@ -95,7 +95,6 @@ func Create(pPlayer *players.EntPlayer) bool { //MuPlayers and MuLobbies must be
 	pPlayer.IsIdle = false;
 	pPlayer.LastLobbyActivity = i64CurTime;
 	pPlayer.LobbyID = sLobbyID;
-	pPlayer.LastChanged = i64CurTime;
 	players.I64LastPlayerlistUpdate = i64CurTime;
 
 	return true;
@@ -133,7 +132,6 @@ func Join(pPlayer *players.EntPlayer, sLobbyID string) bool { //MuPlayers and Mu
 	pPlayer.IsIdle = false;
 	pPlayer.LastLobbyActivity = i64CurTime;
 	pPlayer.LobbyID = sLobbyID;
-	pPlayer.LastChanged = i64CurTime;
 	players.I64LastPlayerlistUpdate = i64CurTime;
 	return true;
 }
@@ -191,7 +189,6 @@ func Leave(pPlayer *players.EntPlayer) bool { //MuPlayers and MuLobbies must be 
 	pPlayer.IsIdle = false;
 	pPlayer.LastLobbyActivity = i64CurTime;
 	pPlayer.LobbyID = "";
-	pPlayer.LastChanged = i64CurTime;
 	players.I64LastPlayerlistUpdate = i64CurTime;
 	return true;
 }

@@ -29,7 +29,6 @@ type EntPlayer struct {
 	LobbyID				string
 	GameID				string
 	IsReadyInLobby		bool
-	LastChanged			int64 //Last time player info was changed //unix timestamp in milliseconds
 	LastValidateReq		int64 //Last profile validation request //unix timestamp in milliseconds
 	LastLobbyActivity	int64 //Last lobby activity //unix timestamp in milliseconds
 }
@@ -52,7 +51,6 @@ func UpdatePlayerActivity(sSteamID64 string) { //Maps must be locked outside!!!
 		pPlayer.IsOnline = true;
 		pPlayer.OnlineSince = i64CurTime;
 		pPlayer.IsIdle = false;
-		pPlayer.LastChanged = i64CurTime;
 		I64LastPlayerlistUpdate = i64CurTime;
 	}
 }
@@ -71,7 +69,6 @@ func RestorePlayers() bool { //no need to lock maps
 			Access:				oDBPlayer.Access,
 			ProfValidated:		oDBPlayer.ProfValidated,
 			RulesAccepted:		oDBPlayer.RulesAccepted,
-			LastChanged:		time.Now().UnixMilli(),
 		};
 		MapPlayers[oDBPlayer.SteamID64] = pPlayer;
 		ArrayPlayers = append(ArrayPlayers, pPlayer);
@@ -90,7 +87,6 @@ func AddPlayerAuth(sSteamID64 string, sNicknameBase64 string) string {
 		pPlayer := &EntPlayer{
 			SteamID64:			sSteamID64,
 			MmrUncertainty:		settings.DefaultMmrUncertainty,
-			LastChanged:		time.Now().UnixMilli(),
 		};
 		MapPlayers[sSteamID64] = pPlayer;
 		ArrayPlayers = append(ArrayPlayers, pPlayer);
@@ -118,7 +114,6 @@ func AddPlayerAuth(sSteamID64 string, sNicknameBase64 string) string {
 	if (pPlayer.NicknameBase64 != sNicknameBase64) {
 
 		pPlayer.NicknameBase64 = sNicknameBase64;
-		pPlayer.LastChanged = time.Now().UnixMilli();
 		I64LastPlayerlistUpdate = time.Now().UnixMilli();
 
 		go database.UpdatePlayer(database.DatabasePlayer{

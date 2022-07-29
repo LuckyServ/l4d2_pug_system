@@ -19,7 +19,6 @@ func GinInit() {
 	r.POST("/shutdown", HttpReqShutdown);
 
 	r.GET("/status", HttpReqStatus);
-	r.GET("/getme", HttpReqGetMe);
 	r.GET("/getonlineplayers", HttpReqGetOnlinePlayers);
 	r.GET("/validateprofile", HttpReqValidateProf);
 	r.GET("/acceptrules", HttpReqAcceptRules);
