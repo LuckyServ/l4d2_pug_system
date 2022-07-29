@@ -47,7 +47,13 @@ func HttpReqMyIP(c *gin.Context) {
 }
 
 func HttpReqHome(c *gin.Context) {
+	sLink := c.Query("link");
+
 	c.Header("Access-Control-Allow-Origin", "https://"+settings.HomeDomain);
 	c.Header("Access-Control-Allow-Credentials", "true");
-	c.Redirect(303, "https://"+settings.HomeDomain);
+	if (sLink == "") {
+		c.Redirect(303, "https://"+settings.HomeDomain);
+	} else {
+		c.Redirect(303, sLink);
+	}
 }
