@@ -5,6 +5,7 @@ import (
 	"strconv"
 	"time"
 	"../players"
+	"../settings"
 )
 
 type EntGame struct {
@@ -13,7 +14,7 @@ type EntGame struct {
 	PlayersUnpaired		[]*players.EntPlayer
 	PlayersA			[]*players.EntPlayer
 	PlayersB			[]*players.EntPlayer
-	GameConfig			string
+	GameConfig			settings.ConfoglConfig
 	CampaignName		string
 	Maps				[]string
 	State				int

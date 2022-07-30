@@ -12,10 +12,23 @@
 	},
 	"lobby": {
 		"online_mmr_range": 8,
-		"confogl_configs": {
-			"mmr": "150,1000,2000000000",
-			"config": "t2,t1,zonemod"
-		}
+		"confogl_configs": [
+			{
+				"name": "ZoneMod",
+				"codename": "zonemod",
+				"max_mmr": 2000000000
+			},
+			{
+				"name": "T1",
+				"codename": "t1",
+				"max_mmr": 1000
+			},
+			{
+				"name": "T2",
+				"codename": "t2",
+				"max_mmr": 150
+			}
+		]
 	},
 	"domain": {
 		"home": "localhost",

@@ -3,6 +3,7 @@ package lobby
 import (
 	//"fmt"
 	"../players"
+	"../settings"
 	"sync"
 	"time"
 )
@@ -14,7 +15,7 @@ type EntLobby struct {
 	CreatedAt		int64 //milliseconds
 	Players			[]*players.EntPlayer
 	PlayerCount		int
-	GameConfig		string
+	GameConfig		settings.ConfoglConfig
 	ReadyPlayers	int
 	ReadyUpSince	int64 //timestamp of initiation of the readyup state //milliseconds
 }
@@ -72,7 +73,7 @@ func Create(pPlayer *players.EntPlayer) bool { //MuPlayers and MuLobbies must be
 	}
 
 	//Choose Confogl config
-	sConfoglConfig := ChooseConfoglConfig(pPlayer.Mmr);
+	oConfoglConfig := ChooseConfoglConfig(pPlayer.Mmr);
 
 
 	//Write lobby
@@ -84,7 +85,7 @@ func Create(pPlayer *players.EntPlayer) bool { //MuPlayers and MuLobbies must be
 		MmrMin:				iMmrMin,
 		MmrMax:				iMmrMax,
 		CreatedAt:			i64CurTime,
-		GameConfig:			sConfoglConfig,
+		GameConfig:			oConfoglConfig,
 	};
 	MapLobbies[sLobbyID] = pLobby;
 	ArrayLobbies = append(ArrayLobbies, pLobby);

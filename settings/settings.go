@@ -6,8 +6,6 @@ import (
 	"github.com/buger/jsonparser"
 	"io/ioutil"
 	"sort"
-	"strings"
-	"strconv"
 )
 
 var FilePath string;
@@ -40,7 +38,13 @@ var JoinLobbyCooldown int64;
 var AuthPerHour int;
 var ProfValidateCooldown int64;
 
-var MapConfoglConfigs map[int]string = make(map[int]string);
+type ConfoglConfig struct {
+	CodeName		string
+	Name			string
+	MmrMax			int
+}
+
+var MapConfoglConfigs map[int]ConfoglConfig = make(map[int]ConfoglConfig);
 var ArrayConfoglConfigsMmrs []int;
 
 var MapPool [][]string;
@@ -229,33 +233,42 @@ func ConfigFile() bool {
 
 
 	//Confogl configs section
-	sConfoglMmrs, errConfoglMmrs := jsonparser.GetString(byData, "lobby", "confogl_configs", "mmr");
-	sConfoglConfigs, errConfoglConfigs := jsonparser.GetString(byData, "lobby", "confogl_configs", "config");
-	if (errConfoglMmrs != nil || errConfoglConfigs != nil) {
-		fmt.Printf("Error reading config file: %s\n", errError);
-		return false;
-	}
-	arConfoglMmrs := strings.Split(sConfoglMmrs, ",");
-	arConfoglConfigs := strings.Split(sConfoglConfigs, ",");
-	if (len(arConfoglMmrs) != len(arConfoglConfigs) || len(arConfoglMmrs) == 0 || len(arConfoglConfigs) == 0) {
-		fmt.Printf("Error reading config file: %s\n", errError);
-		return false;
-	}
-	for i, _ := range arConfoglMmrs {
-		iConfMmr, errConfMmr := strconv.Atoi(arConfoglMmrs[i]);
-		sConf := arConfoglConfigs[i];
-		if (errConfMmr != nil || iConfMmr <= 0 || sConf == "") {
-			fmt.Printf("Error reading config file: %s\n", errError);
-			return false;
+	bErrorReadingConfoglConfigs := true;
+	jsonparser.ArrayEach(byData, func(valueConfoglConfig []byte, dataType jsonparser.ValueType, offset int, err error) {
+
+
+		sConfoglConfigName, errConfoglConfigName := jsonparser.GetString(valueConfoglConfig, "name");
+		sConfoglConfigCodename, errConfoglConfigCodename := jsonparser.GetString(valueConfoglConfig, "codename");
+		i64ConfoglConfigMaxMmr, errConfoglConfigMaxMmr := jsonparser.GetInt(valueConfoglConfig, "max_mmr");
+
+		if (errConfoglConfigName == nil && errConfoglConfigCodename == nil && errConfoglConfigMaxMmr == nil && sConfoglConfigName != "" && sConfoglConfigCodename != "" && i64ConfoglConfigMaxMmr != 0) {
+			iConfMmr := int(i64ConfoglConfigMaxMmr);
+
+			oConfoglConf := ConfoglConfig{
+				CodeName:		sConfoglConfigCodename,
+				Name:			sConfoglConfigName,
+				MmrMax:			iConfMmr,
+			};
+
+			MapConfoglConfigs[iConfMmr] = oConfoglConf;
+			ArrayConfoglConfigsMmrs = append(ArrayConfoglConfigsMmrs, iConfMmr);
+
+			bErrorReadingConfoglConfigs = false;
 		}
-		MapConfoglConfigs[iConfMmr] = sConf;
-		ArrayConfoglConfigsMmrs = append(ArrayConfoglConfigsMmrs, iConfMmr);
+
+
+
+
+	}, "lobby", "confogl_configs");
+	if (bErrorReadingConfoglConfigs) {
+		fmt.Printf("Error reading config file on Confogl configs list\n");
+		return false;
 	}
 	sort.Ints(ArrayConfoglConfigsMmrs);
 
 
 	//Map pool section
-	bErrorReadingMapPool := false;
+	bErrorReadingMapPool := true;
 	jsonparser.ArrayEach(byData, func(valueCampaign []byte, dataType jsonparser.ValueType, offset int, err error) {
 		sCampaignName, _ := jsonparser.GetString(valueCampaign, "name");
 		var arCampaign []string;
@@ -263,15 +276,13 @@ func ConfigFile() bool {
 			sMap := string(valueMap);
 			if (sMap != "") {
 				arCampaign = append(arCampaign, sMap);
-			} else {
-				bErrorReadingMapPool = true;
+				bErrorReadingMapPool = false;
 			}
 		}, "maps");
 		if (len(arCampaign) > 0 && sCampaignName != "") {
 			MapPool = append(MapPool, arCampaign);
 			CampaignNames = append(CampaignNames, sCampaignName);
-		} else {
-			bErrorReadingMapPool = true;
+			bErrorReadingMapPool = false;
 		}
 	}, "map_pool");
 	if (bErrorReadingMapPool) {

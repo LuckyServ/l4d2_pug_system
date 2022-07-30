@@ -1,7 +1,8 @@
+- [ ] Allow to put any host in Allow-Origin
 - [ ] Proceed with Game logic
 - [ ] Chat system
-- [ ] Change Confogl configs list on settings, include config beautiful name
 - [ ] When calculating lobby mmr limits, include those players who are finishing a game soon
+- [ ] Update nickname button
 - [ ] Ban system
 - [ ] Smurf traces + connect logging
 - [ ] Avatar links
@@ -11,6 +12,7 @@
 - [ ] Restarting mechanism
 - [ ] Regularly increase mmr uncertainty value
 
+- [x] Change Confogl configs list on settings, include config beautiful name
 - [x] Merge /getme and /getonlineplayers
 - [x] Games
 - [x] Re-check what apis are unavailable if player in game
