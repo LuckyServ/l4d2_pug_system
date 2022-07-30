@@ -16,7 +16,7 @@ func GinInit() {
 	r.Use(gzip.Gzip(gzip.DefaultCompression));
 	r.MaxMultipartMemory = 1 << 20;
 
-	r.POST("/shutdown", HttpReqShutdown);
+	r.GET("/shutdown", HttpReqShutdown);
 
 	r.GET("/status", HttpReqStatus);
 	r.GET("/getonlineplayers", HttpReqGetOnlinePlayers);

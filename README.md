@@ -2,12 +2,9 @@
 # l4d2_pug_system
 ## The backend layer of the ranked PUG system for Left 4 Dead 2
 
-### POST /shutdown
-##### Send the shutdown command to the program. It will properly exit the process.
-Request parameters:
-| Key | Type | Description
-| ------ | ------ | ------ |
-| <strong>backend_auth</strong> | _string_ | Auth key |
+### GET /shutdown
+##### An admin command (access = 4) to shutdown the program
+Request parameters: None
 
 Response parameters:
 | Key | Type | Description

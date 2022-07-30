@@ -3,6 +3,7 @@ package api
 import (
 	"github.com/gin-gonic/gin"
 	"../players/auth"
+	"../players"
 )
 
 var ChShutdown chan bool = make(chan bool);
@@ -12,16 +13,26 @@ func HttpReqShutdown(c *gin.Context) {
 
 	mapResponse := make(map[string]interface{});
 
-	if (!auth.Backend(c.PostForm("backend_auth"))) {
-		mapResponse["success"] = false;
-		c.JSON(200, mapResponse);
-		return;
-	}
+	sCookieSessID, errCookieSessID := c.Cookie("session_id");
 
-	mapResponse["success"] = true;
+	mapResponse["success"] = false;
+	if (errCookieSessID == nil && sCookieSessID != "") {
+		oSession, bAuthorized := auth.GetSession(sCookieSessID);
+		if (bAuthorized) {
+			players.MuPlayers.Lock();
+			pPlayer := players.MapPlayers[oSession.SteamID64];
+			if (pPlayer.Access == 4) { //admin
+				mapResponse["success"] = true;
+			}
+			players.MuPlayers.Unlock();
+		}
+	}
+	
 
 	c.JSON(200, mapResponse);
-	go PerformShutDown();
+	if (mapResponse["success"] == true) {
+		go PerformShutDown();
+	}
 }
 
 func PerformShutDown() {
