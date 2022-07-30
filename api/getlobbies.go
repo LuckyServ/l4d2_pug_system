@@ -35,6 +35,7 @@ func HttpReqGetLobbies(c *gin.Context) {
 	lobby.MuLobbies.Lock();
 
 	mapResponse["authorized"] = false;
+	mapResponse["is_inlobby"] = false;
 	if (errCookieSessID == nil && sCookieSessID != "") {
 		oSession, bAuthorized := auth.GetSession(sCookieSessID);
 		if (bAuthorized) {
@@ -42,6 +43,7 @@ func HttpReqGetLobbies(c *gin.Context) {
 			players.MuPlayers.Lock();
 			pPlayer := players.MapPlayers[oSession.SteamID64];
 			if (pPlayer.IsInLobby) {
+				mapResponse["is_inlobby"] = true;
 				pLobby := lobby.MapLobbies[pPlayer.LobbyID];
 				mapResponse["mylobby"] = LobbyResponse{
 					ID:				pLobby.ID,
