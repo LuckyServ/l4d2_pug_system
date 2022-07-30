@@ -1,4 +1,3 @@
-- [ ] Allow to put any host in Allow-Origin
 - [ ] Proceed with Game logic
 - [ ] Chat system
 - [ ] When calculating lobby mmr limits, include those players who are finishing a game soon
@@ -12,6 +11,7 @@
 - [ ] Restarting mechanism
 - [ ] Regularly increase mmr uncertainty value
 
+- [x] Allow to put any host in Allow-Origin
 - [x] Change Confogl configs list on settings, include config beautiful name
 - [x] Merge /getme and /getonlineplayers
 - [x] Games

@@ -5,7 +5,6 @@ import (
 	"../players/auth"
 	"../players"
 	"../lobby"
-	"../settings"
 )
 
 
@@ -44,7 +43,7 @@ func HttpReqLeaveLobby(c *gin.Context) {
 		mapResponse["error"] = "Please authorize first";
 	}
 	
-	c.Header("Access-Control-Allow-Origin", "https://"+settings.HomeDomain);
+	c.Header("Access-Control-Allow-Origin", c.Request.Header.Get("origin"));
 	c.Header("Access-Control-Allow-Credentials", "true");
 	c.JSON(200, mapResponse);
 }

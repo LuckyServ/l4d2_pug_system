@@ -7,7 +7,6 @@ import (
 	"../players"
 	"fmt"
 	"time"
-	"../settings"
 )
 
 type LobbyResponse struct {
@@ -102,7 +101,7 @@ func HttpReqGetLobbies(c *gin.Context) {
 	mapResponse["lobbies"] = arRespLobbies;
 
 	
-	c.Header("Access-Control-Allow-Origin", "https://"+settings.HomeDomain);
+	c.Header("Access-Control-Allow-Origin", c.Request.Header.Get("origin"));
 	c.Header("Access-Control-Allow-Credentials", "true");
 	c.SetCookie("lobbies_updated_at", fmt.Sprintf("%d", time.Now().UnixMilli()), 2592000, "/", "", true, false);
 	c.JSON(200, mapResponse);

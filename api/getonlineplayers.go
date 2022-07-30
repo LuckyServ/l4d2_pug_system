@@ -122,7 +122,7 @@ func HttpReqGetOnlinePlayers(c *gin.Context) {
 	mapResponse["list"] = arPlayers;
 
 	
-	c.Header("Access-Control-Allow-Origin", "https://"+settings.HomeDomain);
+	c.Header("Access-Control-Allow-Origin", c.Request.Header.Get("origin"));
 	c.Header("Access-Control-Allow-Credentials", "true");
 	c.SetCookie("players_updated_at", fmt.Sprintf("%d", i64CurTime), 2592000, "/", "", true, false);
 	c.JSON(200, mapResponse);
