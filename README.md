@@ -142,6 +142,18 @@ Response parameters:
 
 <br/><br/>
 
+### GET /readyup
+##### Ready up, when your lobby is in ReadyUp state
+Request parameters: None
+
+Response parameters:
+| Key | Type | Description
+| ------ | ------ | ------ |
+| <strong>success</strong> | _bool_ | "true" if command accepted, "false" otherwise |
+| <strong>error</strong> | _string_ | Outputs the reason if the request is rejected |
+
+<br/><br/>
+
 ### GET /getlobbies
 ##### Get lobby list
 Request parameters: None
