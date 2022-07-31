@@ -24,7 +24,8 @@ const ( //game states
 	StateDummy int = iota
 	StateCreating
 	StateCreated
-	CampaignChosen
+	StateCampaignChosen
+	StateTeamsPicked
 )
 
 var MapGames map[string]*EntGame = make(map[string]*EntGame);

@@ -25,16 +25,17 @@ func Control(pGame *EntGame) {
 	MuGames.Lock();
 	pGame.CampaignName = settings.CampaignNames[i64CmpgnIdx];
 	pGame.Maps = settings.MapPool[i64CmpgnIdx];
-	pGame.State = CampaignChosen;
+	pGame.State = StateCampaignChosen;
 	MuGames.Unlock();
 
 
 	//Pair players
 	MuGames.Lock();
 	players.MuPlayers.Lock();
-
+	
 	pGame.PlayersA, pGame.PlayersB = rating.Pair(pGame.PlayersUnpaired);
 
+	pGame.State = StateTeamsPicked;
 	MuGames.Unlock();
 	players.MuPlayers.Unlock();
 
