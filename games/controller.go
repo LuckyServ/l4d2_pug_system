@@ -3,6 +3,7 @@ package games
 import (
 	"../players"
 	"../settings"
+	"../rating"
 	"time"
 )
 
@@ -29,6 +30,17 @@ func Control(pGame *EntGame) {
 
 
 	//Pair players
+	MuGames.Lock();
+	players.MuPlayers.Lock();
+
+	pGame.PlayersA, pGame.PlayersB = rating.Pair(pGame.PlayersUnpaired);
+
+	MuGames.Unlock();
+	players.MuPlayers.Unlock();
+
+
+
+
 	//Ping servers
 	//Select server
 	//Game proceeds
