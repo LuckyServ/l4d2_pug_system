@@ -19,9 +19,10 @@ func GinInit() {
 	r.GET("/shutdown", HttpReqShutdown);
 
 	r.GET("/status", HttpReqStatus);
-	r.GET("/getonlineplayers", HttpReqGetOnlinePlayers);
 	r.GET("/validateprofile", HttpReqValidateProf);
 	r.GET("/acceptrules", HttpReqAcceptRules);
+
+	r.GET("/getonlineplayers", HttpReqGetOnlinePlayers);
 
 	r.GET("/createlobby", HttpReqCreateLobby);
 	r.GET("/joinlobby", HttpReqJoinLobby);
@@ -34,13 +35,18 @@ func GinInit() {
 	r.GET("/myip", HttpReqMyIP);
 	r.GET("/home", HttpReqHome);
 	r.POST("/home", HttpReqHome);
+
+	r.GET("/getgame", HttpReqGetGame);
+
+	r.GET("/getgameservers", HttpReqGetGameServers);
+	r.POST("/pingsreceiver", HttpReqPingsReceiver);
 	
 	fmt.Printf("Starting web server\n");
 	go r.Run(":"+settings.ListenPort); //Listen on port
 }
 
 func HttpReqMyIP(c *gin.Context) {
-	c.Header("Access-Control-Allow-Origin", "https://"+settings.HomeDomain);
+	c.Header("Access-Control-Allow-Origin", c.Request.Header.Get("origin"));
 	c.Header("Access-Control-Allow-Credentials", "true");
 	c.String(200, c.ClientIP());
 }
@@ -48,7 +54,7 @@ func HttpReqMyIP(c *gin.Context) {
 func HttpReqHome(c *gin.Context) {
 	sLink := c.Query("link");
 
-	c.Header("Access-Control-Allow-Origin", "https://"+settings.HomeDomain);
+	c.Header("Access-Control-Allow-Origin", c.Request.Header.Get("origin"));
 	c.Header("Access-Control-Allow-Credentials", "true");
 	if (sLink == "") {
 		c.Redirect(303, "https://"+settings.HomeDomain);

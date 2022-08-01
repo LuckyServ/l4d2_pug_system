@@ -184,3 +184,34 @@ Response parameters:
 | &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>player_count</strong> | _int_ | Number of players in the lobby |
 | &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>readyup_state</strong> | _bool_ | Is lobby in readyup state |
 | &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>ready_players</strong> | _int_ | Number of ready players |
+
+<br/><br/>
+
+### GET /getgame
+##### Get the current game info of an authorized player
+Request parameters: None
+
+Response parameters:
+| Key | Type | Description
+| ------ | ------ | ------ |
+| <strong>success</strong> | _bool_ | "true" if success, "false" if not authorized or not in game |
+| <strong>game</strong> |  | Info about game, if success == true |
+| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>players_a</strong> | _[]_ | Array of players of team A |
+| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>players_b</strong> | _[]_ | Array of players of team B |
+| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>game_config</strong> | _string_ | Confogl config being played |
+| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>campaign_name</strong> | _string_ | Campaign being played |
+| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>pings_requested</strong> | _bool_ | In this state the pug system requires the player to send info about his ping for all gameservers |
+| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>server_ip</strong> | _string_ | Gameserver IP |
+
+<br/><br/>
+
+### GET /getgameservers
+##### Get the list of L4D2 servers applicable for the ld2_pug_system
+Request parameters: None
+
+Response parameters:
+| Key | Type | Description
+| ------ | ------ | ------ |
+| <strong>success</strong> | _bool_ | Always true |
+| <strong>count</strong> | _int_ | Number of servers |
+| <strong>servers</strong> | _[]string_ | Array of IP:PORT |

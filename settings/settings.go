@@ -38,6 +38,8 @@ var JoinLobbyCooldown int64;
 var AuthPerHour int;
 var ProfValidateCooldown int64;
 
+var GameServers []string;
+
 type ConfoglConfig struct {
 	CodeName		string
 	Name			string
@@ -287,6 +289,21 @@ func ConfigFile() bool {
 	}, "map_pool");
 	if (bErrorReadingMapPool) {
 		fmt.Printf("Error reading config file on map pool section\n");
+		return false;
+	}
+
+
+	//Gameservers section
+	bErrorReadingGameServers := true;
+	jsonparser.ArrayEach(byData, func(valueServer []byte, dataType jsonparser.ValueType, offset int, err error) {
+		sIP := string(valueServer);
+		if (sIP != "") {
+			GameServers = append(GameServers, sIP);
+			bErrorReadingGameServers = false;
+		}
+	}, "game_servers");
+	if (bErrorReadingGameServers) {
+		fmt.Printf("Error reading config file on gameservers section\n");
 		return false;
 	}
 

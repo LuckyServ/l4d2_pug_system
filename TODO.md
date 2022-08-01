@@ -1,6 +1,7 @@
 - [ ] Proceed with Game logic
 - [ ] Chat system
 - [ ] When calculating lobby mmr limits, include those players who are finishing a game soon
+- [ ] Penalty for not readying up in time
 - [ ] Update nickname button
 - [ ] Ban system
 - [ ] Smurf traces + connect logging

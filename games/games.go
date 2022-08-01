@@ -18,6 +18,7 @@ type EntGame struct {
 	CampaignName		string
 	Maps				[]string
 	State				int
+	ServerIP			string
 }
 
 const ( //game states
@@ -26,6 +27,7 @@ const ( //game states
 	StateCreated
 	StateCampaignChosen
 	StateTeamsPicked
+	StateWaitPings
 )
 
 var MapGames map[string]*EntGame = make(map[string]*EntGame);
@@ -58,4 +60,29 @@ func Create(pGame *EntGame) { //MuGames and MuPlayers must be locked outside
 		pPlayer.GameID = pGame.ID;
 	}
 	players.I64LastPlayerlistUpdate = time.Now().UnixMilli();
+}
+
+func Destroy(pGame *EntGame) { //MuGames and MuPlayers must be locked outside
+	delete(MapGames, pGame.ID);
+	iMaxG := len(ArrayGames);
+	for i := 0; i < iMaxG; i++ {
+		if (ArrayGames[i].ID == pGame.ID) {
+			ArrayGames[i] = ArrayGames[iMaxG - 1];
+			ArrayGames = ArrayGames[:(iMaxG - 1)];
+			break;
+		}
+	}
+	i64CurTime := time.Now().UnixMilli();
+	for _, pPlayer := range pGame.PlayersUnpaired {
+		pPlayer.IsInGame = false;
+		pPlayer.GameID = "";
+		pPlayer.LastGameChanged = i64CurTime;
+	}
+}
+
+func SetLastUpdated(arPlayers []*players.EntPlayer) { //Players must be locked outside
+	i64CurTime := time.Now().UnixMilli();
+	for _, pPlayer := range arPlayers {
+		pPlayer.LastGameChanged = i64CurTime;
+	}
 }

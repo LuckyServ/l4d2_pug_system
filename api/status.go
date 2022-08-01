@@ -22,6 +22,8 @@ func HttpReqStatus(c *gin.Context) {
 	i64CookiePlayersUpdatedAt, _ := strconv.ParseInt(sCookiePlayersUpdatedAt, 10, 64);
 	sCookieLobbiesUpdatedAt, _ := c.Cookie("lobbies_updated_at");
 	i64CookieLobbiesUpdatedAt, _ := strconv.ParseInt(sCookieLobbiesUpdatedAt, 10, 64);
+	sCookieGameUpdatedAt, _ := c.Cookie("game_updated_at");
+	i64CookieGameUpdatedAt, _ := strconv.ParseInt(sCookieGameUpdatedAt, 10, 64);
 
 	mapResponse["success"] = true;
 	mapResponse["no_new_lobbies"] = settings.NoNewLobbies;
@@ -29,12 +31,18 @@ func HttpReqStatus(c *gin.Context) {
 	mapResponse["time"] = i64CurTime;
 
 	mapResponse["authorized"] = false;
+	mapResponse["need_update_game"] = false;
 	if (errCookieSessID == nil && sCookieSessID != "") {
 		oSession, bAuthorized := auth.GetSession(sCookieSessID);
 		if (bAuthorized) {
 			mapResponse["authorized"] = true;
 			players.MuPlayers.Lock();
 			players.UpdatePlayerActivity(oSession.SteamID64);
+
+			if (i64CookieGameUpdatedAt <= players.MapPlayers[oSession.SteamID64].LastGameChanged) {
+				mapResponse["need_update_game"] = true;
+			}
+
 			players.MuPlayers.Unlock();
 		}
 	}
