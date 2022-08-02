@@ -23,3 +23,13 @@ func MaxValInt64(val1 int64, val2 int64) int64 {
 	}
 	return val2;
 }
+
+func GetStringIdxInArray(sValueBuffer string, arBuffer []string) int {
+	iMax := len(arBuffer);
+	for i := 0; i < iMax; i++ {
+		if (arBuffer[i] == sValueBuffer) {
+			return i;
+		}
+	}
+	return -1;
+}

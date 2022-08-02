@@ -215,5 +215,5 @@ Response parameters:
 | Key | Type | Description
 | ------ | ------ | ------ |
 | <strong>success</strong> | _bool_ | Always true |
-| <strong>count</strong> | _int_ | Number of servers |
-| <strong>servers</strong> | _[]string_ | Array of IP:PORT |
+| <strong>gameservers</strong> | _[]string_ | Array of IP:PORT |
+| <strong>servers</strong> | _[]string_ | Array of IP |
