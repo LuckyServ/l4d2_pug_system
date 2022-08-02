@@ -2,6 +2,7 @@
 - [ ] Chat system
 - [ ] When calculating lobby mmr limits, include those players who are finishing a game soon
 - [ ] Penalty for not readying up in time
+- [ ] On auth redirect to Realm
 - [ ] Update nickname button
 - [ ] Ban system
 - [ ] Smurf traces + connect logging

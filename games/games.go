@@ -19,6 +19,8 @@ type EntGame struct {
 	Maps				[]string
 	State				int
 	ServerIP			string
+	MmrMin				int
+	MmrMax				int
 }
 
 const ( //game states

@@ -202,11 +202,13 @@ Response parameters:
 | &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>campaign_name</strong> | _string_ | Campaign being played |
 | &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>pings_requested</strong> | _bool_ | In this state the pug system requires the player to send info about his ping for all gameservers |
 | &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>server_ip</strong> | _string_ | Gameserver IP |
+| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>mmr_min</strong> | _int_ | Lowest allowed mmr, -2000000000 if unbounded |
+| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>mmr_max</strong> | _int_ | Highest allowed mmr, 2000000000 if unbounded |
 
 <br/><br/>
 
 ### GET /getgameservers
-##### Get the list of L4D2 servers applicable for the ld2_pug_system
+##### Get the list of L4D2 servers applicable for the l4d2_pug_system
 Request parameters: None
 
 Response parameters:

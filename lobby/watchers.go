@@ -72,6 +72,8 @@ func WatchLobbies() {
 					CreatedAt:			time.Now().UnixMilli(),
 					GameConfig:			pLobby.GameConfig,
 					State:				games.StateCreating,
+					MmrMin:				pLobby.MmrMin,
+					MmrMax:				pLobby.MmrMax,
 				};
 
 				for _, pPlayer := range pLobby.Players {
