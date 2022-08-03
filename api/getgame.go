@@ -72,7 +72,7 @@ func HttpReqGetGame(c *gin.Context) {
 					PlayersB:			arPlayersB,
 					GameConfig:			pGame.GameConfig.Name,
 					CampaignName:		pGame.CampaignName,
-					PingsRequested:		(pGame.State == games.StateWaitPings && !pPlayer.GameServersPinged),
+					PingsRequested:		(pGame.State == games.StateWaitPings),
 					ServerIP:			pGame.ServerIP,
 					MmrMin:				pGame.MmrMin,
 					MmrMax:				pGame.MmrMax,

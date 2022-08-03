@@ -28,7 +28,6 @@ type EntPlayer struct {
 	AutoSearchingSince	int64 //unix timestamp in milliseconds
 	LobbyID				string
 	GameID				string
-	GameServersPinged	bool
 	LastGameChanged		int64  //unix timestamp in milliseconds
 	IsReadyInLobby		bool
 	LastValidateReq		int64 //Last profile validation request //unix timestamp in milliseconds

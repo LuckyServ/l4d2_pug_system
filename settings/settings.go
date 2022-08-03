@@ -6,6 +6,8 @@ import (
 	"github.com/buger/jsonparser"
 	"io/ioutil"
 	"sort"
+	"../utils"
+	"strings"
 )
 
 var FilePath string;
@@ -39,6 +41,7 @@ var AuthPerHour int;
 var ProfValidateCooldown int64;
 
 var GameServers []string;
+var HardwareServers []string;
 
 type ConfoglConfig struct {
 	CodeName		string
@@ -305,6 +308,12 @@ func ConfigFile() bool {
 	if (bErrorReadingGameServers) {
 		fmt.Printf("Error reading config file on gameservers section\n");
 		return false;
+	}
+	for _, sIPPORT := range GameServers {
+		sIP := strings.Split(sIPPORT, ":")[0];
+		if (utils.GetStringIdxInArray(sIP, HardwareServers) == -1) {
+			HardwareServers = append(HardwareServers, sIP);
+		}
 	}
 
 

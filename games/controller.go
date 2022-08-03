@@ -49,9 +49,6 @@ func Control(pGame *EntGame) {
 	//Request pings
 	MuGames.Lock();
 	players.MuPlayers.Lock();
-	for _, pPlayer := range pGame.PlayersUnpaired {
-		pPlayer.GameServersPinged = false;
-	}
 	pGame.State = StateWaitPings;
 	SetLastUpdated(pGame.PlayersUnpaired);
 	MuGames.Unlock();
