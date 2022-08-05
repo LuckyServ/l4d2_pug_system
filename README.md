@@ -217,3 +217,19 @@ Response parameters:
 | <strong>success</strong> | _bool_ | Always true |
 | <strong>gameservers</strong> | _[]string_ | Array of IP:PORT |
 | <strong>servers</strong> | _[]string_ | Array of IP |
+
+<br/><br/>
+
+### GET /pingsreceiver
+##### Tell the system about your ping to gameservers
+Request parameters:
+| Key | Type | Description
+| ------ | ------ |
+| _map[string]int_ | Map (array with keys) of pings, where key is IP address without port, and value is ping in milliseconds |
+
+Response parameters:
+| Key | Type | Description
+| ------ | ------ | ------ |
+| <strong>success</strong> | _bool_ | Always true |
+| <strong>gameservers</strong> | _[]string_ | Array of IP:PORT |
+| <strong>servers</strong> | _[]string_ | Array of IP |
