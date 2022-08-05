@@ -1,12 +1,13 @@
 package api
 
 import (
+	//"fmt"
 	"github.com/gin-gonic/gin"
 	"../games"
 	"../players/auth"
 	"../players"
 	"../settings"
-	"fmt"
+	"strconv"
 )
 
 
@@ -29,7 +30,20 @@ func HttpReqPingsReceiver(c *gin.Context) {
 					mapResponse["success"] = true;
 
 					for _, sIP := range settings.HardwareServers {
-						//todo
+						sPingMS := c.Query(sIP);
+						if (sPingMS != "") {
+							iPingMS, errPingMS := strconv.Atoi(sPingMS);
+							if (errPingMS == nil && iPingMS > 0) {
+								iOldPing, bAlrPinged := pPlayer.GameServerPings[sIP];
+								if (bAlrPinged) {
+									if (iPingMS < iOldPing) {
+										pPlayer.GameServerPings[sIP] = iPingMS;
+									}
+								} else {
+									pPlayer.GameServerPings[sIP] = iPingMS;
+								}
+							}
+						}
 					}
 
 				} else {
@@ -48,9 +62,24 @@ func HttpReqPingsReceiver(c *gin.Context) {
 	}
 
 	//Testing
-	/*mapResponse["success"] = true;
+	/*oSession, _ := auth.GetSession(sCookieSessID);
+	pPlayer := players.MapPlayers[oSession.SteamID64];
+	mapResponse["success"] = true;
 	for _, sIP := range settings.HardwareServers {
-		fmt.Printf("\"%s\": %s\n", sIP, c.Query(sIP));
+		sPingMS := c.Query(sIP);
+		if (sPingMS != "") {
+			iPingMS, errPingMS := strconv.Atoi(sPingMS);
+			if (errPingMS == nil && iPingMS > 0) {
+				iOldPing, bAlrPinged := pPlayer.GameServerPings[sIP];
+				if (bAlrPinged) {
+					if (iPingMS < iOldPing) {
+						pPlayer.GameServerPings[sIP] = iPingMS;
+					}
+				} else {
+					pPlayer.GameServerPings[sIP] = iPingMS;
+				}
+			}
+		}
 	}*/
 	
 	

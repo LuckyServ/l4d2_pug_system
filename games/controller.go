@@ -49,6 +49,9 @@ func Control(pGame *EntGame) {
 	//Request pings
 	MuGames.Lock();
 	players.MuPlayers.Lock();
+	for _, pPlayer := range pGame.PlayersUnpaired {
+		pPlayer.GameServerPings = make(map[string]int, len(settings.HardwareServers));
+	}
 	pGame.State = StateWaitPings;
 	SetLastUpdated(pGame.PlayersUnpaired);
 	MuGames.Unlock();
@@ -56,8 +59,16 @@ func Control(pGame *EntGame) {
 
 
 	//Wait for pings
-	
+	time.Sleep(10 * time.Second);
 
+
+	//Cancel the ping request
+	MuGames.Lock();
+	pGame.State = StateSelectServer;
+	MuGames.Unlock();
+
+
+	//Calculate the best server based on pings
 
 
 

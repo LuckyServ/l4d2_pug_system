@@ -32,6 +32,7 @@ type EntPlayer struct {
 	IsReadyInLobby		bool
 	LastValidateReq		int64 //Last profile validation request //unix timestamp in milliseconds
 	LastLobbyActivity	int64 //Last lobby activity //unix timestamp in milliseconds
+	GameServerPings		map[string]int
 }
 
 var MapPlayers map[string]*EntPlayer = make(map[string]*EntPlayer);

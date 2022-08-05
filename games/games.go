@@ -30,6 +30,7 @@ const ( //game states
 	StateCampaignChosen
 	StateTeamsPicked
 	StateWaitPings
+	StateSelectServer
 )
 
 var MapGames map[string]*EntGame = make(map[string]*EntGame);
