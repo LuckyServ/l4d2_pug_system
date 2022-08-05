@@ -223,7 +223,7 @@ Response parameters:
 ### GET /pingsreceiver
 ##### Tell the system about your ping to gameservers
 Request parameters:
-| Key | Type | Description
+| Type | Description
 | ------ | ------ |
 | _map[string]int_ | Map (array with keys) of pings, where key is IP address without port, and value is ping in milliseconds |
 
