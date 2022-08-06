@@ -62,11 +62,47 @@ func main() {
 	for _, pPlayer := range players.ArrayPlayers {
 		pPlayer.GameServerPings = make(map[string]int, len(settings.HardwareServers));
 	}
-	for {
+	for i := 1; i <= 10; i++ {
 		fmt.Printf("\n");
 		for _, pPlayer := range players.ArrayPlayers {
 			fmt.Printf("%v\n", pPlayer.GameServerPings);
 		}
 		time.Sleep(1 * time.Second);
+	}
+
+	
+	iTryCount := 0;
+	for {
+		fmt.Printf("Retrieving serverlist\n");
+		arAvailGameSrvs := games.GetAvailableServers();
+		fmt.Printf("Serverlist: %v\n", arAvailGameSrvs);
+
+		players.MuPlayers.Lock();
+		sIPPORT := games.SelectBestAvailableServer(players.ArrayPlayers, arAvailGameSrvs);
+		fmt.Printf("sIPPORT == \"%s\"\n", sIPPORT);
+
+		games.MuGames.Lock();
+		bSuccess := (sIPPORT != "");
+
+		if (bSuccess) {
+			games.MuGames.Unlock();
+			players.MuPlayers.Unlock();
+			fmt.Printf("Success\n");
+			break;
+		} else {
+
+			games.MuGames.Unlock();
+			players.MuPlayers.Unlock();
+
+			iTryCount++;
+			if (iTryCount >= settings.AvailGameSrvsMaxTries) {
+				games.MuGames.Lock();
+				players.MuPlayers.Lock();
+				games.MuGames.Unlock();
+				players.MuPlayers.Unlock();
+				return;
+			}
+		}
+		time.Sleep(60 * time.Second);
 	}
 }*/

@@ -31,6 +31,8 @@ const ( //game states
 	StateTeamsPicked
 	StateWaitPings
 	StateSelectServer
+	StateNoServers
+	StateWaitPlayersJoin
 )
 
 var MapGames map[string]*EntGame = make(map[string]*EntGame);
@@ -81,6 +83,7 @@ func Destroy(pGame *EntGame) { //MuGames and MuPlayers must be locked outside
 		pPlayer.GameID = "";
 		pPlayer.LastGameChanged = i64CurTime;
 	}
+	players.I64LastPlayerlistUpdate = i64CurTime;
 }
 
 func SetLastUpdated(arPlayers []*players.EntPlayer) { //Players must be locked outside

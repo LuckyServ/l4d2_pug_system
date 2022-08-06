@@ -59,17 +59,63 @@ func Control(pGame *EntGame) {
 
 
 	//Wait for pings
-	time.Sleep(10 * time.Second);
+	time.Sleep(time.Duration(settings.MaxPingWait) * time.Second);
 
 
 	//Cancel the ping request
 	MuGames.Lock();
+	players.MuPlayers.Lock();
 	pGame.State = StateSelectServer;
+	SetLastUpdated(pGame.PlayersUnpaired);
 	MuGames.Unlock();
+	players.MuPlayers.Lock();
 
 
-	//Calculate the best server based on pings
+	//Select best available server based on pings and availability (a2s requests here)
+	iTryCount := 0;
+	for {
+		arAvailGameSrvs := GetAvailableServers(); //long execution (a2s); no need to lock anything
 
+		players.MuPlayers.Lock();
+		sIPPORT := SelectBestAvailableServer(pGame.PlayersUnpaired, arAvailGameSrvs);
+
+		MuGames.Lock();
+		bSuccess := (sIPPORT != "");
+		if (bSuccess) {
+			for _, pGameI := range ArrayGames {
+				if (pGameI.ServerIP == sIPPORT) {
+					bSuccess = false;
+					break;
+				}
+			}
+		}
+
+		if (bSuccess) {
+			pGame.ServerIP = sIPPORT;
+			pGame.State = StateWaitPlayersJoin;
+			SetLastUpdated(pGame.PlayersUnpaired);
+			MuGames.Unlock();
+			players.MuPlayers.Unlock();
+			break;
+		} else {
+
+			pGame.State = StateNoServers;
+			SetLastUpdated(pGame.PlayersUnpaired);
+			MuGames.Unlock();
+			players.MuPlayers.Unlock();
+
+			iTryCount++;
+			if (iTryCount >= settings.AvailGameSrvsMaxTries) { //destroy lobby if too many tries
+				MuGames.Lock();
+				players.MuPlayers.Lock();
+				Destroy(pGame);
+				MuGames.Unlock();
+				players.MuPlayers.Unlock();
+				return;
+			}
+		}
+		time.Sleep(60 * time.Second); //check once per minute
+	}
 
 
 

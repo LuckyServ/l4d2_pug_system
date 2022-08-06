@@ -1,3 +1,4 @@
+- [ ] Check when idle timer is reset
 - [ ] Proceed with Game logic
 - [ ] Chat system
 - [ ] When calculating lobby mmr limits, include those players who are finishing a game soon
@@ -13,6 +14,7 @@
 - [ ] Restarting mechanism
 - [ ] Regularly increase mmr uncertainty value
 
+- [x] Make waiting for pings a settings instead of static 10s
 - [x] Allow to put any host in Allow-Origin
 - [x] Change Confogl configs list on settings, include config beautiful name
 - [x] Merge /getme and /getonlineplayers

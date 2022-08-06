@@ -43,6 +43,10 @@ var ProfValidateCooldown int64;
 var GameServers []string;
 var HardwareServers []string;
 
+var MaxPingWait int;
+var AvailGameSrvsMaxTries int;
+
+
 type ConfoglConfig struct {
 	CodeName		string
 	Name			string
@@ -235,6 +239,20 @@ func ConfigFile() bool {
 		return false;
 	}
 	LobbyFillTimeout = i64Buffer * 60 * 1000;
+
+	i64Buffer, errError = jsonparser.GetInt(byData, "game", "max_wait_pings_seconds");
+	if (errError != nil) {
+		fmt.Printf("Error reading config file: %s\n", errError);
+		return false;
+	}
+	MaxPingWait = int(i64Buffer);
+
+	i64Buffer, errError = jsonparser.GetInt(byData, "game", "get_available_servers_max_tries");
+	if (errError != nil) {
+		fmt.Printf("Error reading config file: %s\n", errError);
+		return false;
+	}
+	AvailGameSrvsMaxTries = int(i64Buffer);
 
 
 	//Confogl configs section
