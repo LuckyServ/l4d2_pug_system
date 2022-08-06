@@ -6,8 +6,7 @@ import (
 	"github.com/buger/jsonparser"
 	"io/ioutil"
 	"sort"
-	"../utils"
-	"strings"
+	//"../utils"
 )
 
 var FilePath string;
@@ -41,7 +40,8 @@ var AuthPerHour int;
 var ProfValidateCooldown int64;
 
 var GameServers []string;
-var HardwareServers []string;
+var HardwareServers []string; //parallel with HardwareDomains
+var HardwareDomains []string; //parallel with HardwareServers
 
 var MaxPingWait int;
 var AvailGameSrvsMaxTries int;
@@ -317,21 +317,25 @@ func ConfigFile() bool {
 	//Gameservers section
 	bErrorReadingGameServers := true;
 	jsonparser.ArrayEach(byData, func(valueServer []byte, dataType jsonparser.ValueType, offset int, err error) {
-		sIP := string(valueServer);
-		if (sIP != "") {
-			GameServers = append(GameServers, sIP);
-			bErrorReadingGameServers = false;
+
+		sDomain, _ := jsonparser.GetString(valueServer, "domain");
+		sServIP, _ := jsonparser.GetString(valueServer, "ip");
+		if (sDomain != "" && sServIP != "") {
+			HardwareDomains = append(HardwareDomains, sDomain);
+			HardwareServers = append(HardwareServers, sServIP);
 		}
+		jsonparser.ArrayEach(valueServer, func(valuePort []byte, dataType jsonparser.ValueType, offset int, err error) {
+			sPORT := string(valuePort);
+			if (sPORT != "") {
+				GameServers = append(GameServers, sServIP + ":" + sPORT);
+				bErrorReadingGameServers = false;
+			}
+		}, "ports");
+
 	}, "game_servers");
 	if (bErrorReadingGameServers) {
 		fmt.Printf("Error reading config file on gameservers section\n");
 		return false;
-	}
-	for _, sIPPORT := range GameServers {
-		sIP := strings.Split(sIPPORT, ":")[0];
-		if (utils.GetStringIdxInArray(sIP, HardwareServers) == -1) {
-			HardwareServers = append(HardwareServers, sIP);
-		}
 	}
 
 

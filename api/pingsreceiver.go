@@ -29,18 +29,18 @@ func HttpReqPingsReceiver(c *gin.Context) {
 				if (pGame.State == games.StateWaitPings) {
 					mapResponse["success"] = true;
 
-					for _, sIP := range settings.HardwareServers {
-						sPingMS := c.Query(sIP);
+					for i, _ := range settings.HardwareServers {
+						sPingMS := c.Query(settings.HardwareDomains[i]);
 						if (sPingMS != "") {
 							iPingMS, errPingMS := strconv.Atoi(sPingMS);
 							if (errPingMS == nil && iPingMS > 0) {
-								iOldPing, bAlrPinged := pPlayer.GameServerPings[sIP];
+								iOldPing, bAlrPinged := pPlayer.GameServerPings[settings.HardwareServers[i]];
 								if (bAlrPinged) {
 									if (iPingMS < iOldPing) {
-										pPlayer.GameServerPings[sIP] = iPingMS;
+										pPlayer.GameServerPings[settings.HardwareServers[i]] = iPingMS;
 									}
 								} else {
-									pPlayer.GameServerPings[sIP] = iPingMS;
+									pPlayer.GameServerPings[settings.HardwareServers[i]] = iPingMS;
 								}
 							}
 						}
@@ -62,25 +62,25 @@ func HttpReqPingsReceiver(c *gin.Context) {
 	}
 
 	//Testing
-	/*oSession, _ := auth.GetSession(sCookieSessID);
+	oSession, _ := auth.GetSession(sCookieSessID);
 	pPlayer := players.MapPlayers[oSession.SteamID64];
 	mapResponse["success"] = true;
-	for _, sIP := range settings.HardwareServers {
-		sPingMS := c.Query(sIP);
+	for i, _ := range settings.HardwareServers {
+		sPingMS := c.Query(settings.HardwareDomains[i]);
 		if (sPingMS != "") {
 			iPingMS, errPingMS := strconv.Atoi(sPingMS);
 			if (errPingMS == nil && iPingMS > 0) {
-				iOldPing, bAlrPinged := pPlayer.GameServerPings[sIP];
+				iOldPing, bAlrPinged := pPlayer.GameServerPings[settings.HardwareServers[i]];
 				if (bAlrPinged) {
 					if (iPingMS < iOldPing) {
-						pPlayer.GameServerPings[sIP] = iPingMS;
+						pPlayer.GameServerPings[settings.HardwareServers[i]] = iPingMS;
 					}
 				} else {
-					pPlayer.GameServerPings[sIP] = iPingMS;
+					pPlayer.GameServerPings[settings.HardwareServers[i]] = iPingMS;
 				}
 			}
 		}
-	}*/
+	}
 	
 	
 	c.Header("Access-Control-Allow-Origin", c.Request.Header.Get("origin"));

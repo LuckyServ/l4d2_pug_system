@@ -13,6 +13,7 @@ func HttpReqGetGameServers(c *gin.Context) {
 	mapResponse["success"] = true;
 	mapResponse["gameservers"] = settings.GameServers;
 	mapResponse["servers"] = settings.HardwareServers;
+	mapResponse["domains"] = settings.HardwareDomains;
 	
 	c.Header("Access-Control-Allow-Origin", c.Request.Header.Get("origin"));
 	c.Header("Access-Control-Allow-Credentials", "true");
