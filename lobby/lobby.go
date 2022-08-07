@@ -178,8 +178,15 @@ func Leave(pPlayer *players.EntPlayer) bool { //MuPlayers and MuLobbies must be 
 			}
 		}
 	} else if (pLobby.PlayerCount == 7) { //Remove ReadyUp traces if the lobby was in ReadyUp state
+		if (pPlayer.IsReadyInLobby) {
+			pPlayer.IsReadyInLobby = false;
+			pLobby.ReadyPlayers--;
+		}
 		for i := 0; i < pLobby.PlayerCount; i++ {
-			pLobby.Players[i].IsReadyInLobby = false;
+			if (pLobby.Players[i].IsReadyInLobby) {
+				pLobby.Players[i].IsReadyInLobby = false;
+				pLobby.ReadyPlayers--;
+			}
 		}
 	}
 

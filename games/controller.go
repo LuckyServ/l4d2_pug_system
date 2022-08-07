@@ -68,7 +68,7 @@ func Control(pGame *EntGame) {
 	pGame.State = StateSelectServer;
 	SetLastUpdated(pGame.PlayersUnpaired);
 	MuGames.Unlock();
-	players.MuPlayers.Lock();
+	players.MuPlayers.Unlock();
 
 
 	//Select best available server based on pings and availability (a2s requests here)
@@ -118,9 +118,9 @@ func Control(pGame *EntGame) {
 	}
 
 
+	//Wait for first readyup
 
 
-	//Select server
 	//Game proceeds
 	//Game ended, settle results
 	//Destroy Game

@@ -92,3 +92,15 @@ func SetLastUpdated(arPlayers []*players.EntPlayer) { //Players must be locked o
 		pPlayer.LastGameChanged = i64CurTime;
 	}
 }
+
+func GetGameByIP(sIP string) (*EntGame) { //Games must be locked outside
+	if (sIP == "") {
+		return nil;
+	}
+	for _, pGame := range ArrayGames {
+		if (pGame.ServerIP == sIP) {
+			return pGame;
+		}
+	}
+	return nil;
+}

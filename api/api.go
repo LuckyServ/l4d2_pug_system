@@ -40,6 +40,10 @@ func GinInit() {
 
 	r.GET("/getgameservers", HttpReqGetGameServers);
 	r.GET("/pingsreceiver", HttpReqPingsReceiver);
+
+
+	r.POST("/gs/getgame", HttpReqGSGetGame);
+
 	
 	fmt.Printf("Starting web server\n");
 	go r.Run(":"+settings.ListenPort); //Listen on port

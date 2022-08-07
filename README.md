@@ -233,3 +233,32 @@ Response parameters:
 | <strong>success</strong> | _bool_ | Always true |
 | <strong>gameservers</strong> | _[]string_ | Array of IP:PORT |
 | <strong>servers</strong> | _[]string_ | Array of IP |
+
+<br/><br/><br/><br/><br/><br/>
+## API for gameservers
+<br>All responses are VDF (Valve Data Format)
+<br>All responses are headed with "VDFresponse" key
+<br>All request and response parameters are strings
+<br>
+
+### POST /gs/getgame
+##### Get the current game info on the server
+Request parameters:
+| Key | Description
+| ------ | ------ |
+| <strong>auth_key</strong> | Backend auth key |
+| <strong>ip</strong> | IP address of the server (with port) |
+
+Response parameters:
+| Key | Description
+| ------ | ------ |
+| <strong>success</strong> | "true" if game found on this IP |
+| <strong>error</strong> | Error text if success == false |
+| <strong>player_a</strong>N | Steam ID 64 of player N in team A (N is value from 0 to 3) |
+| <strong>player_b</strong>N | Steam ID 64 of player N in team B (N is value from 0 to 3) |
+| <strong>confogl</strong> | Confogl config |
+| <strong>first_map</strong> | First map of the campaign |
+| <strong>last_map</strong> | Last map of the campaign |
+| <strong>mmr_min</strong> | Minimum mmr allowed in this game |
+| <strong>mmr_max</strong> | Maximum mmr allowed in this game |
+| <strong>game_state</strong> | Game state, possible values are "wait_readyup", "other" |

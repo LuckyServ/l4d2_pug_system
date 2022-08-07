@@ -14,6 +14,7 @@ import (
 	//"crypto/rand"
 	//"math/big"
 	//"encoding/json"
+	//"encoding/base64"
 )
 
 
@@ -51,58 +52,51 @@ func main() {
 
 
 	//Test pinging
-	//go PingTestingFromMain();
+	//go TestingFromMain();
 
 
 	//Block until shutdown command is received
 	fmt.Printf("End: %v\n", <-api.ChShutdown);
 }
 
-/*func PingTestingFromMain() {
+/*func TestingFromMain() {
+	time.Sleep(10 * time.Second);
+
+
+	for i := 1; i <= 8; i++ {
+		sGenSteamID64, _ := utils.GenerateRandomString(17, "123456789");
+		sGenName, _ := utils.GenerateRandomString(10, "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz");
+		pPlayer := &players.EntPlayer{
+			SteamID64:			sGenSteamID64,
+			NicknameBase64:		base64.StdEncoding.EncodeToString([]byte(sGenName)),
+			Mmr:				3000,
+			MmrUncertainty:		settings.DefaultMmrUncertainty,
+			ProfValidated:		true,
+			RulesAccepted:		true,
+			LastActivity:		time.Now().UnixMilli(),
+			IsOnline:			true,
+			OnlineSince:		time.Now().UnixMilli(),
+			LastLobbyActivity:	time.Now().UnixMilli(), //Last lobby activity //unix timestamp in milliseconds
+		};
+		players.MapPlayers[sGenSteamID64] = pPlayer;
+		players.ArrayPlayers = append(players.ArrayPlayers, pPlayer);
+	}
+	players.I64LastPlayerlistUpdate = time.Now().UnixMilli();
+
+
 	for _, pPlayer := range players.ArrayPlayers {
-		pPlayer.GameServerPings = make(map[string]int, len(settings.HardwareServers));
-	}
-	for i := 1; i <= 10; i++ {
-		fmt.Printf("\n");
-		for _, pPlayer := range players.ArrayPlayers {
-			fmt.Printf("%v\n", pPlayer.GameServerPings);
+		if (pPlayer.IsOnline && !pPlayer.IsInLobby && !pPlayer.IsInGame) {
+			lobby.JoinAny(pPlayer);
 		}
-		time.Sleep(1 * time.Second);
 	}
 
-	
-	iTryCount := 0;
-	for {
-		fmt.Printf("Retrieving serverlist\n");
-		arAvailGameSrvs := games.GetAvailableServers();
-		fmt.Printf("Serverlist: %v\n", arAvailGameSrvs);
+	time.Sleep(5 * time.Second);
 
-		players.MuPlayers.Lock();
-		sIPPORT := games.SelectBestAvailableServer(players.ArrayPlayers, arAvailGameSrvs);
-		fmt.Printf("sIPPORT == \"%s\"\n", sIPPORT);
-
-		games.MuGames.Lock();
-		bSuccess := (sIPPORT != "");
-
-		if (bSuccess) {
-			games.MuGames.Unlock();
-			players.MuPlayers.Unlock();
-			fmt.Printf("Success\n");
-			break;
-		} else {
-
-			games.MuGames.Unlock();
-			players.MuPlayers.Unlock();
-
-			iTryCount++;
-			if (iTryCount >= settings.AvailGameSrvsMaxTries) {
-				games.MuGames.Lock();
-				players.MuPlayers.Lock();
-				games.MuGames.Unlock();
-				players.MuPlayers.Unlock();
-				return;
-			}
+	for _, pPlayer := range players.ArrayPlayers {
+		if (pPlayer.IsInLobby && !pPlayer.IsReadyInLobby) {
+			time.Sleep(1 * time.Second);
+			lobby.Ready(pPlayer);
 		}
-		time.Sleep(60 * time.Second);
 	}
+
 }*/
