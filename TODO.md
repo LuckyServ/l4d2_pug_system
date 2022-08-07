@@ -2,6 +2,7 @@
 - [ ] Proceed with Game logic
 - [ ] Chat system
 - [ ] When calculating lobby mmr limits, include those players who are finishing a game soon
+- [ ] On authorization, redirect to Realm instead of given link
 - [ ] Penalty for not readying up in time
 - [ ] On auth redirect to Realm
 - [ ] Update nickname button

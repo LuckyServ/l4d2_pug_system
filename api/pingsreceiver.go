@@ -62,7 +62,7 @@ func HttpReqPingsReceiver(c *gin.Context) {
 	}
 
 	//Testing
-	oSession, _ := auth.GetSession(sCookieSessID);
+	/*oSession, _ := auth.GetSession(sCookieSessID);
 	pPlayer := players.MapPlayers[oSession.SteamID64];
 	mapResponse["success"] = true;
 	for i, _ := range settings.HardwareServers {
@@ -80,7 +80,7 @@ func HttpReqPingsReceiver(c *gin.Context) {
 				}
 			}
 		}
-	}
+	}*/
 	
 	
 	c.Header("Access-Control-Allow-Origin", c.Request.Header.Get("origin"));
