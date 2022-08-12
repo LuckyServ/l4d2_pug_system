@@ -22,7 +22,7 @@ func HttpReqGSGetGame(c *gin.Context) {
 			pGame := games.GetGameByIP(sIP);
 			if (pGame != nil) {
 
-				sResponse = fmt.Sprintf("%s\n	\"success\" \"true\"", sResponse);
+				sResponse = fmt.Sprintf("%s\n	\"success\" \"1\"", sResponse);
 
 				players.MuPlayers.Lock();
 				for i := 0; i < 4; i++ {
@@ -46,17 +46,17 @@ func HttpReqGSGetGame(c *gin.Context) {
 				}
 
 			} else {
-				sResponse = fmt.Sprintf("%s\n	\"success\" \"false\"", sResponse);
+				sResponse = fmt.Sprintf("%s\n	\"success\" \"0\"", sResponse);
 				sResponse = fmt.Sprintf("%s\n	\"error\" \"No game on this IP\"", sResponse);
 			}
 			games.MuGames.Unlock();
 		} else {
-			sResponse = fmt.Sprintf("%s\n	\"success\" \"false\"", sResponse);
+			sResponse = fmt.Sprintf("%s\n	\"success\" \"0\"", sResponse);
 			sResponse = fmt.Sprintf("%s\n	\"error\" \"No ip parameter\"", sResponse);
 		}
 
 	} else {
-		sResponse = fmt.Sprintf("%s\n	\"success\" \"false\"", sResponse);
+		sResponse = fmt.Sprintf("%s\n	\"success\" \"0\"", sResponse);
 		sResponse = fmt.Sprintf("%s\n	\"error\" \"Bad auth key\"", sResponse);
 	}
 

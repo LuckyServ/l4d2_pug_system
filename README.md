@@ -252,8 +252,8 @@ Request parameters:
 Response parameters:
 | Key | Description
 | ------ | ------ |
-| <strong>success</strong> | "true" if game found on this IP |
-| <strong>error</strong> | Error text if success == false |
+| <strong>success</strong> | "1" if game found on this IP, "0" otherwise |
+| <strong>error</strong> | Error text if success == "0" |
 | <strong>player_a</strong>N | Steam ID 64 of player N in team A (N is value from 0 to 3) |
 | <strong>player_b</strong>N | Steam ID 64 of player N in team B (N is value from 0 to 3) |
 | <strong>confogl</strong> | Confogl config |

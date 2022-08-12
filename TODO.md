@@ -1,13 +1,13 @@
+- [ ] Log pings
 - [ ] Check when idle timer is reset
 - [ ] Proceed with Game logic
 - [ ] Chat system
 - [ ] When calculating lobby mmr limits, include those players who are finishing a game soon
-- [ ] On authorization, redirect to Realm instead of given link
-- [ ] Penalty for not readying up in time
 - [ ] On auth redirect to Realm
 - [ ] Update nickname button
 - [ ] Ban system
-- [ ] Smurf traces + connect logging
+- [ ] Penalty for not readying up in time
+- [ ] Smurf traces + connect logging + ping loggin
 - [ ] Avatar links
 - [ ] Log out
 - [ ] Manage authorization expire
