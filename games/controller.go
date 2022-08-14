@@ -1,6 +1,7 @@
 package games
 
 import (
+	"fmt"
 	"../players"
 	"../settings"
 	"../rating"
@@ -118,9 +119,40 @@ func Control(pGame *EntGame) {
 	}
 
 
+	chRUpExpired := make(chan bool);
 	//Wait for first readyup
+	go func(chRUpExpired chan bool)() {
+		time.Sleep(time.Duration(settings.FirstReadyUpExpire) * time.Second);
+		select {
+		case chRUpExpired <- true:
+		default:
+		}
+	}(chRUpExpired);
+
+	chFullRUpReceived := make(chan bool);
+	MuGames.Lock();
+	pGame.ReceiverFullRUP = chFullRUpReceived;
+	MuGames.Unlock();
+	select {
+	case <-chRUpExpired:
+		MuGames.Lock();
+		players.MuPlayers.Lock();
+		pGame.State = StateReadyUpExpired;
+		SetLastUpdated(pGame.PlayersUnpaired);
+		MuGames.Unlock();
+		players.MuPlayers.Unlock();
+	case <-chFullRUpReceived:
+		MuGames.Lock();
+		players.MuPlayers.Lock();
+		pGame.State = StateGameProceeds;
+		SetLastUpdated(pGame.PlayersUnpaired);
+		MuGames.Unlock();
+		players.MuPlayers.Unlock();
+	}
 
 
+	fmt.Printf("Game proceeds\n");
+	select{};
 	//Game proceeds
 	//Game ended, settle results
 	//Destroy Game

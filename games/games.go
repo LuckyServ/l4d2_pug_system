@@ -21,6 +21,7 @@ type EntGame struct {
 	ServerIP			string
 	MmrMin				int
 	MmrMax				int
+	ReceiverFullRUP		chan bool
 }
 
 const ( //game states
@@ -33,6 +34,8 @@ const ( //game states
 	StateSelectServer
 	StateNoServers
 	StateWaitPlayersJoin
+	StateReadyUpExpired
+	StateGameProceeds
 )
 
 var MapGames map[string]*EntGame = make(map[string]*EntGame);

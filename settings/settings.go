@@ -45,6 +45,7 @@ var HardwareDomains []string; //parallel with HardwareServers
 
 var MaxPingWait int;
 var AvailGameSrvsMaxTries int;
+var FirstReadyUpExpire int64;
 
 
 type ConfoglConfig struct {
@@ -253,6 +254,13 @@ func ConfigFile() bool {
 		return false;
 	}
 	AvailGameSrvsMaxTries = int(i64Buffer);
+
+	i64Buffer, errError = jsonparser.GetInt(byData, "game", "new_game_first_readyup_minutes");
+	if (errError != nil) {
+		fmt.Printf("Error reading config file: %s\n", errError);
+		return false;
+	}
+	FirstReadyUpExpire = i64Buffer * 60;
 
 
 	//Confogl configs section

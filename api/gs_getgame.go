@@ -61,6 +61,6 @@ func HttpReqGSGetGame(c *gin.Context) {
 	}
 
 
-	sResponse = sResponse + "\n}";
+	sResponse = sResponse + "\n}\n";
 	c.String(200, sResponse);
 }

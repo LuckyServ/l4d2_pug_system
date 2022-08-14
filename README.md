@@ -262,3 +262,19 @@ Response parameters:
 | <strong>mmr_min</strong> | Minimum mmr allowed in this game |
 | <strong>mmr_max</strong> | Maximum mmr allowed in this game |
 | <strong>game_state</strong> | Game state, possible values are "wait_readyup", "other" |
+
+<br/><br/>
+
+### POST /gs/fullrup
+##### Notify the system about successfull ready up, the game proceeds
+Request parameters:
+| Key | Description
+| ------ | ------ |
+| <strong>auth_key</strong> | Backend auth key |
+| <strong>ip</strong> | IP address of the server (with port) |
+
+Response parameters:
+| Key | Description
+| ------ | ------ |
+| <strong>success</strong> | "1" if command received, "0" otherwise |
+| <strong>error</strong> | Error text if success == "0" |

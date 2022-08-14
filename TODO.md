@@ -1,3 +1,4 @@
+- [ ] In /getgame send current game state as text
 - [ ] Log pings
 - [ ] Check when idle timer is reset
 - [ ] Proceed with Game logic

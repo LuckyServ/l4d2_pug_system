@@ -43,6 +43,7 @@ func GinInit() {
 
 
 	r.POST("/gs/getgame", HttpReqGSGetGame);
+	r.POST("/gs/fullrup", HttpReqGSFullReadyUp);
 
 	
 	fmt.Printf("Starting web server\n");
