@@ -242,7 +242,7 @@ Response parameters:
 <br>
 
 ### POST /gs/getgame
-##### Get the current game info on the server
+##### Get the current game info
 Request parameters:
 | Key | Description
 | ------ | ------ |
@@ -272,6 +272,23 @@ Request parameters:
 | ------ | ------ |
 | <strong>auth_key</strong> | Backend auth key |
 | <strong>ip</strong> | IP address of the server (with port) |
+
+Response parameters:
+| Key | Description
+| ------ | ------ |
+| <strong>success</strong> | "1" if command received, "0" otherwise |
+| <strong>error</strong> | Error text if success == "0" |
+
+<br/><br/>
+
+### POST /gs/partialrup
+##### When first ready up time limit is expired, send the list of ready players
+Request parameters:
+| Key | Description
+| ------ | ------ |
+| <strong>auth_key</strong> | Backend auth key |
+| <strong>ip</strong> | IP address of the server (with port) |
+| <strong>ready_players</strong> | Possible values are "none_ready", "all_ready", or list of SteamID64 separated by comma |
 
 Response parameters:
 | Key | Description

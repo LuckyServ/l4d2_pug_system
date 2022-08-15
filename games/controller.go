@@ -119,8 +119,8 @@ func Control(pGame *EntGame) {
 	}
 
 
-	chRUpExpired := make(chan bool);
 	//Wait for first readyup
+	chRUpExpired := make(chan bool);
 	go func(chRUpExpired chan bool)() {
 		time.Sleep(time.Duration(settings.FirstReadyUpExpire) * time.Second);
 		select {
@@ -151,9 +151,64 @@ func Control(pGame *EntGame) {
 	}
 
 
+	//If Readyup not received, do smth
+	MuGames.Lock();
+	iStateBuffer := pGame.State;
+	MuGames.Unlock();
+	if (iStateBuffer == StateReadyUpExpired) {
+
+		chListOfReadyPlayersExpired := make(chan bool);
+		go func(chListOfReadyPlayersExpired chan bool)() {
+			time.Sleep(30 * time.Second);
+			select {
+			case chListOfReadyPlayersExpired <- true:
+			default:
+			}
+		}(chListOfReadyPlayersExpired);
+		chListOfReadyPlayers := make(chan []string);
+		MuGames.Lock();
+		pGame.ReceiverReadyList = chListOfReadyPlayers;
+		MuGames.Unlock();
+
+		select {
+		case <-chListOfReadyPlayersExpired:
+			//Ban no one, destroy the game
+			MuGames.Lock();
+			players.MuPlayers.Lock();
+			Destroy(pGame);
+			MuGames.Unlock();
+			players.MuPlayers.Unlock();
+			return;
+		case arReadyPlayers := <-chListOfReadyPlayers:
+			if (len(arReadyPlayers) == 1 && (arReadyPlayers[0] == "none_ready" || arReadyPlayers[0] == "all_ready")) {
+				//do nothing
+			} else {
+				//ban those who isnt ready
+			}
+			//Destroy the game
+			MuGames.Lock();
+			players.MuPlayers.Lock();
+			Destroy(pGame);
+			MuGames.Unlock();
+			players.MuPlayers.Unlock();
+			return;
+		case <-chFullRUpReceived:
+			//Proceed to the next state
+			MuGames.Lock();
+			players.MuPlayers.Lock();
+			pGame.State = StateGameProceeds;
+			SetLastUpdated(pGame.PlayersUnpaired);
+			MuGames.Unlock();
+			players.MuPlayers.Unlock();
+		}
+	}
+
+	
+
+
+	//Game proceeds
 	fmt.Printf("Game proceeds\n");
 	select{};
-	//Game proceeds
 	//Game ended, settle results
 	//Destroy Game
 }

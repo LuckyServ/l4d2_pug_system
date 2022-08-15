@@ -22,6 +22,7 @@ type EntGame struct {
 	MmrMin				int
 	MmrMax				int
 	ReceiverFullRUP		chan bool
+	ReceiverReadyList	chan []string
 }
 
 const ( //game states

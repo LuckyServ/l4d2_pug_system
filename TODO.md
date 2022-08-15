@@ -1,12 +1,12 @@
-- [ ] In /getgame send current game state as text
-- [ ] Log pings
-- [ ] Check when idle timer is reset
 - [ ] Proceed with Game logic
+- [ ] In /getgame send current game state as text
+- [ ] Check when idle timer is reset
 - [ ] Chat system
 - [ ] When calculating lobby mmr limits, include those players who are finishing a game soon
 - [ ] On auth redirect to Realm
 - [ ] Update nickname button
 - [ ] Ban system
+- [ ] Ban those who failed to join game in time
 - [ ] Penalty for not readying up in time
 - [ ] Smurf traces + connect logging + ping loggin
 - [ ] Avatar links
