@@ -26,10 +26,10 @@ func HttpReqGSGetGame(c *gin.Context) {
 
 				players.MuPlayers.Lock();
 				for i := 0; i < 4; i++ {
-					sResponse = fmt.Sprintf("%s\n	\"player_a%d\" \"%s\"", sResponse, i, pGame.PlayersA[i].SteamID64);
+					sResponse = fmt.Sprintf("%s\n	\"player_a%d\" \"%s\"", sResponse, i, pGame.PlayersA[i].SteamID64 + "s"); //"s" is a workaround for sourcemod bug, it recognizes the value as int otherwise
 				}
 				for i := 0; i < 4; i++ {
-					sResponse = fmt.Sprintf("%s\n	\"player_b%d\" \"%s\"", sResponse, i, pGame.PlayersB[i].SteamID64);
+					sResponse = fmt.Sprintf("%s\n	\"player_b%d\" \"%s\"", sResponse, i, pGame.PlayersB[i].SteamID64 + "s"); //"s" is a workaround for sourcemod bug, it recognizes the value as int otherwise
 				}
 				players.MuPlayers.Unlock();
 
@@ -41,6 +41,10 @@ func HttpReqGSGetGame(c *gin.Context) {
 
 				if (pGame.State == games.StateWaitPlayersJoin) {
 					sResponse = fmt.Sprintf("%s\n	\"game_state\" \"wait_readyup\"", sResponse);
+				} else if (pGame.State == games.StateReadyUpExpired) {
+					sResponse = fmt.Sprintf("%s\n	\"game_state\" \"readyup_expired\"", sResponse);
+				} else if (pGame.State == games.StateGameProceeds) {
+					sResponse = fmt.Sprintf("%s\n	\"game_state\" \"game_proceeds\"", sResponse);
 				} else {
 					sResponse = fmt.Sprintf("%s\n	\"game_state\" \"other\"", sResponse);
 				}

@@ -26,11 +26,12 @@ func HttpReqGSPartialReadyUp(c *gin.Context) {
 				sReadyPlayers := c.PostForm("ready_players");
 				if (sReadyPlayers != "") {
 
-					sResponse = fmt.Sprintf("%s\n	\"success\" \"1\"", sResponse);
-
 					select {
 					case pGame.ReceiverReadyList <- strings.Split(sReadyPlayers, ","):
+						sResponse = fmt.Sprintf("%s\n	\"success\" \"1\"", sResponse);
 					default:
+						sResponse = fmt.Sprintf("%s\n	\"success\" \"0\"", sResponse);
+						sResponse = fmt.Sprintf("%s\n	\"error\" \"Not waiting for ready players list\"", sResponse);
 					}
 
 				} else {
