@@ -46,6 +46,7 @@ var HardwareDomains []string; //parallel with HardwareServers
 var MaxPingWait int;
 var AvailGameSrvsMaxTries int;
 var FirstReadyUpExpire int64;
+var MaxAbsentSeconds int64;
 
 
 type ConfoglConfig struct {
@@ -261,6 +262,13 @@ func ConfigFile() bool {
 		return false;
 	}
 	FirstReadyUpExpire = i64Buffer * 60;
+
+	i64Buffer, errError = jsonparser.GetInt(byData, "game", "max_absent_minutes");
+	if (errError != nil) {
+		fmt.Printf("Error reading config file: %s\n", errError);
+		return false;
+	}
+	MaxAbsentSeconds = i64Buffer * 60;
 
 
 	//Confogl configs section

@@ -203,12 +203,42 @@ func Control(pGame *EntGame) {
 		}
 	}
 
-	
 
 
 	//Game proceeds
-	fmt.Printf("Game proceeds\n");
-	select{};
+	chResult := make(chan EntGameResult);
+	MuGames.Lock();
+	pGame.ReceiverResult = chResult;
+	MuGames.Unlock();
+
+	for { //continuously receive results until game ends
+
+		chResultExpired := make(chan bool);
+		go func(chResultExpired chan bool)() {
+			time.Sleep(60 * time.Second);
+			select {
+			case chResultExpired <- true:
+			default:
+			}
+		}(chResultExpired);
+
+		select {
+		case <-chResultExpired:
+			break; //procees to mmr calculation and bans for rq
+		case oResult := <-chResult:
+			MuGames.Lock();
+			pGame.GameResult = oResult;
+			MuGames.Unlock();
+			if (oResult.GameEnded) {
+				break;
+			}
+		}
+	}
+
+
+
 	//Game ended, settle results
+	fmt.Printf("Game ended\n");
+	select{};
 	//Destroy Game
 }

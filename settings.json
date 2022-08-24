@@ -33,7 +33,8 @@
 	"game": {
 		"max_wait_pings_seconds": 5,
 		"get_available_servers_max_tries": 5,
-		"new_game_first_readyup_minutes": 5
+		"new_game_first_readyup_minutes": 5,
+		"max_absent_minutes": 7
 	},
 	"domain": {
 		"home": "localhost",

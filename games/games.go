@@ -21,8 +21,23 @@ type EntGame struct {
 	ServerIP			string
 	MmrMin				int
 	MmrMax				int
+	GameResult			EntGameResult
 	ReceiverFullRUP		chan bool
 	ReceiverReadyList	chan []string
+	ReceiverResult		chan EntGameResult
+}
+
+type EntGameResult struct {
+	SettledScores		[2]int
+	CurrentScores		[2]int
+	InRound				bool
+	CurrentHalf			int //1 or 2
+	TeamsFlipped		bool
+	TankKilled			bool //only valid if InRound == true
+	Dominator			[2]string
+	Inferior			[2]string
+	GameEnded			bool //no more results should be accepted
+	AbsentPlayers		[]string
 }
 
 const ( //game states
