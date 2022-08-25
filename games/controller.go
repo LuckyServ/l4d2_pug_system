@@ -209,9 +209,11 @@ func Control(pGame *EntGame) {
 	chResult := make(chan EntGameResult);
 	MuGames.Lock();
 	pGame.ReceiverResult = chResult;
+	pGame.GameResult = EntGameResult{};
 	MuGames.Unlock();
 
-	for { //continuously receive results until game ends
+	bGameProceeds := true;
+	for bGameProceeds { //continuously receive results until game ends
 
 		chResultExpired := make(chan bool);
 		go func(chResultExpired chan bool)() {
@@ -224,13 +226,14 @@ func Control(pGame *EntGame) {
 
 		select {
 		case <-chResultExpired:
-			break; //procees to mmr calculation and bans for rq
+			bGameProceeds = false; //proceed to mmr calculation and bans for rq
 		case oResult := <-chResult:
 			MuGames.Lock();
 			pGame.GameResult = oResult;
 			MuGames.Unlock();
+			//fmt.Printf("%v\n", oResult);
 			if (oResult.GameEnded) {
-				break;
+				bGameProceeds = false;
 			}
 		}
 	}

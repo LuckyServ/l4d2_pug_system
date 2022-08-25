@@ -23,8 +23,6 @@ func HttpReqGSGameResults(c *gin.Context) {
 			pGame := games.GetGameByIP(sIP);
 			if (pGame != nil) {
 
-				sResponse = fmt.Sprintf("%s\n	\"success\" \"1\"", sResponse);
-
 				//we wont check for errors
 				iSettledScoresA, _ := strconv.Atoi(c.PostForm("settled_scores_a"));
 				iSettledScoresB, _ := strconv.Atoi(c.PostForm("settled_scores_b"));
@@ -68,7 +66,17 @@ func HttpReqGSGameResults(c *gin.Context) {
 
 				select {
 				case pGame.ReceiverResult <- oResult:
+					sResponse = fmt.Sprintf("%s\n	\"success\" \"1\"", sResponse);
+					if (bGameEnded) {
+						sResponse = fmt.Sprintf("%s\n	\"game_ended_type\" \"1\"", sResponse);
+					} else if (len(arAbsentPlayers) > 0) {
+						sResponse = fmt.Sprintf("%s\n	\"game_ended_type\" \"2\"", sResponse);
+					} else {
+						sResponse = fmt.Sprintf("%s\n	\"game_ended_type\" \"0\"", sResponse);
+					}
 				default:
+					sResponse = fmt.Sprintf("%s\n	\"success\" \"0\"", sResponse);
+					sResponse = fmt.Sprintf("%s\n	\"error\" \"Not waiting for game results\"", sResponse);
 				}
 
 
