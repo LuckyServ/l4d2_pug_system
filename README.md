@@ -1,5 +1,5 @@
 
-# l4d2_pug_system
+# l4d2center.com
 ## The backend layer of the ranked PUG system for Left 4 Dead 2
 
 ### GET /shutdown
