@@ -708,12 +708,14 @@ public Action Timer_CountAbsence(Handle timer) {
 		for (int i = 0; i < 8; i++) {
 			if (IsInPause()) {
 				if (bResponsibleForPause[i]) {
-					iAbsenceCounter[i] = iAbsenceCounter[i] + 1;
+					if (arPlayersAll[i][0] == '7') {
+						iAbsenceCounter[i] = iAbsenceCounter[i] + 1;
+					}
 				}
 				int client = GetClientBySteamID64(arPlayersAll[i]);
 				if (client > 0 && bResponsibleForPause[i]) {
 					int iTeam = GetClientTeam(client);
-					if (iTeam == 0 || (iTeam > 1 && iTime - iLastActivity[client] < 30)) {
+					if (iTeam == 0 || (iTeam > 0 && iTime - iLastActivity[client] < 30)) {
 						ServerCommand("sm_forceunpause");
 						SetResponsibleForPause(-1);
 					}
@@ -725,42 +727,50 @@ public Action Timer_CountAbsence(Handle timer) {
 					if (bInRound) {
 						if (iTeam > 1) {
 							if (iTime - iLastActivity[player] >= 30) {
+								if (arPlayersAll[i][0] == '7') {
+									iAbsenceCounter[i] = iAbsenceCounter[i] + 1;
+									if (iTime - iLastUnpause >= 5) {
+										ServerCommand("sm_forcepause");
+										SetResponsibleForPause(i);
+										if (!bPrinted[i]) {
+											bPrinted[i] = true;
+											PrintToChatAll("[l4d2center.com] %N is AFK. If he doesnt ready up in %d seconds, the game ends", player, GetConVarInt(hMaxAbsence) - iAbsenceCounter[i]);
+										}
+										return Plugin_Continue;
+									}
+								}
+							}
+						} else if (iTeam == 1) {
+							if (arPlayersAll[i][0] == '7') {
 								iAbsenceCounter[i] = iAbsenceCounter[i] + 1;
 								if (iTime - iLastUnpause >= 5) {
 									ServerCommand("sm_forcepause");
 									SetResponsibleForPause(i);
 									if (!bPrinted[i]) {
 										bPrinted[i] = true;
-										PrintToChatAll("[l4d2center.com] %N is AFK. If he doesnt ready up in %d seconds, the game ends", player, GetConVarInt(hMaxAbsence) - iAbsenceCounter[i]);
+										PrintToChatAll("[l4d2center.com] %N left the game. If he doesnt come back and ready up in %d seconds, the game ends", player, GetConVarInt(hMaxAbsence) - iAbsenceCounter[i]);
 									}
 									return Plugin_Continue;
 								}
 							}
-						} else if (iTeam == 1) {
-							iAbsenceCounter[i] = iAbsenceCounter[i] + 1;
-							if (iTime - iLastUnpause >= 5) {
-								ServerCommand("sm_forcepause");
-								SetResponsibleForPause(i);
-								if (!bPrinted[i]) {
-									bPrinted[i] = true;
-									PrintToChatAll("[l4d2center.com] %N left the game. If he doesnt come back and ready up in %d seconds, the game ends", player, GetConVarInt(hMaxAbsence) - iAbsenceCounter[i]);
-								}
-								return Plugin_Continue;
-							}
 						}
 					} else if (IsInReady() && (iTeam <= 1 || !IsReady(player))) {
-						iAbsenceCounter[i] = iAbsenceCounter[i] + 1;
+						if (arPlayersAll[i][0] == '7') {
+							iAbsenceCounter[i] = iAbsenceCounter[i] + 1;
+						}
 					}
 				} else {
-					iAbsenceCounter[i] = iAbsenceCounter[i] + 1;
-					if (bInRound && (iTime - iLastUnpause) >= 5) {
-						ServerCommand("sm_forcepause");
-						SetResponsibleForPause(i);
-						if (!bPrinted[i]) {
-							bPrinted[i] = true;
-							PrintToChatAll("[l4d2center.com] %s left the game. If he doesnt come back in %d seconds, the game ends", arPlayersAll[i], GetConVarInt(hMaxAbsence) - iAbsenceCounter[i]);
+					if (arPlayersAll[i][0] == '7') {
+						iAbsenceCounter[i] = iAbsenceCounter[i] + 1;
+						if (bInRound && (iTime - iLastUnpause) >= 5) {
+							ServerCommand("sm_forcepause");
+							SetResponsibleForPause(i);
+							if (!bPrinted[i]) {
+								bPrinted[i] = true;
+								PrintToChatAll("[l4d2center.com] %s left the game. If he doesnt come back in %d seconds, the game ends", arPlayersAll[i], GetConVarInt(hMaxAbsence) - iAbsenceCounter[i]);
+							}
+							return Plugin_Continue;
 						}
-						return Plugin_Continue;
 					}
 				}
 			}
