@@ -1,7 +1,7 @@
 package games
 
 import (
-	"fmt"
+	//"fmt"
 	"../players"
 	"../settings"
 	"../rating"
@@ -241,7 +241,19 @@ func Control(pGame *EntGame) {
 
 
 	//Game ended, settle results
-	fmt.Printf("Game ended\n");
-	select{};
+	MuGames.Lock();
+	players.MuPlayers.Lock();
+	pGame.State = StateGameEnded;
+	SetLastUpdated(pGame.PlayersUnpaired);
+	MuGames.Unlock();
+	players.MuPlayers.Unlock();
+
+
+
 	//Destroy Game
+	MuGames.Lock();
+	players.MuPlayers.Lock();
+	Destroy(pGame);
+	MuGames.Unlock();
+	players.MuPlayers.Unlock();
 }

@@ -24,7 +24,9 @@ func WatchLobbies() {
 				arReadyLobbies = append(arReadyLobbies, pLobby.ID);
 			} else if (pLobby.PlayerCount == 8 && pLobby.ReadyPlayers < 8 && i64CurTime - pLobby.ReadyUpSince >= settings.ReadyUpTimeout) {
 				for _, pPlayer := range pLobby.Players {
-					arUnreadyPlayers = append(arUnreadyPlayers, pPlayer);
+					if (!pPlayer.IsReadyInLobby) {
+						arUnreadyPlayers = append(arUnreadyPlayers, pPlayer);
+					}
 				}
 			} else if (pLobby.PlayerCount < 8 && i64CurTime - pLobby.CreatedAt >= settings.LobbyFillTimeout) {
 				for _, pPlayer := range pLobby.Players {

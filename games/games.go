@@ -52,6 +52,7 @@ const ( //game states
 	StateWaitPlayersJoin
 	StateReadyUpExpired
 	StateGameProceeds
+	StateGameEnded
 )
 
 var MapGames map[string]*EntGame = make(map[string]*EntGame);

@@ -10,11 +10,11 @@ import (
 	"./games"
 	"./players/auth"
 	"time"
-	"./utils"
+	//"./utils"
 	//"crypto/rand"
 	//"math/big"
 	//"encoding/json"
-	"encoding/base64"
+	//"encoding/base64"
 )
 
 
@@ -52,14 +52,14 @@ func main() {
 
 
 	//Test
-	go TestingFromMain();
+	//go TestingFromMain();
 
 
 	//Block until shutdown command is received
 	fmt.Printf("End: %v\n", <-api.ChShutdown);
 }
 
-func TestingFromMain() {
+/*func TestingFromMain() {
 	time.Sleep(10 * time.Second);
 
 
@@ -93,10 +93,10 @@ func TestingFromMain() {
 	time.Sleep(5 * time.Second);
 
 	for _, pPlayer := range players.ArrayPlayers {
-		if (pPlayer.IsInLobby && !pPlayer.IsReadyInLobby) {
+		if (pPlayer.IsInLobby && !pPlayer.IsReadyInLobby && pPlayer.SteamID64 != "76561198034909367") {
 			time.Sleep(1 * time.Second);
 			lobby.Ready(pPlayer);
 		}
 	}
 
-}
+}*/
