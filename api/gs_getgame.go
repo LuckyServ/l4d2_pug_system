@@ -6,6 +6,7 @@ import (
 	"../players/auth"
 	"../games"
 	"../players"
+	"../settings"
 )
 
 
@@ -38,6 +39,8 @@ func HttpReqGSGetGame(c *gin.Context) {
 				sResponse = fmt.Sprintf("%s\n	\"last_map\" \"%s\"", sResponse, pGame.Maps[len(pGame.Maps) - 1]);
 				sResponse = fmt.Sprintf("%s\n	\"mmr_min\" \"%d\"", sResponse, pGame.MmrMin);
 				sResponse = fmt.Sprintf("%s\n	\"mmr_max\" \"%d\"", sResponse, pGame.MmrMax);
+				sResponse = fmt.Sprintf("%s\n	\"max_absent\" \"%d\"", sResponse, settings.MaxAbsentSeconds);
+				sResponse = fmt.Sprintf("%s\n	\"max_single_absent\" \"%d\"", sResponse, settings.MaxSingleAbsentSeconds);
 
 				if (pGame.State == games.StateWaitPlayersJoin) {
 					sResponse = fmt.Sprintf("%s\n	\"game_state\" \"wait_readyup\"", sResponse);

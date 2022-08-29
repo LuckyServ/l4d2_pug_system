@@ -47,6 +47,8 @@ var MaxPingWait int;
 var AvailGameSrvsMaxTries int;
 var FirstReadyUpExpire int64;
 var MaxAbsentSeconds int64;
+var MaxSingleAbsentSeconds int64;
+var MinPlayersCount int;
 
 
 type ConfoglConfig struct {
@@ -269,6 +271,20 @@ func ConfigFile() bool {
 		return false;
 	}
 	MaxAbsentSeconds = i64Buffer * 60;
+
+	i64Buffer, errError = jsonparser.GetInt(byData, "game", "max_single_absent_minutes");
+	if (errError != nil) {
+		fmt.Printf("Error reading config file: %s\n", errError);
+		return false;
+	}
+	MaxSingleAbsentSeconds = i64Buffer * 60;
+
+	i64Buffer, errError = jsonparser.GetInt(byData, "game", "game_ends_if_players_disconnected");
+	if (errError != nil) {
+		fmt.Printf("Error reading config file: %s\n", errError);
+		return false;
+	}
+	MinPlayersCount = 8 - int(i64Buffer);
 
 
 	//Confogl configs section

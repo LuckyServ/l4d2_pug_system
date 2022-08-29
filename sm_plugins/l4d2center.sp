@@ -10,11 +10,11 @@
 
 
 Handle hMaxPlayers;
-Handle hMaxAbsence;
 bool ReadyUpLoaded;
 
 bool bWaitFirstReadyUp = true;
 bool bGameEnded;
+bool bGameFinished;
 
 int iPrevButtons[MAXPLAYERS + 1];
 int iPrevMouse[MAXPLAYERS + 1][2];
@@ -23,6 +23,7 @@ int iLastActivity[MAXPLAYERS + 1];
 int bResponsibleForPause[8]; //parallel with arPlayersAll[]
 int iLastUnpause;
 bool bPrinted[8]; //parallel with arPlayersAll[]
+int iSingleAbsence[8]; //parallel with arPlayersAll[]
 
 char sAuthKey[40];
 bool bIsL4D2Center;
@@ -41,6 +42,8 @@ char sLastMap[128];
 int iMinMmr = -2000000000;
 int iMaxMmr = 2000000000;
 char sGameState[32];
+int iMaxAbsent = 420;
+int iMaxSingleAbsent = 240;
 
 //Game results
 int iSettledScores[2];
@@ -57,11 +60,9 @@ public OnPluginStart() {
 		bIsL4D2Center = true;
 		GetConVarString(CreateConVar("l4d2center_auth_key", "none"), sAuthKey, sizeof(sAuthKey));
 		hMaxPlayers = FindConVar("sv_maxplayers");
-		hMaxAbsence = CreateConVar("sm_l4d2center_max_absence", "420", "Value in seconds");
 		ReadyUpLoaded = LibraryExists("readyup");
 		CreateTimer(10.0, Timer_UpdateGameState, 0, TIMER_REPEAT);
 		HookEvent("round_end", Event_RoundEnd);
-		HookEvent("player_incapacitated", Event_PlayerIncap);
 		HookEvent("player_team", Event_PlayerTeam);
 
 		//AFK
@@ -70,7 +71,7 @@ public OnPluginStart() {
 		AddCommandListener(OnCommandExecute, "spec_prev");
 		AddCommandListener(OnCommandExecute, "say");
 		AddCommandListener(OnCommandExecute, "say_team");
-		AddCommandListener(OnCommandExecute, "callvote");
+		AddCommandListener(OnCallVote, "callvote");
 		RegConsoleCmd("sm_ready", Ready_Cmd);
 		RegConsoleCmd("sm_r", Ready_Cmd);
 		CreateTimer(1.0, Timer_CountAbsence, 0, TIMER_REPEAT);
@@ -125,7 +126,27 @@ public Action Timer_AutoTeam(Handle timer) {
 }
 
 public Action Timer_UpdateGameState(Handle timer) {
-	QueryGameInfo();
+	if (!bPublicIP) {
+		int arIPaddr[4];
+		if (SteamWorks_GetPublicIP(arIPaddr)) {
+			Format(sPublicIP, sizeof(sPublicIP), "%d.%d.%d.%d:%d", arIPaddr[0], arIPaddr[1], arIPaddr[2], arIPaddr[3], GetConVarInt(FindConVar("hostport")));
+			bPublicIP = true;
+		}
+		if (!bPublicIP) {
+			return Plugin_Continue;
+		}
+	}
+
+	char sUrl[256];
+	Format(sUrl, sizeof(sUrl), "https://api.l4d2center.com/gs/getgame?auth_key=%s", sAuthKey);
+	Handle hSWReq = SteamWorks_CreateHTTPRequest(k_EHTTPMethodPOST, sUrl);
+	SteamWorks_SetHTTPRequestNetworkActivityTimeout(hSWReq, 9);
+	SteamWorks_SetHTTPRequestAbsoluteTimeoutMS(hSWReq, 10000);
+	SteamWorks_SetHTTPRequestRequiresVerifiedCertificate(hSWReq, false);
+	SteamWorks_SetHTTPRequestGetOrPostParameter(hSWReq, "auth_key", sAuthKey);
+	SteamWorks_SetHTTPRequestGetOrPostParameter(hSWReq, "ip", sPublicIP);
+	SteamWorks_SetHTTPCallbacks(hSWReq, SWReqCompleted_GameInfo);
+	SteamWorks_SendHTTPRequest(hSWReq);
 	return Plugin_Continue;
 }
 
@@ -203,6 +224,26 @@ public Action GameInfoReceived(Handle timer) {
 
 public Action UpdateGameResults(Handle timer) {
 
+	//Check if players left
+	bool bClientsConnected;
+	for (int i = 1; i <= MaxClients; i++) {
+		if (IsClientConnected(i) && !IsFakeClient(i)) {
+			bClientsConnected = true;
+			break;
+		}
+	}
+	int iPlayers;
+	if (bClientsConnected) {
+		for (int i = 0; i < 8; i++) {
+			int client = GetClientBySteamID64(arPlayersAll[i]);
+			if (client > 0) {
+				iPlayers++;
+			} else if (arPlayersAll[i][0] != '7') { //count fake players, for testing purposes
+				iPlayers++;
+			}
+		}
+	}
+
 	char sUrl[256];
 	Format(sUrl, sizeof(sUrl), "https://api.l4d2center.com/gs/gameresults?auth_key=%s", sAuthKey);
 	Handle hSWReq = SteamWorks_CreateHTTPRequest(k_EHTTPMethodPOST, sUrl);
@@ -245,10 +286,12 @@ public Action UpdateGameResults(Handle timer) {
 	SteamWorks_SetHTTPRequestGetOrPostParameter(hSWReq, "inferior_a", sBuffer);
 	Format(sBuffer, sizeof(sBuffer), "%s", sInferior[1]);
 	SteamWorks_SetHTTPRequestGetOrPostParameter(hSWReq, "inferior_b", sBuffer);
-	Format(sBuffer, sizeof(sBuffer), "%s", bGameEnded ? "yes" : "no");
-	SteamWorks_SetHTTPRequestGetOrPostParameter(hSWReq, "game_ended", sBuffer);
+	Format(sBuffer, sizeof(sBuffer), "%s", bGameFinished ? "yes" : "no");
+	SteamWorks_SetHTTPRequestGetOrPostParameter(hSWReq, "game_finished", sBuffer);
+	Format(sBuffer, sizeof(sBuffer), "%d", bClientsConnected ? iPlayers : 8);
+	SteamWorks_SetHTTPRequestGetOrPostParameter(hSWReq, "players_connected", sBuffer);
 	for (int i = 0; i < 8; i++) {
-		Format(sBuffer, sizeof(sBuffer), "%d", iAbsenceCounter[i]);
+		Format(sBuffer, sizeof(sBuffer), "%d", iSingleAbsence[i] >= iMaxSingleAbsent ? iMaxAbsent : iAbsenceCounter[i]);
 		SteamWorks_SetHTTPRequestGetOrPostParameter(hSWReq, arPlayersAll[i], sBuffer);
 	}
 
@@ -274,7 +317,7 @@ public void SWReqCompleted_UploadResults(Handle hRequest, bool bFailure, bool bR
 			if (iSuccess) {
 				int iGameEndType = KvGetNum(kvGameInfo, "game_ended_type", -1);
 				if (iGameEndType == 1) {
-					bGameEnded = true; //cant be false, but just in case
+					bGameEnded = true;
 					char sWinner[3];
 					if (iSettledScores[0] > iSettledScores[1]) {
 						Format(sWinner, sizeof(sWinner), "A");
@@ -293,6 +336,13 @@ public void SWReqCompleted_UploadResults(Handle hRequest, bool bFailure, bool bR
 					for (int i = 1; i <= MaxClients; i++) {
 						if (IsClientConnected(i) && !IsFakeClient(i)) {
 							KickClient(i, "Game ended: one or more players left it midgame");
+						}
+					}
+				} else if (iGameEndType == 3) {
+					bGameEnded = true;
+					for (int i = 1; i <= MaxClients; i++) {
+						if (IsClientConnected(i) && !IsFakeClient(i)) {
+							KickClient(i, "Game ended: players left the game");
 						}
 					}
 				}
@@ -404,30 +454,6 @@ SendFullReady() {
 	SteamWorks_SendHTTPRequest(hSWReq);
 }
 
-QueryGameInfo() {
-	if (!bPublicIP) {
-		int arIPaddr[4];
-		if (SteamWorks_GetPublicIP(arIPaddr)) {
-			Format(sPublicIP, sizeof(sPublicIP), "%d.%d.%d.%d:%d", arIPaddr[0], arIPaddr[1], arIPaddr[2], arIPaddr[3], GetConVarInt(FindConVar("hostport")));
-			bPublicIP = true;
-		}
-		if (!bPublicIP) {
-			return;
-		}
-	}
-
-	char sUrl[256];
-	Format(sUrl, sizeof(sUrl), "https://api.l4d2center.com/gs/getgame?auth_key=%s", sAuthKey);
-	Handle hSWReq = SteamWorks_CreateHTTPRequest(k_EHTTPMethodPOST, sUrl);
-	SteamWorks_SetHTTPRequestNetworkActivityTimeout(hSWReq, 9);
-	SteamWorks_SetHTTPRequestAbsoluteTimeoutMS(hSWReq, 10000);
-	SteamWorks_SetHTTPRequestRequiresVerifiedCertificate(hSWReq, false);
-	SteamWorks_SetHTTPRequestGetOrPostParameter(hSWReq, "auth_key", sAuthKey);
-	SteamWorks_SetHTTPRequestGetOrPostParameter(hSWReq, "ip", sPublicIP);
-	SteamWorks_SetHTTPCallbacks(hSWReq, SWReqCompleted_GameInfo);
-	SteamWorks_SendHTTPRequest(hSWReq);
-}
-
 public void SWReqCompleted_GameInfo(Handle hRequest, bool bFailure, bool bRequestSuccessful, EHTTPStatusCode eStatusCode) {
 	int iBodySize;
 	if (bRequestSuccessful && eStatusCode == k_EHTTPStatusCode200OK	&& SteamWorks_GetHTTPResponseBodySize(hRequest, iBodySize) && iBodySize > 0) {
@@ -463,6 +489,8 @@ public void SWReqCompleted_GameInfo(Handle hRequest, bool bFailure, bool bReques
 				iMinMmr = KvGetNum(kvGameInfo, "mmr_min", -2000000000);
 				iMaxMmr = KvGetNum(kvGameInfo, "mmr_max", 2000000000);
 				KvGetString(kvGameInfo, "game_state", sGameState, sizeof(sGameState), "unknown");
+				iMaxAbsent = KvGetNum(kvGameInfo, "max_absent", 420);
+				iMaxSingleAbsent = KvGetNum(kvGameInfo, "max_single_absent", 240);
 
 			}
 			if (iServerReserved != -1) {
@@ -512,16 +540,6 @@ int GetClientLobbyPatricipant(int client) {
 	return -1;
 }
 
-int GetPlayerBySteamID64(char[] SteamID64) {
-	for (int i = 1; i <= MaxClients; i++) {
-		char sBuffer[20];
-		if (IsClientInGame(i) && !IsFakeClient(i) && GetClientAuthId(i, AuthId_SteamID64, sBuffer, sizeof(sBuffer), false) && StrEqual(sBuffer, SteamID64) && GetClientTeam(i) > 0) {
-			return i;
-		}
-	}
-	return -1;
-}
-
 int GetClientBySteamID64(char[] SteamID64) {
 	for (int i = 1; i <= MaxClients; i++) {
 		char sBuffer[20];
@@ -546,7 +564,7 @@ int GetPlayerCorrectTeam(int client) {
 	return -1;
 }
 
-public OnClientAuthorized(int client, const char[] auth) {
+public void OnClientAuthorized(int client, const char[] auth) {
 	if (bIsL4D2Center &&
 	iServerReserved == 1 &&
 	!IsFakeClient(client) &&
@@ -556,7 +574,7 @@ public OnClientAuthorized(int client, const char[] auth) {
 	}
 }
 
-public OnClientPutInServer(int client) {
+public void OnClientPutInServer(int client) {
 	if (bIsL4D2Center &&
 	iServerReserved == 1 &&
 	!IsFakeClient(client) &&
@@ -564,6 +582,12 @@ public OnClientPutInServer(int client) {
 	GetClientLobbyPatricipant(client) == -1
 	) {
 		KickOnSpecsExceed(client);
+	}
+}
+
+public void OnClientConnected(int client) {
+	if (bGameEnded && !IsFakeClient(client)) {
+		KickClient(client, "Game ended, you cant connect to this server now");
 	}
 }
 
@@ -578,7 +602,7 @@ public void Event_RoundEnd(Event event, const char[] name, bool dontBroadcast) {
 			char sCurMap[128];
 			GetCurrentMap(sCurMap, sizeof(sCurMap));
 			if (StrEqual(sCurMap, sLastMap, false)) {
-				bGameEnded = true;
+				bGameFinished = true;
 				CreateTimer(0.4, UpdateGameResults);
 			}
 		}
@@ -633,12 +657,9 @@ public void Event_RoundEnd(Event event, const char[] name, bool dontBroadcast) {
 	}
 }
 
-public void Event_PlayerIncap(Event event, const char[] name, bool dontBroadcast) {
+public void OnTankDeath() {
 	if (bInRound) {
-		int incapped = GetClientOfUserId(GetEventInt(event, "userid"));
-		if (incapped > 0 && IsClientInGame(incapped) && GetClientTeam(incapped) == 3 && IsPlayerAlive(incapped) && GetEntProp(incapped, Prop_Send, "m_zombieClass") == 8) {
-			bTankKilled = true;
-		}
+		bTankKilled = true;
 	}
 }
 
@@ -671,14 +692,18 @@ KickOnSpecsExceed(client) {
 //AFK part
 public void OnPlayerRunCmdPost(int client, int buttons, int impulse, const float vel[3], const float angles[3], int weapon, int subtype, int cmdnum, int tickcount, int seed, const int mouse[2]) {
 	if (bIsL4D2Center && client > 0 && client <= MaxClients && (iPrevButtons[client] != buttons || iPrevMouse[client][0] != mouse[0] || iPrevMouse[client][1] != mouse[1]) && IsClientInGame(client) && !IsFakeClient(client)) {
-		/*if (GetTime() - iLastActivity[client] >= 3) {
-			PrintToChatAll("%N came back", client);
-		}*/
 		iPrevButtons[client] = buttons;
 		iPrevMouse[client][0] = mouse[0];
 		iPrevMouse[client][1] = mouse[1];
 		iLastActivity[client] = GetTime();
 	}
+}
+
+Action OnCallVote(int client, const char[] command, int argc) {
+	if (client > 0 && IsClientInGame(client) && !IsFakeClient(client)) {
+		iLastActivity[client] = GetTime();
+	}
+	return Plugin_Handled;
 }
 
 Action OnCommandExecute(int client, const char[] command, int argc) {
@@ -696,23 +721,21 @@ public Action Ready_Cmd(int client, int args) {
 }
 
 public Action Timer_CountAbsence(Handle timer) {
-	/*for (int i = 1; i <= MaxClients; i++) {
-		if (IsClientInGame(i) && !IsFakeClient(i) && GetClientTeam(i) > 0) {
-			if (GetTime() - iLastActivity[i] >= 3) {
-				PrintToChatAll("%d %N is AFK", GetTime(), i);
-			}
-		}
-	}*/
+
 	if (iServerReserved == 1 && !bWaitFirstReadyUp) {
 		int iTime = GetTime();
 		for (int i = 0; i < 8; i++) {
+
+			int client = GetClientBySteamID64(arPlayersAll[i]);
+
+			//Different absence calculations if game paused
 			if (IsInPause()) {
 				if (bResponsibleForPause[i]) {
 					if (arPlayersAll[i][0] == '7') {
 						iAbsenceCounter[i] = iAbsenceCounter[i] + 1;
+						iSingleAbsence[i] = iSingleAbsence[i] + 1;
 					}
 				}
-				int client = GetClientBySteamID64(arPlayersAll[i]);
 				if (client > 0 && bResponsibleForPause[i]) {
 					int iTeam = GetClientTeam(client);
 					if (iTeam == 0 || (iTeam > 0 && iTime - iLastActivity[client] < 30)) {
@@ -721,7 +744,7 @@ public Action Timer_CountAbsence(Handle timer) {
 					}
 				}
 			} else {
-				int player = GetPlayerBySteamID64(arPlayersAll[i]);
+				int player = (client > 0 && GetClientTeam(client) > 0) ? client : -1;
 				if (player > 0) {
 					int iTeam = GetClientTeam(player);
 					if (bInRound) {
@@ -729,26 +752,39 @@ public Action Timer_CountAbsence(Handle timer) {
 							if (iTime - iLastActivity[player] >= 30) {
 								if (arPlayersAll[i][0] == '7') {
 									iAbsenceCounter[i] = iAbsenceCounter[i] + 1;
+									iSingleAbsence[i] = iSingleAbsence[i] + 1;
 									if (iTime - iLastUnpause >= 5) {
-										ServerCommand("sm_forcepause");
-										SetResponsibleForPause(i);
+										if (IsGoodTimeForPause()) {
+											ServerCommand("sm_forcepause");
+											SetResponsibleForPause(i);
+										}
 										if (!bPrinted[i]) {
 											bPrinted[i] = true;
-											PrintToChatAll("[l4d2center.com] %N is AFK. If he doesnt ready up in %d seconds, the game ends", player, GetConVarInt(hMaxAbsence) - iAbsenceCounter[i]);
+											PrintToChatAll("[l4d2center.com] %N is AFK. If he doesnt ready up in %d seconds, the game ends", player, MinVal(iMaxAbsent - iAbsenceCounter[i], iMaxSingleAbsent));
 										}
 										return Plugin_Continue;
 									}
+								}
+							} else {
+								if (bPrinted[i]) {
+									bPrinted[i] = false;
+								}
+								if (iSingleAbsence[i] != 0) {
+									iSingleAbsence[i] = 0;
 								}
 							}
 						} else if (iTeam == 1) {
 							if (arPlayersAll[i][0] == '7') {
 								iAbsenceCounter[i] = iAbsenceCounter[i] + 1;
+								iSingleAbsence[i] = iSingleAbsence[i] + 1;
 								if (iTime - iLastUnpause >= 5) {
-									ServerCommand("sm_forcepause");
-									SetResponsibleForPause(i);
+									if (IsGoodTimeForPause()) {
+										ServerCommand("sm_forcepause");
+										SetResponsibleForPause(i);
+									}
 									if (!bPrinted[i]) {
 										bPrinted[i] = true;
-										PrintToChatAll("[l4d2center.com] %N left the game. If he doesnt come back and ready up in %d seconds, the game ends", player, GetConVarInt(hMaxAbsence) - iAbsenceCounter[i]);
+										PrintToChatAll("[l4d2center.com] %N left the game. If he doesnt come back and ready up in %d seconds, the game ends", player, MinVal(iMaxAbsent - iAbsenceCounter[i], iMaxSingleAbsent));
 									}
 									return Plugin_Continue;
 								}
@@ -757,17 +793,21 @@ public Action Timer_CountAbsence(Handle timer) {
 					} else if (IsInReady() && (iTeam <= 1 || !IsReady(player))) {
 						if (arPlayersAll[i][0] == '7') {
 							iAbsenceCounter[i] = iAbsenceCounter[i] + 1;
+							iSingleAbsence[i] = iSingleAbsence[i] + 1;
 						}
 					}
 				} else {
 					if (arPlayersAll[i][0] == '7') {
 						iAbsenceCounter[i] = iAbsenceCounter[i] + 1;
+						iSingleAbsence[i] = iSingleAbsence[i] + 1;
 						if (bInRound && (iTime - iLastUnpause) >= 5) {
-							ServerCommand("sm_forcepause");
-							SetResponsibleForPause(i);
+							if (IsGoodTimeForPause()) {
+								ServerCommand("sm_forcepause");
+								SetResponsibleForPause(i);
+							}
 							if (!bPrinted[i]) {
 								bPrinted[i] = true;
-								PrintToChatAll("[l4d2center.com] %s left the game. If he doesnt come back in %d seconds, the game ends", arPlayersAll[i], GetConVarInt(hMaxAbsence) - iAbsenceCounter[i]);
+								PrintToChatAll("[l4d2center.com] %s left the game. If he doesnt come back in %d seconds, the game ends", arPlayersAll[i], MinVal(iMaxAbsent - iAbsenceCounter[i], iMaxSingleAbsent));
 							}
 							return Plugin_Continue;
 						}
@@ -793,6 +833,22 @@ public OnUnpause() {
 	if (bIsL4D2Center) {
 		iLastUnpause = GetTime();
 	}
+}
+
+bool IsGoodTimeForPause() {
+	char sCurMap[128];
+	GetCurrentMap(sCurMap, sizeof(sCurMap));
+	if (GameRules_GetProp("m_bInSecondHalfOfRound") == 1 && StrEqual(sCurMap, sLastMap, false)) {
+		return false;
+	}
+	return true;
+}
+
+int MinVal(int val1, int val2) {
+	if (val1 < val2) {
+		return val1;
+	}
+	return val2;
 }
 
 
@@ -832,3 +888,15 @@ public void __pl_survivor_mvp_SetNTVOptional()
 	MarkNativeAsOptional("SURVMVP_GetMVPCIPercent");
 }
 #endif
+
+//l4d_tank_damage_announce include
+public SharedPlugin __pl_l4d_tank_damage_announce =
+{
+	name = "l4d_tank_damage_announce",
+	file = "l4d_tank_damage_announce.smx",
+#if defined REQUIRE_PLUGIN
+	required = 1,
+#else
+	required = 0,
+#endif
+};

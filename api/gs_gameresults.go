@@ -36,14 +36,15 @@ func HttpReqGSGameResults(c *gin.Context) {
 				sDominatorB := c.PostForm("dominator_b");
 				sInferiorA := c.PostForm("inferior_a");
 				sInferiorB := c.PostForm("inferior_b");
-				bGameEnded := (c.PostForm("game_ended") == "yes");
+				bGameFinished := (c.PostForm("game_finished") == "yes");
+				iPlayers, _ := strconv.Atoi(c.PostForm("players_connected"));
 
 				players.MuPlayers.Lock();
 
 				var arAbsentPlayers []string;
 				for _, pPlayer := range pGame.PlayersUnpaired {
 					iAbsentFor, errAbsentFor := strconv.Atoi(c.PostForm(pPlayer.SteamID64));
-					if (errAbsentFor == nil && int64(iAbsentFor) > settings.MaxAbsentSeconds) {
+					if (errAbsentFor == nil && int64(iAbsentFor) >= settings.MaxAbsentSeconds) {
 						arAbsentPlayers = append(arAbsentPlayers, pPlayer.SteamID64);
 					}
 				}
@@ -60,17 +61,20 @@ func HttpReqGSGameResults(c *gin.Context) {
 					TankKilled:				bTankKilled,
 					Dominator:				[2]string{sDominatorA, sDominatorB},
 					Inferior:				[2]string{sInferiorA, sInferiorB},
-					GameEnded:				bGameEnded,
+					GameEnded:				(bGameFinished || len(arAbsentPlayers) > 0 || iPlayers <= settings.MinPlayersCount),
 					AbsentPlayers:			arAbsentPlayers,
+					ConnectedPlayers:		iPlayers,
 				};
 
 				select {
 				case pGame.ReceiverResult <- oResult:
 					sResponse = fmt.Sprintf("%s\n	\"success\" \"1\"", sResponse);
-					if (bGameEnded) {
+					if (bGameFinished) {
 						sResponse = fmt.Sprintf("%s\n	\"game_ended_type\" \"1\"", sResponse);
 					} else if (len(arAbsentPlayers) > 0) {
 						sResponse = fmt.Sprintf("%s\n	\"game_ended_type\" \"2\"", sResponse);
+					} else if (iPlayers <= settings.MinPlayersCount) {
+						sResponse = fmt.Sprintf("%s\n	\"game_ended_type\" \"3\"", sResponse);
 					} else {
 						sResponse = fmt.Sprintf("%s\n	\"game_ended_type\" \"0\"", sResponse);
 					}

@@ -69,7 +69,7 @@ func TestingFromMain() {
 		pPlayer := &players.EntPlayer{
 			SteamID64:			sGenSteamID64,
 			NicknameBase64:		base64.StdEncoding.EncodeToString([]byte(sGenName)),
-			Mmr:				3000,
+			Mmr:				int((time.Now().UnixNano() % 3000) + 1),
 			MmrUncertainty:		settings.DefaultMmrUncertainty,
 			ProfValidated:		true,
 			RulesAccepted:		true,

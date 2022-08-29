@@ -38,6 +38,7 @@ type EntGameResult struct {
 	Inferior			[2]string
 	GameEnded			bool //no more results should be accepted
 	AbsentPlayers		[]string
+	ConnectedPlayers	int
 }
 
 const ( //game states

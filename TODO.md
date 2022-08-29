@@ -1,5 +1,6 @@
 - [ ] Proceed with Game logic
 - [ ] In /getgame send current game state as text
+- [ ] Check if user is on VPN https://getipintel.net/
 - [ ] Check when idle timer is reset
 - [ ] Chat system
 - [ ] When calculating lobby mmr limits, include those players who are finishing a game soon
@@ -7,6 +8,7 @@
 - [ ] Update nickname button
 - [ ] Ban system
 - [ ] Ban those who failed to join game in time
+- [ ] Ban those who ragequitted midgame
 - [ ] Penalty for not readying up in time
 - [ ] Smurf traces + connect logging + ping loggin
 - [ ] Avatar links
