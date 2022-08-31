@@ -36,7 +36,11 @@
 		"new_game_first_readyup_minutes": 5,
 		"max_absent_minutes": 7,
 		"max_single_absent_minutes": 4,
-		"game_ends_if_players_disconnected": 5
+		"game_ends_if_players_disconnected": 5,
+		"ragequit_penalty": {
+			"on_map_transition": 400,
+			"inf_on_half2_midtank": 600
+		}
 	},
 	"domain": {
 		"home": "localhost",

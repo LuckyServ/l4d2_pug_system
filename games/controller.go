@@ -1,7 +1,7 @@
 package games
 
 import (
-	//"fmt"
+	"fmt"
 	"../players"
 	"../settings"
 	"../rating"
@@ -206,10 +206,10 @@ func Control(pGame *EntGame) {
 
 
 	//Game proceeds
-	chResult := make(chan EntGameResult);
+	chResult := make(chan rating.EntGameResult);
 	MuGames.Lock();
 	pGame.ReceiverResult = chResult;
-	pGame.GameResult = EntGameResult{};
+	pGame.GameResult = rating.EntGameResult{};
 	MuGames.Unlock();
 
 	bGameProceeds := true;
@@ -243,11 +243,17 @@ func Control(pGame *EntGame) {
 	//Game ended, settle results
 	MuGames.Lock();
 	players.MuPlayers.Lock();
+
 	pGame.State = StateGameEnded;
+	oResult := pGame.GameResult;
+	arFinalScores := rating.DetermineFinalScores(oResult, pGame.PlayersA, pGame.PlayersB);
+
 	SetLastUpdated(pGame.PlayersUnpaired);
 	MuGames.Unlock();
 	players.MuPlayers.Unlock();
 
+
+	fmt.Printf("%d-%d\n", arFinalScores[0], arFinalScores[1]);
 
 
 	//Destroy Game

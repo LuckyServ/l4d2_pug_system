@@ -11,10 +11,9 @@
 
 Handle hMaxPlayers;
 bool ReadyUpLoaded;
+bool bRQDeclared;
 
 bool bWaitFirstReadyUp = true;
-bool bGameEnded;
-bool bGameFinished;
 
 int iPrevButtons[MAXPLAYERS + 1];
 int iPrevMouse[MAXPLAYERS + 1][2];
@@ -51,7 +50,11 @@ char sDominator[2][20];
 char sInferior[2][20];
 bool bTankKilled;
 bool bInRound;
+bool bInMapTransition;
+int iMapsFinished;
 int iAbsenceCounter[8]; //parallel with arPlayersAll[]
+bool bGameEnded;
+bool bGameFinished;
 
 
 
@@ -77,6 +80,11 @@ public OnPluginStart() {
 		CreateTimer(1.0, Timer_CountAbsence, 0, TIMER_REPEAT);
 		CreateTimer(0.9876, Timer_AutoTeam, 0, TIMER_REPEAT);
 
+		//admit RQ
+		RegConsoleCmd("sm_rq", Ragequit_Cmd);
+		RegConsoleCmd("sm_ragequit", Ragequit_Cmd);
+		RegConsoleCmd("sm_quit", Ragequit_Cmd);
+
 		//Test
 		//RegAdminCmd("sm_test", Cmd_Test, 0);
 	}
@@ -90,6 +98,18 @@ public void OnLibraryRemoved(const char[] name) {
 	ReadyUpLoaded = LibraryExists("readyup");
 }
 
+public Action Ragequit_Cmd(int client, int args) {
+	if (!bWaitFirstReadyUp && !bRQDeclared && client > 0 && IsClientConnected(client) && !IsFakeClient(client)) {
+		int iPlayer = GetClientLobbyParticipant(client);
+		if (iPlayer != -1) {
+			bRQDeclared = true;
+			iAbsenceCounter[iPlayer] = iMaxAbsent;
+			CreateTimer(0.2, UpdateGameResults);
+		}
+	}
+	return Plugin_Handled;
+}
+
 //Test
 /*Action Cmd_Test(int client, int args) {
 	CreateTimer(0.0, UpdateGameResults);
@@ -101,10 +121,10 @@ public Action Timer_AutoTeam(Handle timer) {
 		bool bSomeoneSpecced;
 		for (int i = 1; i <= MaxClients; i++) {
 			if (IsClientInGame(i) && !IsFakeClient(i) && GetClientTeam(i) > 1) {
-				if (GetClientLobbyPatricipant(i) == -1) {
+				if (GetClientLobbyParticipant(i) == -1) {
 					FakeClientCommand(i, "sm_s");
 					bSomeoneSpecced = true;
-				} else if (GetClientLobbyPatricipant(i) != -1 && GetClientTeam(i) != GetPlayerCorrectTeam(i)) {
+				} else if (GetClientLobbyParticipant(i) != -1 && GetClientTeam(i) != GetPlayerCorrectTeam(i)) {
 					FakeClientCommand(i, "sm_s");
 					bSomeoneSpecced = true;
 				}
@@ -115,7 +135,7 @@ public Action Timer_AutoTeam(Handle timer) {
 		}
 
 		for (int i = 1; i <= MaxClients; i++) {
-			if (IsClientInGame(i) && !IsFakeClient(i) && GetClientTeam(i) == 1 && GetClientLobbyPatricipant(i) != -1) {
+			if (IsClientInGame(i) && !IsFakeClient(i) && GetClientTeam(i) == 1 && GetClientLobbyParticipant(i) != -1) {
 				FakeClientCommand(i, "jointeam %d", GetPlayerCorrectTeam(i));
 				return Plugin_Continue;
 			}
@@ -153,6 +173,7 @@ public Action Timer_UpdateGameState(Handle timer) {
 public OnRoundIsLive() {
 	if (bIsL4D2Center) {
 		bInRound = true;
+		bInMapTransition = false;
 		bTankKilled = false;
 		iLastUnpause = GetTime();
 		if (bWaitFirstReadyUp) {
@@ -170,13 +191,13 @@ public Action GameInfoReceived(Handle timer) {
 		if (iCurMaxSpecs < iMaxSpecs) {
 			int iCurSpecs;
 			for (int i = 1; i <= MaxClients; i++) {
-				if (IsClientConnected(i) && !IsFakeClient(i) && GetClientLobbyPatricipant(i) == -1) {
+				if (IsClientConnected(i) && !IsFakeClient(i) && GetClientLobbyParticipant(i) == -1) {
 					iCurSpecs++;
 				}
 			}
 			if (iCurSpecs > iCurMaxSpecs) {
 				for (int i = 1; i <= MaxClients; i++) {
-					if (IsClientConnected(i) && !IsFakeClient(i) && GetClientLobbyPatricipant(i) == -1) {
+					if (IsClientConnected(i) && !IsFakeClient(i) && GetClientLobbyParticipant(i) == -1) {
 						KickClient(i, "The players have limited slots for spectators");
 					}
 				}
@@ -278,6 +299,8 @@ public Action UpdateGameResults(Handle timer) {
 	SteamWorks_SetHTTPRequestGetOrPostParameter(hSWReq, "teams_flipped", sBuffer);
 	Format(sBuffer, sizeof(sBuffer), "%s", bTankKilled ? "yes" : "no");
 	SteamWorks_SetHTTPRequestGetOrPostParameter(hSWReq, "tank_killed", sBuffer);
+	Format(sBuffer, sizeof(sBuffer), "%s", IsTankInPlay() ? "yes" : "no");
+	SteamWorks_SetHTTPRequestGetOrPostParameter(hSWReq, "tank_in_play", sBuffer);
 	Format(sBuffer, sizeof(sBuffer), "%s", sDominator[0]);
 	SteamWorks_SetHTTPRequestGetOrPostParameter(hSWReq, "dominator_a", sBuffer);
 	Format(sBuffer, sizeof(sBuffer), "%s", sDominator[1]);
@@ -288,8 +311,14 @@ public Action UpdateGameResults(Handle timer) {
 	SteamWorks_SetHTTPRequestGetOrPostParameter(hSWReq, "inferior_b", sBuffer);
 	Format(sBuffer, sizeof(sBuffer), "%s", bGameFinished ? "yes" : "no");
 	SteamWorks_SetHTTPRequestGetOrPostParameter(hSWReq, "game_finished", sBuffer);
+	Format(sBuffer, sizeof(sBuffer), "%s", bInMapTransition ? "yes" : "no");
+	SteamWorks_SetHTTPRequestGetOrPostParameter(hSWReq, "in_map_transition", sBuffer);
+	Format(sBuffer, sizeof(sBuffer), "%s", IsLastMap() ? "yes" : "no");
+	SteamWorks_SetHTTPRequestGetOrPostParameter(hSWReq, "last_map", sBuffer);
 	Format(sBuffer, sizeof(sBuffer), "%d", bClientsConnected ? iPlayers : 8);
 	SteamWorks_SetHTTPRequestGetOrPostParameter(hSWReq, "players_connected", sBuffer);
+	Format(sBuffer, sizeof(sBuffer), "%d", iMapsFinished);
+	SteamWorks_SetHTTPRequestGetOrPostParameter(hSWReq, "maps_finished", sBuffer);
 	for (int i = 0; i < 8; i++) {
 		Format(sBuffer, sizeof(sBuffer), "%d", iSingleAbsence[i] >= iMaxSingleAbsent ? iMaxAbsent : iAbsenceCounter[i]);
 		SteamWorks_SetHTTPRequestGetOrPostParameter(hSWReq, arPlayersAll[i], sBuffer);
@@ -368,7 +397,7 @@ public Action SendReadyPlayers(Handle timer) {
 	int iReadyCount;
 	if (ReadyUpLoaded) {
 		for (int i = 1; i <= MaxClients; i++) {
-			if (IsClientInGame(i) && !IsFakeClient(i) && GetClientTeam(i) > 1 && GetClientLobbyPatricipant(i) != -1 && IsReady(i)) {
+			if (IsClientInGame(i) && !IsFakeClient(i) && GetClientTeam(i) > 1 && GetClientLobbyParticipant(i) != -1 && IsReady(i)) {
 				iReadyCount++;
 			}
 		}
@@ -385,7 +414,7 @@ public Action SendReadyPlayers(Handle timer) {
 		char[][] arReadyPlayers = new char[iReadyCount][20];
 		int iInputIdx;
 		for (int i = 1; i <= MaxClients; i++) {
-			if (IsClientInGame(i) && !IsFakeClient(i) && GetClientTeam(i) > 1 && GetClientLobbyPatricipant(i) != -1 && IsReady(i)) {
+			if (IsClientInGame(i) && !IsFakeClient(i) && GetClientTeam(i) > 1 && GetClientLobbyParticipant(i) != -1 && IsReady(i)) {
 				char SteamID64[20];
 				GetClientAuthId(i, AuthId_SteamID64, SteamID64, sizeof(SteamID64), false);
 				strcopy(arReadyPlayers[iInputIdx], 20, SteamID64);
@@ -528,7 +557,7 @@ public void SWReqCompleted_Dummy(Handle hRequest, bool bFailure, bool bRequestSu
 	CloseHandle(hRequest);
 }
 
-int GetClientLobbyPatricipant(int client) {
+int GetClientLobbyParticipant(int client) {
 	char sSteamID64[20];
 	if (GetClientAuthId(client, AuthId_SteamID64, sSteamID64, sizeof(sSteamID64), false)) {
 		for (int i = 0; i < 8; i++) {
@@ -568,7 +597,7 @@ public void OnClientAuthorized(int client, const char[] auth) {
 	if (bIsL4D2Center &&
 	iServerReserved == 1 &&
 	!IsFakeClient(client) &&
-	GetClientLobbyPatricipant(client) == -1
+	GetClientLobbyParticipant(client) == -1
 	) {
 		KickOnSpecsExceed(client);
 	}
@@ -579,7 +608,7 @@ public void OnClientPutInServer(int client) {
 	iServerReserved == 1 &&
 	!IsFakeClient(client) &&
 	!IsClientAuthorized(client) &&
-	GetClientLobbyPatricipant(client) == -1
+	GetClientLobbyParticipant(client) == -1
 	) {
 		KickOnSpecsExceed(client);
 	}
@@ -596,12 +625,14 @@ public void Event_RoundEnd(Event event, const char[] name, bool dontBroadcast) {
 		bInRound = false;
 		bTankKilled = false;
 		if (GameRules_GetProp("m_bInSecondHalfOfRound") == 1) {
+
+			bInMapTransition = true;
+			iMapsFinished++;
+
 			iSettledScores[0] = GameRules_GetProp("m_iCampaignScore", 4, 0);
 			iSettledScores[1] = GameRules_GetProp("m_iCampaignScore", 4, 1);
 
-			char sCurMap[128];
-			GetCurrentMap(sCurMap, sizeof(sCurMap));
-			if (StrEqual(sCurMap, sLastMap, false)) {
+			if (IsLastMap()) {
 				bGameFinished = true;
 				CreateTimer(0.4, UpdateGameResults);
 			}
@@ -673,7 +704,7 @@ public void Event_PlayerTeam(Event event, const char[] name, bool dontBroadcast)
 KickOnSpecsExceed(client) {
 	int iCurSpecs;
 	for (int i = 1; i <= MaxClients; i++) {
-		if (IsClientConnected(i) && !IsFakeClient(i) && GetClientLobbyPatricipant(i) == -1) {
+		if (IsClientConnected(i) && !IsFakeClient(i) && GetClientLobbyParticipant(i) == -1) {
 			iCurSpecs++;
 		}
 	}
@@ -836,12 +867,28 @@ public OnUnpause() {
 }
 
 bool IsGoodTimeForPause() {
-	char sCurMap[128];
-	GetCurrentMap(sCurMap, sizeof(sCurMap));
-	if (GameRules_GetProp("m_bInSecondHalfOfRound") == 1 && StrEqual(sCurMap, sLastMap, false)) {
+	if (GameRules_GetProp("m_bInSecondHalfOfRound") == 1 && IsLastMap()) {
 		return false;
 	}
 	return true;
+}
+
+bool IsLastMap() {
+	char sCurMap[128];
+	GetCurrentMap(sCurMap, sizeof(sCurMap));
+	if (StrEqual(sCurMap, sLastMap, false)) {
+		return true;
+	}
+	return false;
+}
+
+bool IsTankInPlay() {
+	for (int i = 1; i <= MaxClients; i++) {
+		if (IsClientInGame(i) && GetClientTeam(i) == 3 && IsPlayerAlive(i) && GetEntProp(i, Prop_Send, "m_zombieClass") == 8) {
+			return true;
+		}
+	}
+	return false;
 }
 
 int MinVal(int val1, int val2) {

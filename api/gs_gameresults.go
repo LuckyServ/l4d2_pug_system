@@ -5,6 +5,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"strconv"
 	"../games"
+	"../rating"
 	"../settings"
 	"../players/auth"
 	"../players"
@@ -32,12 +33,16 @@ func HttpReqGSGameResults(c *gin.Context) {
 				iHalf, _ := strconv.Atoi(c.PostForm("half"));
 				bTeamsFlipped := (c.PostForm("teams_flipped") == "yes");
 				bTankKilled := (c.PostForm("tank_killed") == "yes");
+				bTankInPlay := (c.PostForm("tank_in_play") == "yes");
 				sDominatorA := c.PostForm("dominator_a");
 				sDominatorB := c.PostForm("dominator_b");
 				sInferiorA := c.PostForm("inferior_a");
 				sInferiorB := c.PostForm("inferior_b");
 				bGameFinished := (c.PostForm("game_finished") == "yes");
+				bInMapTransition := (c.PostForm("in_map_transition") == "yes");
+				bIsLastMap := (c.PostForm("last_map") == "yes");
 				iPlayers, _ := strconv.Atoi(c.PostForm("players_connected"));
+				iMapsFinished, _ := strconv.Atoi(c.PostForm("maps_finished"));
 
 				players.MuPlayers.Lock();
 
@@ -52,18 +57,22 @@ func HttpReqGSGameResults(c *gin.Context) {
 				players.MuPlayers.Unlock();
 
 
-				oResult := games.EntGameResult{
+				oResult := rating.EntGameResult{
 					SettledScores:			[2]int{iSettledScoresA, iSettledScoresB},
 					CurrentScores:			[2]int{iCurrentScoresA, iCurrentScoresB},
 					InRound:				bInRound,
 					CurrentHalf:			iHalf,
 					TeamsFlipped:			bTeamsFlipped,
 					TankKilled:				bTankKilled,
+					TankInPlay:				bTankInPlay,
 					Dominator:				[2]string{sDominatorA, sDominatorB},
 					Inferior:				[2]string{sInferiorA, sInferiorB},
 					GameEnded:				(bGameFinished || len(arAbsentPlayers) > 0 || iPlayers <= settings.MinPlayersCount),
+					InMapTransition:		bInMapTransition,
+					IsLastMap:				bIsLastMap,
 					AbsentPlayers:			arAbsentPlayers,
 					ConnectedPlayers:		iPlayers,
+					MapsFinished:			iMapsFinished,
 				};
 
 				select {

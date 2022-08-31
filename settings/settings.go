@@ -50,6 +50,9 @@ var MaxAbsentSeconds int64;
 var MaxSingleAbsentSeconds int64;
 var MinPlayersCount int;
 
+var RQMidMapTransPenalty int;
+var RQInfHalf2MidTank int;
+
 
 type ConfoglConfig struct {
 	CodeName		string
@@ -285,6 +288,20 @@ func ConfigFile() bool {
 		return false;
 	}
 	MinPlayersCount = 8 - int(i64Buffer);
+
+	i64Buffer, errError = jsonparser.GetInt(byData, "game", "ragequit_penalty", "on_map_transition");
+	if (errError != nil) {
+		fmt.Printf("Error reading config file: %s\n", errError);
+		return false;
+	}
+	RQMidMapTransPenalty = int(i64Buffer);
+
+	i64Buffer, errError = jsonparser.GetInt(byData, "game", "ragequit_penalty", "inf_on_half2_midtank");
+	if (errError != nil) {
+		fmt.Printf("Error reading config file: %s\n", errError);
+		return false;
+	}
+	RQInfHalf2MidTank = int(i64Buffer);
 
 
 	//Confogl configs section
