@@ -26,6 +26,7 @@ Response parameters:
 | <strong>time</strong> | _int64_ | System time in milliseconds |
 | <strong>need_update_players</strong> | _bool_ | Should update players or not |
 | <strong>need_update_lobbies</strong> | _bool_ | Should update lobbies or not |
+| <strong>need_emit_readyup_sound</strong> | _bool_ | Should attract player attention or not |
 | <strong>authorized</strong> | _bool_ | Authorized or not |
 
 <br/><br/>

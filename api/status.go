@@ -32,6 +32,7 @@ func HttpReqStatus(c *gin.Context) {
 
 	mapResponse["authorized"] = false;
 	mapResponse["need_update_game"] = false;
+	mapResponse["need_emit_readyup_sound"] = false;
 	if (errCookieSessID == nil && sCookieSessID != "") {
 		oSession, bAuthorized := auth.GetSession(sCookieSessID);
 		if (bAuthorized) {
@@ -39,8 +40,15 @@ func HttpReqStatus(c *gin.Context) {
 			players.MuPlayers.Lock();
 			players.UpdatePlayerActivity(oSession.SteamID64);
 
-			if (i64CookieGameUpdatedAt <= players.MapPlayers[oSession.SteamID64].LastGameChanged) {
+			pPlayer := players.MapPlayers[oSession.SteamID64];
+			if (i64CookieGameUpdatedAt <= pPlayer.LastGameChanged) {
 				mapResponse["need_update_game"] = true;
+			}
+			if (pPlayer.IsInLobby) {
+				pLobby := lobby.MapLobbies[pPlayer.LobbyID];
+				if (pLobby.PlayerCount >= 8 && !pPlayer.IsReadyInLobby) {
+					mapResponse["need_emit_readyup_sound"] = true;
+				}
 			}
 
 			players.MuPlayers.Unlock();
