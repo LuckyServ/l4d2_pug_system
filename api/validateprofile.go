@@ -79,7 +79,7 @@ func HttpReqValidateProf(c *gin.Context) {
 								if (iVersusGamePlayed < settings.DefaultMaxMmr) {
 									iNewMmr = iVersusGamePlayed;
 								}
-								pPlayer.Mmr = iNewMmr;
+								pPlayer.Mmr = iNewMmr + settings.DefaultShiftMmr;
 								go database.UpdatePlayer(database.DatabasePlayer{
 									SteamID64:			pPlayer.SteamID64,
 									NicknameBase64:		pPlayer.NicknameBase64,

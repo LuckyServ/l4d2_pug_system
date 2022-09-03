@@ -14,6 +14,8 @@ var ListenPort string;
 var BackendAuthKey string;
 var DefaultMmrUncertainty float32;
 var MmrStable float32;
+var MmrAbsoluteWin float32;
+var MmrMinimumWin float32;
 var HomeDomain string;
 var BackendDomain string;
 var BrokenMode bool;
@@ -28,6 +30,7 @@ var DatabaseName string;
 var SteamApiKey string;
 var MinVersusGamesPlayed int;
 var DefaultMaxMmr int;
+var DefaultShiftMmr int;
 var OnlineMmrRange int;
 
 var IdleTimeout int64;
@@ -117,6 +120,20 @@ func ConfigFile() bool {
 	}
 	MmrStable = float32(f64Buffer);
 
+	f64Buffer, errError = jsonparser.GetFloat(byData, "mmr", "absolute_win");
+	if (errError != nil) {
+		fmt.Printf("Error reading config file: %s\n", errError);
+		return false;
+	}
+	MmrAbsoluteWin = float32(f64Buffer);
+
+	f64Buffer, errError = jsonparser.GetFloat(byData, "mmr", "minimum_win");
+	if (errError != nil) {
+		fmt.Printf("Error reading config file: %s\n", errError);
+		return false;
+	}
+	MmrMinimumWin = float32(f64Buffer);
+
 	HomeDomain, errError = jsonparser.GetString(byData, "domain", "home");
 	if (errError != nil) {
 		fmt.Printf("Error reading config file: %s\n", errError);
@@ -190,6 +207,13 @@ func ConfigFile() bool {
 		return false;
 	}
 	DefaultMaxMmr = int(i64Buffer);
+
+	i64Buffer, errError = jsonparser.GetInt(byData, "mmr", "default_shift");
+	if (errError != nil) {
+		fmt.Printf("Error reading config file: %s\n", errError);
+		return false;
+	}
+	DefaultShiftMmr = int(i64Buffer);
 
 	i64Buffer, errError = jsonparser.GetInt(byData, "lobby", "online_mmr_range");
 	if (errError != nil) {

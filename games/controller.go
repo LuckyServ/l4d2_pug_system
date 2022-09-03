@@ -1,11 +1,12 @@
 package games
 
 import (
-	"fmt"
+	//"fmt"
 	"../players"
 	"../settings"
 	"../rating"
 	"time"
+	"../database"
 )
 
 
@@ -240,25 +241,28 @@ func Control(pGame *EntGame) {
 
 
 
-	//Game ended, settle results
+	//Game ended, settle results, destroy game
 	MuGames.Lock();
 	players.MuPlayers.Lock();
 
 	pGame.State = StateGameEnded;
 	oResult := pGame.GameResult;
-	arFinalScores := rating.DetermineFinalScores(oResult, pGame.PlayersA, pGame.PlayersB);
+	arFinalScores := rating.DetermineFinalScores(oResult, [2][]*players.EntPlayer{pGame.PlayersA, pGame.PlayersB});
+	rating.UpdateMmr(oResult, arFinalScores, [2][]*players.EntPlayer{pGame.PlayersA, pGame.PlayersB});
+
+	for _, pPlayer := range pGame.PlayersUnpaired {
+		go database.UpdatePlayer(database.DatabasePlayer{
+			SteamID64:			pPlayer.SteamID64,
+			NicknameBase64:		pPlayer.NicknameBase64,
+			Mmr:				pPlayer.Mmr,
+			MmrUncertainty:		pPlayer.MmrUncertainty,
+			Access:				pPlayer.Access,
+			ProfValidated:		pPlayer.ProfValidated,
+			RulesAccepted:		pPlayer.RulesAccepted,
+			});
+	}
 
 	SetLastUpdated(pGame.PlayersUnpaired);
-	MuGames.Unlock();
-	players.MuPlayers.Unlock();
-
-
-	fmt.Printf("%d-%d\n", arFinalScores[0], arFinalScores[1]);
-
-
-	//Destroy Game
-	MuGames.Lock();
-	players.MuPlayers.Lock();
 	Destroy(pGame);
 	MuGames.Unlock();
 	players.MuPlayers.Unlock();

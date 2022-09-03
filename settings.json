@@ -8,7 +8,10 @@
 	"mmr": {
 		"default_uncertainty": 33.3333,
 		"default_max": 3000,
-		"consider_stable": 2.0
+		"default_shift": 1000,
+		"consider_stable": 1.0,
+		"absolute_win": 30,
+		"minimum_win": 10
 	},
 	"lobby": {
 		"online_mmr_range": 8,
@@ -38,7 +41,7 @@
 		"max_single_absent_minutes": 4,
 		"game_ends_if_players_disconnected": 5,
 		"ragequit_penalty": {
-			"on_map_transition": 400,
+			"on_map_transition": 500,
 			"inf_on_half2_midtank": 600
 		}
 	},
