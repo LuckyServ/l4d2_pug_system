@@ -45,10 +45,12 @@ func HttpReqStatus(c *gin.Context) {
 				mapResponse["need_update_game"] = true;
 			}
 			if (pPlayer.IsInLobby) {
+				lobby.MuLobbies.Lock();
 				pLobby := lobby.MapLobbies[pPlayer.LobbyID];
 				if (pLobby.PlayerCount >= 8 && !pPlayer.IsReadyInLobby) {
 					mapResponse["need_emit_readyup_sound"] = true;
 				}
+				lobby.MuLobbies.Unlock();
 			}
 
 			players.MuPlayers.Unlock();
