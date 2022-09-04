@@ -1,8 +1,6 @@
-- [ ] Proceed with Game logic
-- [ ] In /getgame send current game state as text
-- [ ] Check if user is on VPN https://getipintel.net/
-- [ ] Check when idle timer is reset
 - [ ] Chat system
+- [ ] Check if user is on VPN
+- [ ] Check when idle timer is reset
 - [ ] When calculating lobby mmr limits, include those players who are finishing a game soon
 - [ ] On auth redirect to Realm
 - [ ] Update nickname button
@@ -18,6 +16,8 @@
 - [ ] Restarting mechanism
 - [ ] Regularly increase mmr uncertainty value
 
+- [x] In /getgame send current game state as text
+- [x] Proceed with Game logic
 - [x] Make waiting for pings a settings instead of static 10s
 - [x] Allow to put any host in Allow-Origin
 - [x] Change Confogl configs list on settings, include config beautiful name

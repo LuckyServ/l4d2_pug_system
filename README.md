@@ -197,6 +197,7 @@ Response parameters:
 | ------ | ------ | ------ |
 | <strong>success</strong> | _bool_ | "true" if success, "false" if not authorized or not in game |
 | <strong>game</strong> |  | Info about game, if success == true |
+| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>status</strong> | _string_ | Current state of the game, as readable text |
 | &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>players_a</strong> | _[]_ | Array of players of team A |
 | &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>players_b</strong> | _[]_ | Array of players of team B |
 | &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>game_config</strong> | _string_ | Confogl config being played |
