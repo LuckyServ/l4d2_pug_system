@@ -7,6 +7,7 @@ import (
 	"../rating"
 	"time"
 	"../database"
+	"strings"
 )
 
 
@@ -251,18 +252,21 @@ func Control(pGame *EntGame) {
 	rating.UpdateMmr(oResult, arFinalScores, [2][]*players.EntPlayer{pGame.PlayersA, pGame.PlayersB});
 
 	for _, pPlayer := range pGame.PlayersUnpaired {
-		go database.UpdatePlayer(database.DatabasePlayer{
-			SteamID64:			pPlayer.SteamID64,
-			NicknameBase64:		pPlayer.NicknameBase64,
-			Mmr:				pPlayer.Mmr,
-			MmrUncertainty:		pPlayer.MmrUncertainty,
-			Access:				pPlayer.Access,
-			ProfValidated:		pPlayer.ProfValidated,
-			RulesAccepted:		pPlayer.RulesAccepted,
-			});
+		if (strings.HasPrefix(pPlayer.SteamID64, "7")) {
+			go database.UpdatePlayer(database.DatabasePlayer{
+				SteamID64:			pPlayer.SteamID64,
+				NicknameBase64:		pPlayer.NicknameBase64,
+				Mmr:				pPlayer.Mmr,
+				MmrUncertainty:		pPlayer.MmrUncertainty,
+				Access:				pPlayer.Access,
+				ProfValidated:		pPlayer.ProfValidated,
+				RulesAccepted:		pPlayer.RulesAccepted,
+				});
+		}
 	}
 
 	SetLastUpdated(pGame.PlayersUnpaired);
+	players.I64LastPlayerlistUpdate = time.Now().UnixMilli();
 	Destroy(pGame);
 	MuGames.Unlock();
 	players.MuPlayers.Unlock();

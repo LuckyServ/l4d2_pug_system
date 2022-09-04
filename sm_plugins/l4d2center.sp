@@ -256,7 +256,7 @@ public Action UpdateGameResults(Handle timer) {
 	int iPlayers;
 	if (bClientsConnected) {
 		for (int i = 0; i < 8; i++) {
-			int client = GetClientBySteamID64(arPlayersAll[i]);
+			int client = GetConnectedBySteamID64(arPlayersAll[i]);
 			if (client > 0) {
 				iPlayers++;
 			} else if (arPlayersAll[i][0] != '7') { //count fake players, for testing purposes
@@ -573,6 +573,16 @@ int GetClientBySteamID64(char[] SteamID64) {
 	for (int i = 1; i <= MaxClients; i++) {
 		char sBuffer[20];
 		if (IsClientInGame(i) && !IsFakeClient(i) && GetClientAuthId(i, AuthId_SteamID64, sBuffer, sizeof(sBuffer), false) && StrEqual(sBuffer, SteamID64)) {
+			return i;
+		}
+	}
+	return -1;
+}
+
+int GetConnectedBySteamID64(char[] SteamID64) {
+	for (int i = 1; i <= MaxClients; i++) {
+		char sBuffer[20];
+		if (IsClientConnected(i) && !IsFakeClient(i) && GetClientAuthId(i, AuthId_SteamID64, sBuffer, sizeof(sBuffer), false) && StrEqual(sBuffer, SteamID64)) {
 			return i;
 		}
 	}
