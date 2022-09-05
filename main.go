@@ -8,13 +8,14 @@ import (
 	"./lobby"
 	"./api"
 	"./games"
+	"./chat"
 	"./players/auth"
 	"time"
-	"./utils"
+	//"./utils"
 	//"crypto/rand"
 	//"math/big"
 	//"encoding/json"
-	"encoding/base64"
+	//"encoding/base64"
 )
 
 
@@ -47,19 +48,20 @@ func main() {
 	go api.AuthRatelimits(); //limit authorization requests per ip
 	go lobby.WatchLobbies(); //watch lobbies for ready and timeout
 	go games.ChannelWatchers(); //watch various game related channels
+	go chat.ChannelWatchers(); //watch chat channels
 
 
 
 
 	//Test
-	go TestingFromMain();
+	//go TestingFromMain();
 
 
 	//Block until shutdown command is received
 	fmt.Printf("End: %v\n", <-api.ChShutdown);
 }
 
-func TestingFromMain() {
+/*func TestingFromMain() {
 	time.Sleep(10 * time.Second);
 
 
@@ -99,4 +101,4 @@ func TestingFromMain() {
 		}
 	}
 
-}
+}*/

@@ -7,6 +7,7 @@ import (
 	"../settings"
 	"../players"
 	"../lobby"
+	"../chat"
 	"../players/auth"
 )
 
@@ -24,6 +25,8 @@ func HttpReqStatus(c *gin.Context) {
 	i64CookieLobbiesUpdatedAt, _ := strconv.ParseInt(sCookieLobbiesUpdatedAt, 10, 64);
 	sCookieGameUpdatedAt, _ := c.Cookie("game_updated_at");
 	i64CookieGameUpdatedAt, _ := strconv.ParseInt(sCookieGameUpdatedAt, 10, 64);
+	sCookieGlobalChatUpdatedAt, _ := c.Cookie("globalchat_updated_at");
+	i64CookieGlobalChatUpdatedAt, _ := strconv.ParseInt(sCookieGlobalChatUpdatedAt, 10, 64);
 
 	mapResponse["success"] = true;
 	mapResponse["no_new_lobbies"] = settings.NoNewLobbies;
@@ -66,6 +69,11 @@ func HttpReqStatus(c *gin.Context) {
 		mapResponse["need_update_lobbies"] = true;
 	} else {
 		mapResponse["need_update_lobbies"] = false;
+	}
+	if (i64CookieGlobalChatUpdatedAt <= chat.I64LastGlobalChatUpdate) {
+		mapResponse["need_update_globalchat"] = true;
+	} else {
+		mapResponse["need_update_globalchat"] = false;
 	}
 
 	c.Header("Access-Control-Allow-Origin", c.Request.Header.Get("origin"));

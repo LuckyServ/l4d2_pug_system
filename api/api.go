@@ -41,6 +41,9 @@ func GinInit() {
 	r.GET("/getgameservers", HttpReqGetGameServers);
 	r.GET("/pingsreceiver", HttpReqPingsReceiver);
 
+	r.GET("/sendglobalchat", HttpReqSendGlobalChat);
+	r.GET("/getglobalchat", HttpReqGetGlobalChat);
+
 
 	r.POST("/gs/getgame", HttpReqGSGetGame);
 	r.POST("/gs/fullrup", HttpReqGSFullReadyUp);

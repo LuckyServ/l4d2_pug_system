@@ -56,6 +56,10 @@ var MinPlayersCount int;
 var RQMidMapTransPenalty int;
 var RQInfHalf2MidTank int;
 
+var ChatStoreMaxMsgs int;
+var ChatMsgDelay int64;
+var ChatMaxChars int;
+
 
 type ConfoglConfig struct {
 	CodeName		string
@@ -326,6 +330,27 @@ func ConfigFile() bool {
 		return false;
 	}
 	RQInfHalf2MidTank = int(i64Buffer);
+
+	i64Buffer, errError = jsonparser.GetInt(byData, "chat", "store_n_messages");
+	if (errError != nil) {
+		fmt.Printf("Error reading config file: %s\n", errError);
+		return false;
+	}
+	ChatStoreMaxMsgs = int(i64Buffer);
+
+	i64Buffer, errError = jsonparser.GetInt(byData, "chat", "message_delay_ms");
+	if (errError != nil) {
+		fmt.Printf("Error reading config file: %s\n", errError);
+		return false;
+	}
+	ChatMsgDelay = i64Buffer;
+
+	i64Buffer, errError = jsonparser.GetInt(byData, "chat", "max_chars");
+	if (errError != nil) {
+		fmt.Printf("Error reading config file: %s\n", errError);
+		return false;
+	}
+	ChatMaxChars = int(i64Buffer);
 
 
 	//Confogl configs section

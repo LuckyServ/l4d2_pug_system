@@ -26,6 +26,7 @@ Response parameters:
 | <strong>time</strong> | _int64_ | System time in milliseconds |
 | <strong>need_update_players</strong> | _bool_ | Should update players or not |
 | <strong>need_update_lobbies</strong> | _bool_ | Should update lobbies or not |
+| <strong>need_update_globalchat</strong> | _bool_ | Should update global chat or not |
 | <strong>need_emit_readyup_sound</strong> | _bool_ | Should attract player attention or not |
 | <strong>authorized</strong> | _bool_ | Authorized or not |
 
@@ -234,3 +235,33 @@ Response parameters:
 | ------ | ------ | ------ |
 | <strong>success</strong> | _bool_ | "true" if command accepted, "false" otherwise |
 | <strong>error</strong> | _string_ | Outputs the reason if the request is rejected |
+
+<br/><br/>
+
+### GET /sendglobalchat
+##### Send a message to the global chat
+Request parameters:
+| Type | Description
+| ------ | ------ |
+| <strong>text</strong> | _string_ | The message |
+
+Response parameters:
+| Key | Type | Description
+| ------ | ------ | ------ |
+| <strong>success</strong> | _bool_ | "true" if command accepted, "false" otherwise |
+| <strong>error</strong> | _string_ | Outputs the reason if the request is rejected |
+
+<br/><br/>
+
+### GET /getglobalchat
+##### Get all messages of global chat
+Request parameters: None
+
+Response parameters:
+| Key | Type | Description
+| ------ | ------ | ------ |
+| <strong>success</strong> | _bool_ | Always true |
+| <strong>messages</strong> |  | Ordered array of messages |
+| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>base64text</strong> | _string_ | Base 64 encoded message text |
+| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>steamid64</strong> | _string_ | Steam ID of a player who sent the message |
+| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>base64name</strong> | _string_ | Base 64 encoded nickname |

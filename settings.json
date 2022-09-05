@@ -13,6 +13,11 @@
 		"absolute_win": 30,
 		"minimum_win": 10
 	},
+	"chat": {
+		"store_n_messages": 50,
+		"message_delay_ms": 1000,
+		"max_chars": 1000
+	},
 	"lobby": {
 		"online_mmr_range": 8,
 		"confogl_configs": [
