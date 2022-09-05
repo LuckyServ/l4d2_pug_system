@@ -1,4 +1,3 @@
-- [ ] Chat system
 - [ ] Check if user is on VPN
 - [ ] Check when idle timer is reset
 - [ ] When calculating lobby mmr limits, include those players who are finishing a game soon
@@ -16,6 +15,7 @@
 - [ ] Restarting mechanism
 - [ ] Regularly increase mmr uncertainty value
 
+- [x] Chat system
 - [x] In /getgame send current game state as text
 - [x] Proceed with Game logic
 - [x] Make waiting for pings a settings instead of static 10s

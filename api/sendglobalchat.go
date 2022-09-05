@@ -45,7 +45,9 @@ func HttpReqSendGlobalChat(c *gin.Context) {
 						NicknameBase64:	pPlayer.NicknameBase64,
 					};
 					chat.ChanSend <- oMessage;
-					chat.I64LastGlobalChatUpdate = time.Now().UnixMilli();
+					i64CurTime := time.Now().UnixMilli();
+					pPlayer.LastChatMessage = i64CurTime;
+					chat.I64LastGlobalChatUpdate = i64CurTime;
 				} else {
 					mapResponse["error"] = "Too big message, 1000 symbols is the limit";
 				}
