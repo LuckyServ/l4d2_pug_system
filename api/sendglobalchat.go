@@ -49,7 +49,7 @@ func HttpReqSendGlobalChat(c *gin.Context) {
 					pPlayer.LastChatMessage = i64CurTime;
 					chat.I64LastGlobalChatUpdate = i64CurTime;
 				} else {
-					mapResponse["error"] = "Too big message, 1000 symbols is the limit";
+					mapResponse["error"] = "Bad message size";
 				}
 			}
 			players.MuPlayers.Unlock();
