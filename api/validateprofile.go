@@ -13,6 +13,8 @@ import (
 	"../database"
 )
 
+var sProfileClosed string = "Couldnt get your game details. Make sure your L4D2 stats is public, and try again in a minute. If you have just made your L4D2 stats public, you have to wait a few minutes before its available via api.";
+
 
 func HttpReqValidateProf(c *gin.Context) {
 
@@ -45,11 +47,11 @@ func HttpReqValidateProf(c *gin.Context) {
 					mapResponse["error"] = "Steam servers did not respond. Try again later.";
 				} else {
 					if (respSteam.StatusCode != 200) {
-						mapResponse["error"] = "Couldnt get your game details. Make sure your L4D2 stats is public, and try again in a minute.";
+						mapResponse["error"] = sProfileClosed;
 					} else {
 						byResBody, errResBody := ioutil.ReadAll(respSteam.Body);
 						if (errResBody != nil) {
-							mapResponse["error"] = "Couldnt get your game details. Make sure your L4D2 stats is public, and try again in a minute.";
+							mapResponse["error"] = sProfileClosed;
 						} else {
 							var i64VersusGamesWon, i64VersusGamesLost int64;
 							jsonparser.ArrayEach(byResBody, func(valueStats []byte, dataType jsonparser.ValueType, offset int, err error) {
