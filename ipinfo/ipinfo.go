@@ -1,4 +1,0 @@
-package ipinfo
-
-import (
-)

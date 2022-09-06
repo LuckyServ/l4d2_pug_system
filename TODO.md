@@ -1,5 +1,4 @@
 - [ ] Check if user is on VPN
-- [ ] IP info in ipinfo module
 - [ ] Check when idle timer is reset
 - [ ] When calculating lobby mmr limits, include those players who are finishing a game soon
 - [ ] On auth redirect to Realm
