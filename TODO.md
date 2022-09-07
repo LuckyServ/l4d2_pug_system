@@ -1,5 +1,3 @@
-- [ ] Check when idle timer is reset
-- [ ] When calculating lobby mmr limits, include those players who are finishing a game soon
 - [ ] On auth redirect to Realm
 - [ ] Update nickname button
 - [ ] Ban system
@@ -8,13 +6,15 @@
 - [ ] Penalty for not readying up in time
 - [ ] VPN checks
 - [ ] Smurf traces + connect logging + ping loggin
-- [ ] Avatar links
+- [ ] Log games
 - [ ] Log out
 - [ ] Manage authorization expire
 - [ ] Log on database write failure
 - [ ] Restarting mechanism
 - [ ] Regularly increase mmr uncertainty value
 
+- [x] When calculating lobby mmr limits, include those players who are finishing a game soon
+- [x] Check when idle timer is reset
 - [x] Smurf&VPN detection module
 - [x] Chat system
 - [x] In /getgame send current game state as text

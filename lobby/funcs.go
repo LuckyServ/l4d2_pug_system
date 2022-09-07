@@ -5,6 +5,7 @@ import (
 	"../utils"
 	"../players"
 	"../settings"
+	"../games"
 	"sort"
 	"errors"
 )
@@ -32,12 +33,14 @@ func CalcMmrLimits(pLobbyCreator *players.EntPlayer) (int, int, error) { //MuPla
 	//get list of online mmr's
 	var arOnlineMmrs []int;
 	var iOnlineCount int;
+	games.MuGames.Lock();
 	for _, pPlayer := range players.ArrayPlayers {
-		if ((pPlayer.IsOnline || pPlayer.IsInLobby) && !pPlayer.IsIdle && !pPlayer.IsInGame && pPlayer.ProfValidated && pPlayer.RulesAccepted && pPlayer.Access >= -1/*not banned*/) {
+		if (pPlayer.ProfValidated && pPlayer.RulesAccepted && pPlayer.Access >= -1 && !pPlayer.IsIdle && (pPlayer.IsOnline || pPlayer.IsInLobby || IsFinishingGameSoon(pPlayer))) {
 			arOnlineMmrs = append(arOnlineMmrs, pPlayer.Mmr);
 		}
 	}
-	if (pLobbyCreator.IsIdle) {
+	games.MuGames.Unlock();
+	if (pLobbyCreator.IsIdle) { //this is a very bad fix
 		arOnlineMmrs = append(arOnlineMmrs, pLobbyCreator.Mmr);
 	}
 	iOnlineCount = len(arOnlineMmrs);
@@ -141,4 +144,15 @@ func GetJoinableLobbies(iMmr int) []*EntLobby { //MuLobbies must be locked outsi
 		}
 	}
 	return arLobbies;
+}
+
+func IsFinishingGameSoon(pPlayer *players.EntPlayer) bool { //Players and Games must be locked outside
+	if (!pPlayer.IsInGame) {
+		return false;
+	}
+	oGameResult := games.MapGames[pPlayer.GameID].GameResult;
+	if (oGameResult.IsLastMap && oGameResult.CurrentHalf == 2) {
+		return true;
+	}
+	return false;
 }

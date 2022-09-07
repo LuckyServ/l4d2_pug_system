@@ -211,7 +211,6 @@ func Control(pGame *EntGame) {
 	chResult := make(chan rating.EntGameResult);
 	MuGames.Lock();
 	pGame.ReceiverResult = chResult;
-	pGame.GameResult = rating.EntGameResult{};
 	MuGames.Unlock();
 
 	bGameProceeds := true;
