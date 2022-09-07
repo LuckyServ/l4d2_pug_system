@@ -9,6 +9,7 @@ import (
 	"./api"
 	"./games"
 	"./chat"
+	"./smurf"
 	"./players/auth"
 	"time"
 	//"./utils"
@@ -49,6 +50,7 @@ func main() {
 	go lobby.WatchLobbies(); //watch lobbies for ready and timeout
 	go games.ChannelWatchers(); //watch various game related channels
 	go chat.ChannelWatchers(); //watch chat channels
+	go smurf.Watchers();
 
 
 

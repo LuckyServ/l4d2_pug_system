@@ -8,6 +8,7 @@ import (
 	"../players"
 	"../lobby"
 	"../chat"
+	"../smurf"
 	"../players/auth"
 )
 
@@ -40,6 +41,7 @@ func HttpReqStatus(c *gin.Context) {
 		oSession, bAuthorized := auth.GetSession(sCookieSessID);
 		if (bAuthorized) {
 			mapResponse["authorized"] = true;
+			smurf.AnnounceIP(c.ClientIP()); //for faster VPN info retrieve in the future
 			players.MuPlayers.Lock();
 			players.UpdatePlayerActivity(oSession.SteamID64);
 

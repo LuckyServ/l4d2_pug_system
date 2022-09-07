@@ -7,6 +7,7 @@ import (
 	"../players/auth"
 	"../players"
 	"../settings"
+	"../smurf"
 	"strconv"
 )
 
@@ -29,18 +30,20 @@ func HttpReqPingsReceiver(c *gin.Context) {
 				if (pGame.State == games.StateWaitPings) {
 					mapResponse["success"] = true;
 
-					for i, _ := range settings.HardwareServers {
-						sPingMS := c.Query(settings.HardwareDomains[i]);
-						if (sPingMS != "") {
-							iPingMS, errPingMS := strconv.Atoi(sPingMS);
-							if (errPingMS == nil && iPingMS > 0) {
-								iOldPing, bAlrPinged := pPlayer.GameServerPings[settings.HardwareServers[i]];
-								if (bAlrPinged) {
-									if (iPingMS < iOldPing) {
+					if (!smurf.IsVPN(c.ClientIP())) { //silently avoid storing ping data from VPN users
+						for i, _ := range settings.HardwareServers {
+							sPingMS := c.Query(settings.HardwareDomains[i]);
+							if (sPingMS != "") {
+								iPingMS, errPingMS := strconv.Atoi(sPingMS);
+								if (errPingMS == nil && iPingMS > 0) {
+									iOldPing, bAlrPinged := pPlayer.GameServerPings[settings.HardwareServers[i]];
+									if (bAlrPinged) {
+										if (iPingMS < iOldPing) {
+											pPlayer.GameServerPings[settings.HardwareServers[i]] = iPingMS;
+										}
+									} else {
 										pPlayer.GameServerPings[settings.HardwareServers[i]] = iPingMS;
 									}
-								} else {
-									pPlayer.GameServerPings[settings.HardwareServers[i]] = iPingMS;
 								}
 							}
 						}
