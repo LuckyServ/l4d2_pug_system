@@ -1,4 +1,3 @@
-- [ ] Smurf&VPN detection module
 - [ ] Check when idle timer is reset
 - [ ] When calculating lobby mmr limits, include those players who are finishing a game soon
 - [ ] On auth redirect to Realm
@@ -7,6 +6,7 @@
 - [ ] Ban those who failed to join game in time
 - [ ] Ban those who ragequitted midgame
 - [ ] Penalty for not readying up in time
+- [ ] VPN checks
 - [ ] Smurf traces + connect logging + ping loggin
 - [ ] Avatar links
 - [ ] Log out
@@ -15,6 +15,7 @@
 - [ ] Restarting mechanism
 - [ ] Regularly increase mmr uncertainty value
 
+- [x] Smurf&VPN detection module
 - [x] Chat system
 - [x] In /getgame send current game state as text
 - [x] Proceed with Game logic

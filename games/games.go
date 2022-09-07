@@ -68,11 +68,14 @@ func HandleUniqID() {
 func Create(pGame *EntGame) { //MuGames and MuPlayers must be locked outside
 	MapGames[pGame.ID] = pGame;
 	ArrayGames = append(ArrayGames, pGame);
+	i64CurTime := time.Now().UnixMilli();
 	for _, pPlayer := range pGame.PlayersUnpaired {
 		pPlayer.IsInGame = true;
 		pPlayer.GameID = pGame.ID;
+		pPlayer.IsIdle = false;
+		pPlayer.LastGameActivity = i64CurTime;
 	}
-	players.I64LastPlayerlistUpdate = time.Now().UnixMilli();
+	players.I64LastPlayerlistUpdate = i64CurTime;
 }
 
 func Destroy(pGame *EntGame) { //MuGames and MuPlayers must be locked outside
@@ -90,6 +93,8 @@ func Destroy(pGame *EntGame) { //MuGames and MuPlayers must be locked outside
 		pPlayer.IsInGame = false;
 		pPlayer.GameID = "";
 		pPlayer.LastGameChanged = i64CurTime;
+		pPlayer.IsIdle = false;
+		pPlayer.LastGameActivity = i64CurTime;
 	}
 	players.I64LastPlayerlistUpdate = i64CurTime;
 }

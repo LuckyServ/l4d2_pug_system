@@ -32,6 +32,7 @@ type EntPlayer struct {
 	IsReadyInLobby		bool
 	LastValidateReq		int64 //Last profile validation request //unix timestamp in milliseconds
 	LastLobbyActivity	int64 //Last lobby activity //unix timestamp in milliseconds
+	LastGameActivity	int64 //Last game activity //unix timestamp in milliseconds
 	LastChatMessage		int64 //Last chat message //unix timestamp in milliseconds
 	GameServerPings		map[string]int
 }

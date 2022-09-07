@@ -3,7 +3,6 @@ package players
 import (
 	"time"
 	"../settings"
-	"../utils"
 )
 
 func WatchOnline() {
@@ -17,7 +16,10 @@ func WatchOnline() {
 				pPlayer.IsOnline = false;
 				pPlayer.IsIdle = false;
 				I64LastPlayerlistUpdate = i64CurTime;
-			} else if (pPlayer.IsOnline && !pPlayer.IsIdle && !pPlayer.IsInGame && !pPlayer.IsInLobby && (i64CurTime - utils.MaxValInt64(pPlayer.OnlineSince, pPlayer.LastLobbyActivity)) >= settings.IdleTimeout) { //idle
+			} else if (pPlayer.IsOnline && !pPlayer.IsIdle && !pPlayer.IsInGame && !pPlayer.IsInLobby &&
+				(i64CurTime - pPlayer.OnlineSince) >= settings.IdleTimeout &&
+				(i64CurTime - pPlayer.LastLobbyActivity) >= settings.IdleTimeout &&
+				(i64CurTime - pPlayer.LastGameActivity) >= settings.IdleTimeout) { //idle
 				pPlayer.IsIdle = true;
 				I64LastPlayerlistUpdate = i64CurTime;
 			}
