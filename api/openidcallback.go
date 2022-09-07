@@ -73,6 +73,7 @@ func HttpReqOpenID(c *gin.Context) {
 
 	//Get parameters
 	mapParameters := c.Request.URL.Query();
+	//fmt.Printf("%v\n", mapParameters);
 
 	//Check if Steam url valid
 	if _, ok := mapParameters["openid.op_endpoint"]; !ok {

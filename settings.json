@@ -1,5 +1,9 @@
 {
 	"listen_port": "8080",
+	"domain": {
+		"home": "localhost",
+		"backend": "localhost"
+	},
 	"backend_auth_key": "Verystrongbackendauthorizationkey",
 	"broken_state": false,
 	"no_new_lobbies": false,
@@ -49,10 +53,6 @@
 			"on_map_transition": 500,
 			"inf_on_half2_midtank": 600
 		}
-	},
-	"domain": {
-		"home": "localhost",
-		"backend": "localhost"
 	},
 	"database": {
 		"host": "localhost",

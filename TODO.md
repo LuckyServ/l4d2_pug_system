@@ -1,4 +1,3 @@
-- [ ] On auth redirect to Realm
 - [ ] Update nickname button
 - [ ] Ban system
 - [ ] Ban those who failed to join game in time
