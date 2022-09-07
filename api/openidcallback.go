@@ -14,6 +14,7 @@ import (
 	"net/http"
 	"net/url"
 	"strings"
+	"sync"
 )
 
 type NoOpDiscoveryCache struct{};
@@ -23,55 +24,55 @@ func (n *NoOpDiscoveryCache) Put(id string, info openid.DiscoveredInfo) {}
 func (n *NoOpDiscoveryCache) Get(id string) openid.DiscoveredInfo {
 	return nil;
 }
-var chClear chan bool = make(chan bool);
-var chGetCountInList chan string = make(chan string);
-var chCountInListResult chan int = make(chan int);
-var chAddToList chan string = make(chan string);
+var mapIPs = make(map[string]int);
+var MuAuth sync.Mutex;
 
 //Limit authorizations per hour per IP
 func AuthRatelimits() {
-	mapIPs := make(map[string]int);
-	go func() {
-		for {
-			time.Sleep(3600 * time.Second); //1 hour
-			chClear <- true;
-		}
-	}();
 	for {
-		select {
-		case <-chClear:
-			mapIPs = make(map[string]int);
-		case sIP := <-chGetCountInList:
-			iCount, bExists := mapIPs[sIP];
-			if (bExists) {
-				chCountInListResult <- iCount;
-			} else {
-				chCountInListResult <- 0;
-			}
-		case sIP := <-chAddToList:
-			iCount, bExists := mapIPs[sIP];
-			if (bExists) {
-				mapIPs[sIP] = iCount + 1;
-			} else {
-				mapIPs[sIP] = 1;
-			}
-		}
+		time.Sleep(3600 * time.Second); //1 hour
+		MuAuth.Lock();
+		mapIPs = make(map[string]int);
+		MuAuth.Unlock();
+	}
+}
+
+func GetAuthCount(sClientIP string) int {
+	MuAuth.Lock();
+	iCount, bExists := mapIPs[sClientIP];
+	MuAuth.Unlock();
+	if (bExists) {
+		return iCount;
+	} else {
+		return 0;
+	}
+}
+
+func IncreaseAuthCount(sClientIP string) {
+	MuAuth.Lock();
+	iCount, bExists := mapIPs[sClientIP];
+	MuAuth.Unlock();
+	if (bExists) {
+		mapIPs[sClientIP] = iCount + 1;
+	} else {
+		mapIPs[sClientIP] = 1;
 	}
 }
 
 
 func HttpReqOpenID(c *gin.Context) {
-	mapParameters := c.Request.URL.Query();
 
 	//Ratelimits
 	sClientIP := c.ClientIP();
-	chGetCountInList <- sClientIP;
-	iCount := <-chCountInListResult;
+	iCount := GetAuthCount(sClientIP);
 	if (iCount >= settings.AuthPerHour) {
 		c.String(200, "Too many authorization requests. Wait an hour before trying again.");
 		return;
 	}
-	chAddToList <- sClientIP;
+	IncreaseAuthCount(sClientIP);
+
+	//Get parameters
+	mapParameters := c.Request.URL.Query();
 
 	//Check if Steam url valid
 	if _, ok := mapParameters["openid.op_endpoint"]; !ok {
