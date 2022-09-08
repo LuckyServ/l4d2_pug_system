@@ -33,6 +33,7 @@ func GinInit() {
 
 	r.GET("/openidcallback", HttpReqOpenID);
 	r.GET("/myip", HttpReqMyIP);
+	r.GET("/auth", HttpReqAuth);
 	r.GET("/home", HttpReqHome);
 	r.POST("/home", HttpReqHome);
 

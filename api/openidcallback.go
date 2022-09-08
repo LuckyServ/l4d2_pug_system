@@ -74,18 +74,23 @@ func HttpReqOpenID(c *gin.Context) {
 	//Get parameters
 	mapParameters := c.Request.URL.Query();
 	//fmt.Printf("%v\n", mapParameters);
+	//Homepage
+	sHomepage, errHomepage := c.Cookie("home_page");
+	if (errHomepage != nil || sHomepage == "") {
+		sHomepage = "https://"+settings.HomeDomain;
+	}
 
 	//Check if Steam url valid
 	if _, ok := mapParameters["openid.op_endpoint"]; !ok {
-		c.Redirect(303, "https://"+settings.HomeDomain);
+		c.Redirect(303, sHomepage);
 		return;
 	}
 	if (len(mapParameters["openid.op_endpoint"]) <= 0) {
-		c.Redirect(303, "https://"+settings.HomeDomain);
+		c.Redirect(303, sHomepage);
 		return;
 	}
 	if (mapParameters["openid.op_endpoint"][0] != "https://steamcommunity.com/openid/login") {
-		c.Redirect(303, "https://"+settings.HomeDomain);
+		c.Redirect(303, sHomepage);
 		return;
 	}
 
@@ -99,13 +104,13 @@ func HttpReqOpenID(c *gin.Context) {
 	fullURL := "https://"+settings.BackendDomain + c.Request.URL.Path + sReqString;
 	id, err := openid.Verify(fullURL, discoveryCache, nonceStore);
 	if (err != nil) {
-		c.Redirect(303, "https://"+settings.HomeDomain);
+		c.Redirect(303, sHomepage);
 		return;
 	}
 	vRegEx := regexp.MustCompile(`[0-9]{17}`);
 	bySteamID64 := vRegEx.Find([]byte(id));
 	if (bySteamID64 == nil) {
-		c.Redirect(303, "https://"+settings.HomeDomain);
+		c.Redirect(303, sHomepage);
 	}
 
 	//Here is authorized SteamID64
@@ -118,23 +123,23 @@ func HttpReqOpenID(c *gin.Context) {
 	}
 	respSteam, errSteam := clientSteam.Get("https://steamcommunity.com/profiles/"+sSteamID64+"/?xml=1");
 	if (errSteam != nil) {
-		c.Redirect(303, "https://"+settings.HomeDomain);
+		c.Redirect(303, sHomepage);
 		return;
 	}
 	defer respSteam.Body.Close();
 	if (respSteam.StatusCode != 200) {
-		c.Redirect(303, "https://"+settings.HomeDomain);
+		c.Redirect(303, sHomepage);
 		return;
 	}
 	byResult, errBody := ioutil.ReadAll(respSteam.Body);
 	sResult := string(byResult);
 	if (errBody != nil || sResult == "") {
-		c.Redirect(303, "https://"+settings.HomeDomain);
+		c.Redirect(303, sHomepage);
 		return;
 	}
 	doc, errXML := xmlquery.Parse(strings.NewReader(sResult));
 	if (errXML != nil) {
-		c.Redirect(303, "https://"+settings.HomeDomain);
+		c.Redirect(303, sHomepage);
 		return;
 	}
 	root := xmlquery.FindOne(doc, "//profile");
@@ -151,5 +156,5 @@ func HttpReqOpenID(c *gin.Context) {
 	c.SetCookie("session_id", sSessionID, 2592000, "/", "", true, false);
 
 	//Redirect to home page
-	c.Redirect(303, "https://"+settings.HomeDomain);
+	c.Redirect(303, sHomepage);
 }

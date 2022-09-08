@@ -5,6 +5,9 @@
 - [ ] Penalty for not readying up in time
 - [ ] VPN checks
 - [ ] Smurf traces + connect logging + ping loggin
+- [ ] When validating profile, check for vpn and for smurfs
+- [ ] Don't allow validation and accepting rules if banned
+- [ ] On registration or authorizaton check if already banned
 - [ ] Log games
 - [ ] Log out
 - [ ] Manage authorization expire
