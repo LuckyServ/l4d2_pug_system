@@ -40,7 +40,7 @@ var LobbyFillTimeout int64;
 
 var JoinLobbyCooldown int64;
 var AuthPerHour int;
-var ProfValidateCooldown int64;
+var SteamAPICooldown int64;
 
 var GameServers []string;
 var HardwareServers []string; //parallel with HardwareDomains
@@ -254,12 +254,12 @@ func ConfigFile() bool {
 	}
 	AuthPerHour = int(i64Buffer);
 
-	i64Buffer, errError = jsonparser.GetInt(byData, "ratelimits", "prof_validate_cooldown_sec");
+	i64Buffer, errError = jsonparser.GetInt(byData, "ratelimits", "steam_api_cooldown_sec");
 	if (errError != nil) {
 		fmt.Printf("Error reading config file: %s\n", errError);
 		return false;
 	}
-	ProfValidateCooldown = i64Buffer * 1000;
+	SteamAPICooldown = i64Buffer * 1000;
 
 	i64Buffer, errError = jsonparser.GetInt(byData, "timeouts", "readyup_seconds");
 	if (errError != nil) {

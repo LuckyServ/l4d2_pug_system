@@ -30,7 +30,7 @@ type EntPlayer struct {
 	GameID				string
 	LastGameChanged		int64  //unix timestamp in milliseconds
 	IsReadyInLobby		bool
-	LastValidateReq		int64 //Last profile validation request //unix timestamp in milliseconds
+	LastSteamRequest	int64 //Last steam api request //unix timestamp in milliseconds
 	LastLobbyActivity	int64 //Last lobby activity //unix timestamp in milliseconds
 	LastGameActivity	int64 //Last game activity //unix timestamp in milliseconds
 	LastChatMessage		int64 //Last chat message //unix timestamp in milliseconds

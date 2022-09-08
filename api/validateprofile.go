@@ -32,11 +32,11 @@ func HttpReqValidateProf(c *gin.Context) {
 			if (pPlayer.ProfValidated) {
 				players.MuPlayers.Unlock();
 				mapResponse["error"] = "Your profile is already validated";
-			} else if (pPlayer.LastValidateReq + settings.ProfValidateCooldown > time.Now().UnixMilli()) {
+			} else if (pPlayer.LastSteamRequest + settings.SteamAPICooldown > i64CurTime) {
 				players.MuPlayers.Unlock();
-				mapResponse["error"] = fmt.Sprintf("Too many validation requests. Try again in %d seconds.", ((pPlayer.LastValidateReq + settings.ProfValidateCooldown) - i64CurTime) / 1000);
+				mapResponse["error"] = fmt.Sprintf("Too many validation requests. Try again in %d seconds.", ((pPlayer.LastSteamRequest + settings.SteamAPICooldown) - i64CurTime) / 1000);
 			} else {
-				pPlayer.LastValidateReq = time.Now().UnixMilli();
+				pPlayer.LastSteamRequest = i64CurTime;
 				players.MuPlayers.Unlock();
 
 				clientSteam := http.Client{

@@ -69,7 +69,7 @@
 	},
 	"ratelimits": {
 		"lobby_join_cooldown_sec": 30,
-		"prof_validate_cooldown_sec": 60,
+		"steam_api_cooldown_sec": 60,
 		"auth_per_hour": 5
 	},
 	"map_pool": [

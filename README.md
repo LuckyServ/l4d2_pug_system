@@ -44,6 +44,18 @@ Response parameters:
 
 <br/><br/>
 
+### GET /updatenickname
+##### Update nickname from Steam
+Request parameters: None
+
+Response parameters:
+| Key | Type | Description
+| ------ | ------ | ------ |
+| <strong>success</strong> | _bool_ | "true" if nickname updated, "false" otherwise |
+| <strong>error</strong> | _string_ | Outputs the reason if the request is rejected |
+
+<br/><br/>
+
 ### GET /acceptrules
 ##### Accept rules of the project
 Request parameters: None
