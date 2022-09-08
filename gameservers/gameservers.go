@@ -1,6 +1,0 @@
-package gameservers
-
-import (
-)
-
-

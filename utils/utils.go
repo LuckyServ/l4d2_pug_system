@@ -3,6 +3,7 @@ package utils
 import (
 	"crypto/rand"
 	"math/big"
+	"bytes"
 )
 
 func GenerateRandomString(n int, letters string) (string, error) {
@@ -39,4 +40,17 @@ func GetStringIdxInArray(sValueBuffer string, arBuffer []string) int {
 		}
 	}
 	return -1;
+}
+
+func InsertDots(s string, n int) string {
+	var buffer bytes.Buffer;
+	var n_1 = n - 1;
+	var l_1 = len(s) - 1;
+	for i,rune := range s {
+		buffer.WriteRune(rune);
+		if i % n == n_1 && i != l_1 {
+			buffer.WriteRune('.');
+		}
+	}
+	return buffer.String();
 }

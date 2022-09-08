@@ -49,8 +49,9 @@ var MuGames sync.Mutex;
 
 var ChanNewGameID chan string = make(chan string);
 
-func ChannelWatchers() {
+func Watchers() {
 	go HandleUniqID();
+	go CheckVersion();
 }
 
 func HandleUniqID() {

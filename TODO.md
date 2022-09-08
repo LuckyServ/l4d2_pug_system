@@ -15,6 +15,7 @@
 - [ ] Restarting mechanism
 - [ ] Regularly increase mmr uncertainty value
 
+- [x] When selecting available servers, limit those which are outdated
 - [x] When calculating lobby mmr limits, include those players who are finishing a game soon
 - [x] Check when idle timer is reset
 - [x] Smurf&VPN detection module

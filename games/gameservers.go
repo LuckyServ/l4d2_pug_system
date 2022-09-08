@@ -4,11 +4,41 @@ import (
 	//"fmt"
 	"../settings"
 	"../players"
+	"../utils"
 	"github.com/rumblefrog/go-a2s"
 	"strings"
 	"time"
+	"io/ioutil"
+	"net/http"
+	"github.com/buger/jsonparser"
+	"strconv"
 )
 
+var sLatestGameVersion string;
+
+
+func CheckVersion() {
+	for {
+		client := http.Client{
+			Timeout: 10 * time.Second,
+		}
+		resHttp, errHttp := client.Get("https://api.steampowered.com/ISteamApps/UpToDateCheck/v1?appid=550&version=0&format=json");
+		if (errHttp == nil) {
+			if (resHttp.StatusCode == 200) {
+				byResBody, errResBody := ioutil.ReadAll(resHttp.Body);
+				if (errResBody == nil) {
+					i64BufferVersion, errVersion := jsonparser.GetInt(byResBody, "response", "required_version");
+					if (errVersion == nil) {
+						sBufferVersion := strconv.FormatInt(i64BufferVersion, 10);
+						sLatestGameVersion = utils.InsertDots(sBufferVersion, 1);
+					}
+				}
+			}
+			resHttp.Body.Close();
+		}
+		time.Sleep(60 * time.Second);
+	}
+}
 
 func SelectBestAvailableServer(arPlayers []*players.EntPlayer, arGameServersUnsorted []string) string { //Players must be locked outside
 	
@@ -67,7 +97,7 @@ func GetAvailableServers() []string {
 	return arEmptyGameSrvs;
 }
 
-func GetPlayersCount(chCount chan int, sIPPORT string) {
+func GetPlayersCount(chCount chan int, sIPPORT string) { //-1 if server version is outdated or unavailable
 	vHandle, vErr1 := a2s.NewClient(sIPPORT, a2s.TimeoutOption(time.Second * 4));
 	if (vErr1 != nil) {
 		chCount <- -1;
@@ -79,6 +109,10 @@ func GetPlayersCount(chCount chan int, sIPPORT string) {
 		return;
 	}
 	vHandle.Close();
-	chCount <- int(vInfo.Players);
+	if (vInfo.Version == sLatestGameVersion && sLatestGameVersion != "") {
+		chCount <- int(vInfo.Players);
+	} else {
+		chCount <- -1;
+	}
 	return;
 }
