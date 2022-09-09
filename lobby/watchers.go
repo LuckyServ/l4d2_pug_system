@@ -57,6 +57,13 @@ func WatchLobbies() {
 						bSorted = false;
 					}
 				}
+				if (!bSorted) {
+					for i := iSize - 2; i >= 0; i-- {
+						if (arJoinLobbyPlayers[i].AutoSearchingSince > arJoinLobbyPlayers[i + 1].AutoSearchingSince) {
+							arJoinLobbyPlayers[i], arJoinLobbyPlayers[i + 1] = arJoinLobbyPlayers[i + 1], arJoinLobbyPlayers[i]; //switch
+						}
+					}
+				}
 			}
 		}
 		for _, pPlayer := range arJoinLobbyPlayers {

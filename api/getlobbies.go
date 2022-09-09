@@ -62,6 +62,28 @@ func HttpReqGetLobbies(c *gin.Context) {
 		}
 	}
 
+	//sort
+	iSize := len(lobby.ArrayLobbies);
+	if (iSize > 1) {
+		bSorted := false;
+		for !bSorted {
+			bSorted = true;
+			for i := 1; i < iSize; i++ {
+				if (lobby.ArrayLobbies[i].CreatedAt < lobby.ArrayLobbies[i - 1].CreatedAt) {
+					lobby.ArrayLobbies[i], lobby.ArrayLobbies[i - 1] = lobby.ArrayLobbies[i - 1], lobby.ArrayLobbies[i]; //switch
+					bSorted = false;
+				}
+			}
+			if (!bSorted) {
+				for i := iSize - 2; i >= 0; i-- {
+					if (lobby.ArrayLobbies[i].CreatedAt > lobby.ArrayLobbies[i + 1].CreatedAt) {
+						lobby.ArrayLobbies[i], lobby.ArrayLobbies[i + 1] = lobby.ArrayLobbies[i + 1], lobby.ArrayLobbies[i]; //switch
+					}
+				}
+			}
+		}
+	}
+
 	for _, pLobby := range lobby.ArrayLobbies {
 		arRespLobbies = append(arRespLobbies, LobbyResponse{
 			ID:				pLobby.ID,
@@ -77,22 +99,6 @@ func HttpReqGetLobbies(c *gin.Context) {
 	}
 
 	lobby.MuLobbies.Unlock();
-
-	
-	//sort
-	iSize := len(arRespLobbies);
-	if (iSize > 1) {
-		bSorted := false;
-		for !bSorted {
-			bSorted = true;
-			for i := 1; i < iSize; i++ {
-				if (arRespLobbies[i].CreatedAt < arRespLobbies[i - 1].CreatedAt) {
-					arRespLobbies[i], arRespLobbies[i - 1] = arRespLobbies[i - 1], arRespLobbies[i]; //switch
-					bSorted = false;
-				}
-			}
-		}
-	}
 
 
 	mapResponse["success"] = true;

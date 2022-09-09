@@ -18,6 +18,13 @@ func Pair(arUnpairedPlayers []*players.EntPlayer) ([]*players.EntPlayer, []*play
 				arPlayersSorted[i], arPlayersSorted[i - 1] = arPlayersSorted[i - 1], arPlayersSorted[i]; //switch
 				bSorted = false;
 			}
+			if (!bSorted) {
+				for i := 6; i >= 0; i-- {
+					if (arPlayersSorted[i].Mmr < arPlayersSorted[i + 1].Mmr) {
+						arPlayersSorted[i], arPlayersSorted[i + 1] = arPlayersSorted[i + 1], arPlayersSorted[i]; //switch
+					}
+				}
+			}
 		}
 	}
 

@@ -72,7 +72,31 @@ func HttpReqGetOnlinePlayers(c *gin.Context) {
 	var arPlayers []PlayerResponse;
 	var iActiveCount, iOnlineCount, iInLobbyCount, iInGameCount, iIdleCount int;
 
+	//iStartTime := time.Now().UnixNano();
 	players.MuPlayers.Lock();
+
+	//sort
+	iSize := len(players.ArrayPlayers);
+	if (iSize > 1) {
+		bSorted := false;
+		for !bSorted {
+			bSorted = true;
+			for i := 1; i < iSize; i++ {
+				if (players.ArrayPlayers[i].Mmr > players.ArrayPlayers[i - 1].Mmr) {
+					players.ArrayPlayers[i], players.ArrayPlayers[i - 1] = players.ArrayPlayers[i - 1], players.ArrayPlayers[i]; //switch
+					bSorted = false;
+				}
+			}
+			if (!bSorted) {
+				for i := iSize - 2; i >= 0; i-- {
+					if (players.ArrayPlayers[i].Mmr < players.ArrayPlayers[i + 1].Mmr) {
+						players.ArrayPlayers[i], players.ArrayPlayers[i + 1] = players.ArrayPlayers[i + 1], players.ArrayPlayers[i]; //switch
+					}
+				}
+			}
+		}
+	}
+
 	i64CurTime := time.Now().UnixMilli();
 	for _, pPlayer := range players.ArrayPlayers {
 		if ((pPlayer.IsOnline || pPlayer.IsInGame || pPlayer.IsInLobby) && pPlayer.ProfValidated && pPlayer.RulesAccepted && pPlayer.Access >= -1/*not banned*/) {
@@ -99,22 +123,8 @@ func HttpReqGetOnlinePlayers(c *gin.Context) {
 		}
 	}
 	players.MuPlayers.Unlock();
+	//fmt.Printf("Was locked for %d μs\n", (time.Now().UnixNano() - iStartTime) / 1000);
 	iActiveCount = iOnlineCount + iInLobbyCount + iInGameCount;
-
-	//sort
-	iSize := len(arPlayers);
-	if (iSize > 1) {
-		bSorted := false;
-		for !bSorted {
-			bSorted = true;
-			for i := 1; i < iSize; i++ {
-				if (arPlayers[i].Mmr > arPlayers[i - 1].Mmr) {
-					arPlayers[i], arPlayers[i - 1] = arPlayers[i - 1], arPlayers[i]; //switch
-					bSorted = false;
-				}
-			}
-		}
-	}
 
 
 	mapResponse["success"] = true;

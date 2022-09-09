@@ -1,4 +1,3 @@
-- [ ] Update nickname button
 - [ ] Ban system
 - [ ] Ban those who failed to join game in time
 - [ ] Ban those who ragequitted midgame
@@ -7,6 +6,7 @@
 - [ ] Smurf traces + connect logging + ping loggin
 - [ ] When validating profile, check for vpn and for smurfs
 - [ ] Don't allow validation and accepting rules if banned
+- [ ] Mmr color in response
 - [ ] On registration or authorizaton check if already banned
 - [ ] Log games
 - [ ] Log out
@@ -15,6 +15,8 @@
 - [ ] Restarting mechanism
 - [ ] Regularly increase mmr uncertainty value
 
+- [x] Optimize responses with sorting
+- [x] Update nickname button
 - [x] When selecting available servers, limit those which are outdated
 - [x] When calculating lobby mmr limits, include those players who are finishing a game soon
 - [x] Check when idle timer is reset

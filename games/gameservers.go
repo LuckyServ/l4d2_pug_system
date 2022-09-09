@@ -72,6 +72,14 @@ func SelectBestAvailableServer(arPlayers []*players.EntPlayer, arGameServersUnso
 					bSorted = false;
 				}
 			}
+			if (!bSorted) {
+				for i := iSize - 2; i >= 0; i-- {
+					if (arMaxPing[i] > arMaxPing[i + 1]) {
+						arMaxPing[i], arMaxPing[i + 1] = arMaxPing[i + 1], arMaxPing[i]; //switch
+						arGameServers[i], arGameServers[i + 1] = arGameServers[i + 1], arGameServers[i]; //switch
+					}
+				}
+			}
 		}
 	}
 

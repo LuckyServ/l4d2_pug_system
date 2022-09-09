@@ -47,6 +47,13 @@ func JoinAny(pPlayer *players.EntPlayer) bool { //MuPlayers and MuLobbies must b
 						bSorted = false;
 					}
 				}
+				if (!bSorted) {
+					for i := iSize - 2; i >= 0; i-- {
+						if (arLobbies[i].CreatedAt > arLobbies[i + 1].CreatedAt) {
+							arLobbies[i], arLobbies[i + 1] = arLobbies[i + 1], arLobbies[i]; //switch
+						}
+					}
+				}
 			}
 		}
 		sLobbyID := arLobbies[0].ID;
