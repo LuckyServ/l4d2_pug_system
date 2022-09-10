@@ -28,6 +28,10 @@ type EntGameResult struct {
 
 func UpdateMmr(oResult EntGameResult, arFinalScores [2]int, arPlayers [2][]*players.EntPlayer) { //Players must be locked outside
 
+	if (oResult.SettledScores[0] == 0 && oResult.SettledScores[1] == 0) { //dont touch mmr if didnt even play a single map
+		return;
+	}
+
 	//Get winner and winning coef
 	var f32WinCoef float32;
 	var iWinner int = -1; //-1 == draw

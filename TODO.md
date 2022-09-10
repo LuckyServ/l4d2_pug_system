@@ -1,3 +1,4 @@
+- [ ] Log out
 - [ ] Ban system
 - [ ] Ban those who failed to join game in time
 - [ ] Ban those who ragequitted midgame
@@ -9,12 +10,12 @@
 - [ ] Mmr color in response
 - [ ] On registration or authorizaton check if already banned
 - [ ] Log games
-- [ ] Log out
 - [ ] Manage authorization expire
 - [ ] Log on database write failure
 - [ ] Restarting mechanism
 - [ ] Regularly increase mmr uncertainty value
 
+- [x] Don't touch mmr if scores are 0-0
 - [x] Optimize responses with sorting
 - [x] Update nickname button
 - [x] When selecting available servers, limit those which are outdated
