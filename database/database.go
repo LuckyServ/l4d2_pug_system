@@ -69,6 +69,13 @@ func AddSession(oSession DatabaseSession) {
 	}
 }
 
+func RemoveSession(sSessID string) {
+	dbQueryAdd, errQueryAdd := dbConn.Query("DELETE FROM sessions_list WHERE session_key = '"+sSessID+"';");
+	if (errQueryAdd == nil) {
+		dbQueryAdd.Close();
+	}
+}
+
 func RestorePlayers() []DatabasePlayer {
 	var arDBPlayers []DatabasePlayer;
 	dbQueryRetrieve, errQueryRetrieve := dbConn.Query("SELECT steamid64,base64nickname,mmr,mmr_uncertainty,access,prof_validated,rules_accepted FROM players_list;");

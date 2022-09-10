@@ -26,6 +26,18 @@ func GetSession(sSessID string) (EntSession, bool) {
 	return oSession, true;
 }
 
+func RemoveSession(sSessID string) bool {
+	MuSessions.Lock();
+	if _, ok := MapSessions[sSessID]; !ok {
+		MuSessions.Unlock();
+		return false;
+	}
+	delete(MapSessions, sSessID);
+	MuSessions.Unlock();
+	go database.RemoveSession(sSessID);
+	return true;
+}
+
 func RestoreSessions() bool { //no need to lock maps
 	arDatabaseSessions := database.RestoreSessions();
 	for _, oDBSession := range arDatabaseSessions {

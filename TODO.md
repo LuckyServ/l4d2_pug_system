@@ -1,8 +1,9 @@
-- [ ] Log out
 - [ ] Ban system
 - [ ] Ban those who failed to join game in time
 - [ ] Ban those who ragequitted midgame
 - [ ] Penalty for not readying up in time
+- [ ] Player report system
+- [ ] Ban protests
 - [ ] VPN checks
 - [ ] Smurf traces + connect logging + ping loggin
 - [ ] When validating profile, check for vpn and for smurfs
@@ -15,6 +16,7 @@
 - [ ] Restarting mechanism
 - [ ] Regularly increase mmr uncertainty value
 
+- [x] Log out
 - [x] Don't touch mmr if scores are 0-0
 - [x] Optimize responses with sorting
 - [x] Update nickname button
