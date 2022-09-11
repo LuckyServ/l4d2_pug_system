@@ -13,6 +13,29 @@ Response parameters:
 
 <br/><br/>
 
+### GET /auth
+##### Open this in browser to authorize
+Request parameters:
+| Key | Type | Description
+| ------ | ------ | ------ |
+| <strong>home_page</strong> | _string_ | Redirect to this page after authorization |
+
+Response parameters: None (303 redirect)
+
+<br/><br/>
+
+### GET /logout
+##### Log out
+Request parameters: None
+
+Response parameters:
+| Key | Type | Description
+| ------ | ------ | ------ |
+| <strong>success</strong> | _bool_ | "true" if logged out, "false" otherwise |
+| <strong>error</strong> | _string_ | Outputs the reason if the request is rejected |
+
+<br/><br/>
+
 ### GET /status
 ##### Get necessary info about program status, and signal about online status
 Request parameters: None
