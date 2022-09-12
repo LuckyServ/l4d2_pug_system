@@ -16,6 +16,9 @@ type EntPlayer struct {
 	Mmr					int
 	MmrUncertainty		float32
 	Access				int //-2 - completely banned, -1 - chat banned, 0 - regular player, 1 - behaviour moderator, 2 - cheat moderator, 3 - behaviour+cheat moderator, 4 - full admin access
+	BanReason			string
+	BanAcceptedAt		int64 //unix timestamp in milliseconds
+	BanLength			int64 //unix timestamp in milliseconds
 	ProfValidated		bool //Steam profile validated
 	RulesAccepted		bool //Rules accepted
 	LastActivity		int64 //unix timestamp in milliseconds

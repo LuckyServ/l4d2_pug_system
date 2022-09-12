@@ -10,6 +10,7 @@ import (
 	"./games"
 	"./chat"
 	"./smurf"
+	"./bans"
 	"./players/auth"
 	"time"
 	//"./utils"
@@ -40,7 +41,9 @@ func main() {
 	if (!auth.RestoreSessions()) {
 		return;
 	}
-	lobby.I64LastLobbyListUpdate = time.Now().UnixMilli();
+	i64CurTime := time.Now().UnixMilli();
+	lobby.I64LastLobbyListUpdate = i64CurTime;
+	players.I64LastPlayerlistUpdate = i64CurTime;
 
 	//HTTP server init
 	api.GinInit();
@@ -51,6 +54,7 @@ func main() {
 	go games.Watchers(); //watch various game related channels
 	go chat.ChannelWatchers(); //watch chat channels
 	go smurf.Watchers();
+	go bans.Watchers();
 
 
 

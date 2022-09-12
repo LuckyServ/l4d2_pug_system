@@ -26,6 +26,16 @@ type DatabaseSession struct {
 	Since			int64 //in ms
 }
 
+type DatabaseBanRecord struct {
+	NicknameBase64		string //permanent nickname
+	SteamID64			string
+	BannedBySteamID64	string
+	CreatedAt			int64 //unix timestamp in milliseconds
+	AcceptedAt			int64 //unix timestamp in milliseconds
+	BanLength			int64 //unix time in milliseconds
+	BanReasonBase64		string
+}
+
 
 func DatabaseConnect() bool {
 	dbConn, dbErr = sql.Open("postgres", "postgres://"+settings.DatabaseUsername+":"+settings.DatabasePassword+"@"+settings.DatabaseHost+":"+settings.DatabasePort+"/"+settings.DatabaseName);
@@ -49,30 +59,44 @@ func AddPlayer(oPlayer DatabasePlayer) {
 		dbQueryDelete.Close();
 	}
 	//Add player
-	dbQueryAdd, errQueryAdd := dbConn.Query("INSERT INTO players_list(steamid64, base64nickname, mmr, mmr_uncertainty, access, prof_validated, rules_accepted) VALUES ("+oPlayer.SteamID64+", '"+oPlayer.NicknameBase64+"', "+fmt.Sprintf("%d", oPlayer.Mmr)+", "+fmt.Sprintf("%.06f", oPlayer.MmrUncertainty)+", "+fmt.Sprintf("%d", oPlayer.Access)+", "+fmt.Sprintf("%v", oPlayer.ProfValidated)+", "+fmt.Sprintf("%v", oPlayer.RulesAccepted)+");");
-	if (errQueryAdd == nil) {
-		dbQueryAdd.Close();
+	dbQuery, errDbQuery := dbConn.Query("INSERT INTO players_list(steamid64, base64nickname, mmr, mmr_uncertainty, access, prof_validated, rules_accepted) VALUES ("+oPlayer.SteamID64+", '"+oPlayer.NicknameBase64+"', "+fmt.Sprintf("%d", oPlayer.Mmr)+", "+fmt.Sprintf("%.06f", oPlayer.MmrUncertainty)+", "+fmt.Sprintf("%d", oPlayer.Access)+", "+fmt.Sprintf("%v", oPlayer.ProfValidated)+", "+fmt.Sprintf("%v", oPlayer.RulesAccepted)+");");
+	if (errDbQuery == nil) {
+		dbQuery.Close();
 	}
 }
 
 func UpdatePlayer(oPlayer DatabasePlayer) {
-	dbQueryUpdate, errQueryUpdate := dbConn.Query("UPDATE players_list SET base64nickname = '"+oPlayer.NicknameBase64+"', mmr = "+fmt.Sprintf("%d", oPlayer.Mmr)+", mmr_uncertainty = "+fmt.Sprintf("%.06f", oPlayer.MmrUncertainty)+", access = "+fmt.Sprintf("%d", oPlayer.Access)+", prof_validated = "+fmt.Sprintf("%v", oPlayer.ProfValidated)+", rules_accepted = "+fmt.Sprintf("%v", oPlayer.RulesAccepted)+" WHERE steamid64 = '"+oPlayer.SteamID64+"';");
-	if (errQueryUpdate == nil) {
-		dbQueryUpdate.Close();
+	dbQuery, errDbQuery := dbConn.Query("UPDATE players_list SET base64nickname = '"+oPlayer.NicknameBase64+"', mmr = "+fmt.Sprintf("%d", oPlayer.Mmr)+", mmr_uncertainty = "+fmt.Sprintf("%.06f", oPlayer.MmrUncertainty)+", access = "+fmt.Sprintf("%d", oPlayer.Access)+", prof_validated = "+fmt.Sprintf("%v", oPlayer.ProfValidated)+", rules_accepted = "+fmt.Sprintf("%v", oPlayer.RulesAccepted)+" WHERE steamid64 = '"+oPlayer.SteamID64+"';");
+	if (errDbQuery == nil) {
+		dbQuery.Close();
 	}
 }
 
 func AddSession(oSession DatabaseSession) {
-	dbQueryAdd, errQueryAdd := dbConn.Query("INSERT INTO sessions_list(session_key, steamid64, since_milli) VALUES ('"+oSession.SessionID+"', '"+oSession.SteamID64+"', "+fmt.Sprintf("%d", oSession.Since)+");");
-	if (errQueryAdd == nil) {
-		dbQueryAdd.Close();
+	dbQuery, errDbQuery := dbConn.Query("INSERT INTO sessions_list(session_key, steamid64, since_milli) VALUES ('"+oSession.SessionID+"', '"+oSession.SteamID64+"', "+fmt.Sprintf("%d", oSession.Since)+");");
+	if (errDbQuery == nil) {
+		dbQuery.Close();
+	}
+}
+
+func AddBanRecord(oBanRecord DatabaseBanRecord) {
+	dbQuery, errDbQuery := dbConn.Query("INSERT INTO banlist(steamid64, steam_name, banned_by, created_on, accepted_on, banlength, banreason) VALUES ('"+oBanRecord.SteamID64+"', '"+oBanRecord.NicknameBase64+"', '"+oBanRecord.BannedBySteamID64+"', "+fmt.Sprintf("%d", oBanRecord.CreatedAt)+", "+fmt.Sprintf("%d", oBanRecord.AcceptedAt)+", "+fmt.Sprintf("%d", oBanRecord.BanLength)+", '"+oBanRecord.BanReasonBase64+"');");
+	if (errDbQuery == nil) {
+		dbQuery.Close();
+	}
+}
+
+func UpdateBanRecord(oBanRecord DatabaseBanRecord) {
+	dbQuery, errDbQuery := dbConn.Query("UPDATE banlist SET steamid64 = '"+oBanRecord.SteamID64+"', steam_name = '"+oBanRecord.NicknameBase64+"', banned_by = '"+oBanRecord.BannedBySteamID64+"', accepted_on = "+fmt.Sprintf("%d", oBanRecord.AcceptedAt)+", banlength = "+fmt.Sprintf("%d", oBanRecord.BanLength)+", banreason = '"+oBanRecord.BanReasonBase64+"' WHERE created_on = "+fmt.Sprintf("%d", oBanRecord.CreatedAt)+";");
+	if (errDbQuery == nil) {
+		dbQuery.Close();
 	}
 }
 
 func RemoveSession(sSessID string) {
-	dbQueryAdd, errQueryAdd := dbConn.Query("DELETE FROM sessions_list WHERE session_key = '"+sSessID+"';");
-	if (errQueryAdd == nil) {
-		dbQueryAdd.Close();
+	dbQuery, errDbQuery := dbConn.Query("DELETE FROM sessions_list WHERE session_key = '"+sSessID+"';");
+	if (errDbQuery == nil) {
+		dbQuery.Close();
 	}
 }
 

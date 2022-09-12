@@ -3,6 +3,9 @@
 - [ ] Ban those who ragequitted midgame
 - [ ] Penalty for not readying up in time
 - [ ] Player report system
+- [ ] Ban reports review system
+- [ ] Select config when game starts, not on lobby creation
+- [ ] Add /remove admin
 - [ ] Ban protests
 - [ ] VPN checks
 - [ ] Smurf traces + connect logging + ping loggin

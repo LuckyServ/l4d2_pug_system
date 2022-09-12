@@ -9,6 +9,12 @@
 	"no_new_lobbies": false,
 	"steam_api_key": "1AAA1AAA1AAA1AAA1AAA1AAAAAA",
 	"min_versus_games_played": 10,
+	"ragequit_bans": {
+		"forget_ban_history_in_days": 30,
+		"first_ban_days": 2,
+		"second_ban_days": 7,
+		"reason_text": "[AutoBan] Excessively long AFK / ragequitting midgame / failed to ready up in time"
+	},
 	"mmr": {
 		"default_uncertainty": 33.3333,
 		"default_max": 3000,
