@@ -1,4 +1,3 @@
-- [ ] Implement RWMutex locks
 - [ ] Ban system
 - [ ] Ban those who failed to join game in time
 - [ ] Ban those who ragequitted midgame
@@ -20,6 +19,7 @@
 - [ ] Restarting mechanism
 - [ ] Regularly increase mmr uncertainty value
 
+- [x] Implement RWMutex locks
 - [x] Log out
 - [x] Don't touch mmr if scores are 0-0
 - [x] Optimize responses with sorting

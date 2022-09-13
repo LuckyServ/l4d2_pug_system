@@ -69,7 +69,9 @@ func SelectBestAvailableServer(arPlayers []*players.EntPlayer, arGameServersUnso
 				if (arMaxPing[i] < arMaxPing[i - 1]) {
 					arMaxPing[i], arMaxPing[i - 1] = arMaxPing[i - 1], arMaxPing[i]; //switch
 					arGameServers[i], arGameServers[i - 1] = arGameServers[i - 1], arGameServers[i]; //switch
-					bSorted = false;
+					if (bSorted) {
+						bSorted = false;
+					}
 				}
 			}
 			if (!bSorted) {

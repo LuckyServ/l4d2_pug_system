@@ -159,8 +159,8 @@ func SortPlayers() {
 	for {
 		time.Sleep(5 * time.Second);
 
+		bEdited := false;
 		MuPlayers.Lock();
-
 		iSize := len(ArrayPlayers);
 		if (iSize > 1) {
 			bSorted := false;
@@ -169,19 +169,29 @@ func SortPlayers() {
 				for i := 1; i < iSize; i++ {
 					if (ArrayPlayers[i].Mmr > ArrayPlayers[i - 1].Mmr) {
 						ArrayPlayers[i], ArrayPlayers[i - 1] = ArrayPlayers[i - 1], ArrayPlayers[i]; //switch
-						bSorted = false;
+						if (!bEdited) {
+							bEdited = true;
+						}
+						if (bSorted) {
+							bSorted = false;
+						}
 					}
 				}
 				if (!bSorted) {
 					for i := iSize - 2; i >= 0; i-- {
 						if (ArrayPlayers[i].Mmr < ArrayPlayers[i + 1].Mmr) {
 							ArrayPlayers[i], ArrayPlayers[i + 1] = ArrayPlayers[i + 1], ArrayPlayers[i]; //switch
+							if (!bEdited) {
+								bEdited = true;
+							}
 						}
 					}
 				}
 			}
 		}
-
 		MuPlayers.Unlock();
+		if (bEdited) {
+			I64LastPlayerlistUpdate = time.Now().UnixMilli();
+		}
 	}
 }

@@ -44,7 +44,9 @@ func JoinAny(pPlayer *players.EntPlayer) bool { //MuPlayers and MuLobbies must b
 				for i := 1; i < iSize; i++ {
 					if (arLobbies[i].CreatedAt < arLobbies[i - 1].CreatedAt) {
 						arLobbies[i], arLobbies[i - 1] = arLobbies[i - 1], arLobbies[i]; //switch
-						bSorted = false;
+						if (bSorted) {
+							bSorted = false;
+						}
 					}
 				}
 				if (!bSorted) {

@@ -25,7 +25,9 @@ func SortLobbies() {
 				for i := 1; i < iSize; i++ {
 					if (ArrayLobbies[i].CreatedAt < ArrayLobbies[i - 1].CreatedAt) {
 						ArrayLobbies[i], ArrayLobbies[i - 1] = ArrayLobbies[i - 1], ArrayLobbies[i]; //switch
-						bSorted = false;
+						if (bSorted) {
+							bSorted = false;
+						}
 					}
 				}
 				if (!bSorted) {
@@ -89,7 +91,9 @@ func WatchLobbies() {
 				for i := 1; i < iSize; i++ {
 					if (arJoinLobbyPlayers[i].AutoSearchingSince < arJoinLobbyPlayers[i - 1].AutoSearchingSince) {
 						arJoinLobbyPlayers[i], arJoinLobbyPlayers[i - 1] = arJoinLobbyPlayers[i - 1], arJoinLobbyPlayers[i]; //switch
-						bSorted = false;
+						if (bSorted) {
+							bSorted = false;
+						}
 					}
 				}
 				if (!bSorted) {
