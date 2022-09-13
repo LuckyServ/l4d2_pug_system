@@ -47,7 +47,7 @@ func HttpReqGetOnlinePlayers(c *gin.Context) {
 			mapResponse["authorized"] = true;
 			mapResponse["steamid64"] = oSession.SteamID64;
 
-			players.MuPlayers.Lock();
+			players.MuPlayers.RLock();
 
 			pPlayer := players.MapPlayers[oSession.SteamID64];
 
@@ -64,7 +64,7 @@ func HttpReqGetOnlinePlayers(c *gin.Context) {
 				RulesAccepted:	pPlayer.RulesAccepted,
 			};
 
-			players.MuPlayers.Unlock();
+			players.MuPlayers.RUnlock();
 
 		}
 	}
@@ -73,29 +73,7 @@ func HttpReqGetOnlinePlayers(c *gin.Context) {
 	var iActiveCount, iOnlineCount, iInLobbyCount, iInGameCount, iIdleCount int;
 
 	//iStartTime := time.Now().UnixNano();
-	players.MuPlayers.Lock();
-
-	//sort
-	iSize := len(players.ArrayPlayers);
-	if (iSize > 1) {
-		bSorted := false;
-		for !bSorted {
-			bSorted = true;
-			for i := 1; i < iSize; i++ {
-				if (players.ArrayPlayers[i].Mmr > players.ArrayPlayers[i - 1].Mmr) {
-					players.ArrayPlayers[i], players.ArrayPlayers[i - 1] = players.ArrayPlayers[i - 1], players.ArrayPlayers[i]; //switch
-					bSorted = false;
-				}
-			}
-			if (!bSorted) {
-				for i := iSize - 2; i >= 0; i-- {
-					if (players.ArrayPlayers[i].Mmr < players.ArrayPlayers[i + 1].Mmr) {
-						players.ArrayPlayers[i], players.ArrayPlayers[i + 1] = players.ArrayPlayers[i + 1], players.ArrayPlayers[i]; //switch
-					}
-				}
-			}
-		}
-	}
+	players.MuPlayers.RLock();
 
 	i64CurTime := time.Now().UnixMilli();
 	for _, pPlayer := range players.ArrayPlayers {
@@ -122,7 +100,7 @@ func HttpReqGetOnlinePlayers(c *gin.Context) {
 			}
 		}
 	}
-	players.MuPlayers.Unlock();
+	players.MuPlayers.RUnlock();
 	//fmt.Printf("Was locked for %d μs\n", (time.Now().UnixNano() - iStartTime) / 1000);
 	iActiveCount = iOnlineCount + iInLobbyCount + iInGameCount;
 

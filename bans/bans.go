@@ -23,14 +23,26 @@ type EntAutoBanReq struct {
 var ArrayBanRecords []EntBanRecord;
 var ChanUpdateRecord = make(chan EntBanRecord);
 var ChanBanRQ = make(chan EntAutoBanReq); //locks Players
+var ChanUnban = make(chan bool); //locks Players
 
 
 func Watchers() {
+	go WatchChannels();
+	go WatchUnbans();
+}
+
+func WatchUnbans() {
+	for {
+		
+	}
+}
+
+func WatchChannels() {
 	for {
 		select {
 		case oBanRecord := <-ChanUpdateRecord:
 			UpdateRecord(oBanRecord);
-		case oBanReq := <-ChanBanRQ:
+		case oBanReq := <-ChanBanRQ: //locks Players
 			BanRagequitter(oBanReq);
 			time.Sleep(2 * time.Millisecond);
 		}

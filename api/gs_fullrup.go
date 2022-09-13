@@ -18,7 +18,7 @@ func HttpReqGSFullReadyUp(c *gin.Context) {
 		sIP := c.PostForm("ip");
 		if (sIP != "") {
 
-			games.MuGames.Lock();
+			games.MuGames.RLock();
 			pGame := games.GetGameByIP(sIP);
 			if (pGame != nil) {
 
@@ -33,7 +33,7 @@ func HttpReqGSFullReadyUp(c *gin.Context) {
 				sResponse = fmt.Sprintf("%s\n	\"success\" \"0\"", sResponse);
 				sResponse = fmt.Sprintf("%s\n	\"error\" \"No game on this IP\"", sResponse);
 			}
-			games.MuGames.Unlock();
+			games.MuGames.RUnlock();
 		} else {
 			sResponse = fmt.Sprintf("%s\n	\"success\" \"0\"", sResponse);
 			sResponse = fmt.Sprintf("%s\n	\"error\" \"No ip parameter\"", sResponse);

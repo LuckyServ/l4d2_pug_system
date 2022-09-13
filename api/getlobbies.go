@@ -31,7 +31,7 @@ func HttpReqGetLobbies(c *gin.Context) {
 	var iLobbiesCount int;
 	var bNeedReadyUp bool;
 
-	lobby.MuLobbies.Lock();
+	lobby.MuLobbies.RLock();
 
 	mapResponse["authorized"] = false;
 	mapResponse["is_inlobby"] = false;
@@ -39,7 +39,7 @@ func HttpReqGetLobbies(c *gin.Context) {
 		oSession, bAuthorized := auth.GetSession(sCookieSessID);
 		if (bAuthorized) {
 			mapResponse["authorized"] = true;
-			players.MuPlayers.Lock();
+			players.MuPlayers.RLock();
 			pPlayer := players.MapPlayers[oSession.SteamID64];
 			if (pPlayer.IsInLobby) {
 				mapResponse["is_inlobby"] = true;
@@ -58,29 +58,7 @@ func HttpReqGetLobbies(c *gin.Context) {
 					bNeedReadyUp = true;
 				}
 			}
-			players.MuPlayers.Unlock();
-		}
-	}
-
-	//sort
-	iSize := len(lobby.ArrayLobbies);
-	if (iSize > 1) {
-		bSorted := false;
-		for !bSorted {
-			bSorted = true;
-			for i := 1; i < iSize; i++ {
-				if (lobby.ArrayLobbies[i].CreatedAt < lobby.ArrayLobbies[i - 1].CreatedAt) {
-					lobby.ArrayLobbies[i], lobby.ArrayLobbies[i - 1] = lobby.ArrayLobbies[i - 1], lobby.ArrayLobbies[i]; //switch
-					bSorted = false;
-				}
-			}
-			if (!bSorted) {
-				for i := iSize - 2; i >= 0; i-- {
-					if (lobby.ArrayLobbies[i].CreatedAt > lobby.ArrayLobbies[i + 1].CreatedAt) {
-						lobby.ArrayLobbies[i], lobby.ArrayLobbies[i + 1] = lobby.ArrayLobbies[i + 1], lobby.ArrayLobbies[i]; //switch
-					}
-				}
-			}
+			players.MuPlayers.RUnlock();
 		}
 	}
 
@@ -98,7 +76,7 @@ func HttpReqGetLobbies(c *gin.Context) {
 		iLobbiesCount++;
 	}
 
-	lobby.MuLobbies.Unlock();
+	lobby.MuLobbies.RUnlock();
 
 
 	mapResponse["success"] = true;

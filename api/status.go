@@ -44,21 +44,22 @@ func HttpReqStatus(c *gin.Context) {
 			go smurf.AnnounceIP(c.ClientIP()); //for faster VPN info retrieve in the future
 			players.MuPlayers.Lock();
 			players.UpdatePlayerActivity(oSession.SteamID64);
+			players.MuPlayers.Unlock();
 
+			players.MuPlayers.RLock();
 			pPlayer := players.MapPlayers[oSession.SteamID64];
 			if (i64CookieGameUpdatedAt <= pPlayer.LastGameChanged) {
 				mapResponse["need_update_game"] = true;
 			}
 			if (pPlayer.IsInLobby) {
-				lobby.MuLobbies.Lock();
+				lobby.MuLobbies.RLock();
 				pLobby := lobby.MapLobbies[pPlayer.LobbyID];
 				if (pLobby.PlayerCount >= 8 && !pPlayer.IsReadyInLobby) {
 					mapResponse["need_emit_readyup_sound"] = true;
 				}
-				lobby.MuLobbies.Unlock();
+				lobby.MuLobbies.RUnlock();
 			}
-
-			players.MuPlayers.Unlock();
+			players.MuPlayers.RUnlock();
 		}
 	}
 

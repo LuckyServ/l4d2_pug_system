@@ -12,17 +12,17 @@ type EntSession struct {
 }
 
 var MapSessions map[string]EntSession = make(map[string]EntSession);
-var MuSessions sync.Mutex;
+var MuSessions sync.RWMutex;
 
 
 func GetSession(sSessID string) (EntSession, bool) {
-	MuSessions.Lock();
+	MuSessions.RLock();
 	if _, ok := MapSessions[sSessID]; !ok {
-		MuSessions.Unlock();
+		MuSessions.RUnlock();
 		return EntSession{}, false;
 	}
 	oSession := MapSessions[sSessID];
-	MuSessions.Unlock();
+	MuSessions.RUnlock();
 	return oSession, true;
 }
 

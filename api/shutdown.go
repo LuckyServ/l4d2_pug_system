@@ -19,12 +19,12 @@ func HttpReqShutdown(c *gin.Context) {
 	if (errCookieSessID == nil && sCookieSessID != "") {
 		oSession, bAuthorized := auth.GetSession(sCookieSessID);
 		if (bAuthorized) {
-			players.MuPlayers.Lock();
+			players.MuPlayers.RLock();
 			pPlayer := players.MapPlayers[oSession.SteamID64];
 			if (pPlayer.Access == 4) { //admin
 				mapResponse["success"] = true;
 			}
-			players.MuPlayers.Unlock();
+			players.MuPlayers.RUnlock();
 		}
 	}
 	

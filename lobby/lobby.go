@@ -21,7 +21,7 @@ type EntLobby struct {
 }
 var MapLobbies map[string]*EntLobby = make(map[string]*EntLobby);
 var ArrayLobbies []*EntLobby; //duplicate of MapLobbies, for faster iterating
-var MuLobbies sync.Mutex;
+var MuLobbies sync.RWMutex;
 var I64LastLobbyListUpdate int64;
 
 

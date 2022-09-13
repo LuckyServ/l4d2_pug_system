@@ -33,13 +33,13 @@ func CalcMmrLimits(pLobbyCreator *players.EntPlayer) (int, int, error) { //MuPla
 	//get list of online mmr's
 	var arOnlineMmrs []int;
 	var iOnlineCount int;
-	games.MuGames.Lock();
+	games.MuGames.RLock();
 	for _, pPlayer := range players.ArrayPlayers {
 		if (pPlayer.ProfValidated && pPlayer.RulesAccepted && pPlayer.Access >= -1 && !pPlayer.IsIdle && (pPlayer.IsOnline || pPlayer.IsInLobby || IsFinishingGameSoon(pPlayer))) {
 			arOnlineMmrs = append(arOnlineMmrs, pPlayer.Mmr);
 		}
 	}
-	games.MuGames.Unlock();
+	games.MuGames.RUnlock();
 	if (pLobbyCreator.IsIdle) { //this is a very bad fix
 		arOnlineMmrs = append(arOnlineMmrs, pLobbyCreator.Mmr);
 	}

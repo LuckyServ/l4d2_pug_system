@@ -42,10 +42,14 @@ type EntPlayer struct {
 
 var MapPlayers map[string]*EntPlayer = make(map[string]*EntPlayer);
 var ArrayPlayers []*EntPlayer; //duplicate of MapPlayers, for faster iterating
-var MuPlayers sync.Mutex;
+var MuPlayers sync.RWMutex;
 
 var I64LastPlayerlistUpdate int64;
 
+func Watchers() {
+	go WatchOnline();
+	go SortPlayers();
+}
 
 func UpdatePlayerActivity(sSteamID64 string) { //Maps must be locked outside!!!
 	if _, ok := MapPlayers[sSteamID64]; !ok {
@@ -149,4 +153,35 @@ func AddPlayerAuth(sSteamID64 string, sNicknameBase64 string) string {
 	auth.MuSessions.Unlock();
 
 	return sSessionKey;
+}
+
+func SortPlayers() {
+	for {
+		time.Sleep(5 * time.Second);
+
+		MuPlayers.Lock();
+
+		iSize := len(ArrayPlayers);
+		if (iSize > 1) {
+			bSorted := false;
+			for !bSorted {
+				bSorted = true;
+				for i := 1; i < iSize; i++ {
+					if (ArrayPlayers[i].Mmr > ArrayPlayers[i - 1].Mmr) {
+						ArrayPlayers[i], ArrayPlayers[i - 1] = ArrayPlayers[i - 1], ArrayPlayers[i]; //switch
+						bSorted = false;
+					}
+				}
+				if (!bSorted) {
+					for i := iSize - 2; i >= 0; i-- {
+						if (ArrayPlayers[i].Mmr < ArrayPlayers[i + 1].Mmr) {
+							ArrayPlayers[i], ArrayPlayers[i + 1] = ArrayPlayers[i + 1], ArrayPlayers[i]; //switch
+						}
+					}
+				}
+			}
+		}
+
+		MuPlayers.Unlock();
+	}
 }

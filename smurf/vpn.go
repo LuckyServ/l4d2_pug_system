@@ -11,20 +11,22 @@ type EntVPNInfo struct {
 }
 
 var mapVPNs = make(map[string]EntVPNInfo);
-var MuVPN sync.Mutex;
+var MuVPN sync.RWMutex;
 
 
 func Watchers() {
 	for {
 		time.Sleep(86400 * time.Second); //24 hours
 		var arRemoveIP []string;
-		MuVPN.Lock();
+		MuVPN.RLock();
 		i64CurTime := time.Now().Unix();
 		for sIP, oVPNInfo := range mapVPNs {
 			if (oVPNInfo.UpdatedAt + 604800 <= i64CurTime) {
 				arRemoveIP = append(arRemoveIP, sIP);
 			}
 		}
+		MuVPN.RUnlock();
+		MuVPN.Lock();
 		for _, sIP := range arRemoveIP {
 			delete(mapVPNs, sIP);
 		}

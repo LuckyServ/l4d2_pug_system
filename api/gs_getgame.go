@@ -19,20 +19,20 @@ func HttpReqGSGetGame(c *gin.Context) {
 	if (auth.Backend(sAuthKey)) {
 		sIP := c.PostForm("ip");
 		if (sIP != "") {
-			games.MuGames.Lock();
+			games.MuGames.RLock();
 			pGame := games.GetGameByIP(sIP);
 			if (pGame != nil) {
 
 				sResponse = fmt.Sprintf("%s\n	\"success\" \"1\"", sResponse);
 
-				players.MuPlayers.Lock();
+				players.MuPlayers.RLock();
 				for i := 0; i < 4; i++ {
 					sResponse = fmt.Sprintf("%s\n	\"player_a%d\" \"%s\"", sResponse, i, pGame.PlayersA[i].SteamID64 + "s"); //"s" is a workaround for sourcemod bug, it recognizes the value as int otherwise
 				}
 				for i := 0; i < 4; i++ {
 					sResponse = fmt.Sprintf("%s\n	\"player_b%d\" \"%s\"", sResponse, i, pGame.PlayersB[i].SteamID64 + "s"); //"s" is a workaround for sourcemod bug, it recognizes the value as int otherwise
 				}
-				players.MuPlayers.Unlock();
+				players.MuPlayers.RUnlock();
 
 				sResponse = fmt.Sprintf("%s\n	\"confogl\" \"%s\"", sResponse, pGame.GameConfig.CodeName);
 				sResponse = fmt.Sprintf("%s\n	\"first_map\" \"%s\"", sResponse, pGame.Maps[0]);
@@ -56,7 +56,7 @@ func HttpReqGSGetGame(c *gin.Context) {
 				sResponse = fmt.Sprintf("%s\n	\"success\" \"0\"", sResponse);
 				sResponse = fmt.Sprintf("%s\n	\"error\" \"No game on this IP\"", sResponse);
 			}
-			games.MuGames.Unlock();
+			games.MuGames.RUnlock();
 		} else {
 			sResponse = fmt.Sprintf("%s\n	\"success\" \"0\"", sResponse);
 			sResponse = fmt.Sprintf("%s\n	\"error\" \"No ip parameter\"", sResponse);

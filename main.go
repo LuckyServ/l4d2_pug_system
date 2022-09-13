@@ -48,9 +48,9 @@ func main() {
 	//HTTP server init
 	api.GinInit();
 
-	go players.WatchOnline(); //send players to offline mode
+	go players.Watchers();
 	go api.AuthRatelimits(); //limit authorization requests per ip
-	go lobby.WatchLobbies(); //watch lobbies for ready and timeout
+	go lobby.Watchers();
 	go games.Watchers(); //watch various game related channels
 	go chat.ChannelWatchers(); //watch chat channels
 	go smurf.Watchers();

@@ -6,12 +6,17 @@ import (
 	"../players"
 	"encoding/base64"
 	"time"
+	"strings"
 )
 
 
 
 
 func BanRagequitter(oBanReq EntAutoBanReq) { //expensive
+
+	if (!strings.HasPrefix(oBanReq.SteamID64, "7")) { //extra check, just in case
+		return;
+	}
 	
 	var iCountPrevAutoBans int;
 	var bIsBannedNow bool;

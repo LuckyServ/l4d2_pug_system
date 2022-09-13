@@ -26,17 +26,19 @@ func HttpReqValidateProf(c *gin.Context) {
 	if (errCookieSessID == nil && sCookieSessID != "") {
 		oSession, bAuthorized := auth.GetSession(sCookieSessID);
 		if (bAuthorized) {
-			players.MuPlayers.Lock();
+			players.MuPlayers.RLock();
 			i64CurTime := time.Now().UnixMilli();
 			pPlayer := players.MapPlayers[oSession.SteamID64];
 			if (pPlayer.ProfValidated) {
-				players.MuPlayers.Unlock();
+				players.MuPlayers.RUnlock();
 				mapResponse["error"] = "Your profile is already validated";
 			} else if (pPlayer.LastSteamRequest + settings.SteamAPICooldown > i64CurTime) {
-				players.MuPlayers.Unlock();
+				players.MuPlayers.RUnlock();
 				mapResponse["error"] = fmt.Sprintf("Too many validation requests. Try again in %d seconds.", ((pPlayer.LastSteamRequest + settings.SteamAPICooldown) - i64CurTime) / 1000);
 			} else {
-				pPlayer.LastSteamRequest = i64CurTime;
+				players.MuPlayers.RUnlock();
+				players.MuPlayers.Lock();
+				pPlayer.LastSteamRequest = time.Now().UnixMilli();
 				players.MuPlayers.Unlock();
 
 				clientSteam := http.Client{

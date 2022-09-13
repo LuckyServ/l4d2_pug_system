@@ -25,7 +25,7 @@ func HttpReqPingsReceiver(c *gin.Context) {
 			players.MuPlayers.Lock();
 			pPlayer := players.MapPlayers[oSession.SteamID64];
 			if (pPlayer.IsInGame) {
-				games.MuGames.Lock();
+				games.MuGames.RLock();
 				pGame := games.MapGames[pPlayer.GameID];
 				if (pGame.State == games.StateWaitPings) {
 					mapResponse["success"] = true;
@@ -52,7 +52,7 @@ func HttpReqPingsReceiver(c *gin.Context) {
 				} else {
 					mapResponse["error"] = "The game isnt expecting a ping info from you";
 				}
-				games.MuGames.Unlock();
+				games.MuGames.RUnlock();
 			} else {
 				mapResponse["error"] = "You are not in game";
 			}
@@ -63,27 +63,6 @@ func HttpReqPingsReceiver(c *gin.Context) {
 	} else {
 		mapResponse["error"] = "Please authorize first";
 	}
-
-	//Testing
-	/*oSession, _ := auth.GetSession(sCookieSessID);
-	pPlayer := players.MapPlayers[oSession.SteamID64];
-	mapResponse["success"] = true;
-	for i, _ := range settings.HardwareServers {
-		sPingMS := c.Query(settings.HardwareDomains[i]);
-		if (sPingMS != "") {
-			iPingMS, errPingMS := strconv.Atoi(sPingMS);
-			if (errPingMS == nil && iPingMS > 0) {
-				iOldPing, bAlrPinged := pPlayer.GameServerPings[settings.HardwareServers[i]];
-				if (bAlrPinged) {
-					if (iPingMS < iOldPing) {
-						pPlayer.GameServerPings[settings.HardwareServers[i]] = iPingMS;
-					}
-				} else {
-					pPlayer.GameServerPings[settings.HardwareServers[i]] = iPingMS;
-				}
-			}
-		}
-	}*/
 	
 	
 	c.Header("Access-Control-Allow-Origin", c.Request.Header.Get("origin"));

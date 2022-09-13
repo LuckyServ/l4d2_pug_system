@@ -1,3 +1,4 @@
+- [ ] Implement RWMutex locks
 - [ ] Ban system
 - [ ] Ban those who failed to join game in time
 - [ ] Ban those who ragequitted midgame
@@ -5,7 +6,7 @@
 - [ ] Player report system
 - [ ] Ban reports review system
 - [ ] Select config when game starts, not on lobby creation
-- [ ] Add /remove admin
+- [ ] Add / remove admins
 - [ ] Ban protests
 - [ ] VPN checks
 - [ ] Smurf traces + connect logging + ping loggin

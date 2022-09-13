@@ -45,7 +45,7 @@ const ( //game states
 
 var MapGames map[string]*EntGame = make(map[string]*EntGame);
 var ArrayGames []*EntGame; //duplicate of MapGames, for faster iterating
-var MuGames sync.Mutex;
+var MuGames sync.RWMutex;
 
 var ChanNewGameID chan string = make(chan string);
 

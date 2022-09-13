@@ -25,7 +25,7 @@ func (n *NoOpDiscoveryCache) Get(id string) openid.DiscoveredInfo {
 	return nil;
 }
 var mapIPs = make(map[string]int);
-var MuAuth sync.Mutex;
+var MuAuth sync.RWMutex;
 
 //Limit authorizations per hour per IP
 func AuthRatelimits() {
@@ -38,9 +38,9 @@ func AuthRatelimits() {
 }
 
 func GetAuthCount(sClientIP string) int {
-	MuAuth.Lock();
+	MuAuth.RLock();
 	iCount, bExists := mapIPs[sClientIP];
-	MuAuth.Unlock();
+	MuAuth.RUnlock();
 	if (bExists) {
 		return iCount;
 	} else {
@@ -51,12 +51,12 @@ func GetAuthCount(sClientIP string) int {
 func IncreaseAuthCount(sClientIP string) {
 	MuAuth.Lock();
 	iCount, bExists := mapIPs[sClientIP];
-	MuAuth.Unlock();
 	if (bExists) {
 		mapIPs[sClientIP] = iCount + 1;
 	} else {
 		mapIPs[sClientIP] = 1;
 	}
+	MuAuth.Unlock();
 }
 
 

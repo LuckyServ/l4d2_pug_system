@@ -48,12 +48,12 @@ func HttpReqGetGame(c *gin.Context) {
 	if (errCookieSessID == nil && sCookieSessID != "") {
 		oSession, bAuthorized := auth.GetSession(sCookieSessID);
 		if (bAuthorized) {
-			players.MuPlayers.Lock();
+			players.MuPlayers.RLock();
 			pPlayer := players.MapPlayers[oSession.SteamID64];
 			if (pPlayer.IsInGame) {
 
 				mapResponse["success"] = true;
-				games.MuGames.Lock();
+				games.MuGames.RLock();
 				pGame := games.MapGames[pPlayer.GameID];
 
 				var arPlayersA, arPlayersB []PlayerResponse;
@@ -94,9 +94,9 @@ func HttpReqGetGame(c *gin.Context) {
 					Status:				mapGameStatus[pGame.State],
 				};
 
-				games.MuGames.Unlock();
+				games.MuGames.RUnlock();
 			}
-			players.MuPlayers.Unlock();
+			players.MuPlayers.RUnlock();
 		}
 	}
 	

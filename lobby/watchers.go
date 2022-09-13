@@ -7,6 +7,41 @@ import (
 	"time"
 )
 
+func Watchers() {
+	go WatchLobbies();
+	go SortLobbies();
+}
+
+func SortLobbies() {
+	for {
+		time.Sleep(3 * time.Second);
+
+		MuLobbies.Lock();
+		iSize := len(ArrayLobbies);
+		if (iSize > 1) {
+			bSorted := false;
+			for !bSorted {
+				bSorted = true;
+				for i := 1; i < iSize; i++ {
+					if (ArrayLobbies[i].CreatedAt < ArrayLobbies[i - 1].CreatedAt) {
+						ArrayLobbies[i], ArrayLobbies[i - 1] = ArrayLobbies[i - 1], ArrayLobbies[i]; //switch
+						bSorted = false;
+					}
+				}
+				if (!bSorted) {
+					for i := iSize - 2; i >= 0; i-- {
+						if (ArrayLobbies[i].CreatedAt > ArrayLobbies[i + 1].CreatedAt) {
+							ArrayLobbies[i], ArrayLobbies[i + 1] = ArrayLobbies[i + 1], ArrayLobbies[i]; //switch
+						}
+					}
+				}
+			}
+		}
+
+		MuLobbies.Unlock();
+	}
+}
+
 func WatchLobbies() {
 	for {
 		time.Sleep(3 * time.Second);
@@ -71,31 +106,33 @@ func WatchLobbies() {
 		}
 
 
-		games.MuGames.Lock();
-		for _, sLobbyID := range arReadyLobbies {
-			pLobby, bExists := MapLobbies[sLobbyID];
-			if (bExists) {
+		if (len(arReadyLobbies) > 0) {
+			games.MuGames.Lock();
+			for _, sLobbyID := range arReadyLobbies {
+				pLobby, bExists := MapLobbies[sLobbyID];
+				if (bExists) {
 
-				pGame := &games.EntGame{
-					ID:					<-games.ChanNewGameID,
-					CreatedAt:			time.Now().UnixMilli(),
-					GameConfig:			pLobby.GameConfig,
-					State:				games.StateCreating,
-					MmrMin:				pLobby.MmrMin,
-					MmrMax:				pLobby.MmrMax,
-				};
+					pGame := &games.EntGame{
+						ID:					<-games.ChanNewGameID,
+						CreatedAt:			time.Now().UnixMilli(),
+						GameConfig:			pLobby.GameConfig,
+						State:				games.StateCreating,
+						MmrMin:				pLobby.MmrMin,
+						MmrMax:				pLobby.MmrMax,
+					};
 
-				for _, pPlayer := range pLobby.Players {
-					arGamePlayers = append(arGamePlayers, pPlayer);
+					for _, pPlayer := range pLobby.Players {
+						arGamePlayers = append(arGamePlayers, pPlayer);
+					}
+
+					pGame.PlayersUnpaired = arGamePlayers;
+
+					go games.Control(pGame);
+
 				}
-
-				pGame.PlayersUnpaired = arGamePlayers;
-
-				go games.Control(pGame);
-
 			}
+			games.MuGames.Unlock();
 		}
-		games.MuGames.Unlock();
 
 		for _, pPlayer := range arGamePlayers {
 			Leave(pPlayer);
