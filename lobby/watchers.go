@@ -16,6 +16,7 @@ func SortLobbies() {
 	for {
 		time.Sleep(3 * time.Second);
 
+		bEdited := false;
 		MuLobbies.Lock();
 		iSize := len(ArrayLobbies);
 		if (iSize > 1) {
@@ -25,6 +26,9 @@ func SortLobbies() {
 				for i := 1; i < iSize; i++ {
 					if (ArrayLobbies[i].CreatedAt < ArrayLobbies[i - 1].CreatedAt) {
 						ArrayLobbies[i], ArrayLobbies[i - 1] = ArrayLobbies[i - 1], ArrayLobbies[i]; //switch
+						if (!bEdited) {
+							bEdited = true;
+						}
 						if (bSorted) {
 							bSorted = false;
 						}
@@ -34,6 +38,9 @@ func SortLobbies() {
 					for i := iSize - 2; i >= 0; i-- {
 						if (ArrayLobbies[i].CreatedAt > ArrayLobbies[i + 1].CreatedAt) {
 							ArrayLobbies[i], ArrayLobbies[i + 1] = ArrayLobbies[i + 1], ArrayLobbies[i]; //switch
+							if (!bEdited) {
+								bEdited = true;
+							}
 						}
 					}
 				}
@@ -41,6 +48,9 @@ func SortLobbies() {
 		}
 
 		MuLobbies.Unlock();
+		if (bEdited) {
+			I64LastLobbyListUpdate = time.Now().UnixMilli();
+		}
 	}
 }
 
