@@ -64,6 +64,15 @@ func BanRagequitter(oBanReq EntAutoBanReq) { //expensive
 			pPlayer.BanAcceptedAt = 0;
 			pPlayer.BanLength = i64BanLength;
 			pPlayer.Access = -2;
+			go database.UpdatePlayer(database.DatabasePlayer{
+				SteamID64:			pPlayer.SteamID64,
+				NicknameBase64:		pPlayer.NicknameBase64,
+				Mmr:				pPlayer.Mmr,
+				MmrUncertainty:		pPlayer.MmrUncertainty,
+				Access:				pPlayer.Access,
+				ProfValidated:		pPlayer.ProfValidated,
+				RulesAccepted:		pPlayer.RulesAccepted,
+				});
 			
 		}
 		players.MuPlayers.Unlock();
@@ -102,4 +111,36 @@ func UpdateRecord(oBanRecord EntBanRecord) { //expensive
 			return;
 		}
 	}
+}
+
+func RestoreBans() bool {
+	arDatabaseBanRecords := database.RestoreBans();
+	/*if (len(arDatabasePlayers) == 0) {
+		return false;
+	}*/
+	i64CurTime := time.Now().UnixMilli();
+	for _, oDBBanRecord := range arDatabaseBanRecords {
+		oBanRecord := EntBanRecord{
+			NicknameBase64:		oDBBanRecord.NicknameBase64,
+			SteamID64:			oDBBanRecord.SteamID64,
+			BannedBySteamID64:	oDBBanRecord.BannedBySteamID64,
+			CreatedAt:			oDBBanRecord.CreatedAt,
+			AcceptedAt:			oDBBanRecord.AcceptedAt,
+			BanLength:			oDBBanRecord.BanLength,
+			BanReasonBase64:	oDBBanRecord.BanReasonBase64,
+		};
+		ArrayBanRecords = append(ArrayBanRecords, oBanRecord);
+
+		if (oBanRecord.AcceptedAt == 0 || oBanRecord.AcceptedAt + oBanRecord.BanLength > i64CurTime) {
+			pPlayer, bFound := players.MapPlayers[oBanRecord.SteamID64];
+			if (bFound) {
+				pPlayer.BanReason = oBanRecord.BanReasonBase64;
+				pPlayer.BanAcceptedAt = oBanRecord.AcceptedAt;
+				pPlayer.BanLength = oBanRecord.BanLength;
+				pPlayer.Access = -2;
+			}
+		}
+	}
+	players.I64LastPlayerlistUpdate = time.Now().UnixMilli();
+	return true;
 }

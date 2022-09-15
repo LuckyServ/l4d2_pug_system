@@ -72,12 +72,16 @@ func RestorePlayers() bool { //no need to lock maps
 		return false;
 	}*/
 	for _, oDBPlayer := range arDatabasePlayers {
+		iAccess := oDBPlayer.Access;
+		if (iAccess < 0) {
+			iAccess = 0;
+		}
 		pPlayer := &EntPlayer{
 			SteamID64:			oDBPlayer.SteamID64,
 			NicknameBase64:		oDBPlayer.NicknameBase64,
 			Mmr:				oDBPlayer.Mmr,
 			MmrUncertainty:		oDBPlayer.MmrUncertainty,
-			Access:				oDBPlayer.Access,
+			Access:				iAccess,
 			ProfValidated:		oDBPlayer.ProfValidated,
 			RulesAccepted:		oDBPlayer.RulesAccepted,
 		};

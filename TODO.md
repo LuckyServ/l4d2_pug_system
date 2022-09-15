@@ -1,10 +1,12 @@
 - [ ] Ban system
+- [ ] Restore bans on restart
 - [ ] Ban those who failed to join game in time
 - [ ] Ban those who ragequitted midgame
 - [ ] Penalty for not readying up in time
 - [ ] Player report system
 - [ ] Ban reports review system
 - [ ] Select config when game starts, not on lobby creation
+- [ ] Reduce response size of /status
 - [ ] Add / remove admins
 - [ ] Ban protests
 - [ ] VPN checks

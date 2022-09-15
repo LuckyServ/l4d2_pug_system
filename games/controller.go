@@ -5,6 +5,8 @@ import (
 	"../players"
 	"../settings"
 	"../rating"
+	"../bans"
+	"../utils"
 	"time"
 	"../database"
 	"strings"
@@ -186,6 +188,22 @@ func Control(pGame *EntGame) {
 				//do nothing
 			} else {
 				//ban those who isnt ready
+				if (len(arReadyPlayers) >= 2) { //at least 2 players must be ready for bans to happen
+					var arBanReq []bans.EntAutoBanReq;
+					players.MuPlayers.RLock();
+					for _, pPlayer := range pGame.PlayersUnpaired {
+						if (utils.GetStringIdxInArray(pPlayer.SteamID64, arReadyPlayers) == -1) {
+							arBanReq = append(arBanReq, bans.EntAutoBanReq{
+								SteamID64:			pPlayer.SteamID64,
+								NicknameBase64:		pPlayer.NicknameBase64,
+							});
+						}
+					}
+					players.MuPlayers.RUnlock();
+					for _, oBanReq := range arBanReq {
+						bans.ChanBanRQ <- oBanReq;
+					}
+				}
 			}
 			//Destroy the game
 			MuGames.Lock();
@@ -268,5 +286,25 @@ func Control(pGame *EntGame) {
 	players.I64LastPlayerlistUpdate = time.Now().UnixMilli();
 	Destroy(pGame);
 	MuGames.Unlock();
+
+	//store ban requests
+	var arBanReq []bans.EntAutoBanReq;
+	for _, sSteamID64 := range oResult.AbsentPlayers {
+		pPlayer, bFound := players.MapPlayers[sSteamID64];
+		if (bFound) {
+			arBanReq = append(arBanReq, bans.EntAutoBanReq{
+				SteamID64:			sSteamID64,
+				NicknameBase64:		pPlayer.NicknameBase64,
+			});
+		}
+	}
+
 	players.MuPlayers.Unlock();
+
+	time.Sleep(3 * time.Second);
+
+	//Ban ragequitters
+	for _, oBanReq := range arBanReq {
+		bans.ChanBanRQ <- oBanReq;
+	}
 }

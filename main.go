@@ -38,6 +38,9 @@ func main() {
 	if (!players.RestorePlayers()) {
 		return;
 	}
+	if (!bans.RestoreBans()) {
+		return;
+	}
 	if (!auth.RestoreSessions()) {
 		return;
 	}
@@ -71,7 +74,7 @@ func main() {
 	time.Sleep(10 * time.Second);
 
 
-	for i := 1; i <= 3000; i++ {
+	for i := 1; i <= 7; i++ {
 		sGenSteamID64, _ := utils.GenerateRandomString(17, "12345689");
 		sGenName, _ := utils.GenerateRandomString(10, "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz");
 		pPlayer := &players.EntPlayer{
@@ -102,7 +105,7 @@ func main() {
 
 	for _, pPlayer := range players.ArrayPlayers {
 		if (pPlayer.IsInLobby && !pPlayer.IsReadyInLobby) {
-			time.Sleep(1 * time.Second);
+			//time.Sleep(1 * time.Second);
 			lobby.Ready(pPlayer);
 		}
 	}

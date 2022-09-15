@@ -2,6 +2,8 @@ package bans
 
 import (
 	"time"
+	"../players"
+	"../database"
 )
 
 
@@ -33,7 +35,31 @@ func Watchers() {
 
 func WatchUnbans() {
 	for {
-		
+		time.Sleep(60 * time.Second);
+
+		players.MuPlayers.Lock();
+		i64CurTime := time.Now().UnixMilli();
+		for _, pPlayer := range players.ArrayPlayers {
+			if (pPlayer.Access == -2 && pPlayer.BanAcceptedAt > 0 && pPlayer.BanAcceptedAt + pPlayer.BanLength <= i64CurTime) {
+				pPlayer.Access = 0;
+				pPlayer.BanReason = "";
+				pPlayer.BanAcceptedAt = 0;
+				pPlayer.BanLength = 0;
+
+				go database.UpdatePlayer(database.DatabasePlayer{
+					SteamID64:			pPlayer.SteamID64,
+					NicknameBase64:		pPlayer.NicknameBase64,
+					Mmr:				pPlayer.Mmr,
+					MmrUncertainty:		pPlayer.MmrUncertainty,
+					Access:				pPlayer.Access,
+					ProfValidated:		pPlayer.ProfValidated,
+					RulesAccepted:		pPlayer.RulesAccepted,
+					});
+
+				players.I64LastPlayerlistUpdate = i64CurTime;
+			}
+		}
+		players.MuPlayers.Unlock();
 	}
 }
 
