@@ -106,7 +106,7 @@ Response parameters:
 | &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>mmr</strong> | _int_ | Player's rating |
 | &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>mmr_certain</strong> | _bool_ | Is the system certain about the player's rating |
 | &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>access</strong> | _int_ | Player's access level<br>-2 - completely banned, -1 - chat banned, 0 - regular player, 1 - behaviour moderator, 2 - cheat moderator, 3 - behaviour+cheat moderator, 4 - full admin access |
-| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>banreason</strong> | _string_ | Ban reason, or empty if not banned |
+| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>banreason</strong> | _string_ | Ban reason (base64 encoded), or empty if not banned |
 | &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>ban_accepted_at</strong> | _int64_ | When did the player confirm that he read the ban reason. 0 - if didnt confirm or not banned |
 | &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>ban_length</strong> | _int64_ | Ban length since the moment of ban confirmation, or 0 if not banned |
 | &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>is_ingame</strong> | _bool_ | Is player in game right now |

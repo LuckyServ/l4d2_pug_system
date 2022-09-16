@@ -301,10 +301,13 @@ func Control(pGame *EntGame) {
 
 	players.MuPlayers.Unlock();
 
-	time.Sleep(3 * time.Second);
+	time.Sleep(1 * time.Second);
 
 	//Ban ragequitters
 	for _, oBanReq := range arBanReq {
 		bans.ChanBanRQ <- oBanReq;
 	}
+	players.MuPlayers.Lock();
+	players.I64LastPlayerlistUpdate = time.Now().UnixMilli();
+	players.MuPlayers.Unlock();
 }

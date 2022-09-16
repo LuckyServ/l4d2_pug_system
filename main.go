@@ -13,11 +13,11 @@ import (
 	"./bans"
 	"./players/auth"
 	"time"
-	//"./utils"
+	"./utils"
 	//"crypto/rand"
 	//"math/big"
 	//"encoding/json"
-	//"encoding/base64"
+	"encoding/base64"
 )
 
 
@@ -63,18 +63,18 @@ func main() {
 
 
 	//Test
-	//go TestingFromMain();
+	go TestingFromMain();
 
 
 	//Block until shutdown command is received
 	fmt.Printf("End: %v\n", <-api.ChShutdown);
 }
 
-/*func TestingFromMain() {
+func TestingFromMain() {
 	time.Sleep(10 * time.Second);
 
 
-	for i := 1; i <= 16; i++ {
+	for i := 1; i <= 7; i++ {
 		sGenSteamID64, _ := utils.GenerateRandomString(17, "12345689");
 		sGenName, _ := utils.GenerateRandomString(10, "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz");
 		pPlayer := &players.EntPlayer{
@@ -110,4 +110,4 @@ func main() {
 		}
 	}
 
-}*/
+}
