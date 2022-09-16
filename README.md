@@ -91,6 +91,18 @@ Response parameters:
 
 <br/><br/>
 
+### GET /acceptban
+##### Confirm that the ban reason is read
+Request parameters: None
+
+Response parameters:
+| Key | Type | Description
+| ------ | ------ | ------ |
+| <strong>success</strong> | _bool_ | "true" if success, "false" otherwise |
+| <strong>error</strong> | _string_ | Outputs the reason if the request is rejected |
+
+<br/><br/>
+
 ### GET /getonlineplayers
 ##### Get list of online players
 Request parameters: None
