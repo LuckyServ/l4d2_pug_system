@@ -307,7 +307,4 @@ func Control(pGame *EntGame) {
 	for _, oBanReq := range arBanReq {
 		bans.ChanBanRQ <- oBanReq;
 	}
-	players.MuPlayers.Lock();
-	players.I64LastPlayerlistUpdate = time.Now().UnixMilli();
-	players.MuPlayers.Unlock();
 }

@@ -23,9 +23,9 @@ type EntAutoBanReq struct {
 }
 
 var ArrayBanRecords []EntBanRecord;
-var ChanUpdateRecord = make(chan EntBanRecord);
 var ChanBanRQ = make(chan EntAutoBanReq); //locks Players
 var ChanUnban = make(chan bool); //locks Players
+var ChanAcceptBan = make(chan string); //locks Players
 
 
 func Watchers() {
@@ -66,11 +66,11 @@ func WatchUnbans() {
 func WatchChannels() {
 	for {
 		select {
-		case oBanRecord := <-ChanUpdateRecord:
-			UpdateRecord(oBanRecord);
 		case oBanReq := <-ChanBanRQ: //locks Players
 			BanRagequitter(oBanReq);
 			time.Sleep(2 * time.Millisecond);
+		case sSteamID64 := <-ChanAcceptBan: //locks Players
+			AcceptBan(sSteamID64);
 		}
 	}
 }

@@ -4,8 +4,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"../players"
 	"../players/auth"
-	"../database"
-	"time"
+	"../bans"
 )
 
 
@@ -19,28 +18,21 @@ func HttpReqAcceptBan(c *gin.Context) {
 	if (errCookieSessID == nil && sCookieSessID != "") {
 		oSession, bAuthorized := auth.GetSession(sCookieSessID);
 		if (bAuthorized) {
-			players.MuPlayers.Lock();
+			players.MuPlayers.RLock();
 			pPlayer := players.MapPlayers[oSession.SteamID64];
 
 			if (pPlayer.Access != -2) {
+				players.MuPlayers.RUnlock();
 				mapResponse["error"] = "You are not banned";
 			} else if (pPlayer.BanAcceptedAt > 0) {
+				players.MuPlayers.RUnlock();
 				mapResponse["error"] = "You have already confirmed that you read this notification";
 			} else {
+				players.MuPlayers.RUnlock();
 				mapResponse["success"] = true;
-				pPlayer.BanAcceptedAt = time.Now().UnixMilli();
-				go database.UpdatePlayer(database.DatabasePlayer{
-					SteamID64:			pPlayer.SteamID64,
-					NicknameBase64:		pPlayer.NicknameBase64,
-					Mmr:				pPlayer.Mmr,
-					MmrUncertainty:		pPlayer.MmrUncertainty,
-					Access:				pPlayer.Access,
-					ProfValidated:		pPlayer.ProfValidated,
-					RulesAccepted:		pPlayer.RulesAccepted,
-					});
+				bans.ChanAcceptBan <- oSession.SteamID64;
 			}
 
-			players.MuPlayers.Unlock();
 		} else {
 			mapResponse["error"] = "Please authorize first";
 		}
