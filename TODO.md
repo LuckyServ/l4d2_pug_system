@@ -1,8 +1,5 @@
 - [ ] Ban system
-- [ ] Restore bans on restart
-- [ ] Ban those who failed to join game in time
-- [ ] Ban those who ragequitted midgame
-- [ ] Penalty for not readying up in time
+- [ ] Unbans
 - [ ] Player report system
 - [ ] Ban reports review system
 - [ ] Select config when game starts, not on lobby creation
@@ -21,6 +18,9 @@
 - [ ] Restarting mechanism
 - [ ] Regularly increase mmr uncertainty value
 
+- [x] Ban those who failed to join game in time
+- [x] Ban those who ragequitted midgame
+- [x] Restore bans on restart
 - [x] Implement RWMutex locks
 - [x] Log out
 - [x] Don't touch mmr if scores are 0-0

@@ -25,6 +25,9 @@ type PlayerResponseMe struct {
 	NicknameBase64	string		`json:"nickname_base64"`
 	Mmr				int			`json:"mmr"`
 	Access			int 		`json:"access"` //-2 - completely banned, -1 - chat banned, 0 - regular player, 1 - behaviour moderator, 2 - cheat moderator, 3 - behaviour+cheat moderator, 4 - full admin access
+	BanReason		string 		`json:"banreason"`
+	BanAcceptedAt	int64 		`json:"ban_accepted_at"`
+	BanLength		int64 		`json:"ban_length"`
 	IsInGame		bool		`json:"is_ingame"`
 	IsIdle			bool		`json:"is_idle"`
 	IsInLobby		bool		`json:"is_inlobby"`
@@ -56,6 +59,9 @@ func HttpReqGetOnlinePlayers(c *gin.Context) {
 				NicknameBase64:	pPlayer.NicknameBase64,
 				Mmr:			pPlayer.Mmr,
 				Access:			pPlayer.Access,
+				BanReason:		pPlayer.BanReason,
+				BanAcceptedAt:	pPlayer.BanAcceptedAt,
+				BanLength:		pPlayer.BanLength,
 				IsInGame:		pPlayer.IsInGame,
 				IsInLobby:		pPlayer.IsInLobby,
 				IsIdle:			pPlayer.IsIdle,
