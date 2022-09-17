@@ -11,9 +11,10 @@
 	"min_versus_games_played": 10,
 	"banlist_items_per_page": 50,
 	"ragequit_bans": {
-		"forget_ban_history_in_days": 30,
-		"first_ban_days": 2,
-		"second_ban_days": 7,
+		"forget_ban_history_in_days": 60,
+		"first_ban_hours": 12,
+		"second_ban_hours": 48,
+		"third_ban_hours": 240,
 		"reason_text": "[AutoBan] Excessively long AFK / ragequitting midgame / failed to ready up in time"
 	},
 	"mmr": {

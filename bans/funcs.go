@@ -40,8 +40,10 @@ func BanRagequitter(oBanReq EntAutoBanReq) { //expensive
 		var i64BanLength int64;
 		if (iCountPrevAutoBans == 0) {
 			i64BanLength = settings.BanRQFirst;
-		} else {
+		} else if (iCountPrevAutoBans == 1) {
 			i64BanLength = settings.BanRQSecond;
+		} else {
+			i64BanLength = settings.BanRQThird;
 		}
 
 		i64BannedAt := time.Now().UnixMilli();

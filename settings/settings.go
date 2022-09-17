@@ -63,6 +63,7 @@ var ChatMaxChars int;
 var BanHistoryForgetIn int64;
 var BanRQFirst int64;
 var BanRQSecond int64;
+var BanRQThird int64;
 var BanRQReason string;
 
 var BanListPagination int;
@@ -366,19 +367,26 @@ func ConfigFile() bool {
 	}
 	BanHistoryForgetIn = i64Buffer * 24 * 60 * 60 * 1000;
 
-	i64Buffer, errError = jsonparser.GetInt(byData, "ragequit_bans", "first_ban_days");
+	i64Buffer, errError = jsonparser.GetInt(byData, "ragequit_bans", "first_ban_hours");
 	if (errError != nil) {
 		fmt.Printf("Error reading config file: %s\n", errError);
 		return false;
 	}
-	BanRQFirst = i64Buffer * 24 * 60 * 60 * 1000;
+	BanRQFirst = i64Buffer * 60 * 60 * 1000;
 
-	i64Buffer, errError = jsonparser.GetInt(byData, "ragequit_bans", "second_ban_days");
+	i64Buffer, errError = jsonparser.GetInt(byData, "ragequit_bans", "second_ban_hours");
 	if (errError != nil) {
 		fmt.Printf("Error reading config file: %s\n", errError);
 		return false;
 	}
-	BanRQSecond = i64Buffer * 24 * 60 * 60 * 1000;
+	BanRQSecond = i64Buffer * 60 * 60 * 1000;
+
+	i64Buffer, errError = jsonparser.GetInt(byData, "ragequit_bans", "third_ban_hours");
+	if (errError != nil) {
+		fmt.Printf("Error reading config file: %s\n", errError);
+		return false;
+	}
+	BanRQThird = i64Buffer * 60 * 60 * 1000;
 
 	BanRQReason, errError = jsonparser.GetString(byData, "ragequit_bans", "reason_text");
 	if (errError != nil) {
