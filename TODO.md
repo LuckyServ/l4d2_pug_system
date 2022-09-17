@@ -1,8 +1,8 @@
-- [ ] View bans publicly
 - [ ] Manual bans
 - [ ] Player report system
 - [ ] Ban reports review system
 - [ ] Unbans
+- [ ] Rules page, with accept button
 - [ ] Select config when game starts, not on lobby creation
 - [ ] SM plugin: kick on spec midgame
 - [ ] !game id
@@ -19,6 +19,7 @@
 - [ ] Restarting mechanism
 - [ ] Regularly increase mmr uncertainty value
 
+- [x] View bans publicly
 - [x] Ban system
 - [x] Ban those who failed to join game in time
 - [x] Ban those who ragequitted midgame
