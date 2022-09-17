@@ -63,14 +63,33 @@ func main() {
 
 
 	//Test
-	//go TestingFromMain();
+	//go TestingPlayersFromMain();
+	//go TestingCreateBansFromMain();
 
 
 	//Block until shutdown command is received
 	fmt.Printf("End: %v\n", <-api.ChShutdown);
 }
 
-/*func TestingFromMain() {
+/*func TestingCreateBansFromMain() {
+	sBanReason := base64.StdEncoding.EncodeToString([]byte("Test ban test ban test ban"));
+	for i := 1; i <= 554; i++ {
+		sGenSteamID64, _ := utils.GenerateRandomString(17, "12345689");
+		sGenName, _ := utils.GenerateRandomString(10, "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz");
+		oBanRecord := bans.EntBanRecord{
+			NicknameBase64:		base64.StdEncoding.EncodeToString([]byte(sGenName)),
+			SteamID64:			sGenSteamID64,
+			BannedBySteamID64:	"auto",
+			CreatedAt:			time.Now().UnixMilli(),
+			BanLength:			63072000000,
+			BanReasonBase64:	sBanReason,
+		};
+		bans.ArrayBanRecords = append(bans.ArrayBanRecords, oBanRecord);
+		time.Sleep(2 * time.Millisecond);
+	}
+}*/
+
+/*func TestingPlayersFromMain() {
 	time.Sleep(10 * time.Second);
 
 

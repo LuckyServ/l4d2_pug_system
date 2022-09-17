@@ -24,8 +24,9 @@ type EntAutoBanReq struct {
 
 var ArrayBanRecords []EntBanRecord;
 var ChanBanRQ = make(chan EntAutoBanReq); //locks Players
-var ChanUnban = make(chan bool); //locks Players
 var ChanAcceptBan = make(chan string); //locks Players
+var ChanLock = make(chan bool);
+var ChanUnlock = make(chan bool);
 
 
 func Watchers() {
@@ -45,6 +46,7 @@ func WatchUnbans() {
 				pPlayer.BanReason = "";
 				pPlayer.BanAcceptedAt = 0;
 				pPlayer.BanLength = 0;
+				pPlayer.BannedAt = 0;
 
 				go database.UpdatePlayer(database.DatabasePlayer{
 					SteamID64:			pPlayer.SteamID64,
@@ -71,6 +73,8 @@ func WatchChannels() {
 			time.Sleep(2 * time.Millisecond);
 		case sSteamID64 := <-ChanAcceptBan: //locks Players
 			AcceptBan(sSteamID64);
+		case <-ChanLock:
+			<-ChanUnlock;
 		}
 	}
 }

@@ -1,11 +1,12 @@
-- [ ] Ban system
-- [ ] Unbans
+- [ ] View bans publicly
+- [ ] Manual bans
 - [ ] Player report system
 - [ ] Ban reports review system
+- [ ] Unbans
 - [ ] Select config when game starts, not on lobby creation
-- [ ] Reduce response size of /status
+- [ ] SM plugin: kick on spec midgame
+- [ ] !game id
 - [ ] Add / remove admins
-- [ ] Ban protests
 - [ ] VPN checks
 - [ ] Smurf traces + connect logging + ping loggin
 - [ ] When validating profile, check for vpn and for smurfs
@@ -18,6 +19,7 @@
 - [ ] Restarting mechanism
 - [ ] Regularly increase mmr uncertainty value
 
+- [x] Ban system
 - [x] Ban those who failed to join game in time
 - [x] Ban those who ragequitted midgame
 - [x] Restore bans on restart

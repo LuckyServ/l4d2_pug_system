@@ -9,6 +9,7 @@
 	"no_new_lobbies": false,
 	"steam_api_key": "1AAA1AAA1AAA1AAA1AAA1AAAAAA",
 	"min_versus_games_played": 10,
+	"banlist_items_per_page": 50,
 	"ragequit_bans": {
 		"forget_ban_history_in_days": 30,
 		"first_ban_days": 2,

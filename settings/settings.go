@@ -65,6 +65,8 @@ var BanRQFirst int64;
 var BanRQSecond int64;
 var BanRQReason string;
 
+var BanListPagination int;
+
 
 type ConfoglConfig struct {
 	CodeName		string
@@ -383,6 +385,13 @@ func ConfigFile() bool {
 		fmt.Printf("Error reading config file: %s\n", errError);
 		return false;
 	}
+
+	i64Buffer, errError = jsonparser.GetInt(byData, "banlist_items_per_page");
+	if (errError != nil) {
+		fmt.Printf("Error reading config file: %s\n", errError);
+		return false;
+	}
+	BanListPagination = int(i64Buffer);
 
 
 	//Confogl configs section

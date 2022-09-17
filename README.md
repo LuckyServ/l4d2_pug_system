@@ -49,6 +49,7 @@ Response parameters:
 | <strong>time</strong> | _int64_ | System time in milliseconds |
 | <strong>need_update_players</strong> | _bool_ | Should update players or not |
 | <strong>need_update_lobbies</strong> | _bool_ | Should update lobbies or not |
+| <strong>need_update_game</strong> | _bool_ | Should update game info or not |
 | <strong>need_update_globalchat</strong> | _bool_ | Should update global chat or not |
 | <strong>need_emit_readyup_sound</strong> | _bool_ | Should attract player attention or not |
 | <strong>authorized</strong> | _bool_ | Authorized or not |
@@ -315,3 +316,25 @@ Response parameters:
 | &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>base64text</strong> | _string_ | Base 64 encoded message text |
 | &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>steamid64</strong> | _string_ | Steam ID of a player who sent the message |
 | &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>base64name</strong> | _string_ | Base 64 encoded nickname |
+
+<br/><br/>
+
+### GET /getbanrecords
+##### Get list of bans
+Request parameters:
+| Type | Description
+| ------ | ------ |
+| <strong>page</strong> | _int_ | Pagination, starting from 0 |
+
+Response parameters:
+| Key | Type | Description
+| ------ | ------ | ------ |
+| <strong>success</strong> | _bool_ | Always true |
+| <strong>page</strong> | _int_ | Current page |
+| <strong>bans</strong> |  | Ordered array of ban records |
+| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>base64name</strong> | _string_ | Base 64 encoded nickname |
+| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>steamid64</strong> | _string_ | Steam ID 64 |
+| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>created_at</strong> | _int64_ | Banned at |
+| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>accepted_at</strong> | _int64_ | When did the player confirm that he read the ban reason. 0 - if didnt confirm |
+| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>ban_length</strong> | _int64_ | Ban length since the moment of ban confirmation |
+| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>base64reason</strong> | _string_ | Ban reason (base64 encoded) |

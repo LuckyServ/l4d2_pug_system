@@ -27,6 +27,8 @@ func GinInit() {
 
 	r.GET("/getonlineplayers", HttpReqGetOnlinePlayers);
 
+	r.GET("/getbanrecords", HttpReqGetBanRecords);
+
 	r.GET("/createlobby", HttpReqCreateLobby);
 	r.GET("/joinlobby", HttpReqJoinLobby);
 	r.GET("/leavelobby", HttpReqLeaveLobby);
