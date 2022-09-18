@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"time"
 	"../players"
+	"../bans"
 	"github.com/yohcop/openid-go"
 	"regexp"
 	"github.com/antchfx/xmlquery"
@@ -149,6 +150,7 @@ func HttpReqOpenID(c *gin.Context) {
 
 	//Add auth to the database
 	sSessionID := players.AddPlayerAuth(sSteamID64, base64.StdEncoding.EncodeToString([]byte(sNickname)));
+	bans.ChanSearchBan <- sSteamID64;
 
 	fmt.Printf("New auth: %s, %s\n", sSteamID64, sNickname);
 

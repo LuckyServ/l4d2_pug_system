@@ -1,5 +1,3 @@
-- [ ] On registration or authorizaton check if already banned
-- [ ] Don't allow validation and accepting rules if banned
 - [ ] Player report system
 - [ ] Ban reports review system
 - [ ] Unbans
@@ -18,6 +16,8 @@
 - [ ] Restarting mechanism
 - [ ] Regularly increase mmr uncertainty value
 
+- [x] On registration or authorizaton check if already banned
+- [x] Don't allow validation and accepting rules if banned
 - [x] Manual bans
 - [x] View bans publicly
 - [x] Ban system

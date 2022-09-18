@@ -21,7 +21,11 @@ func HttpReqAcceptRules(c *gin.Context) {
 		if (bAuthorized) {
 			players.MuPlayers.Lock();
 			pPlayer := players.MapPlayers[oSession.SteamID64];
-			if (!pPlayer.RulesAccepted) {
+			if (pPlayer.Access == -2) {
+				mapResponse["error"] = "Sorry, you are banned, you gotta wait until it expires";
+			} else if (pPlayer.RulesAccepted) {
+				mapResponse["error"] = "The rules are already accepted";
+			} else {
 				mapResponse["success"] = true;
 				pPlayer.RulesAccepted = true;
 				go database.UpdatePlayer(database.DatabasePlayer{
@@ -34,9 +38,7 @@ func HttpReqAcceptRules(c *gin.Context) {
 					RulesAccepted:		pPlayer.RulesAccepted,
 					});
 				players.I64LastPlayerlistUpdate = time.Now().UnixMilli();
-			} else {
-				mapResponse["error"] = "The rules are already accepted";
-			}			
+			}		
 			players.MuPlayers.Unlock();
 		} else {
 			mapResponse["error"] = "Please authorize first";
