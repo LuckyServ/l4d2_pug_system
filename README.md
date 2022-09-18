@@ -10,6 +10,25 @@ Response parameters:
 | Key | Type | Description
 | ------ | ------ | ------ |
 | <strong>success</strong> | _bool_ | "true" if command accepted, "false" otherwise |
+| <strong>error</strong> | _string_ | Outputs the reason if the request is rejected |
+
+<br/><br/>
+
+### GET /addban
+##### Add ban record
+Request parameters:
+| Key | Type | Description
+| ------ | ------ | ------ |
+| <strong>steamid64</strong> | _string_ | SteamID 64 |
+| <strong>nickname</strong> | _string_ | Nickname |
+| <strong>reason</strong> | _string_ | Ban reason |
+| <strong>banlength</strong> | _int64_ | Ban length in milliseconds |
+
+Response parameters:
+| Key | Type | Description
+| ------ | ------ | ------ |
+| <strong>success</strong> | _bool_ | "true" if command accepted, "false" otherwise |
+| <strong>error</strong> | _string_ | Outputs the reason if the request is rejected |
 
 <br/><br/>
 

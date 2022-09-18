@@ -23,12 +23,20 @@ func HttpReqShutdown(c *gin.Context) {
 			pPlayer := players.MapPlayers[oSession.SteamID64];
 			if (pPlayer.Access == 4) { //admin
 				mapResponse["success"] = true;
+			} else {
+				mapResponse["error"] = "You dont have access to this command";
 			}
 			players.MuPlayers.RUnlock();
+		} else {
+			mapResponse["error"] = "Please authorize first";
 		}
+	} else {
+		mapResponse["error"] = "Please authorize first";
 	}
 	
 
+	c.Header("Access-Control-Allow-Origin", c.Request.Header.Get("origin"));
+	c.Header("Access-Control-Allow-Credentials", "true");
 	c.JSON(200, mapResponse);
 	if (mapResponse["success"] == true) {
 		go PerformShutDown();

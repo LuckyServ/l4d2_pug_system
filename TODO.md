@@ -1,4 +1,5 @@
-- [ ] Manual bans
+- [ ] On registration or authorizaton check if already banned
+- [ ] Don't allow validation and accepting rules if banned
 - [ ] Player report system
 - [ ] Ban reports review system
 - [ ] Unbans
@@ -10,15 +11,14 @@
 - [ ] VPN checks
 - [ ] Smurf traces + connect logging + ping loggin
 - [ ] When validating profile, check for vpn and for smurfs
-- [ ] Don't allow validation and accepting rules if banned
 - [ ] Mmr color in response
-- [ ] On registration or authorizaton check if already banned
 - [ ] Log games
 - [ ] Manage authorization expire
 - [ ] Log on database write failure
 - [ ] Restarting mechanism
 - [ ] Regularly increase mmr uncertainty value
 
+- [x] Manual bans
 - [x] View bans publicly
 - [x] Ban system
 - [x] Ban those who failed to join game in time

@@ -18,6 +18,8 @@ func GinInit() {
 
 	r.GET("/shutdown", HttpReqShutdown);
 
+	r.GET("/addban", HttpReqAddBan);
+
 	r.GET("/status", HttpReqStatus);
 	r.GET("/validateprofile", HttpReqValidateProf);
 	r.GET("/acceptrules", HttpReqAcceptRules);

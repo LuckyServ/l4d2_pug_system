@@ -22,8 +22,17 @@ type EntAutoBanReq struct {
 	NicknameBase64		string
 }
 
+type EntManualBanReq struct {
+	SteamID64			string
+	Nickname			string
+	Reason				string
+	BanLength			int64
+	RequestedBy			string
+}
+
 var ArrayBanRecords []EntBanRecord;
 var ChanBanRQ = make(chan EntAutoBanReq); //locks Players
+var ChanBanManual = make(chan EntManualBanReq); //locks Players
 var ChanAcceptBan = make(chan string); //locks Players
 var ChanLock = make(chan bool);
 var ChanUnlock = make(chan bool);
@@ -70,6 +79,9 @@ func WatchChannels() {
 		select {
 		case oBanReq := <-ChanBanRQ: //locks Players
 			BanRagequitter(oBanReq);
+			time.Sleep(2 * time.Millisecond);
+		case oBanReq := <-ChanBanManual: //locks Players
+			BanManual(oBanReq);
 			time.Sleep(2 * time.Millisecond);
 		case sSteamID64 := <-ChanAcceptBan: //locks Players
 			AcceptBan(sSteamID64);
