@@ -192,6 +192,43 @@ func SearchBan(sSteamID64 string) {
 	}
 }
 
+func UnbanManual(sSteamID64 string) {
+
+	players.MuPlayers.Lock();
+	pPlayer, bFound := players.MapPlayers[sSteamID64];
+	if (bFound && pPlayer.Access == -2) {
+		pPlayer.Access = 0;
+		pPlayer.BanReason = "";
+		pPlayer.BanAcceptedAt = 0;
+		pPlayer.BanLength = 0;
+		pPlayer.BannedAt = 0;
+		players.I64LastPlayerlistUpdate = time.Now().UnixMilli();
+	}
+	players.MuPlayers.Unlock();
+
+
+	iSize := len(ArrayBanRecords);
+	i64CurTime := time.Now().UnixMilli();
+	for i := iSize - 1; i >= 0; i-- {
+		if (ArrayBanRecords[i].SteamID64 == sSteamID64) {
+			if (ArrayBanRecords[i].AcceptedAt == 0 || ArrayBanRecords[i].AcceptedAt + ArrayBanRecords[i].BanLength > i64CurTime) {
+				ArrayBanRecords[i].AcceptedAt = i64CurTime - 1;
+				ArrayBanRecords[i].BanLength = 1;
+				go database.UpdateBanRecord(database.DatabaseBanRecord{
+					NicknameBase64:		ArrayBanRecords[i].NicknameBase64,
+					SteamID64:			ArrayBanRecords[i].SteamID64,
+					BannedBySteamID64:	ArrayBanRecords[i].BannedBySteamID64,
+					CreatedAt:			ArrayBanRecords[i].CreatedAt,
+					AcceptedAt:			ArrayBanRecords[i].AcceptedAt,
+					BanLength:			ArrayBanRecords[i].BanLength,
+					BanReasonBase64:	ArrayBanRecords[i].BanReasonBase64,
+					});
+				return;
+			}
+		}
+	}
+}
+
 func RestoreBans() bool {
 	arDatabaseBanRecords := database.RestoreBans();
 	/*if (len(arDatabasePlayers) == 0) {

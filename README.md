@@ -32,6 +32,21 @@ Response parameters:
 
 <br/><br/>
 
+### GET /unban
+##### Unban a player
+Request parameters:
+| Key | Type | Description
+| ------ | ------ | ------ |
+| <strong>steamid64</strong> | _string_ | SteamID 64 |
+
+Response parameters:
+| Key | Type | Description
+| ------ | ------ | ------ |
+| <strong>success</strong> | _bool_ | "true" if command accepted, "false" otherwise |
+| <strong>error</strong> | _string_ | Outputs the reason if the request is rejected |
+
+<br/><br/>
+
 ### GET /auth
 ##### Open this in browser to authorize
 Request parameters:

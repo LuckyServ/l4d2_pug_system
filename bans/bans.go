@@ -35,6 +35,7 @@ var ChanBanRQ = make(chan EntAutoBanReq); //locks Players
 var ChanBanManual = make(chan EntManualBanReq); //locks Players
 var ChanAcceptBan = make(chan string); //locks Players
 var ChanSearchBan = make(chan string); //locks Players
+var ChanUnbanManual = make(chan string); //locks Players
 var ChanLock = make(chan bool);
 var ChanUnlock = make(chan bool);
 
@@ -88,6 +89,8 @@ func WatchChannels() {
 			AcceptBan(sSteamID64);
 		case sSteamID64 := <-ChanSearchBan: //locks Players
 			SearchBan(sSteamID64);
+		case sSteamID64 := <-ChanUnbanManual: //locks Players
+			UnbanManual(sSteamID64);
 		case <-ChanLock:
 			<-ChanUnlock;
 		}
