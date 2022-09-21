@@ -16,6 +16,7 @@
 - [ ] Regularly increase mmr uncertainty value
 - [ ] Automatically parse anticheat logs and ban based on them
 
+- [x] Shouldnt be able to ban admin
 - [x] Unbans
 - [x] On registration or authorizaton check if already banned
 - [x] Don't allow validation and accepting rules if banned

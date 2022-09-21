@@ -79,6 +79,10 @@ func BanManual(oBanReq EntManualBanReq) {
 	players.MuPlayers.Lock();
 	pPlayer, bFound := players.MapPlayers[oBanReq.SteamID64];
 	if (bFound) {
+		if (pPlayer.Access > 0) { // moderator cant ban another moderator
+			players.MuPlayers.Unlock();
+			return;
+		}
 		bIsBannedNow = (pPlayer.Access == -2);
 	}
 	players.MuPlayers.Unlock();
