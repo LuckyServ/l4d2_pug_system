@@ -13,7 +13,10 @@ var ChanUniqueString = make(chan string);
 func Watchers() {
 	for {
 		select {
-		case ChanUniqueString <- fmt.Sprintf("%d", time.Now().UnixNano()):
+		case ChanUniqueString <- func()(string) {
+			sRand, _ := GenerateRandomString(32, "0123456789abcdefghijklmnopqrstuvwxyz");
+			return fmt.Sprintf("%d%s", time.Now().UnixNano(), sRand);
+		}():
 		}
 		time.Sleep(1 * time.Nanosecond);
 	}

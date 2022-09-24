@@ -16,7 +16,7 @@ func HttpReqTicketMessages(c *gin.Context) {
 	sCookieSessID, errCookieSessID := c.Cookie("session_id");
 
 	sTicketID := c.Query("ticket_id");
-	bTicketIDValid, _ := regexp.MatchString(`^[0-9a-z]{1,50}$`, sTicketID);
+	bTicketIDValid, _ := regexp.MatchString(`^[0-9a-z]{1,100}$`, sTicketID);
 
 	mapResponse["success"] = false;
 	if (bTicketIDValid) {

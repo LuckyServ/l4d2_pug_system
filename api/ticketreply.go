@@ -18,7 +18,7 @@ func HttpReqTicketReply(c *gin.Context) {
 
 	sMessageText := c.PostForm("message_text");
 	sTicketID := c.PostForm("ticket_id");
-	bTicketIDValid, _ := regexp.MatchString(`^[0-9a-z]{1,50}$`, sTicketID);
+	bTicketIDValid, _ := regexp.MatchString(`^[0-9a-z]{1,100}$`, sTicketID);
 	sRedirectTo := c.PostForm("redirect_to");
 	iTextLen := utf8.RuneCountInString(sMessageText);
 	if (errCookieSessID == nil && sCookieSessID != "" && iTextLen > 0 && iTextLen < 10000 && bTicketIDValid) {
