@@ -1,4 +1,3 @@
-- [ ] Check what happens if a server gets reserved before restarting
 - [ ] Ban players from protesting bans
 - [ ] Rules page, with accept button
 - [ ] Select config when game starts, not on lobby creation
@@ -18,6 +17,7 @@
 - [ ] Regularly increase mmr uncertainty value
 - [ ] Automatically parse anticheat logs and ban based on them
 
+- [x] Check what happens if a server gets reserved before restarting
 - [x] Crypto-secure ticket ID
 - [x] Limit size of ticket text
 - [x] Player report system

@@ -3,6 +3,7 @@
 #include <sdktools>
 #include <SteamWorks>
 #include <confogl>
+#include <connecthook>
 #undef REQUIRE_PLUGIN
 #include <readyup>
 #include <pause>
@@ -624,10 +625,20 @@ public void OnClientPutInServer(int client) {
 	}
 }
 
-public void OnClientConnected(int client) {
-	if (bGameEnded && !IsFakeClient(client)) {
-		KickClient(client, "Game ended, you cant connect to this server now");
+public bool OnClientConnect(int client, char[] rejectmsg, int maxlen) { //in case if OnClientPreConnect fails
+	if (bGameEnded) {
+		strcopy(rejectmsg, maxlen, "Game just ended here, you cant connect to this server now. Try again in 30 seconds, the server needs time to restart");
+		return false;
 	}
+	return true;
+}
+
+public Action OnClientPreConnect(const char []name, const char[] password, const char[] ip, const char[] steamID, char rejectReason[255]) {
+	if (bGameEnded) {
+		strcopy(rejectReason, sizeof(rejectReason), "Game just ended here, you cant connect to this server now. Try again in 30 seconds, the server needs time to restart");
+		return Plugin_Handled;
+	}
+	return Plugin_Continue;
 }
 
 public void Event_RoundEnd(Event event, const char[] name, bool dontBroadcast) {
