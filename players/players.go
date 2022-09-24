@@ -38,6 +38,7 @@ type EntPlayer struct {
 	LastLobbyActivity	int64 //Last lobby activity //unix timestamp in milliseconds
 	LastGameActivity	int64 //Last game activity //unix timestamp in milliseconds
 	LastChatMessage		int64 //Last chat message //unix timestamp in milliseconds
+	LastTicketActivity	int64 //Last ticket activity //unix timestamp in milliseconds
 	GameServerPings		map[string]int
 }
 

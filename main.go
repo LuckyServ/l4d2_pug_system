@@ -13,7 +13,7 @@ import (
 	"./bans"
 	"./players/auth"
 	"time"
-	//"./utils"
+	"./utils"
 	//"crypto/rand"
 	//"math/big"
 	//"encoding/json"
@@ -58,6 +58,7 @@ func main() {
 	go chat.ChannelWatchers(); //watch chat channels
 	go smurf.Watchers();
 	go bans.Watchers();
+	go utils.Watchers();
 
 
 

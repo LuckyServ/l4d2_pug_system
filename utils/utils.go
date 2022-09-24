@@ -4,7 +4,20 @@ import (
 	"crypto/rand"
 	"math/big"
 	"bytes"
+	"time"
+	"fmt"
 )
+
+var ChanUniqueString = make(chan string);
+
+func Watchers() {
+	for {
+		select {
+		case ChanUniqueString <- fmt.Sprintf("%d", time.Now().UnixNano()):
+		}
+		time.Sleep(1 * time.Nanosecond);
+	}
+}
 
 func GenerateRandomString(n int, letters string) (string, error) {
 	ret := make([]byte, n);

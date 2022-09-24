@@ -372,3 +372,70 @@ Response parameters:
 | &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>accepted_at</strong> | _int64_ | When did the player confirm that he read the ban reason. 0 - if didnt confirm |
 | &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>ban_length</strong> | _int64_ | Ban length since the moment of ban confirmation |
 | &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>base64reason</strong> | _string_ | Ban reason (base64 encoded) |
+
+<br/><br/>
+
+### POST /ticketcreate
+##### Create new ticket
+Request parameters:
+| Type | Description
+| ------ | ------ |
+| <strong>ticket_text</strong> | _string_ | Ticket text |
+| <strong>redirect_to</strong> | _string_ | Redirect to this page after creating ticket |
+| <strong>ticket_type</strong> | _int_ | Ticket type. 1 - behaviour report, 2 - cheater report, 3 - protest ban, 4 - other |
+
+Response parameters: None (303 redirect)
+
+<br/><br/>
+
+### POST /ticketreply
+##### Reply to ticket (only for admins)
+Request parameters:
+| Type | Description
+| ------ | ------ |
+| <strong>message_text</strong> | _string_ | Message text |
+| <strong>redirect_to</strong> | _string_ | Redirect to this page after sending message |
+| <strong>ticket_id</strong> | _string_ | Ticket ID |
+
+Response parameters: None (303 redirect)
+
+<br/><br/>
+
+### GET /ticketlist
+##### Get my tickets
+Request parameters: None
+
+Response parameters:
+| Key | Type | Description
+| ------ | ------ | ------ |
+| <strong>success</strong> | _bool_ | "true" if command accepted, "false" otherwise |
+| <strong>error</strong> | _string_ | Outputs the reason if the request is rejected |
+| <strong>opened</strong> |  | Ordered array of opened tickets |
+| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>id</strong> | _string_ | Ticket unique ID |
+| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>type</strong> | _int_ | Ticket type. 1 - behaviour report, 2 - cheater report, 3 - protest ban, 4 - other |
+| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>created_by</strong> | _string_ | Ticket creator |
+| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>created_at</strong> | _int64_ | Time in milliseconds |
+| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>is_closed</strong> | _bool_ | Is ticket closed |
+| <strong>closed</strong> |  | Ordered array of last 10 closed tickets (same parameters as in "opened") |
+| <strong>as_admin</strong> |  | Ordered array of tickets for reviewing by admins (same parameters as in "opened") |
+
+<br/><br/>
+
+### GET /ticketmessages
+##### Get messages of the ticket
+Request parameters:
+| Type | Description
+| ------ | ------ |
+| <strong>ticket_id</strong> | _string_ | Ticket ID |
+
+Response parameters:
+| Key | Type | Description
+| ------ | ------ | ------ |
+| <strong>success</strong> | _bool_ | "true" if command accepted, "false" otherwise |
+| <strong>error</strong> | _string_ | Outputs the reason if the request is rejected |
+| <strong>ticket_id</strong> | _string_ | Ticket unique ID |
+| <strong>messages</strong> |  | Ordered array of messages in the ticket |
+| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>ticket_id</strong> | _string_ | Ticket unique ID |
+| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>by</strong> | _string_ | Message by |
+| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>at</strong> | _int64_ | Message sent at (time in milliseconds) |
+| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>text</strong> | _string_ | Base 64 encoded message text |

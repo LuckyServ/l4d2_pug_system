@@ -1,7 +1,12 @@
 - [ ] Player report system
 - [ ] Ban reports review system
+- [ ] Limit size of ticket text
+- [ ] Crypto-secure ticket ID
+- [ ] Check what happens if a server gets reserved before restarting
+- [ ] Ban players from protesting bans
 - [ ] Rules page, with accept button
 - [ ] Select config when game starts, not on lobby creation
+- [ ] Limit chat message global frequency
 - [ ] SM plugin: kick on spec midgame
 - [ ] !game id
 - [ ] Add / remove admins
