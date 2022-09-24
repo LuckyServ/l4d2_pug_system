@@ -1,4 +1,3 @@
-- [ ] Ban players from protesting bans
 - [ ] Rules page, with accept button
 - [ ] Select config when game starts, not on lobby creation
 - [ ] Limit chat message global frequency
@@ -17,6 +16,7 @@
 - [ ] Regularly increase mmr uncertainty value
 - [ ] Automatically parse anticheat logs and ban based on them
 
+- [x] Ban players from protesting bans
 - [x] Check what happens if a server gets reserved before restarting
 - [x] Crypto-secure ticket ID
 - [x] Limit size of ticket text

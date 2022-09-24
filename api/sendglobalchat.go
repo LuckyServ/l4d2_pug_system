@@ -25,7 +25,7 @@ func HttpReqSendGlobalChat(c *gin.Context) {
 		if (bAuthorized) {
 			players.MuPlayers.Lock();
 			pPlayer := players.MapPlayers[oSession.SteamID64];
-			if (pPlayer.Access <= -2) {
+			if (pPlayer.Access <= -1) {
 				mapResponse["error"] = "Sorry, you are banned, you have to wait until it expires";
 			} else if (pPlayer.LastChatMessage + settings.ChatMsgDelay > time.Now().UnixMilli()) {
 				mapResponse["error"] = "no_alert";

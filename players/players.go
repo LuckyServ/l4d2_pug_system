@@ -15,7 +15,7 @@ type EntPlayer struct {
 	NicknameBase64		string
 	Mmr					int
 	MmrUncertainty		float32
-	Access				int //-2 - completely banned, -1 - chat banned, 0 - regular player, 1 - behaviour moderator, 2 - cheat moderator, 3 - behaviour+cheat moderator, 4 - full admin access
+	Access				int //-3 - banned + cant protest, -2 - completely banned, -1 - chat banned, 0 - regular player, 1 - behaviour moderator, 2 - cheat moderator, 3 - behaviour+cheat moderator, 4 - full admin access
 	BannedAt			int64 //unix timestamp in milliseconds
 	BanReason			string
 	BanAcceptedAt		int64 //unix timestamp in milliseconds

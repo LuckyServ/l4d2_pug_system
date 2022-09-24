@@ -29,7 +29,7 @@ func HttpReqTicketReply(c *gin.Context) {
 			i64CurTime := time.Now().UnixMilli();
 			if (pPlayer.LastTicketActivity + 3000/*3s*/ > i64CurTime) {
 				players.MuPlayers.Unlock();
-			} else if (pPlayer.Access <= 0) {
+			} else if (pPlayer.Access < 1) {
 				players.MuPlayers.Unlock();
 			} else {
 				pPlayer.LastTicketActivity = i64CurTime;

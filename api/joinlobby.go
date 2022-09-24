@@ -37,7 +37,7 @@ func HttpReqJoinLobby(c *gin.Context) {
 				mapResponse["error"] = "Please validate your profile first";
 			} else if (!pPlayer.RulesAccepted) {
 				mapResponse["error"] = "Please accept our rules first";
-			} else if (pPlayer.Access == -2) {
+			} else if (pPlayer.Access <= -2) {
 				mapResponse["error"] = "Sorry, you are banned, you gotta wait until it expires";
 			} else if (sLobbyID == "") {
 				mapResponse["error"] = "lobby_id parameter isnt set";

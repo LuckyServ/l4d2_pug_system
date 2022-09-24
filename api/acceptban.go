@@ -21,7 +21,7 @@ func HttpReqAcceptBan(c *gin.Context) {
 			players.MuPlayers.RLock();
 			pPlayer := players.MapPlayers[oSession.SteamID64];
 
-			if (pPlayer.Access != -2) {
+			if (pPlayer.Access >= -1) {
 				players.MuPlayers.RUnlock();
 				mapResponse["error"] = "You are not banned";
 			} else if (pPlayer.BanAcceptedAt > 0) {

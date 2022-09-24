@@ -10,6 +10,7 @@ import (
 type EntBanRecord struct {
 	NicknameBase64		string
 	SteamID64			string
+	Access				int
 	BannedBySteamID64	string
 	CreatedAt			int64 //unix timestamp in milliseconds //must keep it unique (which means 1 new ban record per 1ms at most)
 	AcceptedAt			int64 //unix timestamp in milliseconds
@@ -24,6 +25,7 @@ type EntAutoBanReq struct {
 
 type EntManualBanReq struct {
 	SteamID64			string
+	Access				int
 	Nickname			string
 	Reason				string
 	BanLength			int64
@@ -52,7 +54,7 @@ func WatchUnbans() {
 		players.MuPlayers.Lock();
 		i64CurTime := time.Now().UnixMilli();
 		for _, pPlayer := range players.ArrayPlayers {
-			if (pPlayer.Access == -2 && pPlayer.BanAcceptedAt > 0 && pPlayer.BanAcceptedAt + pPlayer.BanLength <= i64CurTime) {
+			if (pPlayer.Access <= -2 && pPlayer.BanAcceptedAt > 0 && pPlayer.BanAcceptedAt + pPlayer.BanLength <= i64CurTime) {
 				pPlayer.Access = 0;
 				pPlayer.BanReason = "";
 				pPlayer.BanAcceptedAt = 0;

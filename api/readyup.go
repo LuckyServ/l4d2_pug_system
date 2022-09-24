@@ -27,7 +27,7 @@ func HttpReqReadyUp(c *gin.Context) {
 				mapResponse["error"] = "You have already ReadyUpped";
 			} else if (!pPlayer.IsOnline) {
 				mapResponse["error"] = "Somehow you are not Online, try to refresh the page";
-			} else if (pPlayer.Access == -2) {
+			} else if (pPlayer.Access <= -2) {
 				mapResponse["error"] = "Sorry, you are banned, you gotta wait until it expires";
 			} else {
 				lobby.MuLobbies.Lock();

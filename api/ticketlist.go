@@ -25,6 +25,9 @@ func HttpReqTicketList(c *gin.Context) {
 			if (pPlayer.LastTicketActivity + 3000/*3s*/ > i64CurTime) {
 				mapResponse["error"] = "Too often requests, refresh in 3 seconds";
 				players.MuPlayers.Unlock();
+			} else if (pPlayer.Access == -3) {
+				mapResponse["error"] = "Sorry, you are banned without ability to protest";
+				players.MuPlayers.Unlock();
 			} else if (pPlayer.Access == 0 && (!pPlayer.ProfValidated || !pPlayer.RulesAccepted)) {
 				mapResponse["error"] = "You cant see/create tickets now";
 				players.MuPlayers.Unlock();

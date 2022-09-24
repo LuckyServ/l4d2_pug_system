@@ -29,6 +29,8 @@ func HttpReqTicketCreate(c *gin.Context) {
 			i64CurTime := time.Now().UnixMilli();
 			if (pPlayer.LastTicketActivity + 5000/*5s*/ > i64CurTime) {
 				players.MuPlayers.Unlock();
+			} else if (pPlayer.Access == -3) {
+				players.MuPlayers.Unlock();
 			} else if (pPlayer.Access == 0 && (!pPlayer.ProfValidated || !pPlayer.RulesAccepted)) {
 				players.MuPlayers.Unlock();
 			} else {

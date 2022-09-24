@@ -23,6 +23,7 @@ Request parameters:
 | <strong>nickname</strong> | _string_ | Nickname |
 | <strong>reason</strong> | _string_ | Ban reason |
 | <strong>banlength</strong> | _int64_ | Ban length in milliseconds |
+| <strong>bantype</strong> | _int_ | Ban type (-3 or -2 for now) |
 
 Response parameters:
 | Key | Type | Description

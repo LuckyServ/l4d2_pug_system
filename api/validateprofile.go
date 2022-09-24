@@ -29,7 +29,7 @@ func HttpReqValidateProf(c *gin.Context) {
 			players.MuPlayers.RLock();
 			i64CurTime := time.Now().UnixMilli();
 			pPlayer := players.MapPlayers[oSession.SteamID64];
-			if (pPlayer.Access == -2) {
+			if (pPlayer.Access <= -2) {
 				mapResponse["error"] = "Sorry, you are banned, you gotta wait until it expires";
 			} else if (pPlayer.ProfValidated) {
 				players.MuPlayers.RUnlock();

@@ -17,10 +17,11 @@ func HttpReqAddBan(c *gin.Context) {
 	sSteamID64 := c.Query("steamid64");
 	sNickname := c.Query("nickname");
 	sReason := c.Query("reason");
+	iBanType, _ := strconv.Atoi(c.Query("bantype"));
 	i64BanLength, _ := strconv.ParseInt(c.Query("banlength"), 10, 64);
 
 	mapResponse["success"] = false;
-	if (sSteamID64 != "" && sNickname != "" && i64BanLength > 0) {
+	if (sSteamID64 != "" && sNickname != "" && i64BanLength > 0 && iBanType <= -2 && iBanType >= -3) {
 		if (errCookieSessID == nil && sCookieSessID != "") {
 			oSession, bAuthorized := auth.GetSession(sCookieSessID);
 			if (bAuthorized) {
@@ -31,6 +32,7 @@ func HttpReqAddBan(c *gin.Context) {
 
 					bans.ChanBanManual <- bans.EntManualBanReq{
 						SteamID64:			sSteamID64,
+						Access:				iBanType,
 						Nickname:			sNickname,
 						Reason:				sReason,
 						BanLength:			i64BanLength,

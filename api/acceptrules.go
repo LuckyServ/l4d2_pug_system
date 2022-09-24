@@ -21,7 +21,7 @@ func HttpReqAcceptRules(c *gin.Context) {
 		if (bAuthorized) {
 			players.MuPlayers.Lock();
 			pPlayer := players.MapPlayers[oSession.SteamID64];
-			if (pPlayer.Access == -2) {
+			if (pPlayer.Access <= -2) {
 				mapResponse["error"] = "Sorry, you are banned, you gotta wait until it expires";
 			} else if (pPlayer.RulesAccepted) {
 				mapResponse["error"] = "The rules are already accepted";
