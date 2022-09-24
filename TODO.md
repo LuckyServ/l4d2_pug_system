@@ -1,13 +1,10 @@
-- [ ] Player report system
-- [ ] Ban reports review system
-- [ ] Limit size of ticket text
-- [ ] Crypto-secure ticket ID
 - [ ] Check what happens if a server gets reserved before restarting
 - [ ] Ban players from protesting bans
 - [ ] Rules page, with accept button
 - [ ] Select config when game starts, not on lobby creation
 - [ ] Limit chat message global frequency
 - [ ] SM plugin: kick on spec midgame
+- [ ] SM plugin: kick on c_thirdperson...smth
 - [ ] !game id
 - [ ] Add / remove admins
 - [ ] VPN checks
@@ -21,6 +18,10 @@
 - [ ] Regularly increase mmr uncertainty value
 - [ ] Automatically parse anticheat logs and ban based on them
 
+- [x] Crypto-secure ticket ID
+- [x] Limit size of ticket text
+- [x] Player report system
+- [x] Ban reports review system
 - [x] Shouldnt be able to ban admin
 - [x] Unbans
 - [x] On registration or authorizaton check if already banned
