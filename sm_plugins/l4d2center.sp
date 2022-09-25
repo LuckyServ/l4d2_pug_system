@@ -147,27 +147,38 @@ public Action Timer_AutoTeam(Handle timer) {
 }
 
 public Action Timer_UpdateGameState(Handle timer) {
-	if (!bPublicIP) {
-		int arIPaddr[4];
-		if (SteamWorks_GetPublicIP(arIPaddr)) {
-			Format(sPublicIP, sizeof(sPublicIP), "%d.%d.%d.%d:%d", arIPaddr[0], arIPaddr[1], arIPaddr[2], arIPaddr[3], GetConVarInt(FindConVar("hostport")));
-			bPublicIP = true;
-		}
-		if (!bPublicIP) {
-			return Plugin_Continue;
-		}
-	}
+	if (bGameEnded) {
 
-	char sUrl[256];
-	Format(sUrl, sizeof(sUrl), "https://api.l4d2center.com/gs/getgame?auth_key=%s", sAuthKey);
-	Handle hSWReq = SteamWorks_CreateHTTPRequest(k_EHTTPMethodPOST, sUrl);
-	SteamWorks_SetHTTPRequestNetworkActivityTimeout(hSWReq, 9);
-	SteamWorks_SetHTTPRequestAbsoluteTimeoutMS(hSWReq, 10000);
-	SteamWorks_SetHTTPRequestRequiresVerifiedCertificate(hSWReq, false);
-	SteamWorks_SetHTTPRequestGetOrPostParameter(hSWReq, "auth_key", sAuthKey);
-	SteamWorks_SetHTTPRequestGetOrPostParameter(hSWReq, "ip", sPublicIP);
-	SteamWorks_SetHTTPCallbacks(hSWReq, SWReqCompleted_GameInfo);
-	SteamWorks_SendHTTPRequest(hSWReq);
+		for (int i = 1; i <= MaxClients; i++) {
+			if (IsClientConnected(i) && !IsFakeClient(i)) {
+				KickClient(i, "Game ended, leave the server");
+			}
+		}
+
+	} else {
+
+		if (!bPublicIP) {
+			int arIPaddr[4];
+			if (SteamWorks_GetPublicIP(arIPaddr)) {
+				Format(sPublicIP, sizeof(sPublicIP), "%d.%d.%d.%d:%d", arIPaddr[0], arIPaddr[1], arIPaddr[2], arIPaddr[3], GetConVarInt(FindConVar("hostport")));
+				bPublicIP = true;
+			}
+			if (!bPublicIP) {
+				return Plugin_Continue;
+			}
+		}
+
+		char sUrl[256];
+		Format(sUrl, sizeof(sUrl), "https://api.l4d2center.com/gs/getgame?auth_key=%s", sAuthKey);
+		Handle hSWReq = SteamWorks_CreateHTTPRequest(k_EHTTPMethodPOST, sUrl);
+		SteamWorks_SetHTTPRequestNetworkActivityTimeout(hSWReq, 9);
+		SteamWorks_SetHTTPRequestAbsoluteTimeoutMS(hSWReq, 10000);
+		SteamWorks_SetHTTPRequestRequiresVerifiedCertificate(hSWReq, false);
+		SteamWorks_SetHTTPRequestGetOrPostParameter(hSWReq, "auth_key", sAuthKey);
+		SteamWorks_SetHTTPRequestGetOrPostParameter(hSWReq, "ip", sPublicIP);
+		SteamWorks_SetHTTPCallbacks(hSWReq, SWReqCompleted_GameInfo);
+		SteamWorks_SendHTTPRequest(hSWReq);
+	}
 	return Plugin_Continue;
 }
 
