@@ -86,6 +86,11 @@ public OnPluginStart() {
 		RegConsoleCmd("sm_ragequit", Ragequit_Cmd);
 		RegConsoleCmd("sm_quit", Ragequit_Cmd);
 
+		//spec cmd
+		RegConsoleCmd("sm_s", Spec_Cmd);
+		RegConsoleCmd("sm_spec", Spec_Cmd);
+		RegConsoleCmd("sm_spectate", Spec_Cmd);
+
 		//Test
 		//RegAdminCmd("sm_test", Cmd_Test, 0);
 	}
@@ -97,6 +102,13 @@ public void OnLibraryAdded(const char[] name) {
 
 public void OnLibraryRemoved(const char[] name) {
 	ReadyUpLoaded = LibraryExists("readyup");
+}
+
+public Action Spec_Cmd(int client, int args) {
+	if (bInRound && client > 0 && !IsFakeClient(client) && GetClientLobbyParticipant(client) != -1) {
+		KickClient(client, "You cant go to Spectator team midround");
+	}
+	return Plugin_Handled;
 }
 
 public Action Ragequit_Cmd(int client, int args) {

@@ -1,8 +1,6 @@
-- [ ] Select config when game starts, not on lobby creation
-- [ ] Limit chat message global frequency
-- [ ] SM plugin: kick on spec midgame
 - [ ] SM plugin: kick on c_thirdperson...smth
 - [ ] !game id
+- [ ] Server selection: consider 5ms difference equal
 - [ ] Add / remove admins
 - [ ] VPN checks
 - [ ] Smurf traces + connect logging + ping loggin
@@ -15,6 +13,8 @@
 - [ ] Regularly increase mmr uncertainty value
 - [ ] Automatically parse anticheat logs and ban based on them
 
+- [x] SM plugin: kick on spec midgame
+- [x] Select config when game starts, not on lobby creation
 - [x] Rules page, with accept button
 - [x] Ban players from protesting bans
 - [x] Check what happens if a server gets reserved before restarting
