@@ -112,30 +112,6 @@ func FindInitLobbyIndex(iMmr int, arOnlineMmrs []int) int {
 	return ((iStartIdx + iEndIdx) / 2);
 }
 
-func ChooseConfoglConfig(iMmr int) (settings.ConfoglConfig) {
-	if (settings.BrokenMode) {
-		return settings.ConfoglConfig{
-			CodeName:		"default",
-			Name:			"Default",
-			MmrMax:			2000000000,
-		};
-	}
-	iLen := len(settings.ArrayConfoglConfigsMmrs);
-	if (iLen == 1) {
-		return settings.MapConfoglConfigs[settings.ArrayConfoglConfigsMmrs[0]];
-	}
-	for i := 0; i < iLen; i++ {
-		if (iMmr < settings.ArrayConfoglConfigsMmrs[i]) {
-			return settings.MapConfoglConfigs[settings.ArrayConfoglConfigsMmrs[i]];
-		}
-	}
-	return settings.ConfoglConfig{
-		CodeName:		"zonemod",
-		Name:			"nani?",
-		MmrMax:			2000000000,
-	}; //shouldn't happen
-}
-
 func GetJoinableLobbies(iMmr int) []*EntLobby { //MuLobbies must be locked outside
 	var arLobbies []*EntLobby;
 	for _, pLobby := range ArrayLobbies {

@@ -129,7 +129,6 @@ func WatchLobbies() {
 					pGame := &games.EntGame{
 						ID:					<-games.ChanNewGameID,
 						CreatedAt:			time.Now().UnixMilli(),
-						GameConfig:			pLobby.GameConfig,
 						State:				games.StateCreating,
 						MmrMin:				pLobby.MmrMin,
 						MmrMax:				pLobby.MmrMax,

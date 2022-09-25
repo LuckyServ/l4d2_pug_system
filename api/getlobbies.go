@@ -14,7 +14,6 @@ type LobbyResponse struct {
 	MmrMin			int			`json:"mmr_min"`
 	MmrMax			int			`json:"mmr_max"`
 	CreatedAt		int64		`json:"created_at"` //milliseconds
-	GameConfig		string		`json:"confogl_config"`
 	PlayerCount		int			`json:"player_count"`
 	ReadyUpState	bool		`json:"readyup_state"`
 	ReadyPlayers	int			`json:"ready_players"`
@@ -49,7 +48,6 @@ func HttpReqGetLobbies(c *gin.Context) {
 					MmrMin:			pLobby.MmrMin,
 					MmrMax:			pLobby.MmrMax,
 					CreatedAt:		pLobby.CreatedAt,
-					GameConfig:		pLobby.GameConfig.Name,
 					PlayerCount:	pLobby.PlayerCount,
 					ReadyUpState:	(pLobby.PlayerCount >= 8),
 					ReadyPlayers:	pLobby.ReadyPlayers,
@@ -68,7 +66,6 @@ func HttpReqGetLobbies(c *gin.Context) {
 			MmrMin:			pLobby.MmrMin,
 			MmrMax:			pLobby.MmrMax,
 			CreatedAt:		pLobby.CreatedAt,
-			GameConfig:		pLobby.GameConfig.Name,
 			PlayerCount:	pLobby.PlayerCount,
 			ReadyUpState:	(pLobby.PlayerCount >= 8),
 			ReadyPlayers:	pLobby.ReadyPlayers,

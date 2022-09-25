@@ -70,12 +70,15 @@ func Create(pGame *EntGame) { //MuGames and MuPlayers must be locked outside
 	MapGames[pGame.ID] = pGame;
 	ArrayGames = append(ArrayGames, pGame);
 	i64CurTime := time.Now().UnixMilli();
+	var iMmrSum int;
 	for _, pPlayer := range pGame.PlayersUnpaired {
 		pPlayer.IsInGame = true;
 		pPlayer.GameID = pGame.ID;
 		pPlayer.IsIdle = false;
 		pPlayer.LastGameActivity = i64CurTime;
+		iMmrSum = iMmrSum + pPlayer.Mmr;
 	}
+	pGame.GameConfig = ChooseConfoglConfig(iMmrSum / 8);
 	players.I64LastPlayerlistUpdate = i64CurTime;
 }
 
@@ -117,4 +120,28 @@ func GetGameByIP(sIP string) (*EntGame) { //Games must be locked outside
 		}
 	}
 	return nil;
+}
+
+func ChooseConfoglConfig(iMmr int) (settings.ConfoglConfig) {
+	if (settings.BrokenMode) {
+		return settings.ConfoglConfig{
+			CodeName:		"default",
+			Name:			"Default",
+			MmrMax:			2000000000,
+		};
+	}
+	iLen := len(settings.ArrayConfoglConfigsMmrs);
+	if (iLen == 1) {
+		return settings.MapConfoglConfigs[settings.ArrayConfoglConfigsMmrs[0]];
+	}
+	for i := 0; i < iLen; i++ {
+		if (iMmr < settings.ArrayConfoglConfigsMmrs[i]) {
+			return settings.MapConfoglConfigs[settings.ArrayConfoglConfigsMmrs[i]];
+		}
+	}
+	return settings.ConfoglConfig{
+		CodeName:		"zonemod",
+		Name:			"nani?",
+		MmrMax:			2000000000,
+	}; //shouldn't happen
 }
