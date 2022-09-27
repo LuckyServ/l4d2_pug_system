@@ -31,18 +31,18 @@ func HttpReqPingsReceiver(c *gin.Context) {
 					mapResponse["success"] = true;
 
 					if (!smurf.IsVPN(c.ClientIP())) { //silently avoid storing ping data from VPN users
-						for i, _ := range settings.HardwareServers {
-							sPingMS := c.Query(settings.HardwareDomains[i]);
+						for _, oGameServer := range settings.GameServers {
+							sPingMS := c.Query(oGameServer.Domain);
 							if (sPingMS != "") {
 								iPingMS, errPingMS := strconv.Atoi(sPingMS);
 								if (errPingMS == nil && iPingMS > 0) {
-									iOldPing, bAlrPinged := pPlayer.GameServerPings[settings.HardwareServers[i]];
+									iOldPing, bAlrPinged := pPlayer.GameServerPings[oGameServer.IP];
 									if (bAlrPinged) {
 										if (iPingMS < iOldPing) {
-											pPlayer.GameServerPings[settings.HardwareServers[i]] = iPingMS;
+											pPlayer.GameServerPings[oGameServer.IP] = iPingMS;
 										}
 									} else {
-										pPlayer.GameServerPings[settings.HardwareServers[i]] = iPingMS;
+										pPlayer.GameServerPings[oGameServer.IP] = iPingMS;
 									}
 								}
 							}

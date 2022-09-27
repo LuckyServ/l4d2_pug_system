@@ -42,9 +42,7 @@ var JoinLobbyCooldown int64;
 var AuthPerHour int;
 var SteamAPICooldown int64;
 
-var GameServers []string;
-var HardwareServers []string; //parallel with HardwareDomains
-var HardwareDomains []string; //parallel with HardwareServers
+var GameServers []GameServer;
 
 var MaxPingWait int;
 var AvailGameSrvsMaxTries int;
@@ -68,6 +66,13 @@ var BanRQReason string;
 
 var BanListPagination int;
 
+
+type GameServer struct {
+	IP				string		`json:"ip"`
+	Domain			string		`json:"domain"`
+	Ports			[]string	`json:"ports"`
+	Region			string		`json:"region"` //europe, asia, or america
+}
 
 type ConfoglConfig struct {
 	CodeName		string
@@ -467,17 +472,24 @@ func ConfigFile() bool {
 
 		sDomain, _ := jsonparser.GetString(valueServer, "domain");
 		sServIP, _ := jsonparser.GetString(valueServer, "ip");
-		if (sDomain != "" && sServIP != "") {
-			HardwareDomains = append(HardwareDomains, sDomain);
-			HardwareServers = append(HardwareServers, sServIP);
-		}
+		sRegion, _ := jsonparser.GetString(valueServer, "region");
+		oGameServer := GameServer{
+			IP:			sServIP,
+			Domain:		sDomain,
+			Region:		sRegion,
+		};
+		
 		jsonparser.ArrayEach(valueServer, func(valuePort []byte, dataType jsonparser.ValueType, offset int, err error) {
 			sPORT := string(valuePort);
 			if (sPORT != "") {
-				GameServers = append(GameServers, sServIP + ":" + sPORT);
-				bErrorReadingGameServers = false;
+				oGameServer.Ports = append(oGameServer.Ports, sPORT);
+				if (bErrorReadingGameServers == true) {
+					bErrorReadingGameServers = false;
+				}
 			}
 		}, "ports");
+
+		GameServers = append(GameServers, oGameServer);
 
 	}, "game_servers");
 	if (bErrorReadingGameServers) {

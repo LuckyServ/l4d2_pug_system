@@ -55,7 +55,7 @@ func Control(pGame *EntGame) {
 	MuGames.Lock();
 	players.MuPlayers.Lock();
 	for _, pPlayer := range pGame.PlayersUnpaired {
-		pPlayer.GameServerPings = make(map[string]int, len(settings.HardwareServers));
+		pPlayer.GameServerPings = make(map[string]int, len(settings.GameServers));
 	}
 	pGame.State = StateWaitPings;
 	SetLastUpdated(pGame.PlayersUnpaired);
@@ -79,10 +79,9 @@ func Control(pGame *EntGame) {
 	//Select best available server based on pings and availability (a2s requests here)
 	iTryCount := 0;
 	for {
-		arAvailGameSrvs := GetAvailableServers(); //long execution (a2s); no need to lock anything
 
 		players.MuPlayers.Lock();
-		sIPPORT := SelectBestAvailableServer(pGame.PlayersUnpaired, arAvailGameSrvs);
+		sIPPORT := SelectBestAvailableServer(pGame.PlayersUnpaired); //unlocks players, but doesnt lock them
 
 		MuGames.Lock();
 		bSuccess := (sIPPORT != "");
@@ -95,6 +94,7 @@ func Control(pGame *EntGame) {
 			}
 		}
 
+		players.MuPlayers.Lock();
 		if (bSuccess) {
 			pGame.ServerIP = sIPPORT;
 			pGame.State = StateWaitPlayersJoin;

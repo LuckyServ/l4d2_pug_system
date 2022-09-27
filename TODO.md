@@ -1,18 +1,24 @@
-- [ ] SM plugin: kick on c_thirdperson...smth
+- [ ] Check what happens if a player doesnt send ping info
+- [ ] Adjust time allowed for pinging
+- [ ] Shift mmr accordingly, dont add static 1000 on registration
 - [ ] !game id
 - [ ] Server selection: consider 5ms difference equal
 - [ ] Add / remove admins
 - [ ] VPN checks
 - [ ] Smurf traces + connect logging + ping loggin
 - [ ] When validating profile, check for vpn and for smurfs
+- [ ] When searching for ban history, look upon the bans of smurfs
 - [ ] Mmr color in response
 - [ ] Log games
 - [ ] Manage authorization expire
+- [ ] SM plugin: natives and forwards
+- [x] SM plugin: dont kick on spec midgame, just prevent
 - [ ] Log on database write failure
 - [ ] Restarting mechanism
 - [ ] Regularly increase mmr uncertainty value
 - [ ] Automatically parse anticheat logs and ban based on them
 
+- [x] SM plugin: kick on c_thirdperson...smth
 - [x] SM plugin: kick on spec midgame
 - [x] Select config when game starts, not on lobby creation
 - [x] Rules page, with accept button

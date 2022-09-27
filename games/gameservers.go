@@ -6,7 +6,6 @@ import (
 	"../players"
 	"../utils"
 	"github.com/rumblefrog/go-a2s"
-	"strings"
 	"time"
 	"io/ioutil"
 	"net/http"
@@ -40,27 +39,131 @@ func CheckVersion() {
 	}
 }
 
-func SelectBestAvailableServer(arPlayers []*players.EntPlayer, arGameServersUnsorted []string) string { //Players must be locked outside
-	
-	var arGameServers []string;
-	var arMaxPing []int;
+func SelectBestAvailableServer(arPlayers []*players.EntPlayer) string { //must unlock players inside, but they are locked outside
 
-	for _, sGameServer := range arGameServersUnsorted {
-		var iMaxPing int = 0;
-		for _, pPlayer := range arPlayers {
-			sIP := strings.Split(sGameServer, ":")[0];
-			if (pPlayer.GameServerPings[sIP] > iMaxPing) {
-				iMaxPing = pPlayer.GameServerPings[sIP];
+	//find player ping weight based on their region and time of the day
+	for _, pPlayer := range arPlayers {
+		if (len(pPlayer.GameServerPings) == len(settings.GameServers)) {
+			var sLowestPingIP string;
+			var iLowestPing int = 350;
+			for sIP, iPing := range pPlayer.GameServerPings {
+				if (iPing < iLowestPing) {
+					iLowestPing = iPing;
+					sLowestPingIP = sIP;
+				}
+			}
+			sRegion := GetRegionFromIP(sLowestPingIP);
+			iCurHour := time.Now().Hour();
+			if (iCurHour >= 0 && iCurHour < 8 && sRegion == "america") { //America time
+				pPlayer.GameServerPingWeight = 2;
+			} else if (iCurHour >= 8 && iCurHour < 16 && sRegion == "asia") { //Asia time
+				pPlayer.GameServerPingWeight = 2;
+			} else if (iCurHour >= 16 && iCurHour < 24 && sRegion == "europe") { //Europe time
+				pPlayer.GameServerPingWeight = 2;
+			} else {
+				pPlayer.GameServerPingWeight = 1;
+			}
+		} else {
+			pPlayer.GameServerPingWeight = 0;
+		}
+	}
+
+
+	//select server based on weighted average ping
+	var iBestWeightedPing int = 350;
+	oBestWeighted := settings.GameServers[0];
+	iSumOfWeights := SumOfWeights(arPlayers);
+	if (iSumOfWeights > 0) {
+		for _, oServer := range settings.GameServers {
+			iWeightedAverage := SumWeightedPings(arPlayers, oServer.IP) / iSumOfWeights;
+			if (iWeightedAverage < iBestWeightedPing) {
+				iBestWeightedPing = iWeightedAverage;
+				oBestWeighted = oServer;
 			}
 		}
-		arGameServers = append(arGameServers, sGameServer);
-		arMaxPing = append(arMaxPing, iMaxPing);
 	}
 
-	iSize := len(arGameServers);
-	if (iSize == 0) {
-		return ""; //no available servers
+
+	//select server based on max ping within region selected above
+	var arGameServers []string;
+	var arMaxPing []int;
+	var arGameServersWW []string;
+	var arMaxPingWW []int;
+
+	for _, oServer := range settings.GameServers {
+		var iMaxPing int;
+		for _, pPlayer := range arPlayers {
+			if (pPlayer.GameServerPings[oServer.IP] > iMaxPing) {
+				iMaxPing = pPlayer.GameServerPings[oServer.IP];
+			}
+		}
+		if (iMaxPing == 0) {
+			iMaxPing = 350;
+		}
+		for _, sPort := range oServer.Ports {
+			arGameServersWW = append(arGameServersWW, oServer.IP+":"+sPort);
+			arMaxPingWW = append(arMaxPingWW, iMaxPing);
+			if (oServer.Region == oBestWeighted.Region) {
+				arGameServers = append(arGameServers, oServer.IP+":"+sPort);
+				arMaxPing = append(arMaxPing, iMaxPing);
+			}
+		}
 	}
+
+	players.MuPlayers.Unlock();
+
+	//sort by maxping, exclude occupied and outdated servers, return 1st server
+	sChosenServer := GetAvailableServer(arGameServers, arMaxPing);
+
+
+	//if no servers available, search again within all regions
+	if (sChosenServer == "") {
+		sChosenServer = GetAvailableServer(arGameServersWW, arMaxPingWW);
+	}
+
+	//return
+	return sChosenServer;
+}
+
+
+func GetAvailableServer(arGameServers []string, arMaxPing []int) string {
+	SortByMaxPing(arGameServers, arMaxPing);
+	var arEmptyGameSrvs []string;
+	var arQueryCh []chan int;
+	for range arGameServers {
+		arQueryCh = append(arQueryCh, make(chan int));
+	}
+	for i, sIPPORT := range arGameServers {
+		go GetPlayersCount(arQueryCh[i], sIPPORT);
+	}
+	for i, sIPPORT := range arGameServers {
+		iCount := <-arQueryCh[i];
+		if (iCount == 0) {
+			arEmptyGameSrvs = append(arEmptyGameSrvs, sIPPORT);
+		}
+	}
+	return arEmptyGameSrvs[0];
+}
+
+func SumWeightedPings(arPlayers []*players.EntPlayer, sIP string) int {
+	var iSum int;
+	for _, pPlayer := range arPlayers {
+		iPing, _ := pPlayer.GameServerPings[sIP];
+		iSum = iSum + (iPing * pPlayer.GameServerPingWeight);
+	}
+	return iSum;
+}
+
+func SumOfWeights(arPlayers []*players.EntPlayer) int {
+	var iSum int;
+	for _, pPlayer := range arPlayers {
+		iSum = iSum + pPlayer.GameServerPingWeight;
+	}
+	return iSum;
+}
+
+func SortByMaxPing(arGameServers []string, arMaxPing []int) {
+	iSize := len(arGameServers);
 	if (iSize > 1) {
 		bSorted := false;
 		for !bSorted {
@@ -84,27 +187,15 @@ func SelectBestAvailableServer(arPlayers []*players.EntPlayer, arGameServersUnso
 			}
 		}
 	}
-
-	return arGameServers[0];
 }
 
-
-func GetAvailableServers() []string {
-	var arEmptyGameSrvs []string;
-	var arQueryCh []chan int;
-	for range settings.GameServers {
-		arQueryCh = append(arQueryCh, make(chan int));
-	}
-	for i, sIPPORT := range settings.GameServers {
-		go GetPlayersCount(arQueryCh[i], sIPPORT);
-	}
-	for i, sIPPORT := range settings.GameServers {
-		iCount := <-arQueryCh[i];
-		if (iCount == 0) {
-			arEmptyGameSrvs = append(arEmptyGameSrvs, sIPPORT);
+func GetRegionFromIP(sIP string) string {
+	for _, oServer := range settings.GameServers {
+		if (oServer.IP == sIP) {
+			return oServer.Region;
 		}
 	}
-	return arEmptyGameSrvs;
+	return ""; //can't happen
 }
 
 func GetPlayersCount(chCount chan int, sIPPORT string) { //-1 if server version is outdated or unavailable

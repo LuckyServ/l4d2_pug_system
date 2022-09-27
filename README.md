@@ -295,15 +295,18 @@ Response parameters:
 <br/><br/>
 
 ### GET /getgameservers
-##### Get the list of L4D2 servers applicable for the l4d2_pug_system
+##### Get the list of L4D2 servers applicable for the pug system
 Request parameters: None
 
 Response parameters:
 | Key | Type | Description
 | ------ | ------ | ------ |
 | <strong>success</strong> | _bool_ | Always true |
-| <strong>gameservers</strong> | _[]string_ | Array of IP:PORT |
-| <strong>servers</strong> | _[]string_ | Array of IP |
+| <strong>servers</strong> | _[]_ | Array of servers |
+| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>ip</strong> | _string_ | IP without port |
+| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>domain</strong> | _string_ | Domain name pointing to the IP |
+| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>ports</strong> | _[]string_ | Array of ports |
+| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>region</strong> | _string_ | Server region |
 
 <br/><br/>
 

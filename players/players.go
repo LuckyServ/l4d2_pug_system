@@ -11,35 +11,36 @@ import (
 )
 
 type EntPlayer struct {
-	SteamID64			string
-	NicknameBase64		string
-	Mmr					int
-	MmrUncertainty		float32
-	Access				int //-3 - banned + cant protest, -2 - completely banned, -1 - chat banned, 0 - regular player, 1 - behaviour moderator, 2 - cheat moderator, 3 - behaviour+cheat moderator, 4 - full admin access
-	BannedAt			int64 //unix timestamp in milliseconds
-	BanReason			string
-	BanAcceptedAt		int64 //unix timestamp in milliseconds
-	BanLength			int64 //unix timestamp in milliseconds
-	ProfValidated		bool //Steam profile validated
-	RulesAccepted		bool //Rules accepted
-	LastActivity		int64 //unix timestamp in milliseconds
-	IsOnline			bool
-	IsIdle				bool
-	OnlineSince			int64 //unix timestamp in milliseconds
-	IsInGame			bool
-	IsInLobby			bool
-	IsAutoSearching		bool
-	AutoSearchingSince	int64 //unix timestamp in milliseconds
-	LobbyID				string
-	GameID				string
-	LastGameChanged		int64  //unix timestamp in milliseconds
-	IsReadyInLobby		bool
-	LastSteamRequest	int64 //Last steam api request //unix timestamp in milliseconds
-	LastLobbyActivity	int64 //Last lobby activity //unix timestamp in milliseconds
-	LastGameActivity	int64 //Last game activity //unix timestamp in milliseconds
-	LastChatMessage		int64 //Last chat message //unix timestamp in milliseconds
-	LastTicketActivity	int64 //Last ticket activity //unix timestamp in milliseconds
-	GameServerPings		map[string]int
+	SteamID64				string
+	NicknameBase64			string
+	Mmr						int
+	MmrUncertainty			float32
+	Access					int //-3 - banned + cant protest, -2 - completely banned, -1 - chat banned, 0 - regular player, 1 - behaviour moderator, 2 - cheat moderator, 3 - behaviour+cheat moderator, 4 - full admin access
+	BannedAt				int64 //unix timestamp in milliseconds
+	BanReason				string
+	BanAcceptedAt			int64 //unix timestamp in milliseconds
+	BanLength				int64 //unix timestamp in milliseconds
+	ProfValidated			bool //Steam profile validated
+	RulesAccepted			bool //Rules accepted
+	LastActivity			int64 //unix timestamp in milliseconds
+	IsOnline				bool
+	IsIdle					bool
+	OnlineSince				int64 //unix timestamp in milliseconds
+	IsInGame				bool
+	IsInLobby				bool
+	IsAutoSearching			bool
+	AutoSearchingSince		int64 //unix timestamp in milliseconds
+	LobbyID					string
+	GameID					string
+	LastGameChanged			int64  //unix timestamp in milliseconds
+	IsReadyInLobby			bool
+	LastSteamRequest		int64 //Last steam api request //unix timestamp in milliseconds
+	LastLobbyActivity		int64 //Last lobby activity //unix timestamp in milliseconds
+	LastGameActivity		int64 //Last game activity //unix timestamp in milliseconds
+	LastChatMessage			int64 //Last chat message //unix timestamp in milliseconds
+	LastTicketActivity		int64 //Last ticket activity //unix timestamp in milliseconds
+	GameServerPings			map[string]int
+	GameServerPingWeight	int
 }
 
 var MapPlayers map[string]*EntPlayer = make(map[string]*EntPlayer);
