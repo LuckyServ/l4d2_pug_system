@@ -230,7 +230,7 @@ func DetermineFinalScores(oResult EntGameResult, arPlayers [2][]*players.EntPlay
 		//case: infected player left midtank or after killing tank
 		if (oResult.InRound && ((iRQTeam == 0 && oResult.TeamsFlipped) || (iRQTeam == 1 && !oResult.TeamsFlipped)) && (oResult.TankInPlay || oResult.TankKilled)) {
 			arScoresBuffer := oResult.CurrentScores;
-			arScoresBuffer[iRQTeam] = utils.MaxValInt(arScoresBuffer[iRQTeam] - settings.RQInfHalf2MidTank, 0);
+			arScoresBuffer[iRQTeam] = utils.MaxValInt(arScoresBuffer[iRQTeam] - settings.RQInfMidTank, 0);
 			return arScoresBuffer;
 		}
 

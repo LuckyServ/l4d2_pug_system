@@ -2,6 +2,7 @@
 - [ ] Shift mmr accordingly, dont add static 1000 on registration
 - [ ] !game id
 - [ ] SM plugin: natives and forwards
+- [ ] SM plugin: trigger config unloading if the server gets reserved
 - [ ] SM plugin: dont kick on spec midgame, just prevent
 - [ ] Add / remove admins
 - [ ] VPN checks

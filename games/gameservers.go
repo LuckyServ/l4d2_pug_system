@@ -142,7 +142,10 @@ func GetAvailableServer(arGameServers []string, arMaxPing []int) string {
 			arEmptyGameSrvs = append(arEmptyGameSrvs, sIPPORT);
 		}
 	}
-	return arEmptyGameSrvs[0];
+	if (len(arEmptyGameSrvs) > 0) {
+		return arEmptyGameSrvs[0];
+	}
+	return "";
 }
 
 func SumWeightedPings(arPlayers []*players.EntPlayer, sIP string) int {
