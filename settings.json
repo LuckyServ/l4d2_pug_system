@@ -59,7 +59,7 @@
 		"game_ends_if_players_disconnected": 5,
 		"ragequit_penalty": {
 			"on_map_transition": 500,
-			"inf_on_half2_midtank": 600
+			"inf_midtank": 600
 		}
 	},
 	"database": {

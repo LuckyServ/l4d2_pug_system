@@ -1,8 +1,8 @@
-- [ ] Check what happens if a player doesnt send ping info
 - [ ] Adjust time allowed for pinging
 - [ ] Shift mmr accordingly, dont add static 1000 on registration
 - [ ] !game id
-- [ ] Server selection: consider 5ms difference equal
+- [ ] SM plugin: natives and forwards
+- [ ] SM plugin: dont kick on spec midgame, just prevent
 - [ ] Add / remove admins
 - [ ] VPN checks
 - [ ] Smurf traces + connect logging + ping loggin
@@ -11,13 +11,13 @@
 - [ ] Mmr color in response
 - [ ] Log games
 - [ ] Manage authorization expire
-- [ ] SM plugin: natives and forwards
-- [x] SM plugin: dont kick on spec midgame, just prevent
 - [ ] Log on database write failure
 - [ ] Restarting mechanism
 - [ ] Regularly increase mmr uncertainty value
 - [ ] Automatically parse anticheat logs and ban based on them
 
+- [x] Punish for ragequit in case on infected 1st half midround
+- [x] Check what happens if a player doesnt send ping info
 - [x] SM plugin: kick on c_thirdperson...smth
 - [x] SM plugin: kick on spec midgame
 - [x] Select config when game starts, not on lobby creation

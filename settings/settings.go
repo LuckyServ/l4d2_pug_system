@@ -52,7 +52,7 @@ var MaxSingleAbsentSeconds int64;
 var MinPlayersCount int;
 
 var RQMidMapTransPenalty int;
-var RQInfHalf2MidTank int;
+var RQInfMidTank int;
 
 var ChatStoreMaxMsgs int;
 var ChatMsgDelay int64;
@@ -337,12 +337,12 @@ func ConfigFile() bool {
 	}
 	RQMidMapTransPenalty = int(i64Buffer);
 
-	i64Buffer, errError = jsonparser.GetInt(byData, "game", "ragequit_penalty", "inf_on_half2_midtank");
+	i64Buffer, errError = jsonparser.GetInt(byData, "game", "ragequit_penalty", "inf_midtank");
 	if (errError != nil) {
 		fmt.Printf("Error reading config file: %s\n", errError);
 		return false;
 	}
-	RQInfHalf2MidTank = int(i64Buffer);
+	RQInfMidTank = int(i64Buffer);
 
 	i64Buffer, errError = jsonparser.GetInt(byData, "chat", "store_n_messages");
 	if (errError != nil) {

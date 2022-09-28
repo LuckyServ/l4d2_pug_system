@@ -28,7 +28,7 @@ type EntGameResult struct {
 
 func UpdateMmr(oResult EntGameResult, arFinalScores [2]int, arPlayers [2][]*players.EntPlayer) { //Players must be locked outside
 
-	if (oResult.SettledScores[0] == 0 && oResult.SettledScores[1] == 0) { //dont touch mmr if didnt even play a single map
+	if (oResult.MapsFinished == 0) { //dont touch mmr if didnt even play a single map
 		return;
 	}
 
@@ -47,7 +47,7 @@ func UpdateMmr(oResult EntGameResult, arFinalScores [2]int, arPlayers [2][]*play
 		f32WinCoef = 1.0;
 	}
 	//Prevent too high mmr gains (and losses) if played 1 map only
-	if ((oResult.MapsFinished == 0 || (oResult.MapsFinished == 1 && (oResult.InMapTransition || (oResult.CurrentHalf == 1 && oResult.InRound)))) && f32WinCoef > 0.0) {
+	if ((oResult.MapsFinished == 1 && (oResult.InMapTransition || (oResult.CurrentHalf == 1 && oResult.InRound))) && f32WinCoef > 0.0) {
 		f32WinCoef = 0.0;
 	}
 
@@ -227,12 +227,13 @@ func DetermineFinalScores(oResult EntGameResult, arPlayers [2][]*players.EntPlay
 			}
 		}
 
-		//case: infected player left midtank or after killing tank, on 2nd half
-		if (oResult.InRound && oResult.CurrentHalf == 2 && ((iRQTeam == 0 && oResult.TeamsFlipped) || (iRQTeam == 1 && !oResult.TeamsFlipped)) && (oResult.TankInPlay || oResult.TankKilled)) {
+		//case: infected player left midtank or after killing tank
+		if (oResult.InRound && ((iRQTeam == 0 && oResult.TeamsFlipped) || (iRQTeam == 1 && !oResult.TeamsFlipped)) && (oResult.TankInPlay || oResult.TankKilled)) {
 			arScoresBuffer := oResult.CurrentScores;
 			arScoresBuffer[iRQTeam] = utils.MaxValInt(arScoresBuffer[iRQTeam] - settings.RQInfHalf2MidTank, 0);
 			return arScoresBuffer;
 		}
+
 
 		//case: survivor player left midgame on 2nd half
 		if (oResult.InRound && oResult.CurrentHalf == 2 && ((iRQTeam == 0 && !oResult.TeamsFlipped) || (iRQTeam == 1 && oResult.TeamsFlipped))) {
