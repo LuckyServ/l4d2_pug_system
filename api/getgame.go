@@ -23,20 +23,6 @@ type GameResponse struct {
 	Status				string				`json:"status"`
 }
 
-var mapGameStatus = map[int]string{
-	games.StateCreating:			"Creating game",
-	games.StateCreated:				"Game created",
-	games.StateCampaignChosen:		"Campaign selected",
-	games.StateTeamsPicked:			"Players paired",
-	games.StateWaitPings:			"Pinging servers",
-	games.StateSelectServer:		"Selecting best available server",
-	games.StateNoServers:			"No free servers available. If no server found in 5 minutes, the game ends.",
-	games.StateWaitPlayersJoin:		"The server is ready. You have 5 minutes to join the server and Ready Up.",
-	games.StateReadyUpExpired:		"Some players failed to Ready Up in time",
-	games.StateGameProceeds:		"In game",
-	games.StateGameEnded:			"Game ended",
-}
-
 
 func HttpReqGetGame(c *gin.Context) {
 
@@ -91,7 +77,7 @@ func HttpReqGetGame(c *gin.Context) {
 					ServerIP:			pGame.ServerIP,
 					MmrMin:				pGame.MmrMin,
 					MmrMax:				pGame.MmrMax,
-					Status:				mapGameStatus[pGame.State],
+					Status:				games.MapGameStatus[pGame.State],
 				};
 
 				games.MuGames.RUnlock();

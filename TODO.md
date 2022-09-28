@@ -1,3 +1,5 @@
+- [ ] Reduce uncertainty only if result changed from prev game
+- [ ] Dead survivors midround dont count as AFK
 - [ ] !game id
 - [ ] SM plugin: natives and forwards
 - [ ] SM plugin: trigger config unloading if the server gets reserved

@@ -128,21 +128,6 @@ func UpdateMmr(oResult EntGameResult, arFinalScores [2]int, arPlayers [2][]*play
 			arPlayers[iT][iP].MmrUncertainty = arPlayers[iT][iP].MmrUncertainty * 0.75; //reduce uncertainty
 		}
 	}
-
-	//Shift mmr to the positive side
-	/*var iMmrShift int; //we dont allow mmr lower than 1
-	for iT := 0; iT < 2; iT++ {
-		for iP := 0; iP < 4; iP++ {
-			if (arPlayers[iT][iP].Mmr < 1 && iMmrShift < 1 - arPlayers[iT][iP].Mmr) {
-				iMmrShift = 1 - arPlayers[iT][iP].Mmr;
-			}
-		}
-	}
-	for iT := 0; iT < 2; iT++ {
-		for iP := 0; iP < 4; iP++ {
-			arPlayers[iT][iP].Mmr = arPlayers[iT][iP].Mmr + iMmrShift;
-		}
-	}*/
 }
 
 

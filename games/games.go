@@ -1,6 +1,7 @@
 package games
 
 import (
+	"fmt"
 	"sync"
 	"strconv"
 	"time"
@@ -43,6 +44,8 @@ const ( //game states
 	StateGameEnded
 )
 
+var MapGameStatus map[int]string;
+
 var MapGames map[string]*EntGame = make(map[string]*EntGame);
 var ArrayGames []*EntGame; //duplicate of MapGames, for faster iterating
 var MuGames sync.RWMutex;
@@ -52,6 +55,21 @@ var ChanNewGameID chan string = make(chan string);
 func Watchers() {
 	go HandleUniqID();
 	go CheckVersion();
+
+	//init game statuses text for response
+	MapGameStatus = map[int]string{
+		StateCreating:			"Creating game",
+		StateCreated:			"Game created",
+		StateCampaignChosen:	"Campaign selected",
+		StateTeamsPicked:		"Players paired",
+		StateWaitPings:			"Pinging servers",
+		StateSelectServer:		"Selecting best available server",
+		StateNoServers:			"No free servers available. If no server found in 5 minutes, the game ends.",
+		StateWaitPlayersJoin:	"The server is ready. You have "+fmt.Sprintf("%d", settings.FirstReadyUpExpire / 60)+" minutes to join the server and Ready Up.",
+		StateReadyUpExpired:	"Some players failed to Ready Up in time",
+		StateGameProceeds:		"In game",
+		StateGameEnded:			"Game ended",
+	}
 }
 
 func HandleUniqID() {
