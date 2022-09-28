@@ -74,6 +74,7 @@ func RestorePlayers() bool { //no need to lock maps
 	/*if (len(arDatabasePlayers) == 0) {
 		return false;
 	}*/
+	var iBottomMmr int = 1;
 	for _, oDBPlayer := range arDatabasePlayers {
 		iAccess := oDBPlayer.Access;
 		if (iAccess < 0) {
@@ -90,6 +91,14 @@ func RestorePlayers() bool { //no need to lock maps
 		};
 		MapPlayers[oDBPlayer.SteamID64] = pPlayer;
 		ArrayPlayers = append(ArrayPlayers, pPlayer);
+		if (oDBPlayer.ProfValidated && oDBPlayer.Mmr < iBottomMmr) {
+			iBottomMmr = oDBPlayer.Mmr;
+		}
+	}
+	if (iBottomMmr < 1) {
+		iShiftMmr := 1 - iBottomMmr;
+		database.ShiftMmr(iShiftMmr);
+		return false;
 	}
 	I64LastPlayerlistUpdate = time.Now().UnixMilli();
 	return true;

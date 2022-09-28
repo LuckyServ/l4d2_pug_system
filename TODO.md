@@ -1,5 +1,3 @@
-- [ ] Adjust time allowed for pinging
-- [ ] Shift mmr accordingly, dont add static 1000 on registration
 - [ ] !game id
 - [ ] SM plugin: natives and forwards
 - [ ] SM plugin: trigger config unloading if the server gets reserved
@@ -16,7 +14,10 @@
 - [ ] Restarting mechanism
 - [ ] Regularly increase mmr uncertainty value
 - [ ] Automatically parse anticheat logs and ban based on them
+- [ ] Setup database backups
 
+- [x] Shift mmr accordingly, dont add static 1000 on registration
+- [x] Adjust time allowed for pinging
 - [x] Punish for ragequit in case on infected 1st half midround
 - [x] Check what happens if a player doesnt send ping info
 - [x] SM plugin: kick on c_thirdperson...smth

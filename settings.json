@@ -20,10 +20,10 @@
 	"mmr": {
 		"default_uncertainty": 33.3333,
 		"default_max": 3000,
-		"default_shift": 1000,
 		"consider_stable": 1.0,
 		"absolute_win": 30,
-		"minimum_win": 10
+		"minimum_win": 10,
+		"mmr_diff_guaranteed_win": 1000
 	},
 	"chat": {
 		"store_n_messages": 10,

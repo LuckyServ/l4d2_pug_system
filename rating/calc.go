@@ -58,12 +58,13 @@ func UpdateMmr(oResult EntGameResult, arFinalScores [2]int, arPlayers [2][]*play
 	for iT := 0; iT < 2; iT++ {
 		f32TeamMmr[iT] = float32(arPlayers[iT][0].Mmr + arPlayers[iT][1].Mmr + arPlayers[iT][2].Mmr + arPlayers[iT][3].Mmr);
 	}
+
 	if (f32TeamMmr[0] > f32TeamMmr[1]) {
 		iFavorited = 0;
-		f32FavorCoef = (f32TeamMmr[0] / (f32TeamMmr[1] + 0.001/*in case if all mmr are 0*/)) - 1.0;
+		f32FavorCoef = ((f32TeamMmr[0] - f32TeamMmr[1]) / 4) / settings.MmrDiffGuaranteedWin;
 	} else if (f32TeamMmr[1] > f32TeamMmr[0]) {
 		iFavorited = 1;
-		f32FavorCoef = (f32TeamMmr[1] / (f32TeamMmr[0] + 0.001/*in case if all mmr are 0*/)) - 1.0;
+		f32FavorCoef = ((f32TeamMmr[1] - f32TeamMmr[0]) / 4) / settings.MmrDiffGuaranteedWin;
 	}
 	if (f32FavorCoef > 1.0) {
 		f32FavorCoef = 1.0;
@@ -95,34 +96,41 @@ func UpdateMmr(oResult EntGameResult, arFinalScores [2]int, arPlayers [2][]*play
 		f32TeamAgets = settings.MmrAbsoluteWin * -1.0;
 	}
 
-	//Apply new team based mmr
+	//Apply new mmr
 	iTeamAgets := int(math.Round(float64(f32TeamAgets)));
 	if (iTeamAgets > 0) {
 		for iP := 0; iP < 4; iP++ {
 			if (arPlayers[0][iP].SteamID64 != oResult.Inferior[0]) {
-				arPlayers[0][iP].Mmr = arPlayers[0][iP].Mmr + iTeamAgets;
+				arPlayers[0][iP].Mmr = arPlayers[0][iP].Mmr + (iTeamAgets + int(f32TeamAgets * arPlayers[0][iP].MmrUncertainty));
 			}
 		}
 		for iP := 0; iP < 4; iP++ {
 			if (arPlayers[1][iP].SteamID64 != oResult.Dominator[1]) {
-				arPlayers[1][iP].Mmr = arPlayers[1][iP].Mmr - iTeamAgets;
+				arPlayers[1][iP].Mmr = arPlayers[1][iP].Mmr - (iTeamAgets + int(f32TeamAgets * arPlayers[1][iP].MmrUncertainty));
 			}
 		}
 	} else if (iTeamAgets < 0) {
 		for iP := 0; iP < 4; iP++ {
 			if (arPlayers[0][iP].SteamID64 != oResult.Dominator[0]) {
-				arPlayers[0][iP].Mmr = arPlayers[0][iP].Mmr + iTeamAgets;
+				arPlayers[0][iP].Mmr = arPlayers[0][iP].Mmr + (iTeamAgets + int(f32TeamAgets * arPlayers[0][iP].MmrUncertainty));
 			}
 		}
 		for iP := 0; iP < 4; iP++ {
 			if (arPlayers[1][iP].SteamID64 != oResult.Inferior[1]) {
-				arPlayers[1][iP].Mmr = arPlayers[1][iP].Mmr - iTeamAgets;
+				arPlayers[1][iP].Mmr = arPlayers[1][iP].Mmr - (iTeamAgets + int(f32TeamAgets * arPlayers[1][iP].MmrUncertainty));
 			}
 		}
 	}
 
+	//Reduce uncertainty
+	for iT := 0; iT < 2; iT++ {
+		for iP := 0; iP < 4; iP++ {
+			arPlayers[iT][iP].MmrUncertainty = arPlayers[iT][iP].MmrUncertainty * 0.75; //reduce uncertainty
+		}
+	}
+
 	//Shift mmr to the positive side
-	var iMmrShift int; //we dont allow mmr lower than 1
+	/*var iMmrShift int; //we dont allow mmr lower than 1
 	for iT := 0; iT < 2; iT++ {
 		for iP := 0; iP < 4; iP++ {
 			if (arPlayers[iT][iP].Mmr < 1 && iMmrShift < 1 - arPlayers[iT][iP].Mmr) {
@@ -134,42 +142,7 @@ func UpdateMmr(oResult EntGameResult, arFinalScores [2]int, arPlayers [2][]*play
 		for iP := 0; iP < 4; iP++ {
 			arPlayers[iT][iP].Mmr = arPlayers[iT][iP].Mmr + iMmrShift;
 		}
-	}
-
-	//Also take into account mmr deviation (uncertainty)
-	if (iTeamAgets > 0.0) {
-		for iP := 0; iP < 4; iP++ {
-			if (arPlayers[0][iP].SteamID64 != oResult.Inferior[0]) {
-				arPlayers[0][iP].Mmr = arPlayers[0][iP].Mmr + int(f32TeamAgets * arPlayers[0][iP].MmrUncertainty);
-			}
-		}
-		for iP := 0; iP < 4; iP++ {
-			if (arPlayers[1][iP].SteamID64 != oResult.Dominator[1]) {
-				arPlayers[1][iP].Mmr = arPlayers[1][iP].Mmr - int(f32TeamAgets * arPlayers[1][iP].MmrUncertainty);
-			}
-		}
-	} else if (iTeamAgets < 0.0) {
-		for iP := 0; iP < 4; iP++ {
-			if (arPlayers[0][iP].SteamID64 != oResult.Dominator[0]) {
-				arPlayers[0][iP].Mmr = arPlayers[0][iP].Mmr + int(f32TeamAgets * arPlayers[0][iP].MmrUncertainty);
-			}
-		}
-		for iP := 0; iP < 4; iP++ {
-			if (arPlayers[1][iP].SteamID64 != oResult.Inferior[1]) {
-				arPlayers[1][iP].Mmr = arPlayers[1][iP].Mmr - int(f32TeamAgets * arPlayers[1][iP].MmrUncertainty);
-			}
-		}
-	}
-
-	//Cut all mmr's below 1
-	for iT := 0; iT < 2; iT++ {
-		for iP := 0; iP < 4; iP++ {
-			if (arPlayers[iT][iP].Mmr < 1) {
-				arPlayers[iT][iP].Mmr = 1;
-			}
-			arPlayers[iT][iP].MmrUncertainty = arPlayers[iT][iP].MmrUncertainty * 0.75; //reduce uncertainty
-		}
-	}
+	}*/
 }
 
 
