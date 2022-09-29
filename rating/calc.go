@@ -100,23 +100,27 @@ func UpdateMmr(oResult EntGameResult, arFinalScores [2]int, arPlayers [2][]*play
 	iTeamAgets := int(math.Round(float64(f32TeamAgets)));
 	if (iTeamAgets > 0) {
 		for iP := 0; iP < 4; iP++ {
-			if (arPlayers[0][iP].SteamID64 != oResult.Inferior[0]) {
+			if (arPlayers[0][iP].SteamID64 != oResult.Inferior[0] &&
+				utils.GetStringIdxInArray(arPlayers[0][iP].SteamID64, oResult.AbsentPlayers) == -1) {
 				arPlayers[0][iP].Mmr = arPlayers[0][iP].Mmr + (iTeamAgets + int(f32TeamAgets * arPlayers[0][iP].MmrUncertainty));
 			}
 		}
 		for iP := 0; iP < 4; iP++ {
-			if (arPlayers[1][iP].SteamID64 != oResult.Dominator[1]) {
+			if (arPlayers[1][iP].SteamID64 != oResult.Dominator[1] ||
+				utils.GetStringIdxInArray(arPlayers[1][iP].SteamID64, oResult.AbsentPlayers) != -1) {
 				arPlayers[1][iP].Mmr = arPlayers[1][iP].Mmr - (iTeamAgets + int(f32TeamAgets * arPlayers[1][iP].MmrUncertainty));
 			}
 		}
 	} else if (iTeamAgets < 0) {
 		for iP := 0; iP < 4; iP++ {
-			if (arPlayers[0][iP].SteamID64 != oResult.Dominator[0]) {
+			if (arPlayers[0][iP].SteamID64 != oResult.Dominator[0] ||
+				utils.GetStringIdxInArray(arPlayers[0][iP].SteamID64, oResult.AbsentPlayers) != -1) {
 				arPlayers[0][iP].Mmr = arPlayers[0][iP].Mmr + (iTeamAgets + int(f32TeamAgets * arPlayers[0][iP].MmrUncertainty));
 			}
 		}
 		for iP := 0; iP < 4; iP++ {
-			if (arPlayers[1][iP].SteamID64 != oResult.Inferior[1]) {
+			if (arPlayers[1][iP].SteamID64 != oResult.Inferior[1] &&
+				utils.GetStringIdxInArray(arPlayers[1][iP].SteamID64, oResult.AbsentPlayers) == -1) {
 				arPlayers[1][iP].Mmr = arPlayers[1][iP].Mmr - (iTeamAgets + int(f32TeamAgets * arPlayers[1][iP].MmrUncertainty));
 			}
 		}
