@@ -103,49 +103,48 @@ func UpdateMmr(oResult EntGameResult, arFinalScores [2]int, arPlayers [2][]*play
 			if (arPlayers[0][iP].SteamID64 != oResult.Inferior[0] &&
 				utils.GetStringIdxInArray(arPlayers[0][iP].SteamID64, oResult.AbsentPlayers) == -1) {
 				arPlayers[0][iP].Mmr = arPlayers[0][iP].Mmr + (iTeamAgets + int(f32TeamAgets * arPlayers[0][iP].MmrUncertainty));
+				if (arPlayers[0][iP].LastGameResult == 2) { //lost prev game
+					arPlayers[0][iP].MmrUncertainty = arPlayers[0][iP].MmrUncertainty * 0.66; //reduce uncertainty
+				}
 			}
+			arPlayers[0][iP].LastGameResult = 3; //won
 		}
 		for iP := 0; iP < 4; iP++ {
 			if (arPlayers[1][iP].SteamID64 != oResult.Dominator[1] ||
 				utils.GetStringIdxInArray(arPlayers[1][iP].SteamID64, oResult.AbsentPlayers) != -1) {
 				arPlayers[1][iP].Mmr = arPlayers[1][iP].Mmr - (iTeamAgets + int(f32TeamAgets * arPlayers[1][iP].MmrUncertainty));
+				if (arPlayers[1][iP].LastGameResult == 3) { //won prev game
+					arPlayers[1][iP].MmrUncertainty = arPlayers[1][iP].MmrUncertainty * 0.66; //reduce uncertainty
+				}
 			}
+			arPlayers[1][iP].LastGameResult = 2; //lost
 		}
 	} else if (iTeamAgets < 0) {
 		for iP := 0; iP < 4; iP++ {
 			if (arPlayers[0][iP].SteamID64 != oResult.Dominator[0] ||
 				utils.GetStringIdxInArray(arPlayers[0][iP].SteamID64, oResult.AbsentPlayers) != -1) {
 				arPlayers[0][iP].Mmr = arPlayers[0][iP].Mmr + (iTeamAgets + int(f32TeamAgets * arPlayers[0][iP].MmrUncertainty));
+				if (arPlayers[0][iP].LastGameResult == 3) { //won prev game
+					arPlayers[0][iP].MmrUncertainty = arPlayers[0][iP].MmrUncertainty * 0.66; //reduce uncertainty
+				}
 			}
+			arPlayers[0][iP].LastGameResult = 2; //lost
 		}
 		for iP := 0; iP < 4; iP++ {
 			if (arPlayers[1][iP].SteamID64 != oResult.Inferior[1] &&
 				utils.GetStringIdxInArray(arPlayers[1][iP].SteamID64, oResult.AbsentPlayers) == -1) {
 				arPlayers[1][iP].Mmr = arPlayers[1][iP].Mmr - (iTeamAgets + int(f32TeamAgets * arPlayers[1][iP].MmrUncertainty));
+				if (arPlayers[1][iP].LastGameResult == 2) { //lost prev game
+					arPlayers[1][iP].MmrUncertainty = arPlayers[1][iP].MmrUncertainty * 0.66; //reduce uncertainty
+				}
 			}
+			arPlayers[1][iP].LastGameResult = 3; //won
 		}
-	}
-
-	//Reduce uncertainty
-	for iT := 0; iT < 2; iT++ {
-		for iP := 0; iP < 4; iP++ {
-			if (iWinner == -1 ||
-			(iWinner == iT && arPlayers[iT][iP].LastGameResult == 2) || //won now and lost last one
-			(iWinner != iT && arPlayers[iT][iP].LastGameResult == 3)) { //lost now and won last one
+	} else { //draw
+		for iT := 0; iT < 2; iT++ {
+			for iP := 0; iP < 4; iP++ {
 				arPlayers[iT][iP].MmrUncertainty = arPlayers[iT][iP].MmrUncertainty * 0.66; //reduce uncertainty
-			}
-		}
-	}
-
-	//Store last game result
-	for iT := 0; iT < 2; iT++ {
-		for iP := 0; iP < 4; iP++ {
-			if (iWinner == -1) {
 				arPlayers[iT][iP].LastGameResult = 1; //draw
-			} else if (iWinner == iT) {
-				arPlayers[iT][iP].LastGameResult = 3; //won
-			} else if (iWinner != iT) {
-				arPlayers[iT][iP].LastGameResult = 2; //lost
 			}
 		}
 	}
