@@ -93,10 +93,11 @@ func HttpReqValidateProf(c *gin.Context) {
 									NicknameBase64:		pPlayer.NicknameBase64,
 									Mmr:				pPlayer.Mmr,
 									MmrUncertainty:		pPlayer.MmrUncertainty,
+									LastGameResult:		pPlayer.LastGameResult,
 									Access:				pPlayer.Access,
 									ProfValidated:		pPlayer.ProfValidated,
 									RulesAccepted:		pPlayer.RulesAccepted,
-								});
+									});
 								players.MuPlayers.Unlock();
 
 							} else {

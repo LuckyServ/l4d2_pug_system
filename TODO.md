@@ -1,9 +1,10 @@
-- [ ] Reduce uncertainty only if result changed from prev game
+- [ ] Ragequitter doesnt gain points if he won
 - [ ] Dead survivors midround dont count as AFK
 - [ ] !game id
 - [ ] SM plugin: natives and forwards
 - [ ] SM plugin: trigger config unloading if the server gets reserved
 - [ ] SM plugin: dont kick on spec midgame, just prevent
+- [ ] SM plugin: Check when !rq command works, and edit its name
 - [ ] Add / remove admins
 - [ ] VPN checks
 - [ ] Smurf traces + connect logging + ping loggin
@@ -18,6 +19,7 @@
 - [ ] Automatically parse anticheat logs and ban based on them
 - [ ] Setup database backups
 
+- [x] Reduce uncertainty only if result changed from prev game
 - [x] Shift mmr accordingly, dont add static 1000 on registration
 - [x] Adjust time allowed for pinging
 - [x] Punish for ragequit in case on infected 1st half midround

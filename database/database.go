@@ -12,13 +12,14 @@ var dbConn *sql.DB;
 var dbErr error;
 
 type DatabasePlayer struct {
-	SteamID64		string
-	NicknameBase64	string
-	Mmr				int
-	MmrUncertainty	float32
-	Access			int //-2 - completely banned, -1 - chat banned, 0 - regular player, 1 - behaviour moderator, 2 - cheat moderator, 3 - behaviour+cheat moderator, 4 - full admin access
-	ProfValidated	bool
-	RulesAccepted	bool
+	SteamID64			string
+	NicknameBase64		string
+	Mmr					int
+	MmrUncertainty		float32
+	LastGameResult		int
+	Access				int //-2 - completely banned, -1 - chat banned, 0 - regular player, 1 - behaviour moderator, 2 - cheat moderator, 3 - behaviour+cheat moderator, 4 - full admin access
+	ProfValidated		bool
+	RulesAccepted		bool
 }
 
 type DatabaseSession struct {
@@ -58,13 +59,13 @@ func DatabaseConnect() bool {
 
 func AddPlayer(oPlayer DatabasePlayer) {
 	MuDatabase.Lock();
-	//Delete if already registered (shouldn't happen)
+	//Delete if already registered (shouldn't happen, but just in case)
 	dbQueryDelete, errQueryDelete := dbConn.Query("DELETE FROM players_list WHERE steamid64 = '"+oPlayer.SteamID64+"';");
 	if (errQueryDelete == nil) {
 		dbQueryDelete.Close();
 	}
 	//Add player
-	dbQuery, errDbQuery := dbConn.Query("INSERT INTO players_list(steamid64, base64nickname, mmr, mmr_uncertainty, access, prof_validated, rules_accepted) VALUES ("+oPlayer.SteamID64+", '"+oPlayer.NicknameBase64+"', "+fmt.Sprintf("%d", oPlayer.Mmr)+", "+fmt.Sprintf("%.06f", oPlayer.MmrUncertainty)+", "+fmt.Sprintf("%d", oPlayer.Access)+", "+fmt.Sprintf("%v", oPlayer.ProfValidated)+", "+fmt.Sprintf("%v", oPlayer.RulesAccepted)+");");
+	dbQuery, errDbQuery := dbConn.Query("INSERT INTO players_list(steamid64, base64nickname, mmr, mmr_uncertainty, last_game_result, access, prof_validated, rules_accepted) VALUES ("+oPlayer.SteamID64+", '"+oPlayer.NicknameBase64+"', "+fmt.Sprintf("%d", oPlayer.Mmr)+", "+fmt.Sprintf("%.06f", oPlayer.MmrUncertainty)+", "+fmt.Sprintf("%d", oPlayer.LastGameResult)+", "+fmt.Sprintf("%d", oPlayer.Access)+", "+fmt.Sprintf("%v", oPlayer.ProfValidated)+", "+fmt.Sprintf("%v", oPlayer.RulesAccepted)+");");
 	if (errDbQuery == nil) {
 		dbQuery.Close();
 	}
@@ -73,7 +74,7 @@ func AddPlayer(oPlayer DatabasePlayer) {
 
 func UpdatePlayer(oPlayer DatabasePlayer) {
 	MuDatabase.Lock();
-	dbQuery, errDbQuery := dbConn.Query("UPDATE players_list SET base64nickname = '"+oPlayer.NicknameBase64+"', mmr = "+fmt.Sprintf("%d", oPlayer.Mmr)+", mmr_uncertainty = "+fmt.Sprintf("%.06f", oPlayer.MmrUncertainty)+", access = "+fmt.Sprintf("%d", oPlayer.Access)+", prof_validated = "+fmt.Sprintf("%v", oPlayer.ProfValidated)+", rules_accepted = "+fmt.Sprintf("%v", oPlayer.RulesAccepted)+" WHERE steamid64 = '"+oPlayer.SteamID64+"';");
+	dbQuery, errDbQuery := dbConn.Query("UPDATE players_list SET base64nickname = '"+oPlayer.NicknameBase64+"', mmr = "+fmt.Sprintf("%d", oPlayer.Mmr)+", mmr_uncertainty = "+fmt.Sprintf("%.06f", oPlayer.MmrUncertainty)+", last_game_result = "+fmt.Sprintf("%d", oPlayer.LastGameResult)+", access = "+fmt.Sprintf("%d", oPlayer.Access)+", prof_validated = "+fmt.Sprintf("%v", oPlayer.ProfValidated)+", rules_accepted = "+fmt.Sprintf("%v", oPlayer.RulesAccepted)+" WHERE steamid64 = '"+oPlayer.SteamID64+"';");
 	if (errDbQuery == nil) {
 		dbQuery.Close();
 	}
@@ -146,12 +147,12 @@ func RemoveSession(sSessID string) {
 func RestorePlayers() []DatabasePlayer {
 	MuDatabase.RLock();
 	var arDBPlayers []DatabasePlayer;
-	dbQueryRetrieve, errQueryRetrieve := dbConn.Query("SELECT steamid64,base64nickname,mmr,mmr_uncertainty,access,prof_validated,rules_accepted FROM players_list;");
+	dbQueryRetrieve, errQueryRetrieve := dbConn.Query("SELECT steamid64,base64nickname,mmr,mmr_uncertainty,last_game_result,access,prof_validated,rules_accepted FROM players_list;");
 	if (errQueryRetrieve == nil) {
 
 		for (dbQueryRetrieve.Next()) {
 			oDBPlayer := DatabasePlayer{};
-			dbQueryRetrieve.Scan(&oDBPlayer.SteamID64, &oDBPlayer.NicknameBase64, &oDBPlayer.Mmr, &oDBPlayer.MmrUncertainty, &oDBPlayer.Access, &oDBPlayer.ProfValidated, &oDBPlayer.RulesAccepted);
+			dbQueryRetrieve.Scan(&oDBPlayer.SteamID64, &oDBPlayer.NicknameBase64, &oDBPlayer.Mmr, &oDBPlayer.MmrUncertainty, &oDBPlayer.LastGameResult, &oDBPlayer.Access, &oDBPlayer.ProfValidated, &oDBPlayer.RulesAccepted);
 			arDBPlayers = append(arDBPlayers, oDBPlayer);
 		}
 

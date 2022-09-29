@@ -66,6 +66,7 @@ func WatchUnbans() {
 					NicknameBase64:		pPlayer.NicknameBase64,
 					Mmr:				pPlayer.Mmr,
 					MmrUncertainty:		pPlayer.MmrUncertainty,
+					LastGameResult:		pPlayer.LastGameResult,
 					Access:				pPlayer.Access,
 					ProfValidated:		pPlayer.ProfValidated,
 					RulesAccepted:		pPlayer.RulesAccepted,

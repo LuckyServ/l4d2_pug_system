@@ -125,7 +125,24 @@ func UpdateMmr(oResult EntGameResult, arFinalScores [2]int, arPlayers [2][]*play
 	//Reduce uncertainty
 	for iT := 0; iT < 2; iT++ {
 		for iP := 0; iP < 4; iP++ {
-			arPlayers[iT][iP].MmrUncertainty = arPlayers[iT][iP].MmrUncertainty * 0.75; //reduce uncertainty
+			if (iWinner == -1 ||
+			(iWinner == iT && arPlayers[iT][iP].LastGameResult == 2) || //won now and lost last one
+			(iWinner != iT && arPlayers[iT][iP].LastGameResult == 3)) { //lost now and won last one
+				arPlayers[iT][iP].MmrUncertainty = arPlayers[iT][iP].MmrUncertainty * 0.66; //reduce uncertainty
+			}
+		}
+	}
+
+	//Store last game result
+	for iT := 0; iT < 2; iT++ {
+		for iP := 0; iP < 4; iP++ {
+			if (iWinner == -1) {
+				arPlayers[iT][iP].LastGameResult = 1; //draw
+			} else if (iWinner == iT) {
+				arPlayers[iT][iP].LastGameResult = 3; //won
+			} else if (iWinner != iT) {
+				arPlayers[iT][iP].LastGameResult = 2; //lost
+			}
 		}
 	}
 }

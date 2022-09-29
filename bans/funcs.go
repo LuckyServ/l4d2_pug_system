@@ -123,6 +123,7 @@ func ApplyBanToPlayer(sSteamID64 string, iAccess int, sBanReason string, i64Bann
 			NicknameBase64:		pPlayer.NicknameBase64,
 			Mmr:				pPlayer.Mmr,
 			MmrUncertainty:		pPlayer.MmrUncertainty,
+			LastGameResult:		pPlayer.LastGameResult,
 			Access:				pPlayer.Access,
 			ProfValidated:		pPlayer.ProfValidated,
 			RulesAccepted:		pPlayer.RulesAccepted,
@@ -238,9 +239,6 @@ func UnbanManual(sSteamID64 string) {
 
 func RestoreBans() bool {
 	arDatabaseBanRecords := database.RestoreBans();
-	/*if (len(arDatabasePlayers) == 0) {
-		return false;
-	}*/
 	i64CurTime := time.Now().UnixMilli();
 	for _, oDBBanRecord := range arDatabaseBanRecords {
 		oBanRecord := EntBanRecord{

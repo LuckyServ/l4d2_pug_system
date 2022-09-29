@@ -15,6 +15,7 @@ type EntPlayer struct {
 	NicknameBase64			string
 	Mmr						int
 	MmrUncertainty			float32
+	LastGameResult			int //0 - unknown, 1 - draw, 2 - lost, 3 - won
 	Access					int //-3 - banned + cant protest, -2 - completely banned, -1 - chat banned, 0 - regular player, 1 - behaviour moderator, 2 - cheat moderator, 3 - behaviour+cheat moderator, 4 - full admin access
 	BannedAt				int64 //unix timestamp in milliseconds
 	BanReason				string
@@ -85,6 +86,7 @@ func RestorePlayers() bool { //no need to lock maps
 			NicknameBase64:		oDBPlayer.NicknameBase64,
 			Mmr:				oDBPlayer.Mmr,
 			MmrUncertainty:		oDBPlayer.MmrUncertainty,
+			LastGameResult:		oDBPlayer.LastGameResult,
 			Access:				iAccess,
 			ProfValidated:		oDBPlayer.ProfValidated,
 			RulesAccepted:		oDBPlayer.RulesAccepted,
@@ -148,6 +150,7 @@ func AddPlayerAuth(sSteamID64 string, sNicknameBase64 string) string {
 			NicknameBase64:		pPlayer.NicknameBase64,
 			Mmr:				pPlayer.Mmr,
 			MmrUncertainty:		pPlayer.MmrUncertainty,
+			LastGameResult:		pPlayer.LastGameResult,
 			Access:				pPlayer.Access,
 			ProfValidated:		pPlayer.ProfValidated,
 			RulesAccepted:		pPlayer.RulesAccepted,

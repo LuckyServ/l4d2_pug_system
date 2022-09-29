@@ -9,21 +9,20 @@ import (
 func Pair(arUnpairedPlayers []*players.EntPlayer) ([]*players.EntPlayer, []*players.EntPlayer) { //Games and Players must be locked outside
 
 	//Sort
-	arPlayersSorted := arUnpairedPlayers;
 	bSorted := false;
 	for !bSorted {
 		bSorted = true;
 		for i := 1; i < 8; i++ {
-			if (arPlayersSorted[i].Mmr > arPlayersSorted[i - 1].Mmr) {
-				arPlayersSorted[i], arPlayersSorted[i - 1] = arPlayersSorted[i - 1], arPlayersSorted[i]; //switch
+			if (arUnpairedPlayers[i].Mmr > arUnpairedPlayers[i - 1].Mmr) {
+				arUnpairedPlayers[i], arUnpairedPlayers[i - 1] = arUnpairedPlayers[i - 1], arUnpairedPlayers[i]; //switch
 				if (bSorted) {
 					bSorted = false;
 				}
 			}
 			if (!bSorted) {
 				for i := 6; i >= 0; i-- {
-					if (arPlayersSorted[i].Mmr < arPlayersSorted[i + 1].Mmr) {
-						arPlayersSorted[i], arPlayersSorted[i + 1] = arPlayersSorted[i + 1], arPlayersSorted[i]; //switch
+					if (arUnpairedPlayers[i].Mmr < arUnpairedPlayers[i + 1].Mmr) {
+						arUnpairedPlayers[i], arUnpairedPlayers[i + 1] = arUnpairedPlayers[i + 1], arUnpairedPlayers[i]; //switch
 					}
 				}
 			}
@@ -37,7 +36,7 @@ func Pair(arUnpairedPlayers []*players.EntPlayer) ([]*players.EntPlayer, []*play
 	iPicker := 0;
 	iBPicksTwo := int(1 + ((time.Now().UnixNano() % int64(3)) * 2)); //random 1, 3, or 5
 	for len(arTeams[0]) < 4 || len(arTeams[1]) < 4 {
-		arTeams[iPicker] = append(arTeams[iPicker], arPlayersSorted[i]);
+		arTeams[iPicker] = append(arTeams[iPicker], arUnpairedPlayers[i]);
 		if (iPicker == 0) {
 			iPicker = 1;
 		} else if (iBPicksTwo != i) {
