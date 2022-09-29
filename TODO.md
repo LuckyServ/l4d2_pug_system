@@ -1,4 +1,3 @@
-- [ ] Dead survivors midround dont count as AFK
 - [ ] !game id
 - [ ] SM plugin: natives and forwards
 - [ ] SM plugin: trigger config unloading if the server gets reserved
@@ -18,6 +17,7 @@
 - [ ] Automatically parse anticheat logs and ban based on them
 - [ ] Setup database backups
 
+- [x] Dead survivors midround dont count as AFK
 - [x] Ragequitter doesnt gain points if he won
 - [x] Reduce uncertainty only if result changed from prev game
 - [x] Shift mmr accordingly, dont add static 1000 on registration

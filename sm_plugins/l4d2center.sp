@@ -824,7 +824,7 @@ public Action Timer_CountAbsence(Handle timer) {
 					int iTeam = GetClientTeam(player);
 					if (bInRound) {
 						if (iTeam > 1) {
-							if (iTime - iLastActivity[player] >= 30) {
+							if (iTime - iLastActivity[player] >= 30 && !(iTeam == 2 && !IsPlayerAlive(player))) {
 								if (arPlayersAll[i][0] == '7') {
 									iAbsenceCounter[i] = iAbsenceCounter[i] + 1;
 									iSingleAbsence[i] = iSingleAbsence[i] + 1;
