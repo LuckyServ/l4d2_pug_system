@@ -87,9 +87,9 @@ public OnPluginStart() {
 		RegConsoleCmd("sm_game", GameID_Cmd);
 
 		//admit RQ
-		RegConsoleCmd("sm_rq", Ragequit_Cmd);
 		RegConsoleCmd("sm_ragequit", Ragequit_Cmd);
 		RegConsoleCmd("sm_quit", Ragequit_Cmd);
+		RegConsoleCmd("sm_exit", Ragequit_Cmd);
 
 		//spec cmd
 		RegConsoleCmd("sm_s", Spec_Cmd);

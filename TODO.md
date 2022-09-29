@@ -1,4 +1,3 @@
-- [ ] SM plugin: Check when !rq command works, and edit its name
 - [ ] SM plugin: natives and forwards
 - [ ] SM plugin: trigger config unloading if the server gets reserved
 - [ ] SM plugin: dont kick on spec midgame, just prevent
@@ -16,6 +15,7 @@
 - [ ] Automatically parse anticheat logs and ban based on them
 - [ ] Setup database backups
 
+- [x] SM plugin: Check when !rq command works, and edit its name
 - [x] !game id
 - [x] Dead survivors midround dont count as AFK
 - [x] Ragequitter doesnt gain points if he won
