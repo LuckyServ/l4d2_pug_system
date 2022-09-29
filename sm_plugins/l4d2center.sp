@@ -33,6 +33,7 @@ int iMaxSpecs;
 
 //GameInfo
 int iServerReserved = -1; //-1 - not checked, 0 - not reserved, 1 - reserved
+char sGameID[32];
 char arPlayersA[4][20];
 char arPlayersB[4][20];
 char arPlayersAll[8][20];
@@ -81,6 +82,10 @@ public OnPluginStart() {
 		CreateTimer(1.0, Timer_CountAbsence, 0, TIMER_REPEAT);
 		CreateTimer(0.9876, Timer_AutoTeam, 0, TIMER_REPEAT);
 
+		//get game id
+		RegConsoleCmd("sm_id", GameID_Cmd);
+		RegConsoleCmd("sm_game", GameID_Cmd);
+
 		//admit RQ
 		RegConsoleCmd("sm_rq", Ragequit_Cmd);
 		RegConsoleCmd("sm_ragequit", Ragequit_Cmd);
@@ -107,6 +112,13 @@ public void OnLibraryRemoved(const char[] name) {
 public Action Spec_Cmd(int client, int args) {
 	if (bInRound && client > 0 && !IsFakeClient(client) && GetClientLobbyParticipant(client) != -1) {
 		KickClient(client, "You cant go to Spectator team midround");
+	}
+	return Plugin_Handled;
+}
+
+public Action GameID_Cmd(int client, int args) {
+	if (iServerReserved == 1) {
+		ReplyToCommand(client, "L4D2Center: current Game ID is %s", sGameID);
 	}
 	return Plugin_Handled;
 }
@@ -536,6 +548,7 @@ public void SWReqCompleted_GameInfo(Handle hRequest, bool bFailure, bool bReques
 					strcopy(arPlayersAll[i + 4], 20, sBuffer);
 				}
 
+				KvGetString(kvGameInfo, "game_id", sGameID, sizeof(sGameID), "default");
 				KvGetString(kvGameInfo, "confogl", sConfoglConfig, sizeof(sConfoglConfig), "default");
 				KvGetString(kvGameInfo, "first_map", sFirstMap, sizeof(sFirstMap), "unknown");
 				KvGetString(kvGameInfo, "last_map", sLastMap, sizeof(sLastMap), "unknown");

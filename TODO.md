@@ -1,8 +1,8 @@
 - [ ] !game id
+- [ ] SM plugin: Check when !rq command works, and edit its name
 - [ ] SM plugin: natives and forwards
 - [ ] SM plugin: trigger config unloading if the server gets reserved
 - [ ] SM plugin: dont kick on spec midgame, just prevent
-- [ ] SM plugin: Check when !rq command works, and edit its name
 - [ ] Add / remove admins
 - [ ] VPN checks
 - [ ] Smurf traces + connect logging + ping loggin

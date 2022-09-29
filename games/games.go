@@ -3,11 +3,11 @@ package games
 import (
 	"fmt"
 	"sync"
-	"strconv"
 	"time"
 	"../players"
 	"../settings"
 	"../rating"
+	"../utils"
 )
 
 type EntGame struct {
@@ -76,7 +76,8 @@ func HandleUniqID() {
 	for {
 		select {
 			case ChanNewGameID <- func()(string) {
-				return strconv.FormatInt(time.Now().UnixNano(), 10);
+				sRand, _ := utils.GenerateRandomString(3, "abcdefghkmnpqrstuvwxyz");
+				return fmt.Sprintf("%d%s", time.Now().UnixNano(), sRand);
 			}():
 		}
 		time.Sleep(1 * time.Nanosecond);

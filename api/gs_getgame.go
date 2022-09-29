@@ -24,6 +24,7 @@ func HttpReqGSGetGame(c *gin.Context) {
 			if (pGame != nil) {
 
 				sResponse = fmt.Sprintf("%s\n	\"success\" \"1\"", sResponse);
+				sResponse = fmt.Sprintf("%s\n	\"game_id\" \"%s\"", sResponse, pGame.ID);
 
 				players.MuPlayers.RLock();
 				for i := 0; i < 4; i++ {
