@@ -1,6 +1,5 @@
-- [ ] SM plugin: natives and forwards
 - [ ] SM plugin: trigger config unloading if the server gets reserved
-- [ ] SM plugin: dont kick on spec midgame, just prevent
+- [ ] SM plugin: dont kick on spec midgame, just prevent (or remove that limitation completely)
 - [ ] Add / remove admins
 - [ ] VPN checks
 - [ ] Smurf traces + connect logging + ping loggin
@@ -15,6 +14,7 @@
 - [ ] Automatically parse anticheat logs and ban based on them
 - [ ] Setup database backups
 
+- [x] SM plugin: natives and forwards
 - [x] SM plugin: Check when !rq command works, and edit its name
 - [x] !game id
 - [x] Dead survivors midround dont count as AFK

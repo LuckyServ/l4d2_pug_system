@@ -9,6 +9,8 @@
 #include <pause>
 
 
+Handle hForwardGameInfoReceived;
+Handle hForwardGameEnded;
 
 Handle hMaxPlayers;
 bool ReadyUpLoaded;
@@ -26,13 +28,12 @@ bool bPrinted[8]; //parallel with arPlayersAll[]
 int iSingleAbsence[8]; //parallel with arPlayersAll[]
 
 char sAuthKey[40];
-bool bIsL4D2Center;
 char sPublicIP[32];
 bool bPublicIP;
 int iMaxSpecs;
 
 //GameInfo
-int iServerReserved = -1; //-1 - not checked, 0 - not reserved, 1 - reserved
+int iServerReserved = -1; //-2 - check failed, -1 - not checked, 0 - not reserved, 1 - reserved
 char sGameID[32];
 char arPlayersA[4][20];
 char arPlayersB[4][20];
@@ -58,47 +59,54 @@ int iAbsenceCounter[8]; //parallel with arPlayersAll[]
 bool bGameEnded;
 bool bGameFinished;
 
+public APLRes AskPluginLoad2(Handle myself, bool late, char[] error, int err_max) {
+	CreateNative("L4D2C_GetServerReservation", Native_GetServerReservation);
+	CreateNative("L4D2C_IsPlayerGameParticipant", Native_IsPlayerGameParticipant);
+	CreateNative("L4D2C_IsGameEnded", Native_IsGameEnded);
+	
+	hForwardGameInfoReceived = CreateGlobalForward("L4D2C_GameInfoReceived", ET_Ignore);
+	hForwardGameEnded = CreateGlobalForward("L4D2C_OnGameEnded", ET_Ignore);
 
+	RegPluginLibrary("l4d2center");
+	return APLRes_Success;
+}
 
 public OnPluginStart() {
-	if (GetConVarInt(CreateConVar("sm_bansystem_enabled", "0", "0 - disabled, 1 - Safehouse, 2 - Santa Clouds, 3 - Liberty, 4 - l4d2center")) == 4) {
-		bIsL4D2Center = true;
-		GetConVarString(CreateConVar("l4d2center_auth_key", "none"), sAuthKey, sizeof(sAuthKey));
-		hMaxPlayers = FindConVar("sv_maxplayers");
-		ReadyUpLoaded = LibraryExists("readyup");
-		CreateTimer(10.0, Timer_UpdateGameState, 0, TIMER_REPEAT);
-		HookEvent("round_end", Event_RoundEnd);
-		HookEvent("player_team", Event_PlayerTeam);
+	GetConVarString(CreateConVar("l4d2center_auth_key", "none"), sAuthKey, sizeof(sAuthKey));
+	hMaxPlayers = FindConVar("sv_maxplayers");
+	ReadyUpLoaded = LibraryExists("readyup");
+	CreateTimer(10.0, Timer_UpdateGameState, 0, TIMER_REPEAT);
+	HookEvent("round_end", Event_RoundEnd);
+	HookEvent("player_team", Event_PlayerTeam);
 
-		//AFK
-		AddCommandListener(OnCommandExecute, "spec_mode");
-		AddCommandListener(OnCommandExecute, "spec_next");
-		AddCommandListener(OnCommandExecute, "spec_prev");
-		AddCommandListener(OnCommandExecute, "say");
-		AddCommandListener(OnCommandExecute, "say_team");
-		AddCommandListener(OnCallVote, "callvote");
-		RegConsoleCmd("sm_ready", Ready_Cmd);
-		RegConsoleCmd("sm_r", Ready_Cmd);
-		CreateTimer(1.0, Timer_CountAbsence, 0, TIMER_REPEAT);
-		CreateTimer(0.9876, Timer_AutoTeam, 0, TIMER_REPEAT);
+	//AFK
+	AddCommandListener(OnCommandExecute, "spec_mode");
+	AddCommandListener(OnCommandExecute, "spec_next");
+	AddCommandListener(OnCommandExecute, "spec_prev");
+	AddCommandListener(OnCommandExecute, "say");
+	AddCommandListener(OnCommandExecute, "say_team");
+	AddCommandListener(OnCallVote, "callvote");
+	RegConsoleCmd("sm_ready", Ready_Cmd);
+	RegConsoleCmd("sm_r", Ready_Cmd);
+	CreateTimer(1.0, Timer_CountAbsence, 0, TIMER_REPEAT);
+	CreateTimer(0.9876, Timer_AutoTeam, 0, TIMER_REPEAT);
 
-		//get game id
-		RegConsoleCmd("sm_id", GameID_Cmd);
-		RegConsoleCmd("sm_game", GameID_Cmd);
+	//get game id
+	RegConsoleCmd("sm_id", GameID_Cmd);
+	RegConsoleCmd("sm_game", GameID_Cmd);
 
-		//admit RQ
-		RegConsoleCmd("sm_ragequit", Ragequit_Cmd);
-		RegConsoleCmd("sm_quit", Ragequit_Cmd);
-		RegConsoleCmd("sm_exit", Ragequit_Cmd);
+	//admit RQ
+	RegConsoleCmd("sm_ragequit", Ragequit_Cmd);
+	RegConsoleCmd("sm_quit", Ragequit_Cmd);
+	RegConsoleCmd("sm_exit", Ragequit_Cmd);
 
-		//spec cmd
-		RegConsoleCmd("sm_s", Spec_Cmd);
-		RegConsoleCmd("sm_spec", Spec_Cmd);
-		RegConsoleCmd("sm_spectate", Spec_Cmd);
+	//spec cmd
+	RegConsoleCmd("sm_s", Spec_Cmd);
+	RegConsoleCmd("sm_spec", Spec_Cmd);
+	RegConsoleCmd("sm_spectate", Spec_Cmd);
 
-		//Test
-		//RegAdminCmd("sm_test", Cmd_Test, 0);
-	}
+	//Test
+	//RegAdminCmd("sm_test", Cmd_Test, 0);
 }
 
 public void OnLibraryAdded(const char[] name) {
@@ -207,7 +215,7 @@ public Action Timer_UpdateGameState(Handle timer) {
 }
 
 public OnRoundIsLive() {
-	if (bIsL4D2Center) {
+	if (iServerReserved == 1) {
 		bInRound = true;
 		bInMapTransition = false;
 		bTankKilled = false;
@@ -269,12 +277,6 @@ public Action GameInfoReceived(Handle timer) {
 		}
 
 
-	} else if (iServerReserved == 0) {
-		for (int i = 1; i <= MaxClients; i++) {
-			if (IsClientConnected(i) && !IsFakeClient(i)) {
-				KickClient(i, "This server is reserved for l4d2center.com lobbies");
-			}
-		}
 	}
 	return Plugin_Continue;
 }
@@ -375,7 +377,7 @@ public void SWReqCompleted_UploadResults(Handle hRequest, bool bFailure, bool bR
 	if (bRequestSuccessful && eStatusCode == k_EHTTPStatusCode200OK	&& SteamWorks_GetHTTPResponseBodySize(hRequest, iBodySize) && iBodySize > 0) {
 		char[] sResponse = new char[iBodySize];
 		SteamWorks_GetHTTPResponseBodyData(hRequest, sResponse, iBodySize);
-		PrintToServer("%s", sResponse);
+		//PrintToServer("%s", sResponse);
 		Handle kvGameInfo = CreateKeyValues("VDFresponse");
 		if (StrContains(sResponse, "VDFresponse", true) > -1 && StringToKeyValues(kvGameInfo, sResponse)) {
 			int iSuccess = KvGetNum(kvGameInfo, "success", -1);
@@ -383,6 +385,8 @@ public void SWReqCompleted_UploadResults(Handle hRequest, bool bFailure, bool bR
 				int iGameEndType = KvGetNum(kvGameInfo, "game_ended_type", -1);
 				if (iGameEndType == 1) {
 					bGameEnded = true;
+					Call_StartForward(hForwardGameEnded);
+					Call_Finish();
 					char sWinner[3];
 					if (iSettledScores[0] > iSettledScores[1]) {
 						Format(sWinner, sizeof(sWinner), "A");
@@ -398,6 +402,8 @@ public void SWReqCompleted_UploadResults(Handle hRequest, bool bFailure, bool bR
 					}
 				} else if (iGameEndType == 2) {
 					bGameEnded = true;
+					Call_StartForward(hForwardGameEnded);
+					Call_Finish();
 					for (int i = 1; i <= MaxClients; i++) {
 						if (IsClientConnected(i) && !IsFakeClient(i)) {
 							KickClient(i, "Game ended: one or more players left it midgame");
@@ -405,6 +411,8 @@ public void SWReqCompleted_UploadResults(Handle hRequest, bool bFailure, bool bR
 					}
 				} else if (iGameEndType == 3) {
 					bGameEnded = true;
+					Call_StartForward(hForwardGameEnded);
+					Call_Finish();
 					for (int i = 1; i <= MaxClients; i++) {
 						if (IsClientConnected(i) && !IsFakeClient(i)) {
 							KickClient(i, "Game ended: players left the game");
@@ -483,7 +491,7 @@ public void SWReqCompleted_PartialReadyUp(Handle hRequest, bool bFailure, bool b
 	if (bRequestSuccessful && eStatusCode == k_EHTTPStatusCode200OK	&& SteamWorks_GetHTTPResponseBodySize(hRequest, iBodySize) && iBodySize > 0) {
 		char[] sResponse = new char[iBodySize];
 		SteamWorks_GetHTTPResponseBodyData(hRequest, sResponse, iBodySize);
-		PrintToServer("%s", sResponse);
+		//PrintToServer("%s", sResponse);
 		Handle kvGameInfo = CreateKeyValues("VDFresponse");
 		if (StrContains(sResponse, "VDFresponse", true) > -1 && StringToKeyValues(kvGameInfo, sResponse)) {
 			if (KvGetNum(kvGameInfo, "success", -1) == 1) {
@@ -524,7 +532,7 @@ public void SWReqCompleted_GameInfo(Handle hRequest, bool bFailure, bool bReques
 	if (bRequestSuccessful && eStatusCode == k_EHTTPStatusCode200OK	&& SteamWorks_GetHTTPResponseBodySize(hRequest, iBodySize) && iBodySize > 0) {
 		char[] sResponse = new char[iBodySize];
 		SteamWorks_GetHTTPResponseBodyData(hRequest, sResponse, iBodySize);
-		PrintToServer("%s", sResponse);
+		//PrintToServer("%s", sResponse);
 		Handle kvGameInfo = CreateKeyValues("VDFresponse");
 		if (StrContains(sResponse, "VDFresponse", true) > -1 && StringToKeyValues(kvGameInfo, sResponse)) {
 			iServerReserved = KvGetNum(kvGameInfo, "success", -1);
@@ -558,8 +566,11 @@ public void SWReqCompleted_GameInfo(Handle hRequest, bool bFailure, bool bReques
 				iMaxAbsent = KvGetNum(kvGameInfo, "max_absent", 420);
 				iMaxSingleAbsent = KvGetNum(kvGameInfo, "max_single_absent", 240);
 
+				Call_StartForward(hForwardGameInfoReceived);
+				Call_Finish();
+
 			}
-			if (iServerReserved != -1) {
+			if (iServerReserved > -1) {
 				CreateTimer(1.0, GameInfoReceived);
 			}
 		} else {
@@ -572,6 +583,10 @@ public void SWReqCompleted_GameInfo(Handle hRequest, bool bFailure, bool bReques
 		PrintToServer("Oy oy, L4D2Center API responded with error");
 	}
 	CloseHandle(hRequest);
+
+	if (iServerReserved == -1) {
+		iServerReserved = -2;
+	}
 }
 
 public void SWReqCompleted_Dummy(Handle hRequest, bool bFailure, bool bRequestSuccessful, EHTTPStatusCode eStatusCode) {
@@ -579,7 +594,7 @@ public void SWReqCompleted_Dummy(Handle hRequest, bool bFailure, bool bRequestSu
 	if (bRequestSuccessful && eStatusCode == k_EHTTPStatusCode200OK	&& SteamWorks_GetHTTPResponseBodySize(hRequest, iBodySize) && iBodySize > 0) {
 		char[] sResponse = new char[iBodySize];
 		SteamWorks_GetHTTPResponseBodyData(hRequest, sResponse, iBodySize);
-		PrintToServer("%s", sResponse);
+		//PrintToServer("%s", sResponse);
 		Handle kvGameInfo = CreateKeyValues("VDFresponse");
 		if (StrContains(sResponse, "VDFresponse", true) > -1 && StringToKeyValues(kvGameInfo, sResponse)) {
 		} else {
@@ -595,6 +610,9 @@ public void SWReqCompleted_Dummy(Handle hRequest, bool bFailure, bool bRequestSu
 }
 
 int GetClientLobbyParticipant(int client) {
+	if (iServerReserved != 1) {
+		return -1;
+	}
 	char sSteamID64[20];
 	if (GetClientAuthId(client, AuthId_SteamID64, sSteamID64, sizeof(sSteamID64), false)) {
 		for (int i = 0; i < 8; i++) {
@@ -641,8 +659,7 @@ int GetPlayerCorrectTeam(int client) {
 }
 
 public void OnClientAuthorized(int client, const char[] auth) {
-	if (bIsL4D2Center &&
-	iServerReserved == 1 &&
+	if (iServerReserved == 1 &&
 	!IsFakeClient(client) &&
 	GetClientLobbyParticipant(client) == -1
 	) {
@@ -651,8 +668,7 @@ public void OnClientAuthorized(int client, const char[] auth) {
 }
 
 public void OnClientPutInServer(int client) {
-	if (bIsL4D2Center &&
-	iServerReserved == 1 &&
+	if (iServerReserved == 1 &&
 	!IsFakeClient(client) &&
 	!IsClientAuthorized(client) &&
 	GetClientLobbyParticipant(client) == -1
@@ -779,7 +795,7 @@ KickOnSpecsExceed(client) {
 
 //AFK part
 public void OnPlayerRunCmdPost(int client, int buttons, int impulse, const float vel[3], const float angles[3], int weapon, int subtype, int cmdnum, int tickcount, int seed, const int mouse[2]) {
-	if (bIsL4D2Center && client > 0 && client <= MaxClients && (iPrevButtons[client] != buttons || iPrevMouse[client][0] != mouse[0] || iPrevMouse[client][1] != mouse[1]) && IsClientInGame(client) && !IsFakeClient(client)) {
+	if (iServerReserved == 1 && client > 0 && client <= MaxClients && (iPrevButtons[client] != buttons || iPrevMouse[client][0] != mouse[0] || iPrevMouse[client][1] != mouse[1]) && IsClientInGame(client) && !IsFakeClient(client)) {
 		iPrevButtons[client] = buttons;
 		iPrevMouse[client][0] = mouse[0];
 		iPrevMouse[client][1] = mouse[1];
@@ -791,7 +807,10 @@ Action OnCallVote(int client, const char[] command, int argc) {
 	if (client > 0 && IsClientInGame(client) && !IsFakeClient(client)) {
 		iLastActivity[client] = GetTime();
 	}
-	return Plugin_Handled;
+	if (iServerReserved == 1) {
+		return Plugin_Handled;
+	}
+	return Plugin_Continue;
 }
 
 Action OnCommandExecute(int client, const char[] command, int argc) {
@@ -810,7 +829,7 @@ public Action Ready_Cmd(int client, int args) {
 
 public Action Timer_CountAbsence(Handle timer) {
 
-	if (iServerReserved == 1 && !bWaitFirstReadyUp) {
+	if (!bWaitFirstReadyUp) {
 		int iTime = GetTime();
 		for (int i = 0; i < 8; i++) {
 
@@ -918,7 +937,7 @@ SetResponsibleForPause(int iLobbyPlayer) {
 }
 
 public OnUnpause() {
-	if (bIsL4D2Center) {
+	if (iServerReserved == 1) {
 		iLastUnpause = GetTime();
 	}
 }
@@ -955,6 +974,29 @@ int MinVal(int val1, int val2) {
 	return val2;
 }
 
+
+
+
+
+
+
+
+
+public int Native_GetServerReservation(Handle plugin, int numParams) {
+	return iServerReserved;
+}
+
+public int Native_IsPlayerGameParticipant(Handle plugin, int numParams) {
+	int client = GetNativeCell(1);
+	if (client > 0 && client <= MaxClients) {
+		return GetClientLobbyParticipant(client) != -1;
+	}
+	return false;
+}
+
+public int Native_IsGameEnded(Handle plugin, int numParams) {
+	return bGameEnded;
+}
 
 
 
