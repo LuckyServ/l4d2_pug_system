@@ -34,6 +34,7 @@ int iMaxSpecs;
 
 //GameInfo
 int iServerReserved = -1; //-2 - check failed, -1 - not checked, 0 - not reserved, 1 - reserved
+int iPrevReserved = -1;
 char sGameID[32];
 char arPlayersA[4][20];
 char arPlayersB[4][20];
@@ -219,6 +220,12 @@ public OnRoundIsLive() {
 public Action GameInfoReceived(Handle timer) {
 	if (iServerReserved == 1) {
 
+		if (iPrevReserved == 0 && LGO_IsMatchModeLoaded()) {
+			ServerCommand("sm_resetmatch");
+			return Plugin_Continue;
+		}
+		iPrevReserved = iServerReserved;
+
 		//Maximum sv_maxplayers-8 spectators allowed
 		int iCurMaxSpecs = GetConVarInt(hMaxPlayers) - 8;
 		if (iCurMaxSpecs < iMaxSpecs) {
@@ -244,7 +251,7 @@ public Action GameInfoReceived(Handle timer) {
 				if (IsClientInGame(i) && !IsFakeClient(i) && GetClientTeam(i) > 1) {
 					//PrintToChatAll("sm_forcematch %s %s", sConfoglConfig, sFirstMap);
 					ServerCommand("sm_forcematch %s %s", sConfoglConfig, sFirstMap);
-					break;
+					return Plugin_Continue;
 				}
 			}
 		}
@@ -266,6 +273,12 @@ public Action GameInfoReceived(Handle timer) {
 		}
 
 
+	} else if (iServerReserved == 0) {
+		if (iPrevReserved == 1) {
+			iPrevReserved = iServerReserved;
+			PrintToChatAll("[L4D2Center] Connection to the backend API died");
+			PrintToChatAll("[L4D2Center] You can continue playing, but the results won't be recorded");
+		}
 	}
 	return Plugin_Continue;
 }
@@ -409,14 +422,8 @@ public void SWReqCompleted_UploadResults(Handle hRequest, bool bFailure, bool bR
 					}
 				}
 			}
-		} else {
-			PrintToChatAll("Oy oy, L4D2Center API responded with error");
-			PrintToServer("Oy oy, L4D2Center API responded with error");
 		}
 		CloseHandle(kvGameInfo);
-	} else {
-		PrintToChatAll("Oy oy, L4D2Center API responded with error");
-		PrintToServer("Oy oy, L4D2Center API responded with error");
 	}
 	CloseHandle(hRequest);
 }
@@ -490,14 +497,8 @@ public void SWReqCompleted_PartialReadyUp(Handle hRequest, bool bFailure, bool b
 					}
 				}
 			}
-		} else {
-			PrintToChatAll("Oy oy, L4D2Center API responded with error");
-			PrintToServer("Oy oy, L4D2Center API responded with error");
 		}
 		CloseHandle(kvGameInfo);
-	} else {
-		PrintToChatAll("Oy oy, L4D2Center API responded with error");
-		PrintToServer("Oy oy, L4D2Center API responded with error");
 	}
 	CloseHandle(hRequest);
 }
@@ -555,21 +556,14 @@ public void SWReqCompleted_GameInfo(Handle hRequest, bool bFailure, bool bReques
 				iMaxAbsent = KvGetNum(kvGameInfo, "max_absent", 420);
 				iMaxSingleAbsent = KvGetNum(kvGameInfo, "max_single_absent", 240);
 
-				Call_StartForward(hForwardGameInfoReceived);
-				Call_Finish();
-
 			}
+			Call_StartForward(hForwardGameInfoReceived);
+			Call_Finish();
 			if (iServerReserved > -1) {
 				CreateTimer(1.0, GameInfoReceived);
 			}
-		} else {
-			PrintToChatAll("Oy oy, L4D2Center API responded with error");
-			PrintToServer("Oy oy, L4D2Center API responded with error");
 		}
 		CloseHandle(kvGameInfo);
-	} else {
-		PrintToChatAll("Oy oy, L4D2Center API responded with error");
-		PrintToServer("Oy oy, L4D2Center API responded with error");
 	}
 	CloseHandle(hRequest);
 
@@ -586,14 +580,8 @@ public void SWReqCompleted_Dummy(Handle hRequest, bool bFailure, bool bRequestSu
 		//PrintToServer("%s", sResponse);
 		Handle kvGameInfo = CreateKeyValues("VDFresponse");
 		if (StrContains(sResponse, "VDFresponse", true) > -1 && StringToKeyValues(kvGameInfo, sResponse)) {
-		} else {
-			PrintToChatAll("Oy oy, L4D2Center API responded with error");
-			PrintToServer("Oy oy, L4D2Center API responded with error");
 		}
 		CloseHandle(kvGameInfo);
-	} else {
-		PrintToChatAll("Oy oy, L4D2Center API responded with error");
-		PrintToServer("Oy oy, L4D2Center API responded with error");
 	}
 	CloseHandle(hRequest);
 }

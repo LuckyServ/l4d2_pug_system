@@ -1,4 +1,3 @@
-- [ ] SM plugin: trigger config unloading if the server gets reserved
 - [ ] Add / remove admins
 - [ ] VPN checks
 - [ ] Smurf traces + connect logging + ping loggin
@@ -13,6 +12,7 @@
 - [ ] Automatically parse anticheat logs and ban based on them
 - [ ] Setup database backups
 
+- [x] SM plugin: trigger config unloading if the server gets reserved
 - [x] SM plugin: dont kick on spec midgame, just prevent (or remove that limitation completely)
 - [x] SM plugin: natives and forwards
 - [x] SM plugin: Check when !rq command works, and edit its name
