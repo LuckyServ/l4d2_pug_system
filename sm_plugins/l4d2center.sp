@@ -62,6 +62,7 @@ bool bGameFinished;
 public APLRes AskPluginLoad2(Handle myself, bool late, char[] error, int err_max) {
 	CreateNative("L4D2C_GetServerReservation", Native_GetServerReservation);
 	CreateNative("L4D2C_IsPlayerGameParticipant", Native_IsPlayerGameParticipant);
+	CreateNative("L4D2C_IsMidRound", Native_IsMidRound);
 	CreateNative("L4D2C_IsGameEnded", Native_IsGameEnded);
 	
 	hForwardGameInfoReceived = CreateGlobalForward("L4D2C_GameInfoReceived", ET_Ignore);
@@ -992,6 +993,10 @@ public int Native_IsPlayerGameParticipant(Handle plugin, int numParams) {
 		return GetClientLobbyParticipant(client) != -1;
 	}
 	return false;
+}
+
+public int Native_IsMidRound(Handle plugin, int numParams) {
+	return bInRound;
 }
 
 public int Native_IsGameEnded(Handle plugin, int numParams) {
