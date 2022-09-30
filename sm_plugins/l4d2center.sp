@@ -101,11 +101,6 @@ public OnPluginStart() {
 	RegConsoleCmd("sm_quit", Ragequit_Cmd);
 	RegConsoleCmd("sm_exit", Ragequit_Cmd);
 
-	//spec cmd
-	RegConsoleCmd("sm_s", Spec_Cmd);
-	RegConsoleCmd("sm_spec", Spec_Cmd);
-	RegConsoleCmd("sm_spectate", Spec_Cmd);
-
 	//Test
 	//RegAdminCmd("sm_test", Cmd_Test, 0);
 }
@@ -116,13 +111,6 @@ public void OnLibraryAdded(const char[] name) {
 
 public void OnLibraryRemoved(const char[] name) {
 	ReadyUpLoaded = LibraryExists("readyup");
-}
-
-public Action Spec_Cmd(int client, int args) {
-	if (bInRound && client > 0 && !IsFakeClient(client) && GetClientLobbyParticipant(client) != -1) {
-		KickClient(client, "You cant go to Spectator team midround");
-	}
-	return Plugin_Handled;
 }
 
 public Action GameID_Cmd(int client, int args) {
@@ -156,10 +144,10 @@ public Action Timer_AutoTeam(Handle timer) {
 		for (int i = 1; i <= MaxClients; i++) {
 			if (IsClientInGame(i) && !IsFakeClient(i) && GetClientTeam(i) > 1) {
 				if (GetClientLobbyParticipant(i) == -1) {
-					FakeClientCommand(i, "sm_s");
+					ServerCommand("sm_swapto 1 #%d", GetClientUserId(i));
 					bSomeoneSpecced = true;
 				} else if (GetClientLobbyParticipant(i) != -1 && GetClientTeam(i) != GetPlayerCorrectTeam(i)) {
-					FakeClientCommand(i, "sm_s");
+					ServerCommand("sm_swapto 1 #%d", GetClientUserId(i));
 					bSomeoneSpecced = true;
 				}
 			}
@@ -170,7 +158,7 @@ public Action Timer_AutoTeam(Handle timer) {
 
 		for (int i = 1; i <= MaxClients; i++) {
 			if (IsClientInGame(i) && !IsFakeClient(i) && GetClientTeam(i) == 1 && GetClientLobbyParticipant(i) != -1) {
-				FakeClientCommand(i, "jointeam %d", GetPlayerCorrectTeam(i));
+				ServerCommand("sm_swapto %d #%d", GetPlayerCorrectTeam(i), GetClientUserId(i));
 				return Plugin_Continue;
 			}
 		}
