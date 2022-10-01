@@ -20,6 +20,7 @@ func GinInit() {
 
 	r.GET("/addban", HttpReqAddBan);
 	r.GET("/unban", HttpReqUnban);
+	r.GET("/setadmin", HttpReqSetAdmin);
 
 	r.POST("/ticketcreate", HttpReqTicketCreate);
 	r.POST("/ticketreply", HttpReqTicketReply);

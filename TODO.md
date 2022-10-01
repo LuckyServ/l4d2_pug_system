@@ -1,4 +1,3 @@
-- [ ] Add / remove admins
 - [ ] VPN checks
 - [ ] Smurf traces + connect logging + ping loggin
 - [ ] When validating profile, check for vpn and for smurfs
@@ -12,6 +11,7 @@
 - [ ] Automatically parse anticheat logs and ban based on them
 - [ ] Setup database backups
 
+- [x] Add / remove admins
 - [x] SM plugins: anticheat logs
 - [x] SM plugin: trigger config unloading if the server gets reserved
 - [x] SM plugin: dont kick on spec midgame, just prevent (or remove that limitation completely)
