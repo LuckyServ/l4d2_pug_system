@@ -26,6 +26,10 @@ func BanRagequitter(oBanReq EntAutoBanReq) { //expensive
 	}
 	players.MuPlayers.Unlock();
 
+	if (iAccess == 4) { //cant ban admin
+		return;
+	}
+
 	var iCountPrevAutoBans int;
 	iSize := len(ArrayBanRecords);
 	i64CurTime := time.Now().UnixMilli();

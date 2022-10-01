@@ -12,6 +12,7 @@
 - [ ] Automatically parse anticheat logs and ban based on them
 - [ ] Setup database backups
 
+- [x] SM plugins: anticheat logs
 - [x] SM plugin: trigger config unloading if the server gets reserved
 - [x] SM plugin: dont kick on spec midgame, just prevent (or remove that limitation completely)
 - [x] SM plugin: natives and forwards

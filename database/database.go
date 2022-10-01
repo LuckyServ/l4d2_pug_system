@@ -144,6 +144,13 @@ func RemoveSession(sSessID string) {
 	MuDatabase.Unlock();
 }
 
+func AntiCheatLog(sLogLineBase64 string) {
+	dbQuery, errDbQuery := dbConn.Query("INSERT INTO cheat_log(clogline) VALUES ('"+sLogLineBase64+"');");
+	if (errDbQuery == nil) {
+		dbQuery.Close();
+	}
+}
+
 func RestorePlayers() []DatabasePlayer {
 	MuDatabase.RLock();
 	var arDBPlayers []DatabasePlayer;
