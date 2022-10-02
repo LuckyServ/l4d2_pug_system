@@ -9,6 +9,7 @@ import (
 	"fmt"
 	"strconv"
 	"../settings"
+	"../database"
 )
 
 type EntVPNInfo struct {
@@ -140,21 +141,27 @@ func AnnounceIP(sIP string) { //thread safe, fast
 		return;
 	}
 	MuVPN.Lock();
+	var oNewVPNInfo EntVPNInfo;
 	if (f64Result >= 0.8) {
-		mapVPNs[sIP] = EntVPNInfo{
+		oNewVPNInfo = EntVPNInfo{
 			IsVPN:		true,
 			IsInCheck:	false,
 			UpdatedAt:	time.Now().Unix(),
 		};
-		fmt.Printf("Received IP VPN info (%s): %.09f (is VPN)\n", sIP, f64Result);
 	} else {
-		mapVPNs[sIP] = EntVPNInfo{
+		oNewVPNInfo = EntVPNInfo{
 			IsVPN:		false,
 			IsInCheck:	false,
 			UpdatedAt:	time.Now().Unix(),
 		};
-		fmt.Printf("Received IP VPN info (%s): %.09f (is not VPN)\n", sIP, f64Result);
 	}
+	fmt.Printf("Received IP VPN info (%s): %.09f (VPN ? %v)\n", sIP, f64Result, oNewVPNInfo.IsVPN);
+	mapVPNs[sIP] = oNewVPNInfo;
+	go database.SaveVPNInfo(database.DatabaseVPNInfo{
+		IsVPN:			oNewVPNInfo.IsVPN,
+		IP:				sIP,
+		UpdatedAt:		oNewVPNInfo.UpdatedAt,
+	});
 	MuVPN.Unlock();
 }
 
@@ -167,4 +174,16 @@ func IsVPN(sIP string) bool { //thread safe, fast
 	}
 	MuVPN.RUnlock();
 	return false;
+}
+
+func RestoreVPNInfo() bool { //no need to lock anything
+	arDBVpnInfo := database.RestoreVPNInfo();
+	for _, oDBVpnInfo := range arDBVpnInfo {
+		mapVPNs[oDBVpnInfo.IP] = EntVPNInfo{
+			IsVPN:			oDBVpnInfo.IsVPN,
+			IsInCheck:		false,
+			UpdatedAt:		oDBVpnInfo.UpdatedAt,
+		};
+	}
+	return true;
 }

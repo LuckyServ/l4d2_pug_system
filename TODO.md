@@ -1,4 +1,3 @@
-- [ ] Save VPN info to database
 - [ ] Smurf traces + connect logging + ping loggin
 - [ ] When validating profile, check for vpn and for smurfs
 - [ ] When searching for ban history, look upon the bans of smurfs
@@ -11,6 +10,7 @@
 - [ ] Automatically parse anticheat logs and ban based on them
 - [ ] Setup database backups
 
+- [x] Save VPN info to database
 - [x] Solve the banned IP problem on VPN checks, and test it
 - [x] Rate-limit VPN requests
 - [x] VPN checks

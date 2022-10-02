@@ -44,6 +44,9 @@ func main() {
 	if (!auth.RestoreSessions()) {
 		return;
 	}
+	if (!smurf.RestoreVPNInfo()) {
+		return;
+	}
 	i64CurTime := time.Now().UnixMilli();
 	lobby.I64LastLobbyListUpdate = i64CurTime;
 	players.I64LastPlayerlistUpdate = i64CurTime;
@@ -52,10 +55,10 @@ func main() {
 	api.GinInit();
 
 	go players.Watchers();
-	go api.AuthRatelimits(); //limit authorization requests per ip
+	go api.AuthRatelimits();
 	go lobby.Watchers();
-	go games.Watchers(); //watch various game related channels
-	go chat.ChannelWatchers(); //watch chat channels
+	go games.Watchers();
+	go chat.ChannelWatchers();
 	go smurf.Watchers();
 	go bans.Watchers();
 	go utils.Watchers();
