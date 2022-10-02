@@ -1,4 +1,4 @@
-- [ ] Save NPN info to database
+- [ ] Save VPN info to database
 - [ ] Smurf traces + connect logging + ping loggin
 - [ ] When validating profile, check for vpn and for smurfs
 - [ ] When searching for ban history, look upon the bans of smurfs

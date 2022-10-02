@@ -87,8 +87,6 @@ func SelectBestAvailableServer(arPlayers []*players.EntPlayer) string { //must u
 	//select server based on max ping within region selected above
 	var arGameServers []string;
 	var arMaxPing []int;
-	var arGameServersWW []string;
-	var arMaxPingWW []int;
 
 	for _, oServer := range settings.GameServers {
 		var iMaxPing int;
@@ -101,8 +99,6 @@ func SelectBestAvailableServer(arPlayers []*players.EntPlayer) string { //must u
 			iMaxPing = 350;
 		}
 		for _, sPort := range oServer.Ports {
-			arGameServersWW = append(arGameServersWW, oServer.IP+":"+sPort);
-			arMaxPingWW = append(arMaxPingWW, iMaxPing);
 			if (oServer.Region == oBestWeighted.Region) {
 				arGameServers = append(arGameServers, oServer.IP+":"+sPort);
 				arMaxPing = append(arMaxPing, iMaxPing);
@@ -113,16 +109,7 @@ func SelectBestAvailableServer(arPlayers []*players.EntPlayer) string { //must u
 	players.MuPlayers.Unlock();
 
 	//sort by maxping, exclude occupied and outdated servers, return 1st server
-	sChosenServer := GetAvailableServer(arGameServers, arMaxPing);
-
-
-	//if no servers available, search again within all regions
-	if (sChosenServer == "") {
-		sChosenServer = GetAvailableServer(arGameServersWW, arMaxPingWW);
-	}
-
-	//return
-	return sChosenServer;
+	return GetAvailableServer(arGameServers, arMaxPing);
 }
 
 
