@@ -80,6 +80,9 @@
 		"steam_api_cooldown_sec": 60,
 		"auth_per_hour": 5
 	},
+	"getipintel": {
+		"contact_email": "123456789@pogmail.com"
+	},
 	"map_pool": [
 		{
 			"name": "Dead Center",

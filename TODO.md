@@ -1,4 +1,5 @@
-- [ ] VPN checks
+- [ ] Solve the banned IP problem on VPN checks, and test it
+- [ ] Manual validation if player fails to pass checks
 - [ ] Smurf traces + connect logging + ping loggin
 - [ ] When validating profile, check for vpn and for smurfs
 - [ ] When searching for ban history, look upon the bans of smurfs
@@ -11,6 +12,7 @@
 - [ ] Automatically parse anticheat logs and ban based on them
 - [ ] Setup database backups
 
+- [x] VPN checks
 - [x] Add / remove admins
 - [x] SM plugins: anticheat logs
 - [x] SM plugin: trigger config unloading if the server gets reserved

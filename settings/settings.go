@@ -66,6 +66,8 @@ var BanRQReason string;
 
 var BanListPagination int;
 
+var GetIPIntelContact string;
+
 
 type GameServer struct {
 	IP				string		`json:"ip"`
@@ -405,6 +407,12 @@ func ConfigFile() bool {
 		return false;
 	}
 	BanListPagination = int(i64Buffer);
+
+	GetIPIntelContact, errError = jsonparser.GetString(byData, "getipintel", "contact_email");
+	if (errError != nil) {
+		fmt.Printf("Error reading config file: %s\n", errError);
+		return false;
+	}
 
 
 	//Confogl configs section
