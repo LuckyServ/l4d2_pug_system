@@ -29,7 +29,6 @@ int iSingleAbsence[8]; //parallel with arPlayersAll[]
 
 char sAuthKey[40];
 char sPublicIP[32];
-bool bPublicIP;
 int iMaxSpecs;
 
 //GameInfo
@@ -73,6 +72,12 @@ public APLRes AskPluginLoad2(Handle myself, bool late, char[] error, int err_max
 
 public OnPluginStart() {
 	GetConVarString(CreateConVar("l4d2center_auth_key", "none"), sAuthKey, sizeof(sAuthKey));
+
+	GetConVarString(CreateConVar("l4d2c_ip", ""), sPublicIP, sizeof(sPublicIP));
+	if (StrEqual(sPublicIP, "")) {
+		GetConVarString(FindConVar("ip"), sPublicIP, sizeof(sPublicIP));
+	}
+
 	hMaxPlayers = FindConVar("sv_maxplayers");
 	ReadyUpLoaded = LibraryExists("readyup");
 	CreateTimer(10.0, Timer_UpdateGameState, 0, TIMER_REPEAT);
@@ -176,18 +181,6 @@ public Action Timer_UpdateGameState(Handle timer) {
 		}
 
 	} else {
-
-		if (!bPublicIP) {
-			int arIPaddr[4];
-			if (SteamWorks_GetPublicIP(arIPaddr)) {
-				Format(sPublicIP, sizeof(sPublicIP), "%d.%d.%d.%d:%d", arIPaddr[0], arIPaddr[1], arIPaddr[2], arIPaddr[3], GetConVarInt(FindConVar("hostport")));
-				bPublicIP = true;
-			}
-			if (!bPublicIP) {
-				return Plugin_Continue;
-			}
-		}
-
 		char sUrl[256];
 		Format(sUrl, sizeof(sUrl), "https://api.l4d2center.com/gs/getgame?auth_key=%s", sAuthKey);
 		Handle hSWReq = SteamWorks_CreateHTTPRequest(k_EHTTPMethodPOST, sUrl);
