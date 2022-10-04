@@ -17,7 +17,7 @@ import (
 	//"crypto/rand"
 	//"math/big"
 	//"encoding/json"
-	//"encoding/base64"
+	"encoding/base64"
 )
 
 
@@ -67,7 +67,7 @@ func main() {
 
 
 	//Test
-	//go TestingPlayersFromMain();
+	go TestingPlayersFromMain();
 	//go TestingCreateBansFromMain();
 
 
@@ -93,7 +93,7 @@ func main() {
 	}
 }*/
 
-/*func TestingPlayersFromMain() {
+func TestingPlayersFromMain() {
 	time.Sleep(10 * time.Second);
 
 
@@ -133,4 +133,4 @@ func main() {
 		}
 	}
 
-}*/
+}

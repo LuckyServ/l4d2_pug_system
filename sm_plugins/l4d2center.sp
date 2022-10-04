@@ -77,6 +77,7 @@ public OnPluginStart() {
 	if (StrEqual(sPublicIP, "")) {
 		GetConVarString(FindConVar("ip"), sPublicIP, sizeof(sPublicIP));
 	}
+	Format(sPublicIP, sizeof(sPublicIP), "%s:%d", sPublicIP, GetConVarInt(FindConVar("hostport")));
 
 	hMaxPlayers = FindConVar("sv_maxplayers");
 	ReadyUpLoaded = LibraryExists("readyup");
