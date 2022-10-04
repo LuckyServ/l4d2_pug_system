@@ -21,8 +21,6 @@ type EntGame struct {
 	Maps				[]string
 	State				int
 	ServerIP			string
-	MmrMin				int
-	MmrMax				int
 	GameResult			rating.EntGameResult
 	ReceiverFullRUP		chan bool
 	ReceiverReadyList	chan []string

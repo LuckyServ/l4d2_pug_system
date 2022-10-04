@@ -1,5 +1,3 @@
-- [ ] VPN detection: make limits thread-safe
-- [ ] Remove mmr limits from Games, as useless
 - [ ] Check server behaviour if Steam down
 - [ ] Smurf traces + connect logging + ping loggin
 - [ ] When validating profile, check for vpn and for smurfs
@@ -13,6 +11,8 @@
 - [ ] Automatically parse anticheat logs and ban based on them
 - [ ] Setup database backups
 
+- [x] Remove mmr limits from Games, as useless
+- [x] VPN detection: make limits thread-safe
 - [x] Change server selection logic, dont rely on max ping
 - [x] Save VPN info to database
 - [x] Solve the banned IP problem on VPN checks, and test it

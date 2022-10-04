@@ -42,8 +42,6 @@ char arPlayersAll[8][20];
 char sConfoglConfig[32];
 char sFirstMap[128];
 char sLastMap[128];
-int iMinMmr = -2000000000;
-int iMaxMmr = 2000000000;
 char sGameState[32];
 int iMaxAbsent = 420;
 int iMaxSingleAbsent = 240;
@@ -550,8 +548,6 @@ public void SWReqCompleted_GameInfo(Handle hRequest, bool bFailure, bool bReques
 				KvGetString(kvGameInfo, "confogl", sConfoglConfig, sizeof(sConfoglConfig), "default");
 				KvGetString(kvGameInfo, "first_map", sFirstMap, sizeof(sFirstMap), "unknown");
 				KvGetString(kvGameInfo, "last_map", sLastMap, sizeof(sLastMap), "unknown");
-				iMinMmr = KvGetNum(kvGameInfo, "mmr_min", -2000000000);
-				iMaxMmr = KvGetNum(kvGameInfo, "mmr_max", 2000000000);
 				KvGetString(kvGameInfo, "game_state", sGameState, sizeof(sGameState), "unknown");
 				iMaxAbsent = KvGetNum(kvGameInfo, "max_absent", 420);
 				iMaxSingleAbsent = KvGetNum(kvGameInfo, "max_single_absent", 240);

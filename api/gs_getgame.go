@@ -38,8 +38,6 @@ func HttpReqGSGetGame(c *gin.Context) {
 				sResponse = fmt.Sprintf("%s\n	\"confogl\" \"%s\"", sResponse, pGame.GameConfig.CodeName);
 				sResponse = fmt.Sprintf("%s\n	\"first_map\" \"%s\"", sResponse, pGame.Maps[0]);
 				sResponse = fmt.Sprintf("%s\n	\"last_map\" \"%s\"", sResponse, pGame.Maps[len(pGame.Maps) - 1]);
-				sResponse = fmt.Sprintf("%s\n	\"mmr_min\" \"%d\"", sResponse, pGame.MmrMin);
-				sResponse = fmt.Sprintf("%s\n	\"mmr_max\" \"%d\"", sResponse, pGame.MmrMax);
 				sResponse = fmt.Sprintf("%s\n	\"max_absent\" \"%d\"", sResponse, settings.MaxAbsentSeconds);
 				sResponse = fmt.Sprintf("%s\n	\"max_single_absent\" \"%d\"", sResponse, settings.MaxSingleAbsentSeconds);
 

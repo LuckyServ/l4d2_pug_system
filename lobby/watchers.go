@@ -130,8 +130,6 @@ func WatchLobbies() {
 						ID:					<-games.ChanNewGameID,
 						CreatedAt:			time.Now().UnixMilli(),
 						State:				games.StateCreating,
-						MmrMin:				pLobby.MmrMin,
-						MmrMax:				pLobby.MmrMax,
 					};
 
 					for _, pPlayer := range pLobby.Players {

@@ -18,8 +18,6 @@ type GameResponse struct {
 	CampaignName		string				`json:"campaign_name"`
 	PingsRequested		bool				`json:"pings_requested"`
 	ServerIP			string				`json:"server_ip"`
-	MmrMin				int					`json:"mmr_min"`
-	MmrMax				int					`json:"mmr_max"`
 	Status				string				`json:"status"`
 }
 
@@ -75,8 +73,6 @@ func HttpReqGetGame(c *gin.Context) {
 					CampaignName:		pGame.CampaignName,
 					PingsRequested:		(pGame.State == games.StateWaitPings),
 					ServerIP:			pGame.ServerIP,
-					MmrMin:				pGame.MmrMin,
-					MmrMax:				pGame.MmrMax,
 					Status:				games.MapGameStatus[pGame.State],
 				};
 
