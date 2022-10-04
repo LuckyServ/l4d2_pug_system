@@ -45,7 +45,7 @@ func SelectBestAvailableServer(arPlayers []*players.EntPlayer) string { //must u
 	for _, pPlayer := range arPlayers {
 		if (len(pPlayer.GameServerPings) == len(settings.GameServers)) {
 			var sLowestPingIP string;
-			var iLowestPing int = 350;
+			var iLowestPing int = 999999;
 			for sIP, iPing := range pPlayer.GameServerPings {
 				if (iPing < iLowestPing) {
 					iLowestPing = iPing;
@@ -69,52 +69,50 @@ func SelectBestAvailableServer(arPlayers []*players.EntPlayer) string { //must u
 	}
 
 
-	//select server based on weighted average ping
+	//select region based on weighted average ping
 	var iBestWeightedPing int = 350;
-	oBestWeighted := settings.GameServers[0];
+	var sSelectedRegion string = "europe";
 	iSumOfWeights := SumOfWeights(arPlayers);
 	if (iSumOfWeights > 0) {
 		for _, oServer := range settings.GameServers {
 			iWeightedAverage := SumWeightedPings(arPlayers, oServer.IP) / iSumOfWeights;
 			if (iWeightedAverage < iBestWeightedPing) {
 				iBestWeightedPing = iWeightedAverage;
-				oBestWeighted = oServer;
+				sSelectedRegion = oServer.Region;
 			}
 		}
 	}
 
 
-	//select server based on max ping within region selected above
+	//get servers within region selected above
 	var arGameServers []string;
-	var arMaxPing []int;
+	var arWAvgPing []int;
 
 	for _, oServer := range settings.GameServers {
-		var iMaxPing int;
-		for _, pPlayer := range arPlayers {
-			if (pPlayer.GameServerPings[oServer.IP] > iMaxPing) {
-				iMaxPing = pPlayer.GameServerPings[oServer.IP];
-			}
+		var iWAvgPing int;
+		if (iSumOfWeights > 0) {
+			iWAvgPing = SumWeightedPings(arPlayers, oServer.IP) / iSumOfWeights;
 		}
-		if (iMaxPing == 0) {
-			iMaxPing = 350;
+		if (iWAvgPing == 0) {
+			iWAvgPing = 999999;
 		}
 		for _, sPort := range oServer.Ports {
-			if (oServer.Region == oBestWeighted.Region) {
+			if (oServer.Region == sSelectedRegion) {
 				arGameServers = append(arGameServers, oServer.IP+":"+sPort);
-				arMaxPing = append(arMaxPing, iMaxPing);
+				arWAvgPing = append(arWAvgPing, iWAvgPing);
 			}
 		}
 	}
 
 	players.MuPlayers.Unlock();
 
-	//sort by maxping, exclude occupied and outdated servers, return 1st server
-	return GetAvailableServer(arGameServers, arMaxPing);
+	//sort by weighted average ping, exclude occupied and outdated servers, return 1st server
+	return GetAvailableServer(arGameServers, arWAvgPing);
 }
 
 
-func GetAvailableServer(arGameServers []string, arMaxPing []int) string {
-	SortByMaxPing(arGameServers, arMaxPing);
+func GetAvailableServer(arGameServers []string, arWAvgPing []int) string {
+	SortByWAvgPing(arGameServers, arWAvgPing);
 	var arEmptyGameSrvs []string;
 	var arQueryCh []chan int;
 	for range arGameServers {
@@ -152,15 +150,15 @@ func SumOfWeights(arPlayers []*players.EntPlayer) int {
 	return iSum;
 }
 
-func SortByMaxPing(arGameServers []string, arMaxPing []int) {
+func SortByWAvgPing(arGameServers []string, arWAvgPing []int) {
 	iSize := len(arGameServers);
 	if (iSize > 1) {
 		bSorted := false;
 		for !bSorted {
 			bSorted = true;
 			for i := 1; i < iSize; i++ {
-				if (arMaxPing[i] < arMaxPing[i - 1]) {
-					arMaxPing[i], arMaxPing[i - 1] = arMaxPing[i - 1], arMaxPing[i]; //switch
+				if (arWAvgPing[i] < arWAvgPing[i - 1]) {
+					arWAvgPing[i], arWAvgPing[i - 1] = arWAvgPing[i - 1], arWAvgPing[i]; //switch
 					arGameServers[i], arGameServers[i - 1] = arGameServers[i - 1], arGameServers[i]; //switch
 					if (bSorted) {
 						bSorted = false;
@@ -169,8 +167,8 @@ func SortByMaxPing(arGameServers []string, arMaxPing []int) {
 			}
 			if (!bSorted) {
 				for i := iSize - 2; i >= 0; i-- {
-					if (arMaxPing[i] > arMaxPing[i + 1]) {
-						arMaxPing[i], arMaxPing[i + 1] = arMaxPing[i + 1], arMaxPing[i]; //switch
+					if (arWAvgPing[i] > arWAvgPing[i + 1]) {
+						arWAvgPing[i], arWAvgPing[i + 1] = arWAvgPing[i + 1], arWAvgPing[i]; //switch
 						arGameServers[i], arGameServers[i + 1] = arGameServers[i + 1], arGameServers[i]; //switch
 					}
 				}
