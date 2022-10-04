@@ -36,8 +36,6 @@ func Watchers() {
 func HandleLimits() {
 	for {
 		select {
-		case <-chVPNReqAdd:
-			arGetIPIntelRequests = append(arGetIPIntelRequests, time.Now());
 		case chNewVPNReqAllowed <- func()(bool) {
 			iCount := len(arGetIPIntelRequests);
 			oNow := time.Now();
@@ -59,6 +57,7 @@ func HandleLimits() {
 				arGetIPIntelRequests = arGetIPIntelRequests[(iCutAt + 1):];
 			}
 			if (iPerMin < 10 && iPerDay < 300) {
+				arGetIPIntelRequests = append(arGetIPIntelRequests, time.Now());
 				return true;
 			}
 			return false;
@@ -114,7 +113,6 @@ func AnnounceIP(sIP string) { //thread safe, fast
 		return;
 	}
 
-	chVPNReqAdd <- true;
 	clientHttp := http.Client{
 		Timeout: 15 * time.Second,
 	}
