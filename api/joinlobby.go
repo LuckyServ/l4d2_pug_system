@@ -8,6 +8,8 @@ import (
 	"../settings"
 	"time"
 	"fmt"
+	"encoding/base64"
+	"../smurf"
 )
 
 
@@ -61,6 +63,10 @@ func HttpReqJoinLobby(c *gin.Context) {
 				}
 
 				lobby.MuLobbies.Unlock();
+
+				sCookieUniqueKey, _ := c.Cookie("auth2");
+				byNickname, _ := base64.StdEncoding.DecodeString(pPlayer.NicknameBase64);
+				go smurf.AnnounceIPAndKey(pPlayer.SteamID64, c.ClientIP(), string(byNickname), sCookieUniqueKey);
 
 			}
 			players.MuPlayers.Unlock();

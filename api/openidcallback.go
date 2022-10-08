@@ -16,6 +16,7 @@ import (
 	"net/url"
 	"strings"
 	"sync"
+	"../smurf"
 )
 
 type NoOpDiscoveryCache struct{};
@@ -153,6 +154,10 @@ func HttpReqOpenID(c *gin.Context) {
 	bans.ChanSearchBan <- sSteamID64;
 
 	fmt.Printf("New auth: %s, %s\n", sSteamID64, sNickname);
+
+	//smurf
+	sCookieUniqueKey, _ := c.Cookie("auth2");
+	go smurf.AnnounceIPAndKey(sSteamID64, c.ClientIP(), sNickname, sCookieUniqueKey);
 
 	//Set cookie
 	c.SetCookie("session_id", sSessionID, 2592000, "/", "", true, false);

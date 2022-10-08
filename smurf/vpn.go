@@ -87,7 +87,7 @@ func ClearOutdated() {
 	}
 }
 
-func AnnounceIP(sIP string) { //thread safe, fast
+func CheckVPN(sIP string) {
 	MuVPN.RLock();
 	bShouldCheck := true;
 	oVPNInfo, bFound := mapVPNs[sIP];
@@ -153,7 +153,6 @@ func AnnounceIP(sIP string) { //thread safe, fast
 			UpdatedAt:	time.Now().Unix(),
 		};
 	}
-	fmt.Printf("Received IP VPN info (%s): %.09f (VPN ? %v)\n", sIP, f64Result, oNewVPNInfo.IsVPN);
 	mapVPNs[sIP] = oNewVPNInfo;
 	go database.SaveVPNInfo(database.DatabaseVPNInfo{
 		IsVPN:			oNewVPNInfo.IsVPN,

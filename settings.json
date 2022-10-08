@@ -83,6 +83,10 @@
 	"getipintel": {
 		"contact_email": "123456789@pogmail.com"
 	},
+	"smurf_detector": {
+		"host": "https://api.smurf.detector",
+		"auth_key": "verystrongauthkey"
+	},
 	"map_pool": [
 		{
 			"name": "Dead Center",

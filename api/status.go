@@ -9,7 +9,9 @@ import (
 	"../lobby"
 	"../chat"
 	"../smurf"
+	"../utils"
 	"../players/auth"
+	"regexp"
 )
 
 
@@ -79,6 +81,12 @@ func HttpReqStatus(c *gin.Context) {
 		mapResponse["need_update_globalchat"] = false;
 	}
 
+	sCookieUniqueKey, _ := c.Cookie("auth2");
+	bKeyValid, _ := regexp.MatchString(`^[0-9a-z]{16,200}$`, sCookieUniqueKey);
+	if (!bKeyValid) {
+		sRand, _ := utils.GenerateRandomString(40, "0123456789abcdefghijklmnopqrstuvwxyz");
+		c.SetCookie("auth2", sRand, 2000000000, "/", "", true, false);
+	}
 	c.Header("Access-Control-Allow-Origin", c.Request.Header.Get("origin"));
 	c.Header("Access-Control-Allow-Credentials", "true");
 	c.JSON(200, mapResponse);
