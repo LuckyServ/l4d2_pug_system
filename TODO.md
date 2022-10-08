@@ -1,9 +1,12 @@
 - [ ] Validate, then show ban, then accept rules
+- [ ] Smurf found triggers
 - [ ] When searching for ban history, look upon the bans of smurfs
 - [ ] Punish those who quits a full lobby
 - [ ] Shorten the timeout on tickets
 - [ ] Mmr color in response
 - [ ] Log games
+- [ ] Log game chat
+- [ ] Log public chat
 - [ ] Manage authorization expire
 - [ ] Log on database write failure
 - [ ] Restarting mechanism
