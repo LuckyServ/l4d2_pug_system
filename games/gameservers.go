@@ -43,28 +43,24 @@ func SelectBestAvailableServer(arPlayers []*players.EntPlayer) string { //must u
 
 	//find player ping weight based on their region and time of the day
 	for _, pPlayer := range arPlayers {
-		if (len(pPlayer.GameServerPings) == len(settings.GameServers)) {
-			var sLowestPingIP string;
-			var iLowestPing int = 999999;
-			for sIP, iPing := range pPlayer.GameServerPings {
-				if (iPing < iLowestPing) {
-					iLowestPing = iPing;
-					sLowestPingIP = sIP;
-				}
+		var sLowestPingIP string;
+		var iLowestPing int = 999999;
+		for sIP, iPing := range pPlayer.GameServerPings {
+			if (iPing < iLowestPing) {
+				iLowestPing = iPing;
+				sLowestPingIP = sIP;
 			}
-			sRegion := GetRegionFromIP(sLowestPingIP);
-			iCurHour := time.Now().Hour();
-			if (iCurHour >= 0 && iCurHour < 8 && sRegion == "america") { //America time
-				pPlayer.GameServerPingWeight = 2;
-			} else if (iCurHour >= 8 && iCurHour < 16 && sRegion == "asia") { //Asia time
-				pPlayer.GameServerPingWeight = 2;
-			} else if (iCurHour >= 16 && iCurHour < 24 && sRegion == "europe") { //Europe time
-				pPlayer.GameServerPingWeight = 2;
-			} else {
-				pPlayer.GameServerPingWeight = 1;
-			}
+		}
+		sRegion := GetRegionFromIP(sLowestPingIP);
+		iCurHour := time.Now().Hour();
+		if (iCurHour >= 0 && iCurHour < 8 && sRegion == "america") { //America time
+			pPlayer.GameServerPingWeight = 2;
+		} else if (iCurHour >= 8 && iCurHour < 16 && sRegion == "asia") { //Asia time
+			pPlayer.GameServerPingWeight = 2;
+		} else if (iCurHour >= 16 && iCurHour < 24 && sRegion == "europe") { //Europe time
+			pPlayer.GameServerPingWeight = 2;
 		} else {
-			pPlayer.GameServerPingWeight = 0;
+			pPlayer.GameServerPingWeight = 1;
 		}
 	}
 
@@ -72,14 +68,11 @@ func SelectBestAvailableServer(arPlayers []*players.EntPlayer) string { //must u
 	//select region based on weighted average ping
 	var iBestWeightedPing int = 350;
 	var sSelectedRegion string = "europe";
-	iSumOfWeights := SumOfWeights(arPlayers);
-	if (iSumOfWeights > 0) {
-		for _, oServer := range settings.GameServers {
-			iWeightedAverage := SumWeightedPings(arPlayers, oServer.IP) / iSumOfWeights;
-			if (iWeightedAverage < iBestWeightedPing) {
-				iBestWeightedPing = iWeightedAverage;
-				sSelectedRegion = oServer.Region;
-			}
+	for _, oServer := range settings.GameServers {
+		iWeightedAverage := WeightedAvgPing(arPlayers, oServer.IP);
+		if (iWeightedAverage < iBestWeightedPing && iWeightedAverage > 0) {
+			iBestWeightedPing = iWeightedAverage;
+			sSelectedRegion = oServer.Region;
 		}
 	}
 
@@ -89,10 +82,7 @@ func SelectBestAvailableServer(arPlayers []*players.EntPlayer) string { //must u
 	var arWAvgPing []int;
 
 	for _, oServer := range settings.GameServers {
-		var iWAvgPing int;
-		if (iSumOfWeights > 0) {
-			iWAvgPing = SumWeightedPings(arPlayers, oServer.IP) / iSumOfWeights;
-		}
+		var iWAvgPing = WeightedAvgPing(arPlayers, oServer.IP);
 		if (iWAvgPing == 0) {
 			iWAvgPing = 999999;
 		}
@@ -133,21 +123,21 @@ func GetAvailableServer(arGameServers []string, arWAvgPing []int) string {
 	return "";
 }
 
-func SumWeightedPings(arPlayers []*players.EntPlayer, sIP string) int {
-	var iSum int;
+func WeightedAvgPing(arPlayers []*players.EntPlayer, sIP string) int {
+	var iSumOfWPings int;
+	var iSumOfWeights int;
 	for _, pPlayer := range arPlayers {
 		iPing, _ := pPlayer.GameServerPings[sIP];
-		iSum = iSum + (iPing * pPlayer.GameServerPingWeight);
+		iSumOfWPings = iSumOfWPings + (iPing * pPlayer.GameServerPingWeight);
+		if (iPing > 0) {
+			iSumOfWeights = iSumOfWeights + pPlayer.GameServerPingWeight;
+		}
 	}
-	return iSum;
-}
-
-func SumOfWeights(arPlayers []*players.EntPlayer) int {
-	var iSum int;
-	for _, pPlayer := range arPlayers {
-		iSum = iSum + pPlayer.GameServerPingWeight;
+	var iWeightedAvg int;
+	if (iSumOfWeights > 0) {
+		iWeightedAvg = iSumOfWPings / iSumOfWeights;
 	}
-	return iSum;
+	return iWeightedAvg;
 }
 
 func SortByWAvgPing(arGameServers []string, arWAvgPing []int) {

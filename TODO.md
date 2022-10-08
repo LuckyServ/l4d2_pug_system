@@ -1,6 +1,8 @@
 - [ ] Smurf traces + connect logging + ping loggin
 - [ ] When validating profile, check for vpn and for smurfs
 - [ ] When searching for ban history, look upon the bans of smurfs
+- [ ] Punish those who quits a full lobby
+- [ ] Shorten the timeout on tickets
 - [ ] Mmr color in response
 - [ ] Log games
 - [ ] Manage authorization expire
