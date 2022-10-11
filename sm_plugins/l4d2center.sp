@@ -774,7 +774,7 @@ Action OnCallVote(int client, const char[] command, int argc) {
 	if (client > 0 && IsClientInGame(client) && !IsFakeClient(client)) {
 		iLastActivity[client] = GetTime();
 	}
-	if (iServerReserved == 1 || iServerReserved == -2) {
+	if (iServerReserved == 1 || iServerReserved == -1) {
 		return Plugin_Handled;
 	}
 	return Plugin_Continue;
