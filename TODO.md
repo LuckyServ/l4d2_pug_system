@@ -1,4 +1,5 @@
 - [ ] Validate, then show ban, then accept rules
+- [ ] Can't validate profile with VPN
 - [ ] Smurf found triggers
 - [ ] When searching for ban history, look upon the bans of smurfs
 - [ ] Punish those who quits a full lobby

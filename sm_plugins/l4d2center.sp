@@ -14,7 +14,7 @@ Handle hForwardGameEnded;
 
 Handle hMaxPlayers;
 bool ReadyUpLoaded;
-bool bRQDeclared;
+//bool bRQDeclared;
 
 bool bWaitFirstReadyUp = true;
 
@@ -102,9 +102,9 @@ public OnPluginStart() {
 	RegConsoleCmd("sm_game", GameID_Cmd);
 
 	//admit RQ
-	RegConsoleCmd("sm_ragequit", Ragequit_Cmd);
-	RegConsoleCmd("sm_quit", Ragequit_Cmd);
-	RegConsoleCmd("sm_exit", Ragequit_Cmd);
+	//RegConsoleCmd("sm_ragequit", Ragequit_Cmd);
+	//RegConsoleCmd("sm_quit", Ragequit_Cmd);
+	//RegConsoleCmd("sm_exit", Ragequit_Cmd);
 
 	//Test
 	//RegAdminCmd("sm_test", Cmd_Test, 0);
@@ -125,7 +125,7 @@ public Action GameID_Cmd(int client, int args) {
 	return Plugin_Handled;
 }
 
-public Action Ragequit_Cmd(int client, int args) {
+/*public Action Ragequit_Cmd(int client, int args) {
 	if (!bWaitFirstReadyUp && !bRQDeclared && client > 0 && IsClientConnected(client) && !IsFakeClient(client)) {
 		int iPlayer = GetClientLobbyParticipant(client);
 		if (iPlayer != -1) {
@@ -135,7 +135,7 @@ public Action Ragequit_Cmd(int client, int args) {
 		}
 	}
 	return Plugin_Handled;
-}
+}*/
 
 //Test
 /*Action Cmd_Test(int client, int args) {
@@ -774,7 +774,7 @@ Action OnCallVote(int client, const char[] command, int argc) {
 	if (client > 0 && IsClientInGame(client) && !IsFakeClient(client)) {
 		iLastActivity[client] = GetTime();
 	}
-	if (iServerReserved == 1) {
+	if (iServerReserved == 1 || iServerReserved == -2) {
 		return Plugin_Handled;
 	}
 	return Plugin_Continue;
