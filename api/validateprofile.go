@@ -11,8 +11,6 @@ import (
 	"../settings"
 	"github.com/buger/jsonparser"
 	"../database"
-	"encoding/base64"
-	"../smurf"
 )
 
 var sProfileClosed string = "Couldnt get your game details. Make sure your L4D2 stats is public, and try again in a minute. If you have just made your L4D2 stats public, you have to wait a few minutes before its available via api.";
@@ -98,12 +96,6 @@ func HttpReqValidateProf(c *gin.Context) {
 									ProfValidated:		pPlayer.ProfValidated,
 									RulesAccepted:		pPlayer.RulesAccepted,
 									});
-								
-								sCookieUniqueKey, _ := c.Cookie("auth2");
-								byNickname, _ := base64.StdEncoding.DecodeString(pPlayer.NicknameBase64);
-								go smurf.AnnounceIPAndKey(pPlayer.SteamID64, c.ClientIP(), string(byNickname), sCookieUniqueKey);
-
-
 								players.MuPlayers.Unlock();
 
 							} else {
