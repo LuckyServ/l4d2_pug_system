@@ -157,7 +157,12 @@ func HttpReqOpenID(c *gin.Context) {
 
 	//smurf
 	sCookieUniqueKey, _ := c.Cookie("auth2");
-	go smurf.AnnounceIPAndKey(sSteamID64, c.ClientIP(), sNickname, sCookieUniqueKey);
+	players.MuPlayers.RLock();
+	pPlayer, bFound := players.MapPlayers[sSteamID64];
+	if (bFound && pPlayer.ProfValidated) {
+		go smurf.AnnounceIPAndKey(sSteamID64, c.ClientIP(), sNickname, sCookieUniqueKey);
+	}
+	players.MuPlayers.RUnlock();
 
 	//Set cookie
 	c.SetCookie("session_id", sSessionID, 2592000, "/", "", true, false);

@@ -70,8 +70,10 @@ func UpdatePlayerActivity(sSteamID64 string, sCookieUniqueKey string, sIP string
 		pPlayer.IsIdle = false;
 		I64LastPlayerlistUpdate = i64CurTime;
 
-		byNickname, _ := base64.StdEncoding.DecodeString(pPlayer.NicknameBase64);
-		go smurf.AnnounceIPAndKey(pPlayer.SteamID64, sIP, string(byNickname), sCookieUniqueKey);
+		if (pPlayer.ProfValidated) {
+			byNickname, _ := base64.StdEncoding.DecodeString(pPlayer.NicknameBase64);
+			go smurf.AnnounceIPAndKey(pPlayer.SteamID64, sIP, string(byNickname), sCookieUniqueKey);
+		}
 	}
 }
 
