@@ -14,7 +14,9 @@
 - [ ] Regularly increase mmr uncertainty value
 - [ ] Automatically parse anticheat logs and ban based on them
 - [ ] Setup database backups
+- [ ] Search suspected smurfs
 
+- [x] Trigger logging and smurf check on important events
 - [x] When validating profile, check for vpn and for smurfs
 - [x] Smurf traces + connect logging
 - [x] Check server behaviour if Steam down

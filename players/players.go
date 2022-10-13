@@ -7,7 +7,9 @@ import (
 	"../utils"
 	"../database"
 	"./auth"
+	"../smurf"
 	"strconv"
+	"encoding/base64"
 )
 
 type EntPlayer struct {
@@ -55,7 +57,7 @@ func Watchers() {
 	go SortPlayers();
 }
 
-func UpdatePlayerActivity(sSteamID64 string) { //Maps must be locked outside!!!
+func UpdatePlayerActivity(sSteamID64 string, sCookieUniqueKey string, sIP string) { //Maps must be locked outside!!!
 	if _, ok := MapPlayers[sSteamID64]; !ok {
 		return;
 	}
@@ -67,6 +69,9 @@ func UpdatePlayerActivity(sSteamID64 string) { //Maps must be locked outside!!!
 		pPlayer.OnlineSince = i64CurTime;
 		pPlayer.IsIdle = false;
 		I64LastPlayerlistUpdate = i64CurTime;
+
+		byNickname, _ := base64.StdEncoding.DecodeString(pPlayer.NicknameBase64);
+		go smurf.AnnounceIPAndKey(pPlayer.SteamID64, sIP, string(byNickname), sCookieUniqueKey);
 	}
 }
 

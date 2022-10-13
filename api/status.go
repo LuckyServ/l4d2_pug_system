@@ -44,8 +44,9 @@ func HttpReqStatus(c *gin.Context) {
 		if (bAuthorized) {
 			mapResponse["authorized"] = true;
 			go smurf.AnnounceIP(c.ClientIP()); //for faster VPN info retrieve in the future
+			sCookieUniqueKey, _ := c.Cookie("auth2");
 			players.MuPlayers.Lock();
-			players.UpdatePlayerActivity(oSession.SteamID64);
+			players.UpdatePlayerActivity(oSession.SteamID64, sCookieUniqueKey, c.ClientIP());
 			players.MuPlayers.Unlock();
 
 			players.MuPlayers.RLock();
