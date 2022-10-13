@@ -1,4 +1,3 @@
-- [ ] Validate, then show ban, then accept rules
 - [ ] Can't validate profile with VPN
 - [ ] Smurf found triggers
 - [ ] When searching for ban history, look upon the bans of smurfs
@@ -16,6 +15,7 @@
 - [ ] Setup database backups
 - [ ] Search suspected smurfs
 
+- [x] Validate, then show ban, then accept rules
 - [x] Trigger logging and smurf check on important events
 - [x] When validating profile, check for vpn and for smurfs
 - [x] Smurf traces + connect logging
