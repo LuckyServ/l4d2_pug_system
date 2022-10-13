@@ -157,6 +157,7 @@ func AcceptBan(sSteamID64 string) { //expensive, locks Players
 
 				go database.UpdateBanRecord(database.DatabaseBanRecord{
 					NicknameBase64:		oBanRecord.NicknameBase64,
+					Access:				oBanRecord.Access,
 					SteamID64:			oBanRecord.SteamID64,
 					BannedBySteamID64:	oBanRecord.BannedBySteamID64,
 					CreatedAt:			oBanRecord.CreatedAt,
@@ -228,6 +229,7 @@ func UnbanManual(sSteamID64 string) {
 				ArrayBanRecords[i].BanLength = 1;
 				go database.UpdateBanRecord(database.DatabaseBanRecord{
 					NicknameBase64:		ArrayBanRecords[i].NicknameBase64,
+					Access:				ArrayBanRecords[i].Access,
 					SteamID64:			ArrayBanRecords[i].SteamID64,
 					BannedBySteamID64:	ArrayBanRecords[i].BannedBySteamID64,
 					CreatedAt:			ArrayBanRecords[i].CreatedAt,
