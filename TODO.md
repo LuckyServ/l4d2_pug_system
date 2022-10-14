@@ -1,8 +1,9 @@
-- [ ] Can't validate profile with VPN
+- [ ] Override VPN info
 - [ ] Smurf found triggers
 - [ ] When searching for ban history, look upon the bans of smurfs
 - [ ] Punish those who quits a full lobby
 - [ ] Shorten the timeout on tickets
+- [ ] Finish integration with SirPlease and io.asia
 - [ ] Mmr color in response
 - [ ] Log games
 - [ ] Log game chat
@@ -15,6 +16,7 @@
 - [ ] Setup database backups
 - [ ] Search suspected smurfs
 
+- [x] Can't validate profile with VPN
 - [x] Validate, then show ban, then accept rules
 - [x] Trigger logging and smurf check on important events
 - [x] When validating profile, check for vpn and for smurfs

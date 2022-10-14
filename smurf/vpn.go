@@ -162,10 +162,21 @@ func CheckVPN(sIP string) {
 	MuVPN.Unlock();
 }
 
-func IsVPN(sIP string) bool { //thread safe, fast
+func IsVPN(sIP string) bool { //true if checked and vpn, false otherwise
 	MuVPN.RLock();
 	oVPNInfo, bFound := mapVPNs[sIP];
 	if (bFound && oVPNInfo.IsVPN) {
+		MuVPN.RUnlock();
+		return true;
+	}
+	MuVPN.RUnlock();
+	return false;
+}
+
+func IsNotVPN(sIP string) bool { //true if checked and not vpn, false otherwise
+	MuVPN.RLock();
+	oVPNInfo, bFound := mapVPNs[sIP];
+	if (bFound && !oVPNInfo.IsInCheck && !oVPNInfo.IsVPN) {
 		MuVPN.RUnlock();
 		return true;
 	}

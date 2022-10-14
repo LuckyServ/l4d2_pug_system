@@ -11,6 +11,7 @@ import (
 	"../settings"
 	"github.com/buger/jsonparser"
 	"../database"
+	"../smurf"
 )
 
 var sProfileClosed string = "Couldnt get your game details. Make sure your L4D2 stats is public, and try again in a minute. If you have just made your L4D2 stats public, you have to wait a few minutes before its available via api.";
@@ -74,29 +75,38 @@ func HttpReqValidateProf(c *gin.Context) {
 							}, "playerstats", "stats");
 							iVersusGamePlayed := int(i64VersusGamesWon + i64VersusGamesLost);
 							if (iVersusGamePlayed >= settings.MinVersusGamesPlayed) {
-								mapResponse["success"] = true;
+								sClientIP := c.ClientIP();
+								if (smurf.IsVPN(sClientIP)) {
+									mapResponse["error"] = "We believe you are using VPN/proxy connection. You can not validate your profile via VPN/proxy. Make sure you disable VPN/proxy and then try again. If you are not using VPN/proxy, and the system falsely accuses you of using it, please contact admin.";
+								} else if (!smurf.IsNotVPN(sClientIP)) {
+									mapResponse["error"] = "We could not run some checks on your profile. Try again in a minute, and if it still fails, please contact admin.";
+								} else {
 
-								iMmrShift := database.GetMmrShift();
+									mapResponse["success"] = true;
 
-								players.MuPlayers.Lock();
-								pPlayer.ProfValidated = true;
-								players.I64LastPlayerlistUpdate = time.Now().UnixMilli();
-								iNewMmr := settings.DefaultMaxMmr;
-								if (iVersusGamePlayed < settings.DefaultMaxMmr) {
-									iNewMmr = iVersusGamePlayed;
+									iMmrShift := database.GetMmrShift();
+
+									players.MuPlayers.Lock();
+									pPlayer.ProfValidated = true;
+									players.I64LastPlayerlistUpdate = time.Now().UnixMilli();
+									iNewMmr := settings.DefaultMaxMmr;
+									if (iVersusGamePlayed < settings.DefaultMaxMmr) {
+										iNewMmr = iVersusGamePlayed;
+									}
+									pPlayer.Mmr = iNewMmr + iMmrShift;
+									go database.UpdatePlayer(database.DatabasePlayer{
+										SteamID64:			pPlayer.SteamID64,
+										NicknameBase64:		pPlayer.NicknameBase64,
+										Mmr:				pPlayer.Mmr,
+										MmrUncertainty:		pPlayer.MmrUncertainty,
+										LastGameResult:		pPlayer.LastGameResult,
+										Access:				pPlayer.Access,
+										ProfValidated:		pPlayer.ProfValidated,
+										RulesAccepted:		pPlayer.RulesAccepted,
+										});
+									players.MuPlayers.Unlock();
+
 								}
-								pPlayer.Mmr = iNewMmr + iMmrShift;
-								go database.UpdatePlayer(database.DatabasePlayer{
-									SteamID64:			pPlayer.SteamID64,
-									NicknameBase64:		pPlayer.NicknameBase64,
-									Mmr:				pPlayer.Mmr,
-									MmrUncertainty:		pPlayer.MmrUncertainty,
-									LastGameResult:		pPlayer.LastGameResult,
-									Access:				pPlayer.Access,
-									ProfValidated:		pPlayer.ProfValidated,
-									RulesAccepted:		pPlayer.RulesAccepted,
-									});
-								players.MuPlayers.Unlock();
 
 							} else {
 								mapResponse["error"] = fmt.Sprintf("You dont have enough of Versus playtime on your account. Play at least %d public Versus games from the L4D2 menu, and then try the button again.", settings.MinVersusGamesPlayed);
