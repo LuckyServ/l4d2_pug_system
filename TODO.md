@@ -1,4 +1,3 @@
-- [ ] Override VPN info
 - [ ] Smurf found triggers
 - [ ] When searching for ban history, look upon the bans of smurfs
 - [ ] Punish those who quits a full lobby
@@ -16,6 +15,7 @@
 - [ ] Setup database backups
 - [ ] Search suspected smurfs
 
+- [x] Override VPN info
 - [x] Can't validate profile with VPN
 - [x] Validate, then show ban, then accept rules
 - [x] Trigger logging and smurf check on important events

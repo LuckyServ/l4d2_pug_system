@@ -48,6 +48,22 @@ Response parameters:
 
 <br/><br/>
 
+### GET /overridevpn
+##### Override VPN info
+Request parameters:
+| Key | Type | Description
+| ------ | ------ | ------ |
+| <strong>ip</strong> | _string_ | IP |
+| <strong>isvpn</strong> | _bool_ | VPN or not |
+
+Response parameters:
+| Key | Type | Description
+| ------ | ------ | ------ |
+| <strong>success</strong> | _bool_ | "true" if command accepted, "false" otherwise |
+| <strong>error</strong> | _string_ | Outputs the reason if the request is rejected |
+
+<br/><br/>
+
 ### GET /auth
 ##### Open this in browser to authorize
 Request parameters:

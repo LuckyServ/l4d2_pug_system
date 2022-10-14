@@ -18,7 +18,7 @@ type EntVPNInfo struct {
 	UpdatedAt		int64 //unix time in seconds
 }
 
-var mapVPNs = make(map[string]EntVPNInfo);
+var MapVPNs = make(map[string]EntVPNInfo);
 var MuVPN sync.RWMutex;
 
 var chVPNReqAdd = make(chan bool);
@@ -73,7 +73,7 @@ func ClearOutdated() {
 		var arRemoveIP []string;
 		MuVPN.RLock();
 		i64CurTime := time.Now().Unix();
-		for sIP, oVPNInfo := range mapVPNs {
+		for sIP, oVPNInfo := range MapVPNs {
 			if (oVPNInfo.UpdatedAt + 1209600/*2weeks*/ <= i64CurTime) {
 				arRemoveIP = append(arRemoveIP, sIP);
 			}
@@ -81,7 +81,7 @@ func ClearOutdated() {
 		MuVPN.RUnlock();
 		MuVPN.Lock();
 		for _, sIP := range arRemoveIP {
-			delete(mapVPNs, sIP);
+			delete(MapVPNs, sIP);
 		}
 		MuVPN.Unlock();
 	}
@@ -90,7 +90,7 @@ func ClearOutdated() {
 func CheckVPN(sIP string) {
 	MuVPN.RLock();
 	bShouldCheck := true;
-	oVPNInfo, bFound := mapVPNs[sIP];
+	oVPNInfo, bFound := MapVPNs[sIP];
 	if (bFound) {
 		i64CurTimeSec := time.Now().Unix();
 		if (oVPNInfo.IsInCheck && oVPNInfo.UpdatedAt + 60/*1min*/ > i64CurTimeSec) {
@@ -103,7 +103,7 @@ func CheckVPN(sIP string) {
 
 	if (bShouldCheck && <-chNewVPNReqAllowed) {
 		MuVPN.Lock();
-		mapVPNs[sIP] = EntVPNInfo{
+		MapVPNs[sIP] = EntVPNInfo{
 			IsVPN:		false,
 			IsInCheck:	true,
 			UpdatedAt:	time.Now().Unix(),
@@ -153,7 +153,7 @@ func CheckVPN(sIP string) {
 			UpdatedAt:	time.Now().Unix(),
 		};
 	}
-	mapVPNs[sIP] = oNewVPNInfo;
+	MapVPNs[sIP] = oNewVPNInfo;
 	go database.SaveVPNInfo(database.DatabaseVPNInfo{
 		IsVPN:			oNewVPNInfo.IsVPN,
 		IP:				sIP,
@@ -164,7 +164,7 @@ func CheckVPN(sIP string) {
 
 func IsVPN(sIP string) bool { //true if checked and vpn, false otherwise
 	MuVPN.RLock();
-	oVPNInfo, bFound := mapVPNs[sIP];
+	oVPNInfo, bFound := MapVPNs[sIP];
 	if (bFound && oVPNInfo.IsVPN) {
 		MuVPN.RUnlock();
 		return true;
@@ -175,7 +175,7 @@ func IsVPN(sIP string) bool { //true if checked and vpn, false otherwise
 
 func IsNotVPN(sIP string) bool { //true if checked and not vpn, false otherwise
 	MuVPN.RLock();
-	oVPNInfo, bFound := mapVPNs[sIP];
+	oVPNInfo, bFound := MapVPNs[sIP];
 	if (bFound && !oVPNInfo.IsInCheck && !oVPNInfo.IsVPN) {
 		MuVPN.RUnlock();
 		return true;
@@ -187,7 +187,7 @@ func IsNotVPN(sIP string) bool { //true if checked and not vpn, false otherwise
 func RestoreVPNInfo() bool { //no need to lock anything
 	arDBVpnInfo := database.RestoreVPNInfo();
 	for _, oDBVpnInfo := range arDBVpnInfo {
-		mapVPNs[oDBVpnInfo.IP] = EntVPNInfo{
+		MapVPNs[oDBVpnInfo.IP] = EntVPNInfo{
 			IsVPN:			oDBVpnInfo.IsVPN,
 			IsInCheck:		false,
 			UpdatedAt:		oDBVpnInfo.UpdatedAt,
