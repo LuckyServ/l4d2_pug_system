@@ -108,7 +108,7 @@ func BanManual(oBanReq EntManualBanReq) {
 
 		AddRecord(oBanRecord);
 
-		ApplyBanToPlayer(oBanReq.SteamID64, iAccess, sBanReason, i64BannedAt, oBanReq.BanLength);
+		ApplyBanToPlayer(oBanReq.SteamID64, oBanReq.Access, sBanReason, i64BannedAt, oBanReq.BanLength);
 	}
 }
 

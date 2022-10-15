@@ -68,6 +68,8 @@ func GinInit() {
 	r.POST("/gs/gameresults", HttpReqGSGameResults);
 	r.POST("/gs/anticheatlogs", HttpReqAntiCheatLogs);
 
+	r.GET("/smurf/list_updated", HttpReqSMURFListUpdated);
+
 	
 	fmt.Printf("Starting web server\n");
 	go r.Run(":"+settings.ListenPort); //Listen on port
