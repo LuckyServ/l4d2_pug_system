@@ -48,6 +48,22 @@ Response parameters:
 
 <br/><br/>
 
+### GET /getknownaccs
+##### Get known duplicate accounts (smurfs)
+Request parameters:
+| Key | Type | Description
+| ------ | ------ | ------ |
+| <strong>steamid64</strong> | _string_ | SteamID 64 |
+
+Response parameters:
+| Key | Type | Description
+| ------ | ------ | ------ |
+| <strong>success</strong> | _bool_ | "true" if command accepted, "false" otherwise |
+| <strong>accounts</strong> | _[]string_ | Array of Steam IDs if success == true |
+| <strong>error</strong> | _string_ | Outputs the reason if the request is rejected |
+
+<br/><br/>
+
 ### GET /overridevpn
 ##### Override VPN info
 Request parameters:

@@ -7,6 +7,9 @@ import (
 	"net/url"
 	"regexp"
 	"time"
+	"strings"
+	"io"
+	"github.com/buger/jsonparser"
 )
 
 func AnnounceIP(sIP string) {
@@ -20,7 +23,7 @@ func AnnounceIPAndKey(sSteamID64 string, sIP string, sNickname string, sUniqueKe
 	if (bKeyValid) {
 		go CheckIPAndKey(sSteamID64, sIP, sNickname, sUniqueKey);
 	} else {
-		//ban
+		//ban mb? clearly malicious action
 	}
 }
 
@@ -32,4 +35,24 @@ func CheckIPAndKey(sSteamID64 string, sIP string, sNickname string, sUniqueKey s
 	if (errHttp == nil) {
 		respHttp.Body.Close();
 	}
+}
+
+func GetKnownAccounts(sSteamID64 string) []string { //validate steam id string outside
+	clientHttp := http.Client{
+		Timeout: 15 * time.Second,
+	}
+	respHttp, errHttp := clientHttp.Get(fmt.Sprintf("%s/getknownsmurfs?auth_key=%s&steamid64=%s", settings.SmurfHost, settings.SmurfAuthKey, sSteamID64));
+	if (errHttp == nil) {
+		if (respHttp.StatusCode == 200) {
+			byRespBody, errRespBody := io.ReadAll(respHttp.Body);
+			if (errRespBody == nil) {
+				sAccountsList, errAccountsList := jsonparser.GetString(byRespBody, "accounts");
+				if (errAccountsList == nil) {
+					return strings.Split(sAccountsList, ",");
+				}
+			}
+		}
+		respHttp.Body.Close();
+	}
+	return []string{};
 }

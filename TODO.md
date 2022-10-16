@@ -1,7 +1,6 @@
-- [ ] Smurf module: thread-safe smurf searching
-- [ ] Smurf module: api endpoint to get known smurfs
 - [ ] Check smurfs on important actions
 - [ ] SM plugins: make l4d2center servers compatible with regular games
+- [ ] Dont allow to join server if banned from lobbies
 - [ ] When searching for ban history, look upon the bans of smurfs
 - [ ] Punish those who quits a full lobby
 - [ ] Shorten the timeout on tickets
@@ -18,6 +17,8 @@
 - [ ] Setup database backups
 - [ ] Search suspected smurfs
 
+- [x] Smurf module: api endpoint to get known smurfs
+- [x] Smurf module: thread-safe smurf searching
 - [x] Test smurf found triggers
 - [x] Smurf found triggers
 - [x] Override VPN info
