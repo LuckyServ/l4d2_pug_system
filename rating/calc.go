@@ -23,12 +23,15 @@ type EntGameResult struct {
 	AbsentPlayers		[]string
 	ConnectedPlayers	int
 	MapsFinished		int
+	SomeoneBanned		bool
 }
 
 
 func UpdateMmr(oResult EntGameResult, arFinalScores [2]int, arPlayers [2][]*players.EntPlayer) { //Players must be locked outside
 
 	if (oResult.MapsFinished == 0) { //dont touch mmr if didnt even play a single map
+		return;
+	} else if (oResult.SomeoneBanned) { //dont touch mmr if game stopped due to a ban
 		return;
 	}
 

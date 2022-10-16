@@ -412,6 +412,15 @@ public void SWReqCompleted_UploadResults(Handle hRequest, bool bFailure, bool bR
 							KickClient(i, "Game ended: players left the game");
 						}
 					}
+				} else if (iGameEndType == 4) {
+					bGameEnded = true;
+					Call_StartForward(hForwardGameEnded);
+					Call_Finish();
+					for (int i = 1; i <= MaxClients; i++) {
+						if (IsClientConnected(i) && !IsFakeClient(i)) {
+							KickClient(i, "Game ended: one or more players got banned midgame");
+						}
+					}
 				}
 			}
 		}

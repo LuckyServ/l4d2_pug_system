@@ -47,7 +47,11 @@ func HttpReqGSGameResults(c *gin.Context) {
 				players.MuPlayers.RLock();
 
 				var arAbsentPlayers []string;
+				var bSomeoneBanned bool;
 				for _, pPlayer := range pGame.PlayersUnpaired {
+					if (pPlayer.Access <= 2 && !bSomeoneBanned) {
+						bSomeoneBanned = true;
+					}
 					iAbsentFor, errAbsentFor := strconv.Atoi(c.PostForm(pPlayer.SteamID64));
 					if (errAbsentFor == nil && int64(iAbsentFor) >= settings.MaxAbsentSeconds) {
 						arAbsentPlayers = append(arAbsentPlayers, pPlayer.SteamID64);
@@ -67,12 +71,13 @@ func HttpReqGSGameResults(c *gin.Context) {
 					TankInPlay:				bTankInPlay,
 					Dominator:				[2]string{sDominatorA, sDominatorB},
 					Inferior:				[2]string{sInferiorA, sInferiorB},
-					GameEnded:				(bGameFinished || len(arAbsentPlayers) > 0 || iPlayers <= settings.MinPlayersCount),
+					GameEnded:				(bGameFinished || len(arAbsentPlayers) > 0 || iPlayers <= settings.MinPlayersCount || bSomeoneBanned),
 					InMapTransition:		bInMapTransition,
 					IsLastMap:				bIsLastMap,
 					AbsentPlayers:			arAbsentPlayers,
 					ConnectedPlayers:		iPlayers,
 					MapsFinished:			iMapsFinished,
+					SomeoneBanned:			bSomeoneBanned,
 				};
 
 				select {
@@ -84,6 +89,8 @@ func HttpReqGSGameResults(c *gin.Context) {
 						sResponse = fmt.Sprintf("%s\n	\"game_ended_type\" \"2\"", sResponse);
 					} else if (iPlayers <= settings.MinPlayersCount) {
 						sResponse = fmt.Sprintf("%s\n	\"game_ended_type\" \"3\"", sResponse);
+					} else if (bSomeoneBanned) {
+						sResponse = fmt.Sprintf("%s\n	\"game_ended_type\" \"4\"", sResponse);
 					} else {
 						sResponse = fmt.Sprintf("%s\n	\"game_ended_type\" \"0\"", sResponse);
 					}
