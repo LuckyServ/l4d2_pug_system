@@ -7,6 +7,7 @@ import (
 	"encoding/base64"
 	"time"
 	"strings"
+	"fmt"
 )
 
 
@@ -272,4 +273,55 @@ func RestoreBans() bool {
 	}
 	players.I64LastPlayerlistUpdate = time.Now().UnixMilli();
 	return true;
+}
+
+func BanIfSmurfBanned(arAccounts []string) {
+	if (len(arAccounts) > 1) {
+		//check if any one of them is banned
+		var oMimicBanRecord EntBanRecord;
+		i64CurTime := time.Now().UnixMilli();
+
+		iBanlistSize := len(ArrayBanRecords);
+		for _, sSteamID64 := range arAccounts {
+			for i := iBanlistSize - 1; i >= 0; i-- {
+				if (ArrayBanRecords[i].SteamID64 == sSteamID64) {
+					if (ArrayBanRecords[i].AcceptedAt == 0 || ArrayBanRecords[i].AcceptedAt + ArrayBanRecords[i].BanLength > i64CurTime) {
+						oMimicBanRecord = ArrayBanRecords[i];
+						break;
+					}
+				}
+			}
+			if (oMimicBanRecord.CreatedAt > 0) {
+				break;
+			}
+		}
+
+		if (oMimicBanRecord.CreatedAt > 0) {
+			//check if any one of them is online || in game || in lobby
+			var arToBan []string;
+			players.MuPlayers.RLock();
+			for _, sSteamID64 := range arAccounts {
+				pPlayer, bFound := players.MapPlayers[sSteamID64];
+				if (bFound && (pPlayer.IsOnline || pPlayer.IsInGame || pPlayer.IsInLobby) && pPlayer.Access >= -1) {
+					arToBan = append(arToBan, sSteamID64);
+				}
+			}
+			players.MuPlayers.RUnlock();
+
+
+			//ban those found on previous step
+			for _, sSteamID64 := range arToBan {
+				byNickname, _ := base64.StdEncoding.DecodeString(oMimicBanRecord.NicknameBase64);
+				oBanReq := EntManualBanReq{
+					SteamID64:			sSteamID64,
+					Access:				oMimicBanRecord.Access,
+					Nickname:			string(byNickname),
+					Reason:				fmt.Sprintf("Duplicate of banned account (%s)", oMimicBanRecord.SteamID64),
+					BanLength:			oMimicBanRecord.BanLength,
+					RequestedBy:		oMimicBanRecord.BannedBySteamID64,
+				}
+				BanManual(oBanReq);
+			}
+		}
+	}
 }

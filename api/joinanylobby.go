@@ -7,6 +7,7 @@ import (
 	"../settings"
 	"../lobby"
 	"../smurf"
+	"../bans"
 	"time"
 	"fmt"
 	"encoding/base64"
@@ -23,6 +24,8 @@ func HttpReqJoinAnyLobby(c *gin.Context) {
 	if (errCookieSessID == nil && sCookieSessID != "") {
 		oSession, bAuthorized := auth.GetSession(sCookieSessID);
 		if (bAuthorized) {
+
+			go func(sSteamID64 string)() {bans.ChanAutoBanSmurfs <- smurf.GetKnownAccounts(sSteamID64);}(oSession.SteamID64);
 
 			players.MuPlayers.Lock();
 

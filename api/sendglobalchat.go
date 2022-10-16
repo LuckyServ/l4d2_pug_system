@@ -5,6 +5,8 @@ import (
 	"../settings"
 	"../chat"
 	"../players"
+	"../bans"
+	"../smurf"
 	"../players/auth"
 	"unicode/utf8"
 	"time"
@@ -23,6 +25,7 @@ func HttpReqSendGlobalChat(c *gin.Context) {
 	if (errCookieSessID == nil && sCookieSessID != "") {
 		oSession, bAuthorized := auth.GetSession(sCookieSessID);
 		if (bAuthorized) {
+			go func(sSteamID64 string)() {bans.ChanAutoBanSmurfs <- smurf.GetKnownAccounts(sSteamID64);}(oSession.SteamID64);
 			players.MuPlayers.Lock();
 			pPlayer := players.MapPlayers[oSession.SteamID64];
 			if (pPlayer.Access <= -1) {
