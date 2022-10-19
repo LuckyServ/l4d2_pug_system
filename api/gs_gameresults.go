@@ -49,7 +49,7 @@ func HttpReqGSGameResults(c *gin.Context) {
 				var arAbsentPlayers []string;
 				var bSomeoneBanned bool;
 				for _, pPlayer := range pGame.PlayersUnpaired {
-					if (pPlayer.Access <= 2 && !bSomeoneBanned) {
+					if (pPlayer.Access <= -2 && !bSomeoneBanned) {
 						bSomeoneBanned = true;
 					}
 					iAbsentFor, errAbsentFor := strconv.Atoi(c.PostForm(pPlayer.SteamID64));

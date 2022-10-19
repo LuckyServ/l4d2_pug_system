@@ -1,4 +1,3 @@
-- [ ] SM plugins: make l4d2center servers compatible with regular games
 - [ ] Dont allow to join server if banned from lobbies
 - [ ] When searching for ban history, look upon the bans of smurfs
 - [ ] Punish those who quits a full lobby
@@ -16,6 +15,7 @@
 - [ ] Setup database backups
 - [ ] Search suspected smurfs
 
+- [x] SM plugins: make l4d2center servers compatible with regular games
 - [x] End game if someone got banned midgame
 - [x] Check smurfs on important actions
 - [x] Smurf module: api endpoint to get known smurfs
