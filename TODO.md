@@ -1,7 +1,7 @@
-- [ ] Dont allow to join server if banned from lobbies
 - [ ] When searching for ban history, look upon the bans of smurfs
 - [ ] Punish those who quits a full lobby
 - [ ] Shorten the timeout on tickets
+- [ ] Add avatars
 - [ ] Finish integration with SirPlease and io.asia
 - [ ] Mmr color in response
 - [ ] Log games
@@ -15,6 +15,7 @@
 - [ ] Setup database backups
 - [ ] Search suspected smurfs
 
+- [x] Dont allow to join server if banned from lobbies
 - [x] SM plugins: make l4d2center servers compatible with regular games
 - [x] End game if someone got banned midgame
 - [x] Check smurfs on important actions

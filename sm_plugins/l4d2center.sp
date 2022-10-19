@@ -139,7 +139,11 @@ public Action GameID_Cmd(int client, int args) {
 
 //Test
 /*Action Cmd_Test(int client, int args) {
-	CreateTimer(0.0, UpdateGameResults);
+	for (int i = 1; i <= MaxClients; i++) {
+		if (IsClientConnected(i) && !IsFakeClient(i)) {
+			CheckIfBanned(i);
+		}
+	}
 	return Plugin_Handled;
 }*/
 
@@ -211,6 +215,14 @@ public OnRoundIsLive() {
 
 public Action GameInfoReceived(Handle timer) {
 	if (iServerReserved == 1) {
+
+		if (iPrevReserved != 1) {
+			for (int i = 1; i <= MaxClients; i++) {
+				if (IsClientConnected(i) && !IsFakeClient(i)) {
+					CheckIfBanned(i);
+				}
+			}
+		}
 
 		if (iPrevReserved == 0 && LGO_IsMatchModeLoaded()) {
 			ServerCommand("sm_resetmatch");
@@ -372,11 +384,11 @@ public void SWReqCompleted_UploadResults(Handle hRequest, bool bFailure, bool bR
 		char[] sResponse = new char[iBodySize];
 		SteamWorks_GetHTTPResponseBodyData(hRequest, sResponse, iBodySize);
 		//PrintToServer("%s", sResponse);
-		Handle kvGameInfo = CreateKeyValues("VDFresponse");
-		if (StrContains(sResponse, "VDFresponse", true) > -1 && StringToKeyValues(kvGameInfo, sResponse)) {
-			int iSuccess = KvGetNum(kvGameInfo, "success", -1);
+		Handle kvResponse = CreateKeyValues("VDFresponse");
+		if (StrContains(sResponse, "VDFresponse", true) > -1 && StringToKeyValues(kvResponse, sResponse)) {
+			int iSuccess = KvGetNum(kvResponse, "success", -1);
 			if (iSuccess) {
-				int iGameEndType = KvGetNum(kvGameInfo, "game_ended_type", -1);
+				int iGameEndType = KvGetNum(kvResponse, "game_ended_type", -1);
 				if (iGameEndType == 1) {
 					bGameEnded = true;
 					Call_StartForward(hForwardGameEnded);
@@ -424,7 +436,7 @@ public void SWReqCompleted_UploadResults(Handle hRequest, bool bFailure, bool bR
 				}
 			}
 		}
-		CloseHandle(kvGameInfo);
+		CloseHandle(kvResponse);
 	}
 	CloseHandle(hRequest);
 }
@@ -489,9 +501,9 @@ public void SWReqCompleted_PartialReadyUp(Handle hRequest, bool bFailure, bool b
 		char[] sResponse = new char[iBodySize];
 		SteamWorks_GetHTTPResponseBodyData(hRequest, sResponse, iBodySize);
 		//PrintToServer("%s", sResponse);
-		Handle kvGameInfo = CreateKeyValues("VDFresponse");
-		if (StrContains(sResponse, "VDFresponse", true) > -1 && StringToKeyValues(kvGameInfo, sResponse)) {
-			if (KvGetNum(kvGameInfo, "success", -1) == 1) {
+		Handle kvResponse = CreateKeyValues("VDFresponse");
+		if (StrContains(sResponse, "VDFresponse", true) > -1 && StringToKeyValues(kvResponse, sResponse)) {
+			if (KvGetNum(kvResponse, "success", -1) == 1) {
 				for (int i = 1; i <= MaxClients; i++) {
 					if (IsClientConnected(i) && !IsFakeClient(i)) {
 						KickClient(i, "Game ended: some players failed to ready up in time");
@@ -499,7 +511,7 @@ public void SWReqCompleted_PartialReadyUp(Handle hRequest, bool bFailure, bool b
 				}
 			}
 		}
-		CloseHandle(kvGameInfo);
+		CloseHandle(kvResponse);
 	}
 	CloseHandle(hRequest);
 }
@@ -524,16 +536,16 @@ public void SWReqCompleted_GameInfo(Handle hRequest, bool bFailure, bool bReques
 		char[] sResponse = new char[iBodySize];
 		SteamWorks_GetHTTPResponseBodyData(hRequest, sResponse, iBodySize);
 		//PrintToServer("%s", sResponse);
-		Handle kvGameInfo = CreateKeyValues("VDFresponse");
-		if (StrContains(sResponse, "VDFresponse", true) > -1 && StringToKeyValues(kvGameInfo, sResponse)) {
-			iServerReserved = KvGetNum(kvGameInfo, "success", -1);
+		Handle kvResponse = CreateKeyValues("VDFresponse");
+		if (StrContains(sResponse, "VDFresponse", true) > -1 && StringToKeyValues(kvResponse, sResponse)) {
+			iServerReserved = KvGetNum(kvResponse, "success", -1);
 			if (iServerReserved == 1) {
 
 				char sKeyBuffer[16];
 				for (int i = 0; i < 4; i++) {
 					Format(sKeyBuffer, sizeof(sKeyBuffer), "player_a%d", i);
 					char sBuffer[20];
-					KvGetString(kvGameInfo, sKeyBuffer, sBuffer, sizeof(sBuffer), "0");
+					KvGetString(kvResponse, sKeyBuffer, sBuffer, sizeof(sBuffer), "0");
 					sBuffer[17] = '\0';
 					strcopy(arPlayersA[i], 20, sBuffer);
 					strcopy(arPlayersAll[i], 20, sBuffer);
@@ -541,19 +553,19 @@ public void SWReqCompleted_GameInfo(Handle hRequest, bool bFailure, bool bReques
 				for (int i = 0; i < 4; i++) {
 					Format(sKeyBuffer, sizeof(sKeyBuffer), "player_b%d", i);
 					char sBuffer[20];
-					KvGetString(kvGameInfo, sKeyBuffer, sBuffer, sizeof(sBuffer), "0");
+					KvGetString(kvResponse, sKeyBuffer, sBuffer, sizeof(sBuffer), "0");
 					sBuffer[17] = '\0';
 					strcopy(arPlayersB[i], 20, sBuffer);
 					strcopy(arPlayersAll[i + 4], 20, sBuffer);
 				}
 
-				KvGetString(kvGameInfo, "game_id", sGameID, sizeof(sGameID), "default");
-				KvGetString(kvGameInfo, "confogl", sConfoglConfig, sizeof(sConfoglConfig), "default");
-				KvGetString(kvGameInfo, "first_map", sFirstMap, sizeof(sFirstMap), "unknown");
-				KvGetString(kvGameInfo, "last_map", sLastMap, sizeof(sLastMap), "unknown");
-				KvGetString(kvGameInfo, "game_state", sGameState, sizeof(sGameState), "unknown");
-				iMaxAbsent = KvGetNum(kvGameInfo, "max_absent", 420);
-				iMaxSingleAbsent = KvGetNum(kvGameInfo, "max_single_absent", 240);
+				KvGetString(kvResponse, "game_id", sGameID, sizeof(sGameID), "default");
+				KvGetString(kvResponse, "confogl", sConfoglConfig, sizeof(sConfoglConfig), "default");
+				KvGetString(kvResponse, "first_map", sFirstMap, sizeof(sFirstMap), "unknown");
+				KvGetString(kvResponse, "last_map", sLastMap, sizeof(sLastMap), "unknown");
+				KvGetString(kvResponse, "game_state", sGameState, sizeof(sGameState), "unknown");
+				iMaxAbsent = KvGetNum(kvResponse, "max_absent", 420);
+				iMaxSingleAbsent = KvGetNum(kvResponse, "max_single_absent", 240);
 
 			}
 			Call_StartForward(hForwardGameInfoReceived);
@@ -562,12 +574,52 @@ public void SWReqCompleted_GameInfo(Handle hRequest, bool bFailure, bool bReques
 				CreateTimer(1.0, GameInfoReceived);
 			}
 		}
-		CloseHandle(kvGameInfo);
+		CloseHandle(kvResponse);
 	}
 	CloseHandle(hRequest);
 
 	if (iServerReserved == -1) {
 		iServerReserved = -2;
+	}
+}
+
+void CheckIfBanned(client) {
+	char sSteamID64[20];
+	if (GetClientAuthId(client, AuthId_SteamID64, sSteamID64, sizeof(sSteamID64), false)) {
+		char sUrl[256];
+		Format(sUrl, sizeof(sUrl), "https://api.l4d2center.com/gs/checkban?auth_key=%s", sAuthKey);
+		Handle hSWReq = SteamWorks_CreateHTTPRequest(k_EHTTPMethodPOST, sUrl);
+		SteamWorks_SetHTTPRequestNetworkActivityTimeout(hSWReq, 9);
+		SteamWorks_SetHTTPRequestAbsoluteTimeoutMS(hSWReq, 10000);
+		SteamWorks_SetHTTPRequestRequiresVerifiedCertificate(hSWReq, false);
+		SteamWorks_SetHTTPRequestGetOrPostParameter(hSWReq, "steamid64", sSteamID64);
+
+		SteamWorks_SetHTTPCallbacks(hSWReq, SWReqCompleted_CheckIfBanned);
+		SteamWorks_SendHTTPRequest(hSWReq);
+	}
+}
+
+public void SWReqCompleted_CheckIfBanned(Handle hRequest, bool bFailure, bool bRequestSuccessful, EHTTPStatusCode eStatusCode) {
+	int iBodySize;
+	if (bRequestSuccessful && eStatusCode == k_EHTTPStatusCode200OK	&& SteamWorks_GetHTTPResponseBodySize(hRequest, iBodySize) && iBodySize > 0) {
+		char[] sResponse = new char[iBodySize];
+		SteamWorks_GetHTTPResponseBodyData(hRequest, sResponse, iBodySize);
+		//PrintToServer("%s", sResponse);
+		Handle kvResponse = CreateKeyValues("VDFresponse");
+		if (StrContains(sResponse, "VDFresponse", true) > -1 && StringToKeyValues(kvResponse, sResponse)) {
+			if (KvGetNum(kvResponse, "success", -1) == 1) {
+				bool bIsBanned = (KvGetNum(kvResponse, "isbanned", -1) == 1);
+				if (bIsBanned) {
+					char sSteamID64[20];
+					KvGetString(kvResponse, "steamid64", sSteamID64, sizeof(sSteamID64), "0");
+					sSteamID64[17] = '\0';
+					int client = GetConnectedBySteamID64(sSteamID64);
+					if (client > 0) {
+						KickClient(client, "Sorry, you are banned from joining this server with ongoing l4d2center.com game on it");
+					}
+				}
+			}
+		}
 	}
 }
 
@@ -577,10 +629,10 @@ public void SWReqCompleted_Dummy(Handle hRequest, bool bFailure, bool bRequestSu
 		char[] sResponse = new char[iBodySize];
 		SteamWorks_GetHTTPResponseBodyData(hRequest, sResponse, iBodySize);
 		//PrintToServer("%s", sResponse);
-		Handle kvGameInfo = CreateKeyValues("VDFresponse");
-		if (StrContains(sResponse, "VDFresponse", true) > -1 && StringToKeyValues(kvGameInfo, sResponse)) {
+		Handle kvResponse = CreateKeyValues("VDFresponse");
+		if (StrContains(sResponse, "VDFresponse", true) > -1 && StringToKeyValues(kvResponse, sResponse)) {
 		}
-		CloseHandle(kvGameInfo);
+		CloseHandle(kvResponse);
 	}
 	CloseHandle(hRequest);
 }
@@ -635,21 +687,20 @@ int GetPlayerCorrectTeam(int client) {
 }
 
 public void OnClientAuthorized(int client, const char[] auth) {
-	if (iServerReserved == 1 &&
-	!IsFakeClient(client) &&
-	GetClientLobbyParticipant(client) == -1
-	) {
-		KickOnSpecsExceed(client);
+	if (iServerReserved == 1 && !IsFakeClient(client)) {
+		if (GetClientLobbyParticipant(client) == -1) {
+			KickOnSpecsExceed(client);
+		}
+		CheckIfBanned(client);
 	}
 }
 
 public void OnClientPutInServer(int client) {
-	if (iServerReserved == 1 &&
-	!IsFakeClient(client) &&
-	!IsClientAuthorized(client) &&
-	GetClientLobbyParticipant(client) == -1
-	) {
-		KickOnSpecsExceed(client);
+	if (iServerReserved == 1 && !IsFakeClient(client) && !IsClientAuthorized(client)) {
+		if (GetClientLobbyParticipant(client) == -1) {
+			KickOnSpecsExceed(client);
+		}
+		CheckIfBanned(client);
 	}
 }
 
