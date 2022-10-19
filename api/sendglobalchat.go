@@ -25,7 +25,6 @@ func HttpReqSendGlobalChat(c *gin.Context) {
 	if (errCookieSessID == nil && sCookieSessID != "") {
 		oSession, bAuthorized := auth.GetSession(sCookieSessID);
 		if (bAuthorized) {
-			go func(sSteamID64 string)() {bans.ChanAutoBanSmurfs <- smurf.GetKnownAccounts(sSteamID64);}(oSession.SteamID64);
 			players.MuPlayers.Lock();
 			pPlayer := players.MapPlayers[oSession.SteamID64];
 			if (pPlayer.Access <= -1) {
@@ -51,6 +50,7 @@ func HttpReqSendGlobalChat(c *gin.Context) {
 					i64CurTime := time.Now().UnixMilli();
 					pPlayer.LastChatMessage = i64CurTime;
 					chat.I64LastGlobalChatUpdate = i64CurTime;
+					go func(sSteamID64 string)() {bans.ChanAutoBanSmurfs <- smurf.GetKnownAccounts(sSteamID64);}(oSession.SteamID64);
 				} else {
 					mapResponse["error"] = "Bad message size";
 				}

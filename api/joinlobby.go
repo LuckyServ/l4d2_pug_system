@@ -25,7 +25,6 @@ func HttpReqJoinLobby(c *gin.Context) {
 	if (errCookieSessID == nil && sCookieSessID != "") {
 		oSession, bAuthorized := auth.GetSession(sCookieSessID);
 		if (bAuthorized) {
-			go func(sSteamID64 string)() {bans.ChanAutoBanSmurfs <- smurf.GetKnownAccounts(sSteamID64);}(oSession.SteamID64);
 			players.MuPlayers.Lock();
 			i64CurTime := time.Now().UnixMilli();
 			pPlayer := players.MapPlayers[oSession.SteamID64];
@@ -59,6 +58,7 @@ func HttpReqJoinLobby(c *gin.Context) {
 				} else {
 					if (lobby.Join(pPlayer, sLobbyID)) {
 						mapResponse["success"] = true;
+						go func(sSteamID64 string)() {bans.ChanAutoBanSmurfs <- smurf.GetKnownAccounts(sSteamID64);}(oSession.SteamID64);
 					} else {
 						mapResponse["error"] = "Race condition. Try again.";
 					}

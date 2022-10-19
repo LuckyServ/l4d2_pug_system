@@ -25,8 +25,6 @@ func HttpReqJoinAnyLobby(c *gin.Context) {
 		oSession, bAuthorized := auth.GetSession(sCookieSessID);
 		if (bAuthorized) {
 
-			go func(sSteamID64 string)() {bans.ChanAutoBanSmurfs <- smurf.GetKnownAccounts(sSteamID64);}(oSession.SteamID64);
-
 			players.MuPlayers.Lock();
 
 			i64CurTime := time.Now().UnixMilli();
@@ -50,6 +48,7 @@ func HttpReqJoinAnyLobby(c *gin.Context) {
 
 				if (lobby.JoinAny(pPlayer)) {
 					mapResponse["success"] = true;
+					go func(sSteamID64 string)() {bans.ChanAutoBanSmurfs <- smurf.GetKnownAccounts(sSteamID64);}(oSession.SteamID64);
 					pPlayer.IsAutoSearching = true;
 					pPlayer.AutoSearchingSince = time.Now().UnixMilli();
 				} else {
