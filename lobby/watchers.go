@@ -82,10 +82,10 @@ func WatchLobbies() {
 			}
 		}
 
-
 		for _, pPlayer := range arUnreadyPlayers {
 			Leave(pPlayer);
 			pPlayer.IsAutoSearching = false;
+			pPlayer.LastFullLobbyLeave = i64CurTime;
 		}
 		for _, pPlayer := range arTimedoutLobbiesPlayers {
 			if (Leave(pPlayer) && pPlayer.IsAutoSearching) {

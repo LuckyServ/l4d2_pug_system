@@ -4,6 +4,8 @@ import (
 	"../settings"
 	"../database"
 	"../players"
+	"../utils"
+	"../smurf"
 	"encoding/base64"
 	"time"
 	"strings"
@@ -31,11 +33,13 @@ func BanRagequitter(oBanReq EntAutoBanReq) { //expensive
 		return;
 	}
 
+	arKnownAccs := smurf.GetKnownAccounts(oBanReq.SteamID64);
+
 	var iCountPrevAutoBans int;
 	iSize := len(ArrayBanRecords);
 	i64CurTime := time.Now().UnixMilli();
 	for i := iSize - 1; i >= 0; i-- {
-		if (ArrayBanRecords[i].SteamID64 == oBanReq.SteamID64) {
+		if (utils.GetStringIdxInArray(ArrayBanRecords[i].SteamID64, arKnownAccs) != -1) {
 			if (i64CurTime - settings.BanHistoryForgetIn >= ArrayBanRecords[i].CreatedAt) {
 				break;
 			} else {

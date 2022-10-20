@@ -168,6 +168,7 @@ func Leave(pPlayer *players.EntPlayer) bool { //MuPlayers and MuLobbies must be 
 		pLobby.PlayerCount--;
 	}
 
+	i64CurTime := time.Now().UnixMilli();
 
 	if (pLobby.PlayerCount == 0) { //destroy lobby if it's empty
 		delete(MapLobbies, pLobby.ID);
@@ -184,6 +185,7 @@ func Leave(pPlayer *players.EntPlayer) bool { //MuPlayers and MuLobbies must be 
 			pPlayer.IsReadyInLobby = false;
 			pLobby.ReadyPlayers--;
 		}
+		pPlayer.LastFullLobbyLeave = i64CurTime;
 		for i := 0; i < pLobby.PlayerCount; i++ {
 			if (pLobby.Players[i].IsReadyInLobby) {
 				pLobby.Players[i].IsReadyInLobby = false;
@@ -192,7 +194,6 @@ func Leave(pPlayer *players.EntPlayer) bool { //MuPlayers and MuLobbies must be 
 		}
 	}
 
-	i64CurTime := time.Now().UnixMilli();
 	I64LastLobbyListUpdate = i64CurTime;
 
 	pPlayer.IsInLobby = false;

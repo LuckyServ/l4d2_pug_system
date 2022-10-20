@@ -39,6 +39,7 @@ var ReadyUpTimeout int64;
 var LobbyFillTimeout int64;
 
 var JoinLobbyCooldown int64;
+var LeaveFullLobbyBan int64;
 var AuthPerHour int;
 var SteamAPICooldown int64;
 
@@ -264,6 +265,13 @@ func ConfigFile() bool {
 		return false;
 	}
 	JoinLobbyCooldown = i64Buffer * 1000;
+
+	i64Buffer, errError = jsonparser.GetInt(byData, "ratelimits", "lobby_leave_full_lobby_ban_minutes");
+	if (errError != nil) {
+		fmt.Printf("Error reading config file: %s\n", errError);
+		return false;
+	}
+	LeaveFullLobbyBan = i64Buffer * 60 * 1000;
 
 	i64Buffer, errError = jsonparser.GetInt(byData, "ratelimits", "auth_per_hour");
 	if (errError != nil) {

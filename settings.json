@@ -77,6 +77,7 @@
 	},
 	"ratelimits": {
 		"lobby_join_cooldown_sec": 30,
+		"lobby_leave_full_lobby_ban_minutes": 5,
 		"steam_api_cooldown_sec": 60,
 		"auth_per_hour": 5
 	},
