@@ -27,7 +27,7 @@ func HttpReqTicketReply(c *gin.Context) {
 			players.MuPlayers.Lock();
 			pPlayer := players.MapPlayers[oSession.SteamID64];
 			i64CurTime := time.Now().UnixMilli();
-			if (pPlayer.LastTicketActivity + 3000/*3s*/ > i64CurTime) {
+			if (pPlayer.LastTicketActivity + 1000/*1s*/ > i64CurTime) {
 				players.MuPlayers.Unlock();
 			} else if (pPlayer.Access < 1) {
 				players.MuPlayers.Unlock();

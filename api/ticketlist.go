@@ -22,8 +22,8 @@ func HttpReqTicketList(c *gin.Context) {
 			players.MuPlayers.Lock();
 			pPlayer := players.MapPlayers[oSession.SteamID64];
 			i64CurTime := time.Now().UnixMilli();
-			if (pPlayer.LastTicketActivity + 3000/*3s*/ > i64CurTime) {
-				mapResponse["error"] = "Too often requests, refresh in 3 seconds";
+			if (pPlayer.LastTicketActivity + 1000/*1s*/ > i64CurTime) {
+				mapResponse["error"] = "Too often requests, refresh in 1 second";
 				players.MuPlayers.Unlock();
 			} else if (pPlayer.Access == -3) {
 				mapResponse["error"] = "Sorry, you are banned without ability to protest";

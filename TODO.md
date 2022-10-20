@@ -1,4 +1,3 @@
-- [ ] Shorten the timeout on tickets
 - [ ] Add avatars
 - [ ] Finish integration with SirPlease and io.asia
 - [ ] Mmr color in response
@@ -13,6 +12,7 @@
 - [ ] Setup database backups
 - [ ] Search suspected smurfs
 
+- [x] Shorten the timeout on tickets
 - [x] Punish those who quits a full lobby
 - [x] When searching for ban history, look upon the bans of smurfs
 - [x] Dont allow to join server if banned from lobbies
