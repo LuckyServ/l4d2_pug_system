@@ -35,7 +35,7 @@ func HttpReqCheckBan(c *gin.Context) {
 			bans.ChanLock <- true;
 			iBanlistSize := len(bans.ArrayBanRecords);
 			for i := iBanlistSize - 1; i >= 0; i-- {
-				if (bans.ArrayBanRecords[i].SteamID64 == sSteamID64 && bans.ArrayBanRecords[i].AcceptedAt == 0) {
+				if (bans.ArrayBanRecords[i].AcceptedAt == 0 && bans.ArrayBanRecords[i].SteamID64 == sSteamID64) {
 					bIsDatabaseBanned = true;
 					break;
 				}
