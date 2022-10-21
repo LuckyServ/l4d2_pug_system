@@ -34,7 +34,8 @@ func GinInit() {
 	r.GET("/validateprofile", HttpReqValidateProf);
 	r.GET("/acceptrules", HttpReqAcceptRules);
 	r.GET("/acceptban", HttpReqAcceptBan);
-	r.GET("/updatenickname", HttpReqUpdateNickname);
+	r.GET("/updatenickname", HttpReqUpdateNameAvatar);
+	r.GET("/updatenameavatar", HttpReqUpdateNameAvatar);
 	r.GET("/logout", HttpReqLogout);
 
 	r.GET("/getonlineplayers", HttpReqGetOnlinePlayers);

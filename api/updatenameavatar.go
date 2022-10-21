@@ -16,7 +16,7 @@ import (
 
 var sErr string = "Error retrieving nickname";
 
-func HttpReqUpdateNickname(c *gin.Context) {
+func HttpReqUpdateNameAvatar(c *gin.Context) {
 
 	mapResponse := make(map[string]interface{});
 	
@@ -57,16 +57,22 @@ func HttpReqUpdateNickname(c *gin.Context) {
 					if (respSteam.StatusCode == 200) {
 						byResult, _ := ioutil.ReadAll(respSteam.Body);
 						sName, errName := jsonparser.GetString(byResult, "response", "players", "[0]", "personaname");
+						sAvatarSmall, errAvatarSmall := jsonparser.GetString(byResult, "response", "players", "[0]", "avatar");
+						sAvatarBig, errAvatarBig := jsonparser.GetString(byResult, "response", "players", "[0]", "avatarfull");
 						sSteamID64, _ := jsonparser.GetString(byResult, "response", "players", "[0]", "steamid");
-						if (sSteamID64 == oSession.SteamID64 && errName == nil && sName != "") {
+						if (sSteamID64 == oSession.SteamID64 && errName == nil && sName != "" && errAvatarSmall == nil && sAvatarSmall != "" && errAvatarBig == nil && sAvatarBig != "") {
 
 							mapResponse["success"] = true;
 							players.MuPlayers.Lock();
 							pPlayer.NicknameBase64 = base64.StdEncoding.EncodeToString([]byte(sName));
+							pPlayer.AvatarSmall = sAvatarSmall;
+							pPlayer.AvatarBig = sAvatarBig;
 							players.I64LastPlayerlistUpdate = time.Now().UnixMilli();
 							go database.UpdatePlayer(database.DatabasePlayer{
 								SteamID64:			pPlayer.SteamID64,
 								NicknameBase64:		pPlayer.NicknameBase64,
+								AvatarSmall:		pPlayer.AvatarSmall,
+								AvatarBig:			pPlayer.AvatarBig,
 								Mmr:				pPlayer.Mmr,
 								MmrUncertainty:		pPlayer.MmrUncertainty,
 								LastGameResult:		pPlayer.LastGameResult,

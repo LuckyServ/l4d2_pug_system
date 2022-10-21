@@ -97,6 +97,8 @@ func HttpReqValidateProf(c *gin.Context) {
 									go database.UpdatePlayer(database.DatabasePlayer{
 										SteamID64:			pPlayer.SteamID64,
 										NicknameBase64:		pPlayer.NicknameBase64,
+										AvatarSmall:		pPlayer.AvatarSmall,
+										AvatarBig:			pPlayer.AvatarBig,
 										Mmr:				pPlayer.Mmr,
 										MmrUncertainty:		pPlayer.MmrUncertainty,
 										LastGameResult:		pPlayer.LastGameResult,

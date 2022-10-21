@@ -13,6 +13,7 @@ type ChatMsgResp struct {
 	TextBase64		string	`json:"base64text"`
 	SteamID64		string	`json:"steamid64"`
 	NicknameBase64	string	`json:"base64name"`
+	AvatarSmall		string	`json:"avatar_small"`
 }
 
 
@@ -28,6 +29,7 @@ func HttpReqGetGlobalChat(c *gin.Context) {
 			TextBase64:		base64.StdEncoding.EncodeToString([]byte(oMsg.Text)),
 			SteamID64:		oMsg.SteamID64,
 			NicknameBase64:	oMsg.NicknameBase64,
+			AvatarSmall:	oMsg.AvatarSmall,
 		});
 	}
 

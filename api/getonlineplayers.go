@@ -12,6 +12,7 @@ import (
 type PlayerResponse struct {
 	SteamID64		string		`json:"steamid64"`
 	NicknameBase64	string		`json:"nickname_base64"`
+	AvatarSmall		string		`json:"avatar_small"`
 	Mmr				int			`json:"mmr"`
 	Access			int 		`json:"access"` //-2 - completely banned, -1 - chat banned, 0 - regular player, 1 - behaviour moderator, 2 - cheat moderator, 3 - behaviour+cheat moderator, 4 - full admin access
 	IsInGame		bool		`json:"is_ingame"`
@@ -23,6 +24,8 @@ type PlayerResponse struct {
 type PlayerResponseMe struct {
 	SteamID64		string		`json:"steamid64"`
 	NicknameBase64	string		`json:"nickname_base64"`
+	AvatarSmall		string		`json:"avatar_small"`
+	AvatarBig		string		`json:"avatar_big"`
 	Mmr				int			`json:"mmr"`
 	Access			int 		`json:"access"` //-2 - completely banned, -1 - chat banned, 0 - regular player, 1 - behaviour moderator, 2 - cheat moderator, 3 - behaviour+cheat moderator, 4 - full admin access
 	BanReason		string 		`json:"banreason"`
@@ -57,6 +60,8 @@ func HttpReqGetOnlinePlayers(c *gin.Context) {
 			mapResponse["me"] = PlayerResponseMe{
 				SteamID64:		pPlayer.SteamID64,
 				NicknameBase64:	pPlayer.NicknameBase64,
+				AvatarSmall:	pPlayer.AvatarSmall,
+				AvatarBig:		pPlayer.AvatarBig,
 				Mmr:			pPlayer.Mmr,
 				Access:			pPlayer.Access,
 				BanReason:		pPlayer.BanReason,
@@ -87,6 +92,7 @@ func HttpReqGetOnlinePlayers(c *gin.Context) {
 			arPlayers = append(arPlayers, PlayerResponse{
 				SteamID64:		pPlayer.SteamID64,
 				NicknameBase64:	pPlayer.NicknameBase64,
+				AvatarSmall:	pPlayer.AvatarSmall,
 				Mmr:			pPlayer.Mmr,
 				Access:			pPlayer.Access,
 				IsInGame:		pPlayer.IsInGame,

@@ -135,14 +135,14 @@ Response parameters:
 
 <br/><br/>
 
-### GET /updatenickname
-##### Update nickname from Steam
+### GET /updatenameavatar, GET /updatenickname
+##### Update nickname and avatar from Steam
 Request parameters: None
 
 Response parameters:
 | Key | Type | Description
 | ------ | ------ | ------ |
-| <strong>success</strong> | _bool_ | "true" if nickname updated, "false" otherwise |
+| <strong>success</strong> | _bool_ | "true" if nickname and avatar updated, "false" otherwise |
 | <strong>error</strong> | _string_ | Outputs the reason if the request is rejected |
 
 <br/><br/>
@@ -183,6 +183,8 @@ Response parameters:
 | <strong>me</strong> |  | Info about an authorized player (only present if authorized) |
 | &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>steamid64</strong> | _string_ | Player Steam ID 64 |
 | &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>nickname_base64</strong> | _string_ | Base64 encoded nickname |
+| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>avatar_small</strong> | _string_ | Small avatar |
+| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>avatar_big</strong> | _string_ | Big avatar |
 | &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>mmr</strong> | _int_ | Player's rating |
 | &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>mmr_certain</strong> | _bool_ | Is the system certain about the player's rating |
 | &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>access</strong> | _int_ | Player's access level<br>-2 - completely banned, -1 - chat banned, 0 - regular player, 1 - behaviour moderator, 2 - cheat moderator, 3 - behaviour+cheat moderator, 4 - full admin access |
@@ -202,6 +204,7 @@ Response parameters:
 | <strong>list</strong> | _[]_ | Array of players |
 | &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>steamid64</strong> | _string_ | Player Steam ID 64 |
 | &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>nickname_base64</strong> | _string_ | Base64 encoded nickname |
+| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>avatar_small</strong> | _string_ | Small avatar |
 | &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>mmr</strong> | _int_ | Player's rating |
 | &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>mmr_certain</strong> | _bool_ | Is the system certain about the player's rating |
 | &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>access</strong> | _int_ | Player's access level<br>-2 - completely banned, -1 - chat banned, 0 - regular player, 1 - behaviour moderator, 2 - cheat moderator, 3 - behaviour+cheat moderator, 4 - full admin access |
@@ -382,6 +385,7 @@ Response parameters:
 | &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>base64text</strong> | _string_ | Base 64 encoded message text |
 | &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>steamid64</strong> | _string_ | Steam ID of a player who sent the message |
 | &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>base64name</strong> | _string_ | Base 64 encoded nickname |
+| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>avatar_small</strong> | _string_ | Small avatar |
 
 <br/><br/>
 

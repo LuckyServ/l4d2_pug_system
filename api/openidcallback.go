@@ -120,6 +120,8 @@ func HttpReqOpenID(c *gin.Context) {
 
 	//Get nickname
 	sNickname := "unknown";
+	sAvatarSmall := "https://l4d2center.com/blank_avatar_small.jpg";
+	sAvatarBig := "https://l4d2center.com/blank_avatar_big.jpg";
 	clientSteam := http.Client{
 		Timeout: 15 * time.Second,
 	}
@@ -148,9 +150,15 @@ func HttpReqOpenID(c *gin.Context) {
 	if n := root.SelectElement("//steamID"); n != nil {
 		sNickname = n.InnerText();
 	}
+	if n := root.SelectElement("//avatarIcon"); n != nil {
+		sAvatarSmall = n.InnerText();
+	}
+	if n := root.SelectElement("//avatarFull"); n != nil {
+		sAvatarBig = n.InnerText();
+	}
 
 	//Add auth to the database
-	sSessionID := players.AddPlayerAuth(sSteamID64, base64.StdEncoding.EncodeToString([]byte(sNickname)));
+	sSessionID := players.AddPlayerAuth(sSteamID64, base64.StdEncoding.EncodeToString([]byte(sNickname)), sAvatarSmall, sAvatarBig);
 	bans.ChanSearchBan <- sSteamID64;
 
 	fmt.Printf("New auth: %s, %s\n", sSteamID64, sNickname);

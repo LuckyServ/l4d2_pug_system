@@ -8,6 +8,7 @@ type EntChatMsg struct {
 	Text			string
 	SteamID64		string //who sent it
 	NicknameBase64	string //who sent it
+	AvatarSmall		string //who sent it
 }
 
 var ArrayChatMsgs []EntChatMsg;

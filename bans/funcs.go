@@ -130,6 +130,8 @@ func ApplyBanToPlayer(sSteamID64 string, iAccess int, sBanReason string, i64Bann
 		go database.UpdatePlayer(database.DatabasePlayer{
 			SteamID64:			pPlayer.SteamID64,
 			NicknameBase64:		pPlayer.NicknameBase64,
+			AvatarSmall:		pPlayer.AvatarSmall,
+			AvatarBig:			pPlayer.AvatarBig,
 			Mmr:				pPlayer.Mmr,
 			MmrUncertainty:		pPlayer.MmrUncertainty,
 			LastGameResult:		pPlayer.LastGameResult,
@@ -221,6 +223,18 @@ func UnbanManual(sSteamID64 string) {
 		pPlayer.BanLength = 0;
 		pPlayer.BannedAt = 0;
 		players.I64LastPlayerlistUpdate = time.Now().UnixMilli();
+		go database.UpdatePlayer(database.DatabasePlayer{
+			SteamID64:			pPlayer.SteamID64,
+			NicknameBase64:		pPlayer.NicknameBase64,
+			AvatarSmall:		pPlayer.AvatarSmall,
+			AvatarBig:			pPlayer.AvatarBig,
+			Mmr:				pPlayer.Mmr,
+			MmrUncertainty:		pPlayer.MmrUncertainty,
+			LastGameResult:		pPlayer.LastGameResult,
+			Access:				pPlayer.Access,
+			ProfValidated:		pPlayer.ProfValidated,
+			RulesAccepted:		pPlayer.RulesAccepted,
+			});
 	}
 	players.MuPlayers.Unlock();
 

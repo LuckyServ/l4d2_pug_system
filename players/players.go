@@ -15,6 +15,8 @@ import (
 type EntPlayer struct {
 	SteamID64				string
 	NicknameBase64			string
+	AvatarSmall				string
+	AvatarBig				string
 	Mmr						int
 	MmrUncertainty			float32
 	LastGameResult			int //0 - unknown, 1 - draw, 2 - lost, 3 - won
@@ -90,6 +92,8 @@ func RestorePlayers() bool { //no need to lock maps
 		pPlayer := &EntPlayer{
 			SteamID64:			oDBPlayer.SteamID64,
 			NicknameBase64:		oDBPlayer.NicknameBase64,
+			AvatarSmall:		oDBPlayer.AvatarSmall,
+			AvatarBig:			oDBPlayer.AvatarBig,
 			Mmr:				oDBPlayer.Mmr,
 			MmrUncertainty:		oDBPlayer.MmrUncertainty,
 			LastGameResult:		oDBPlayer.LastGameResult,
@@ -113,7 +117,7 @@ func RestorePlayers() bool { //no need to lock maps
 }
 
 
-func AddPlayerAuth(sSteamID64 string, sNicknameBase64 string) string {
+func AddPlayerAuth(sSteamID64 string, sNicknameBase64 string, sAvatarSmall string, sAvatarBig string) string {
 
 	//Register player if does not exist
 	MuPlayers.Lock();
@@ -145,22 +149,34 @@ func AddPlayerAuth(sSteamID64 string, sNicknameBase64 string) string {
 	auth.MuSessions.Lock();
 
 	MuPlayers.Lock();
+	bEdited := false;
 	pPlayer := MapPlayers[sSteamID64];
 	if (pPlayer.NicknameBase64 != sNicknameBase64) {
-
 		pPlayer.NicknameBase64 = sNicknameBase64;
+		bEdited = true;
+	}
+	if (pPlayer.AvatarSmall != sAvatarSmall) {
+		pPlayer.AvatarSmall = sAvatarSmall;
+		bEdited = true;
+	}
+	if (pPlayer.AvatarBig != sAvatarBig) {
+		pPlayer.AvatarBig = sAvatarBig;
+		bEdited = true;
+	}
+	if (bEdited) {
 		I64LastPlayerlistUpdate = time.Now().UnixMilli();
-
 		go database.UpdatePlayer(database.DatabasePlayer{
 			SteamID64:			pPlayer.SteamID64,
 			NicknameBase64:		pPlayer.NicknameBase64,
+			AvatarSmall:		pPlayer.AvatarSmall,
+			AvatarBig:			pPlayer.AvatarBig,
 			Mmr:				pPlayer.Mmr,
 			MmrUncertainty:		pPlayer.MmrUncertainty,
 			LastGameResult:		pPlayer.LastGameResult,
 			Access:				pPlayer.Access,
 			ProfValidated:		pPlayer.ProfValidated,
 			RulesAccepted:		pPlayer.RulesAccepted,
-			});
+		});
 	}
 	MuPlayers.Unlock();
 

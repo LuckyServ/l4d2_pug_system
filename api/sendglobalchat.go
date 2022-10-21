@@ -45,6 +45,7 @@ func HttpReqSendGlobalChat(c *gin.Context) {
 						Text:			sChatMsg,
 						SteamID64:		pPlayer.SteamID64,
 						NicknameBase64:	pPlayer.NicknameBase64,
+						AvatarSmall:	pPlayer.AvatarSmall,
 					};
 					chat.ChanSend <- oMessage;
 					i64CurTime := time.Now().UnixMilli();

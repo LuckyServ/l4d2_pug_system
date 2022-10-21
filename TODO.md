@@ -1,4 +1,3 @@
-- [ ] Add avatars
 - [ ] Finish integration with SirPlease and io.asia
 - [ ] Mmr color in response
 - [ ] Log games
@@ -12,6 +11,7 @@
 - [ ] Setup database backups
 - [ ] Search suspected smurfs
 
+- [x] Add avatars
 - [x] Shorten the timeout on tickets
 - [x] Punish those who quits a full lobby
 - [x] When searching for ban history, look upon the bans of smurfs
