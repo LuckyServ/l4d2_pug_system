@@ -3,7 +3,6 @@
 #include <sdktools>
 #include <SteamWorks>
 #include <confogl>
-#include <connecthook>
 #undef REQUIRE_PLUGIN
 #include <readyup>
 #include <pause>
@@ -35,6 +34,7 @@ int iMaxSpecs;
 int iServerReserved = -1; //-2 - check failed, -1 - not checked, 0 - not reserved, 1 - reserved
 int iPrevReserved = -1;
 char sGameID[32];
+char sPrevGameID[32];
 char arPlayersA[4][20];
 char arPlayersB[4][20];
 char arPlayersAll[8][20];
@@ -54,14 +54,12 @@ bool bInRound;
 bool bInMapTransition;
 int iMapsFinished;
 int iAbsenceCounter[8]; //parallel with arPlayersAll[]
-bool bGameEnded;
 bool bGameFinished;
 
 public APLRes AskPluginLoad2(Handle myself, bool late, char[] error, int err_max) {
 	CreateNative("L4D2C_GetServerReservation", Native_GetServerReservation);
 	CreateNative("L4D2C_IsPlayerGameParticipant", Native_IsPlayerGameParticipant);
 	CreateNative("L4D2C_IsMidRound", Native_IsMidRound);
-	CreateNative("L4D2C_IsGameEnded", Native_IsGameEnded);
 	
 	hForwardGameInfoReceived = CreateGlobalForward("L4D2C_GameInfoReceived", ET_Ignore);
 	hForwardGameEnded = CreateGlobalForward("L4D2C_OnGameEnded", ET_Ignore);
@@ -177,26 +175,16 @@ public Action Timer_AutoTeam(Handle timer) {
 }
 
 public Action Timer_UpdateGameState(Handle timer) {
-	if (bGameEnded) {
-
-		for (int i = 1; i <= MaxClients; i++) {
-			if (IsClientConnected(i) && !IsFakeClient(i)) {
-				KickClient(i, "Game ended, leave the server");
-			}
-		}
-
-	} else {
-		char sUrl[256];
-		Format(sUrl, sizeof(sUrl), "https://api.l4d2center.com/gs/getgame?auth_key=%s", sAuthKey);
-		Handle hSWReq = SteamWorks_CreateHTTPRequest(k_EHTTPMethodPOST, sUrl);
-		SteamWorks_SetHTTPRequestNetworkActivityTimeout(hSWReq, 9);
-		SteamWorks_SetHTTPRequestAbsoluteTimeoutMS(hSWReq, 10000);
-		SteamWorks_SetHTTPRequestRequiresVerifiedCertificate(hSWReq, false);
-		SteamWorks_SetHTTPRequestGetOrPostParameter(hSWReq, "auth_key", sAuthKey);
-		SteamWorks_SetHTTPRequestGetOrPostParameter(hSWReq, "ip", sPublicIP);
-		SteamWorks_SetHTTPCallbacks(hSWReq, SWReqCompleted_GameInfo);
-		SteamWorks_SendHTTPRequest(hSWReq);
-	}
+	char sUrl[256];
+	Format(sUrl, sizeof(sUrl), "https://api.l4d2center.com/gs/getgame?auth_key=%s", sAuthKey);
+	Handle hSWReq = SteamWorks_CreateHTTPRequest(k_EHTTPMethodPOST, sUrl);
+	SteamWorks_SetHTTPRequestNetworkActivityTimeout(hSWReq, 9);
+	SteamWorks_SetHTTPRequestAbsoluteTimeoutMS(hSWReq, 10000);
+	SteamWorks_SetHTTPRequestRequiresVerifiedCertificate(hSWReq, false);
+	SteamWorks_SetHTTPRequestGetOrPostParameter(hSWReq, "auth_key", sAuthKey);
+	SteamWorks_SetHTTPRequestGetOrPostParameter(hSWReq, "ip", sPublicIP);
+	SteamWorks_SetHTTPCallbacks(hSWReq, SWReqCompleted_GameInfo);
+	SteamWorks_SendHTTPRequest(hSWReq);
 	return Plugin_Continue;
 }
 
@@ -215,6 +203,15 @@ public OnRoundIsLive() {
 
 public Action GameInfoReceived(Handle timer) {
 	if (iServerReserved == 1) {
+
+		if (!StrEqual(sGameID, sPrevGameID)) {
+			strcopy(sPrevGameID, sizeof(sPrevGameID), sGameID);
+			if (!StrEqual(sGameID, "")) {
+				//new game
+				ClearReservation();
+				return Plugin_Continue;
+			}
+		}
 
 		if (iPrevReserved != 1) {
 			for (int i = 1; i <= MaxClients; i++) {
@@ -279,7 +276,7 @@ public Action GameInfoReceived(Handle timer) {
 
 	} else if (iServerReserved == 0) {
 		if (iPrevReserved == 1) {
-			iPrevReserved = iServerReserved;
+			ClearReservation();
 			PrintToChatAll("[L4D2Center] Connection to the backend API died");
 			PrintToChatAll("[L4D2Center] You can continue playing, but the results won't be recorded");
 		}
@@ -390,7 +387,6 @@ public void SWReqCompleted_UploadResults(Handle hRequest, bool bFailure, bool bR
 			if (iSuccess) {
 				int iGameEndType = KvGetNum(kvResponse, "game_ended_type", -1);
 				if (iGameEndType == 1) {
-					bGameEnded = true;
 					Call_StartForward(hForwardGameEnded);
 					Call_Finish();
 					char sWinner[3];
@@ -406,8 +402,8 @@ public void SWReqCompleted_UploadResults(Handle hRequest, bool bFailure, bool bR
 							KickClient(i, "Game ended: Team %s won (%d-%d)", sWinner, iSettledScores[0], iSettledScores[1]);
 						}
 					}
+					ClearReservation();
 				} else if (iGameEndType == 2) {
-					bGameEnded = true;
 					Call_StartForward(hForwardGameEnded);
 					Call_Finish();
 					for (int i = 1; i <= MaxClients; i++) {
@@ -415,8 +411,8 @@ public void SWReqCompleted_UploadResults(Handle hRequest, bool bFailure, bool bR
 							KickClient(i, "Game ended: one or more players left it midgame");
 						}
 					}
+					ClearReservation();
 				} else if (iGameEndType == 3) {
-					bGameEnded = true;
 					Call_StartForward(hForwardGameEnded);
 					Call_Finish();
 					for (int i = 1; i <= MaxClients; i++) {
@@ -424,8 +420,8 @@ public void SWReqCompleted_UploadResults(Handle hRequest, bool bFailure, bool bR
 							KickClient(i, "Game ended: players left the game");
 						}
 					}
+					ClearReservation();
 				} else if (iGameEndType == 4) {
-					bGameEnded = true;
 					Call_StartForward(hForwardGameEnded);
 					Call_Finish();
 					for (int i = 1; i <= MaxClients; i++) {
@@ -433,6 +429,7 @@ public void SWReqCompleted_UploadResults(Handle hRequest, bool bFailure, bool bR
 							KickClient(i, "Game ended: one or more players got banned midgame");
 						}
 					}
+					ClearReservation();
 				}
 			}
 		}
@@ -704,22 +701,6 @@ public void OnClientPutInServer(int client) {
 	}
 }
 
-public bool OnClientConnect(int client, char[] rejectmsg, int maxlen) { //in case if OnClientPreConnect fails
-	if (bGameEnded) {
-		strcopy(rejectmsg, maxlen, "Game just ended here, you cant connect to this server now. Try again in 30 seconds, the server needs time to restart");
-		return false;
-	}
-	return true;
-}
-
-public Action OnClientPreConnect(const char []name, const char[] password, const char[] ip, const char[] steamID, char rejectReason[255]) {
-	if (bGameEnded) {
-		strcopy(rejectReason, sizeof(rejectReason), "Game just ended here, you cant connect to this server now. Try again in 30 seconds, the server needs time to restart");
-		return Plugin_Handled;
-	}
-	return Plugin_Continue;
-}
-
 public void Event_RoundEnd(Event event, const char[] name, bool dontBroadcast) {
 	if (!bWaitFirstReadyUp) {
 		bInRound = false;
@@ -786,6 +767,42 @@ public void Event_RoundEnd(Event event, const char[] name, bool dontBroadcast) {
 			}
 		}
 	}
+}
+
+void ClearReservation() {
+	iServerReserved = 0;
+	iPrevReserved = 0;
+	strcopy(sGameID, sizeof(sGameID), "");
+	for (int i = 0; i < 4; i++) {
+		strcopy(arPlayersA[i], 20, "");
+		strcopy(arPlayersB[i], 20, "");
+	}
+	for (int i = 0; i < 8; i++) {
+		strcopy(arPlayersAll[i], 20, "");
+		iAbsenceCounter[i] = 0;
+		iSingleAbsence[i] = 0;
+		bResponsibleForPause[i] = false;
+		bPrinted[i] = false;
+	}
+	strcopy(sConfoglConfig, sizeof(sConfoglConfig), "");
+	strcopy(sFirstMap, sizeof(sFirstMap), "");
+	strcopy(sLastMap, sizeof(sLastMap), "");
+	strcopy(sGameState, sizeof(sGameState), "");
+
+	iSettledScores[0] = 0;
+	iSettledScores[1] = 0;
+	strcopy(sDominator[0], 20, "");
+	strcopy(sDominator[1], 20, "");
+	strcopy(sInferior[0], 20, "");
+	strcopy(sInferior[1], 20, "");
+	bTankKilled = false;
+	bInRound = false;
+	bInMapTransition = false;
+	iMapsFinished = 0;
+	bGameFinished = false;
+
+	bWaitFirstReadyUp = true;
+	int iLastUnpause = 0;
 }
 
 public void OnTankDeath() {
@@ -1023,10 +1040,6 @@ public int Native_IsPlayerGameParticipant(Handle plugin, int numParams) {
 
 public int Native_IsMidRound(Handle plugin, int numParams) {
 	return bInRound;
-}
-
-public int Native_IsGameEnded(Handle plugin, int numParams) {
-	return bGameEnded;
 }
 
 

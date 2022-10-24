@@ -3,7 +3,6 @@ forward void L4D2C_OnGameEnded();
 native int L4D2C_GetServerReservation(); //-2 connection error, -1 - havent yet checked, 0 - not reserved, 1 - reserved
 native bool L4D2C_IsPlayerGameParticipant(int client);
 native bool L4D2C_IsMidRound();
-native bool L4D2C_IsGameEnded();
 
 
 public SharedPlugin __pl_l4d2center =
@@ -23,6 +22,5 @@ public void __pl_l4d2center_SetNTVOptional()
 	MarkNativeAsOptional("L4D2C_GetServerReservation");
 	MarkNativeAsOptional("L4D2C_IsPlayerGameParticipant");
 	MarkNativeAsOptional("L4D2C_IsMidRound");
-	MarkNativeAsOptional("L4D2C_IsGameEnded");
 }
 #endif
