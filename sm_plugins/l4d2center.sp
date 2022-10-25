@@ -802,7 +802,7 @@ void ClearReservation() {
 	bGameFinished = false;
 
 	bWaitFirstReadyUp = true;
-	int iLastUnpause = 0;
+	iLastUnpause = 0;
 }
 
 public void OnTankDeath() {
