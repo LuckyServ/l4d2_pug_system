@@ -5,7 +5,6 @@ import (
 	"../players"
 	"fmt"
 	"time"
-	"../settings"
 	"../players/auth"
 )
 
@@ -18,7 +17,7 @@ type PlayerResponse struct {
 	IsInGame		bool		`json:"is_ingame"`
 	IsIdle			bool		`json:"is_idle"`
 	IsInLobby		bool		`json:"is_inlobby"`
-	MmrCertain		bool		`json:"mmr_certain"`
+	MmrGrade		int			`json:"mmr_grade"`
 }
 
 type PlayerResponseMe struct {
@@ -34,7 +33,7 @@ type PlayerResponseMe struct {
 	IsInGame		bool		`json:"is_ingame"`
 	IsIdle			bool		`json:"is_idle"`
 	IsInLobby		bool		`json:"is_inlobby"`
-	MmrCertain		bool		`json:"mmr_certain"`
+	MmrGrade		int			`json:"mmr_grade"`
 	ProfValidated	bool		`json:"profile_validated"` //Steam profile validated
 	RulesAccepted	bool		`json:"rules_accepted"` //Rules accepted
 }
@@ -70,9 +69,9 @@ func HttpReqGetOnlinePlayers(c *gin.Context) {
 				IsInGame:		pPlayer.IsInGame,
 				IsInLobby:		pPlayer.IsInLobby,
 				IsIdle:			pPlayer.IsIdle,
-				MmrCertain:		(pPlayer.MmrUncertainty <= settings.MmrStable),
 				ProfValidated:	pPlayer.ProfValidated,
 				RulesAccepted:	pPlayer.RulesAccepted,
+				MmrGrade:		players.GetMmrGrade(pPlayer),
 			};
 
 			players.MuPlayers.RUnlock();
@@ -96,9 +95,9 @@ func HttpReqGetOnlinePlayers(c *gin.Context) {
 				Mmr:			pPlayer.Mmr,
 				Access:			pPlayer.Access,
 				IsInGame:		pPlayer.IsInGame,
-				MmrCertain:		(pPlayer.MmrUncertainty <= settings.MmrStable),
 				IsInLobby:		pPlayer.IsInLobby,
 				IsIdle:			pPlayer.IsIdle,
+				MmrGrade:		players.GetMmrGrade(pPlayer),
 			});
 			if (pPlayer.IsInGame) {
 				iInGameCount++;

@@ -2,7 +2,6 @@ package api
 
 import (
 	"github.com/gin-gonic/gin"
-	"../settings"
 	"../players/auth"
 	"../players"
 	"../games"
@@ -48,7 +47,7 @@ func HttpReqGetGame(c *gin.Context) {
 						Mmr:			pGamePlayer.Mmr,
 						Access:			pGamePlayer.Access,
 						IsInGame:		pGamePlayer.IsInGame,
-						MmrCertain:		(pGamePlayer.MmrUncertainty <= settings.MmrStable),
+						MmrGrade:		players.GetMmrGrade(pGamePlayer),
 						IsInLobby:		pGamePlayer.IsInLobby,
 						IsIdle:			pGamePlayer.IsIdle,
 					});
@@ -60,7 +59,7 @@ func HttpReqGetGame(c *gin.Context) {
 						Mmr:			pGamePlayer.Mmr,
 						Access:			pGamePlayer.Access,
 						IsInGame:		pGamePlayer.IsInGame,
-						MmrCertain:		(pGamePlayer.MmrUncertainty <= settings.MmrStable),
+						MmrGrade:		players.GetMmrGrade(pGamePlayer),
 						IsInLobby:		pGamePlayer.IsInLobby,
 						IsIdle:			pGamePlayer.IsIdle,
 					});

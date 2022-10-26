@@ -54,6 +54,7 @@ var ArrayPlayers []*EntPlayer; //duplicate of MapPlayers, for faster iterating
 var MuPlayers sync.RWMutex;
 
 var I64LastPlayerlistUpdate int64;
+var iMaxStableMmr, iMinStableMmr, iMmrDiff int;
 
 func Watchers() {
 	go WatchOnline();
@@ -230,9 +231,41 @@ func SortPlayers() {
 				}
 			}
 		}
+		for i := iSize - 1; i >= 0; i-- {
+			if (ArrayPlayers[i].MmrUncertainty <= settings.MmrStable) {
+				iMinStableMmr = ArrayPlayers[i].Mmr;
+				break;
+			}
+		}
+		for i := 0; i < iSize; i++ {
+			if (ArrayPlayers[i].MmrUncertainty <= settings.MmrStable) {
+				iMaxStableMmr = ArrayPlayers[i].Mmr;
+				break;
+			}
+		}
+		if (iMaxStableMmr > iMinStableMmr) {
+			iMmrDiff = iMaxStableMmr - iMinStableMmr;
+		}
 		MuPlayers.Unlock();
 		if (bEdited) {
 			I64LastPlayerlistUpdate = time.Now().UnixMilli();
 		}
 	}
+}
+
+func GetMmrGrade(pPlayer *EntPlayer) int { //Players must be locked outside
+	if (pPlayer.MmrUncertainty > settings.MmrStable) {
+		return 0;
+	}
+	if (pPlayer.Mmr < iMinStableMmr || pPlayer.Mmr > iMaxStableMmr) {
+		return 0;
+	}
+	if (iMmrDiff < 1) {
+		return 0;
+	}
+	iGrade := (pPlayer.Mmr - iMinStableMmr) / (iMmrDiff / settings.MmrGrades);
+	if (iGrade < settings.MmrGrades) {
+		iGrade = iGrade + 1;
+	}
+	return iGrade;
 }

@@ -1,5 +1,4 @@
 - [ ] Finish integration with SirPlease and io.asia
-- [ ] Mmr color in response
 - [ ] Log games
 - [ ] Log game chat
 - [ ] Log public chat
@@ -7,10 +6,12 @@
 - [ ] Log on database write failure
 - [ ] Restarting mechanism
 - [ ] Regularly increase mmr uncertainty value
+- [ ] Shut down RU servers on non-EU playtime
 - [ ] Automatically parse anticheat logs and ban based on them
 - [ ] Setup database backups
 - [ ] Search suspected smurfs
 
+- [x] Mmr color in response
 - [x] Add avatars
 - [x] Shorten the timeout on tickets
 - [x] Punish those who quits a full lobby

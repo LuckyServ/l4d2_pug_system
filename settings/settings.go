@@ -17,6 +17,7 @@ var MmrStable float32;
 var MmrAbsoluteWin float32;
 var MmrMinimumWin float32;
 var MmrDiffGuaranteedWin float32;
+var MmrGrades int;
 var HomeDomain string;
 var BackendDomain string;
 var BrokenMode bool;
@@ -237,6 +238,13 @@ func ConfigFile() bool {
 		return false;
 	}
 	DefaultMaxMmr = int(i64Buffer);
+
+	i64Buffer, errError = jsonparser.GetInt(byData, "mmr", "mmr_grades");
+	if (errError != nil) {
+		fmt.Printf("Error reading config file: %s\n", errError);
+		return false;
+	}
+	MmrGrades = int(i64Buffer);
 
 	i64Buffer, errError = jsonparser.GetInt(byData, "lobby", "online_mmr_range");
 	if (errError != nil) {
