@@ -89,7 +89,8 @@ public OnPluginStart() {
 	AddCommandListener(OnCommandExecute, "spec_prev");
 	AddCommandListener(OnCommandExecute, "say");
 	AddCommandListener(OnCommandExecute, "say_team");
-	AddCommandListener(OnCallVote, "callvote");
+	AddCommandListener(OnBlockedCommand, "callvote");
+	AddCommandListener(OnBlockedCommand, "jointeam");
 	RegConsoleCmd("sm_ready", Ready_Cmd);
 	RegConsoleCmd("sm_r", Ready_Cmd);
 	CreateTimer(1.0, Timer_CountAbsence, 0, TIMER_REPEAT);
@@ -205,11 +206,12 @@ public Action GameInfoReceived(Handle timer) {
 	if (iServerReserved == 1) {
 
 		if (!StrEqual(sGameID, sPrevGameID)) {
-			strcopy(sPrevGameID, sizeof(sPrevGameID), sGameID);
-			if (!StrEqual(sGameID, "")) {
+			if (!StrEqual(sPrevGameID, "")) {
 				//new game
 				ClearReservation();
 				return Plugin_Continue;
+			} else {
+				strcopy(sPrevGameID, sizeof(sPrevGameID), sGameID);
 			}
 		}
 
@@ -773,6 +775,7 @@ void ClearReservation() {
 	iServerReserved = 0;
 	iPrevReserved = 0;
 	strcopy(sGameID, sizeof(sGameID), "");
+	strcopy(sPrevGameID, sizeof(sPrevGameID), "");
 	for (int i = 0; i < 4; i++) {
 		strcopy(arPlayersA[i], 20, "");
 		strcopy(arPlayersB[i], 20, "");
@@ -847,7 +850,7 @@ public void OnPlayerRunCmdPost(int client, int buttons, int impulse, const float
 	}
 }
 
-Action OnCallVote(int client, const char[] command, int argc) {
+Action OnBlockedCommand(int client, const char[] command, int argc) {
 	if (client > 0 && IsClientInGame(client) && !IsFakeClient(client)) {
 		iLastActivity[client] = GetTime();
 	}

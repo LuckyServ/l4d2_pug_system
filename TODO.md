@@ -9,6 +9,7 @@
 - [ ] Automatically parse anticheat logs and ban based on them
 - [ ] Setup database backups
 
+- [x] Block jointeam in SM plugin
 - [x] Log games
 - [x] Store initial player hours
 - [x] Search suspected smurfs
