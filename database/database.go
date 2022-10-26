@@ -48,6 +48,19 @@ type DatabaseVPNInfo struct {
 	UpdatedAt		int64 //unix time in seconds
 }
 
+type DatabaseGameLog struct {
+	ID					string
+	Valid				bool
+	CreatedAt			int64
+	PlayersA			string
+	PlayersB			string
+	TeamAScores			int
+	TeamBScores			int
+	ConfoglConfig		string
+	CampaignName		string
+	ServerIP			string
+}
+
 var MuDatabase sync.RWMutex;
 
 
@@ -74,7 +87,7 @@ func AddPlayer(oPlayer DatabasePlayer) {
 		dbQueryDelete.Close();
 	}
 	//Add player
-	dbQuery, errDbQuery := dbConn.Query("INSERT INTO players_list(steamid64, base64nickname, avatar_small, avatar_big, mmr, mmr_uncertainty, last_game_result, access, prof_validated, rules_accepted, initial_games) VALUES ("+oPlayer.SteamID64+", '"+oPlayer.NicknameBase64+"', '"+oPlayer.AvatarSmall+"', '"+oPlayer.AvatarBig+"', "+fmt.Sprintf("%d", oPlayer.Mmr)+", "+fmt.Sprintf("%.06f", oPlayer.MmrUncertainty)+", "+fmt.Sprintf("%d", oPlayer.LastGameResult)+", "+fmt.Sprintf("%d", oPlayer.Access)+", "+fmt.Sprintf("%v", oPlayer.ProfValidated)+", "+fmt.Sprintf("%v", oPlayer.RulesAccepted)+", 0);");
+	dbQuery, errDbQuery := dbConn.Query("INSERT INTO players_list(steamid64, base64nickname, avatar_small, avatar_big, mmr, mmr_uncertainty, last_game_result, access, prof_validated, rules_accepted, initial_games) VALUES ('"+oPlayer.SteamID64+"', '"+oPlayer.NicknameBase64+"', '"+oPlayer.AvatarSmall+"', '"+oPlayer.AvatarBig+"', "+fmt.Sprintf("%d", oPlayer.Mmr)+", "+fmt.Sprintf("%.06f", oPlayer.MmrUncertainty)+", "+fmt.Sprintf("%d", oPlayer.LastGameResult)+", "+fmt.Sprintf("%d", oPlayer.Access)+", "+fmt.Sprintf("%v", oPlayer.ProfValidated)+", "+fmt.Sprintf("%v", oPlayer.RulesAccepted)+", 0);");
 	if (errDbQuery == nil) {
 		dbQuery.Close();
 	}
@@ -160,6 +173,19 @@ func RemoveSession(sSessID string) {
 		dbQuery.Close();
 	}
 	MuDatabase.Unlock();
+}
+
+func LogGame(oGame DatabaseGameLog) {
+	//Delete if already logged (shouldn't happen, but just in case)
+	dbQueryDelete, errQueryDelete := dbConn.Query("DELETE FROM games_log WHERE game_id = '"+oGame.ID+"';");
+	if (errQueryDelete == nil) {
+		dbQueryDelete.Close();
+	}
+	//Add player
+	dbQuery, errDbQuery := dbConn.Query("INSERT INTO games_log(game_id, game_valid, created_at, players_a, players_b, team_a_scores, team_b_scores, confogl_config, campaign_name, server_ip) VALUES ('"+oGame.ID+"', "+fmt.Sprintf("%v", oGame.Valid)+", "+fmt.Sprintf("%d", oGame.CreatedAt)+", '"+oGame.PlayersA+"', '"+oGame.PlayersB+"', "+fmt.Sprintf("%d", oGame.TeamAScores)+", "+fmt.Sprintf("%d", oGame.TeamBScores)+", '"+oGame.ConfoglConfig+"', '"+oGame.CampaignName+"', '"+oGame.ServerIP+"');");
+	if (errDbQuery == nil) {
+		dbQuery.Close();
+	}
 }
 
 func AntiCheatLog(sLogLineBase64 string) {

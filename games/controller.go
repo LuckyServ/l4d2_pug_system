@@ -287,6 +287,20 @@ func Control(pGame *EntGame) {
 
 	SetLastUpdated(pGame.PlayersUnpaired);
 	players.I64LastPlayerlistUpdate = time.Now().UnixMilli();
+
+	go database.LogGame(database.DatabaseGameLog{
+		ID:					pGame.ID,
+		Valid:				true,
+		CreatedAt:			pGame.CreatedAt,
+		PlayersA:			Implode4Players(pGame.PlayersA),
+		PlayersB:			Implode4Players(pGame.PlayersB),
+		TeamAScores:		arFinalScores[0],
+		TeamBScores:		arFinalScores[1],
+		ConfoglConfig:		pGame.GameConfig.CodeName,
+		CampaignName:		pGame.CampaignName,
+		ServerIP:			pGame.ServerIP,
+	});
+
 	Destroy(pGame);
 	MuGames.Unlock();
 

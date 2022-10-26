@@ -162,3 +162,11 @@ func ChooseConfoglConfig(iMmr int) (settings.ConfoglConfig) {
 		MmrMax:			2000000000,
 	}; //shouldn't happen
 }
+
+func Implode4Players(arPlayers []*players.EntPlayer) string {
+	var sSteamID64s string = arPlayers[0].SteamID64;
+	for i := 1; i < 4; i++ {
+		sSteamID64s = sSteamID64s + "," + arPlayers[i].SteamID64;
+	}
+	return sSteamID64s;
+}

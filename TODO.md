@@ -1,5 +1,4 @@
 - [ ] Finish integration with SirPlease and io.asia
-- [ ] Log games
 - [ ] Log game chat
 - [ ] Log public chat
 - [ ] Manage authorization expire
@@ -10,6 +9,7 @@
 - [ ] Automatically parse anticheat logs and ban based on them
 - [ ] Setup database backups
 
+- [x] Log games
 - [x] Store initial player hours
 - [x] Search suspected smurfs
 - [x] Mmr color in response
