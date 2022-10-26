@@ -74,7 +74,7 @@ func HttpReqValidateProf(c *gin.Context) {
 
 							}, "playerstats", "stats");
 							iVersusGamePlayed := int(i64VersusGamesWon + i64VersusGamesLost);
-							if (iVersusGamePlayed >= settings.MinVersusGamesPlayed) {
+							if (iVersusGamePlayed >= settings.MinVersusGamesPlayed && iVersusGamePlayed < 999999) {
 								sClientIP := c.ClientIP();
 								if (smurf.IsVPN(sClientIP)) {
 									mapResponse["error"] = "We believe you are using VPN/proxy connection. You can not validate your profile via VPN/proxy. Make sure you disable VPN/proxy and then try again. If you are not using VPN/proxy, and the system falsely accuses you of using it, please contact admin.";
@@ -105,6 +105,10 @@ func HttpReqValidateProf(c *gin.Context) {
 										Access:				pPlayer.Access,
 										ProfValidated:		pPlayer.ProfValidated,
 										RulesAccepted:		pPlayer.RulesAccepted,
+										});
+									go database.UpdateInitialGames(database.DatabasePlayer{
+										SteamID64:			pPlayer.SteamID64,
+										InitialGames:		iVersusGamePlayed,
 										});
 									players.MuPlayers.Unlock();
 

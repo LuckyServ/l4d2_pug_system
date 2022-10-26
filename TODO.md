@@ -9,8 +9,9 @@
 - [ ] Shut down RU servers on non-EU playtime
 - [ ] Automatically parse anticheat logs and ban based on them
 - [ ] Setup database backups
-- [ ] Search suspected smurfs
 
+- [x] Store initial player hours
+- [x] Search suspected smurfs
 - [x] Mmr color in response
 - [x] Add avatars
 - [x] Shorten the timeout on tickets

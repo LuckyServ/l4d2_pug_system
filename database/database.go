@@ -22,6 +22,7 @@ type DatabasePlayer struct {
 	Access				int //-2 - completely banned, -1 - chat banned, 0 - regular player, 1 - behaviour moderator, 2 - cheat moderator, 3 - behaviour+cheat moderator, 4 - full admin access
 	ProfValidated		bool
 	RulesAccepted		bool
+	InitialGames		int
 }
 
 type DatabaseSession struct {
@@ -73,7 +74,7 @@ func AddPlayer(oPlayer DatabasePlayer) {
 		dbQueryDelete.Close();
 	}
 	//Add player
-	dbQuery, errDbQuery := dbConn.Query("INSERT INTO players_list(steamid64, base64nickname, avatar_small, avatar_big, mmr, mmr_uncertainty, last_game_result, access, prof_validated, rules_accepted) VALUES ("+oPlayer.SteamID64+", '"+oPlayer.NicknameBase64+"', '"+oPlayer.AvatarSmall+"', '"+oPlayer.AvatarBig+"', "+fmt.Sprintf("%d", oPlayer.Mmr)+", "+fmt.Sprintf("%.06f", oPlayer.MmrUncertainty)+", "+fmt.Sprintf("%d", oPlayer.LastGameResult)+", "+fmt.Sprintf("%d", oPlayer.Access)+", "+fmt.Sprintf("%v", oPlayer.ProfValidated)+", "+fmt.Sprintf("%v", oPlayer.RulesAccepted)+");");
+	dbQuery, errDbQuery := dbConn.Query("INSERT INTO players_list(steamid64, base64nickname, avatar_small, avatar_big, mmr, mmr_uncertainty, last_game_result, access, prof_validated, rules_accepted, initial_games) VALUES ("+oPlayer.SteamID64+", '"+oPlayer.NicknameBase64+"', '"+oPlayer.AvatarSmall+"', '"+oPlayer.AvatarBig+"', "+fmt.Sprintf("%d", oPlayer.Mmr)+", "+fmt.Sprintf("%.06f", oPlayer.MmrUncertainty)+", "+fmt.Sprintf("%d", oPlayer.LastGameResult)+", "+fmt.Sprintf("%d", oPlayer.Access)+", "+fmt.Sprintf("%v", oPlayer.ProfValidated)+", "+fmt.Sprintf("%v", oPlayer.RulesAccepted)+", 0);");
 	if (errDbQuery == nil) {
 		dbQuery.Close();
 	}
@@ -83,6 +84,15 @@ func AddPlayer(oPlayer DatabasePlayer) {
 func UpdatePlayer(oPlayer DatabasePlayer) {
 	MuDatabase.Lock();
 	dbQuery, errDbQuery := dbConn.Query("UPDATE players_list SET base64nickname = '"+oPlayer.NicknameBase64+"', avatar_small = '"+oPlayer.AvatarSmall+"', avatar_big = '"+oPlayer.AvatarBig+"', mmr = "+fmt.Sprintf("%d", oPlayer.Mmr)+", mmr_uncertainty = "+fmt.Sprintf("%.06f", oPlayer.MmrUncertainty)+", last_game_result = "+fmt.Sprintf("%d", oPlayer.LastGameResult)+", access = "+fmt.Sprintf("%d", oPlayer.Access)+", prof_validated = "+fmt.Sprintf("%v", oPlayer.ProfValidated)+", rules_accepted = "+fmt.Sprintf("%v", oPlayer.RulesAccepted)+" WHERE steamid64 = '"+oPlayer.SteamID64+"';");
+	if (errDbQuery == nil) {
+		dbQuery.Close();
+	}
+	MuDatabase.Unlock();
+}
+
+func UpdateInitialGames(oPlayer DatabasePlayer) {
+	MuDatabase.Lock();
+	dbQuery, errDbQuery := dbConn.Query("UPDATE players_list SET initial_games = "+fmt.Sprintf("%d", oPlayer.InitialGames)+" WHERE steamid64 = '"+oPlayer.SteamID64+"';");
 	if (errDbQuery == nil) {
 		dbQuery.Close();
 	}
