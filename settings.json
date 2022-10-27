@@ -71,7 +71,7 @@
 		"name": "databasename"
 	},
 	"timeouts": {
-		"online_minutes": 5,
+		"online_seconds": 10,
 		"idle_minutes": 60,
 		"readyup_seconds": 25,
 		"lobby_fill_minutes": 10

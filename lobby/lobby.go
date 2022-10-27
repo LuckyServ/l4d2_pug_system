@@ -139,7 +139,7 @@ func Join(pPlayer *players.EntPlayer, sLobbyID string) bool { //MuPlayers and Mu
 	return true;
 }
 
-func Leave(pPlayer *players.EntPlayer) bool { //MuPlayers and MuLobbies must be locked outside
+func Leave(pPlayer *players.EntPlayer, bForced bool) bool { //MuPlayers and MuLobbies must be locked outside
 
 	//Repeat some critical checks
 	if (!pPlayer.IsInLobby) {
@@ -185,7 +185,10 @@ func Leave(pPlayer *players.EntPlayer) bool { //MuPlayers and MuLobbies must be 
 			pPlayer.IsReadyInLobby = false;
 			pLobby.ReadyPlayers--;
 		}
-		pPlayer.LastFullLobbyLeave = i64CurTime;
+		if (!bForced) {
+			pPlayer.LastFullLobbyLeave = i64CurTime;
+			pPlayer.IsAutoSearching = false;
+		}
 		for i := 0; i < pLobby.PlayerCount; i++ {
 			if (pLobby.Players[i].IsReadyInLobby) {
 				pLobby.Players[i].IsReadyInLobby = false;

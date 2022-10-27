@@ -27,8 +27,7 @@ func HttpReqLeaveLobby(c *gin.Context) {
 			} else {
 				//Leave lobby
 				lobby.MuLobbies.Lock();
-				if (lobby.Leave(pPlayer)) {
-					pPlayer.IsAutoSearching = false;
+				if (lobby.Leave(pPlayer, false)) {
 					mapResponse["success"] = true;
 				} else {
 					mapResponse["error"] = "Race condition. Try again.";

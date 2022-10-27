@@ -62,7 +62,7 @@ func WatchLobbies() {
 		players.MuPlayers.Lock();
 
 		var arReadyLobbies []string;
-		var arUnreadyPlayers, arTimedoutLobbiesPlayers, arJoinLobbyPlayers, arGamePlayers []*players.EntPlayer;
+		var arUnreadyPlayers, arOfflinePlayers, arTimedoutLobbiesPlayers, arJoinLobbyPlayers, arGamePlayers []*players.EntPlayer;
 		
 		i64CurTime := time.Now().UnixMilli();
 
@@ -75,20 +75,32 @@ func WatchLobbies() {
 						arUnreadyPlayers = append(arUnreadyPlayers, pPlayer);
 					}
 				}
-			} else if (pLobby.PlayerCount < 8 && i64CurTime - pLobby.CreatedAt >= settings.LobbyFillTimeout) {
-				for _, pPlayer := range pLobby.Players {
-					arTimedoutLobbiesPlayers = append(arTimedoutLobbiesPlayers, pPlayer);
+			} else if (pLobby.PlayerCount < 8) {
+				if (i64CurTime - pLobby.CreatedAt >= settings.LobbyFillTimeout) {
+					for _, pPlayer := range pLobby.Players {
+						arTimedoutLobbiesPlayers = append(arTimedoutLobbiesPlayers, pPlayer);
+					}
+				} else {
+					for _, pPlayer := range pLobby.Players {
+						if (!pPlayer.IsOnline) {
+							arOfflinePlayers = append(arOfflinePlayers, pPlayer);
+						}
+					}
 				}
 			}
 		}
 
+		for _, pPlayer := range arOfflinePlayers {
+			Leave(pPlayer, true);
+			pPlayer.IsAutoSearching = false;
+		}
 		for _, pPlayer := range arUnreadyPlayers {
-			Leave(pPlayer);
+			Leave(pPlayer, true);
 			pPlayer.IsAutoSearching = false;
 			pPlayer.LastFullLobbyLeave = i64CurTime;
 		}
 		for _, pPlayer := range arTimedoutLobbiesPlayers {
-			if (Leave(pPlayer) && pPlayer.IsAutoSearching) {
+			if (Leave(pPlayer, true) && pPlayer.IsAutoSearching) {
 				arJoinLobbyPlayers = append(arJoinLobbyPlayers, pPlayer);
 			}
 		}
@@ -146,7 +158,7 @@ func WatchLobbies() {
 		}
 
 		for _, pPlayer := range arGamePlayers {
-			Leave(pPlayer);
+			Leave(pPlayer, true);
 			pPlayer.IsAutoSearching = false;
 		}
 

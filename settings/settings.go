@@ -253,12 +253,12 @@ func ConfigFile() bool {
 	}
 	OnlineMmrRange = int(i64Buffer);
 
-	i64Buffer, errError = jsonparser.GetInt(byData, "timeouts", "online_minutes");
+	i64Buffer, errError = jsonparser.GetInt(byData, "timeouts", "online_seconds");
 	if (errError != nil) {
 		fmt.Printf("Error reading config file: %s\n", errError);
 		return false;
 	}
-	OnlineTimeout = i64Buffer * 60 * 1000;
+	OnlineTimeout = i64Buffer * 1000;
 
 	i64Buffer, errError = jsonparser.GetInt(byData, "timeouts", "idle_minutes");
 	if (errError != nil) {

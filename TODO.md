@@ -1,3 +1,4 @@
+- [ ] Deal with those who isnt online but stays in lobby
 - [ ] Finish integration with SirPlease and io.asia
 - [ ] Log game chat
 - [ ] Log public chat
