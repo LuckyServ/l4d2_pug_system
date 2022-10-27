@@ -1,4 +1,3 @@
-- [ ] Deal with those who isnt online but stays in lobby
 - [ ] Finish integration with SirPlease and io.asia
 - [ ] Log game chat
 - [ ] Log public chat
@@ -10,6 +9,7 @@
 - [ ] Automatically parse anticheat logs and ban based on them
 - [ ] Setup database backups
 
+- [x] Deal with those who isnt online but stays in lobby
 - [x] Block jointeam in SM plugin
 - [x] Log games
 - [x] Store initial player hours
