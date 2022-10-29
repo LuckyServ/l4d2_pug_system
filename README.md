@@ -382,6 +382,7 @@ Response parameters:
 | ------ | ------ | ------ |
 | <strong>success</strong> | _bool_ | Always true |
 | <strong>messages</strong> |  | Ordered array of messages |
+| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>time_stamp</strong> | _int64_ | Time the message was created at |
 | &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>base64text</strong> | _string_ | Base 64 encoded message text |
 | &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>steamid64</strong> | _string_ | Steam ID of a player who sent the message |
 | &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>base64name</strong> | _string_ | Base 64 encoded nickname |

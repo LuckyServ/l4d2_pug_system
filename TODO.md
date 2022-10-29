@@ -1,14 +1,16 @@
-- [ ] Finish integration with SirPlease and io.asia
+- [ ] Adapt to timer throttling in JS https://developer.chrome.com/blog/timer-throttling-in-chrome-88/
 - [ ] Log game chat
 - [ ] Log public chat
 - [ ] Manage authorization expire
 - [ ] Log on database write failure
 - [ ] Restarting mechanism
 - [ ] Regularly increase mmr uncertainty value
+- [ ] Finish integration with SirPlease and io.asia
 - [ ] Shut down RU servers on non-EU playtime
 - [ ] Automatically parse anticheat logs and ban based on them
 - [ ] Setup database backups
 
+- [x] Unique timestamp on chat messages
 - [x] Deal with those who isnt online but stays in lobby
 - [x] Block jointeam in SM plugin
 - [x] Log games

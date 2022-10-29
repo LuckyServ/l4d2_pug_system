@@ -10,6 +10,7 @@ import (
 
 
 type ChatMsgResp struct {
+	TimeStamp		int64	`json:"time_stamp"`
 	TextBase64		string	`json:"base64text"`
 	SteamID64		string	`json:"steamid64"`
 	NicknameBase64	string	`json:"base64name"`
@@ -26,6 +27,7 @@ func HttpReqGetGlobalChat(c *gin.Context) {
 	var arRespChat []ChatMsgResp;
 	for _, oMsg := range arChatMsgs {
 		arRespChat = append(arRespChat, ChatMsgResp{
+			TimeStamp:		oMsg.TimeStamp,
 			TextBase64:		base64.StdEncoding.EncodeToString([]byte(oMsg.Text)),
 			SteamID64:		oMsg.SteamID64,
 			NicknameBase64:	oMsg.NicknameBase64,
