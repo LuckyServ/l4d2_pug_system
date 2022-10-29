@@ -23,7 +23,7 @@ func wshandler(w http.ResponseWriter, r *http.Request) {
 	upgrader.CheckOrigin = func(r *http.Request) bool {return true;};
 	ws, err := upgrader.Upgrade(w, r, nil);
 	if (err != nil) {
-		fmt.Printf("%s\n", err.Error());
+		//fmt.Printf("%s\n", err.Error());
 		return;
 	}
 	//fmt.Printf("%d : Client connected\n", time.Now().Unix());
@@ -36,7 +36,7 @@ func wshandler(w http.ResponseWriter, r *http.Request) {
 	for {
 		err = ws.WriteMessage(1, []byte("trigger_status"));
 		if (err != nil) {
-			fmt.Printf("%s\n", err.Error());
+			//fmt.Printf("%s\n", err.Error());
 			return;
 		}
 		time.Sleep(1 * time.Second);
