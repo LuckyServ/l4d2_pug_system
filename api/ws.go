@@ -1,7 +1,7 @@
 package api
 
 import (
-	"fmt"
+	//"fmt"
 	"time"
 	"github.com/gin-gonic/gin"
 	"github.com/gorilla/websocket"
@@ -16,7 +16,7 @@ var upgrader = websocket.Upgrader{
 
 func HttpReqWebSocket(c *gin.Context) {
 	wshandler(c.Writer, c.Request);
-	fmt.Printf("%d : HttpReqWebSocket(c *gin.Context) ended\n", time.Now().Unix());
+	//fmt.Printf("%d : HttpReqWebSocket(c *gin.Context) ended\n", time.Now().Unix());
 }
 
 func wshandler(w http.ResponseWriter, r *http.Request) {
@@ -26,7 +26,7 @@ func wshandler(w http.ResponseWriter, r *http.Request) {
 		fmt.Printf("%s\n", err.Error());
 		return;
 	}
-	fmt.Printf("%d : Client connected\n", time.Now().Unix());
+	//fmt.Printf("%d : Client connected\n", time.Now().Unix());
 	/*err = ws.WriteMessage(1, []byte("Hi Client!"));
 	if (err != nil) {
 		fmt.Printf("%s\n", err.Error());
