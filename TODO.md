@@ -1,4 +1,3 @@
-- [ ] Adapt to timer throttling in JS https://developer.chrome.com/blog/timer-throttling-in-chrome-88/
 - [ ] Log game chat
 - [ ] Log public chat
 - [ ] Manage authorization expire
@@ -10,6 +9,7 @@
 - [ ] Automatically parse anticheat logs and ban based on them
 - [ ] Setup database backups
 
+- [x] Adapt to timer throttling in JS https://developer.chrome.com/blog/timer-throttling-in-chrome-88/
 - [x] Unique timestamp on chat messages
 - [x] Deal with those who isnt online but stays in lobby
 - [x] Block jointeam in SM plugin
