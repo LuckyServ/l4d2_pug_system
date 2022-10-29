@@ -3,10 +3,12 @@ package chat
 import (
 	"../settings"
 	"time"
+	"../database"
+	"encoding/base64"
 )
 
 type EntChatMsg struct {
-	TimeStamp		int64
+	TimeStamp		int64 //ms
 	Text			string
 	SteamID64		string //who sent it
 	NicknameBase64	string //who sent it
@@ -31,6 +33,7 @@ func ChannelWatchers() {
 				ArrayChatMsgs = ArrayChatMsgs[1:];
 			}
 			ArrayChatMsgs = append(ArrayChatMsgs, oChatMsg);
+			go database.PublicChatLog(oChatMsg.TimeStamp, oChatMsg.NicknameBase64, oChatMsg.SteamID64, base64.StdEncoding.EncodeToString([]byte(oChatMsg.Text)));
 
 		case ChanRead <- func()([]EntChatMsg) {
 			arChatMsgs := make([]EntChatMsg, len(ArrayChatMsgs));
