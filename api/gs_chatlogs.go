@@ -11,15 +11,16 @@ import (
 )
 
 
-func HttpReqGSAntiCheatLogs(c *gin.Context) {
+func HttpReqGSChatLogs(c *gin.Context) {
 
 	var sResponse string = "\"VDFresponse\"\n{";
 
 	sAuthKey := c.PostForm("auth_key");
 	sLogLine := c.PostForm("logline");
+	sSteamID64 := c.PostForm("steamid64");
 	if (auth.Backend(sAuthKey)) {
 		sIP := c.PostForm("ip");
-		if (sIP != "" && sLogLine != "") {
+		if (sIP != "" && sLogLine != "" && sSteamID64 != "") {
 			games.MuGames.RLock();
 			pGame := games.GetGameByIP(sIP);
 			if (pGame != nil) {
@@ -28,8 +29,7 @@ func HttpReqGSAntiCheatLogs(c *gin.Context) {
 
 				sResponse = fmt.Sprintf("%s\n	\"success\" \"1\"", sResponse);
 
-				sBuffer := fmt.Sprintf("Time: %s, game %s, log line: %s", time.Now().Format("01/Jan/2006 - 15:04:05.00 MST"), sGameID, sLogLine);
-				go database.AntiCheatLog(base64.StdEncoding.EncodeToString([]byte(sBuffer)));
+				go database.GameServerChatLog(time.Now().UnixMilli(), sGameID, sSteamID64, base64.StdEncoding.EncodeToString([]byte(sLogLine)));
 
 			} else {
 				games.MuGames.RUnlock();

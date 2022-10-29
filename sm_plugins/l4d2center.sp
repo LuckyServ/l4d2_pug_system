@@ -91,6 +91,10 @@ public OnPluginStart() {
 	AddCommandListener(OnCommandExecute, "say_team");
 	AddCommandListener(OnBlockedCommand, "callvote");
 	AddCommandListener(OnBlockedCommand, "jointeam");
+
+	AddCommandListener(OnSayCommand, "say");
+	AddCommandListener(OnSayCommand, "say_team");
+
 	RegConsoleCmd("sm_ready", Ready_Cmd);
 	RegConsoleCmd("sm_r", Ready_Cmd);
 	CreateTimer(1.0, Timer_CountAbsence, 0, TIMER_REPEAT);
@@ -863,6 +867,33 @@ Action OnBlockedCommand(int client, const char[] command, int argc) {
 Action OnCommandExecute(int client, const char[] command, int argc) {
 	if (client > 0 && IsClientInGame(client) && !IsFakeClient(client)) {
 		iLastActivity[client] = GetTime();
+	}
+	return Plugin_Continue;
+}
+
+Action OnSayCommand(int client, const char[] command, int argc) {
+	if (iServerReserved == 1 && client > 0 && IsClientInGame(client) && !IsFakeClient(client)) {
+		char sText[256];
+		GetCmdArgString(sText, sizeof(sText));
+		StripQuotes(sText);
+
+		char sSteamID64[20];
+		if (GetClientAuthId(client, AuthId_SteamID64, sSteamID64, sizeof(sSteamID64), false)) {
+			char sUrl[256];
+			Format(sUrl, sizeof(sUrl), "https://api.l4d2center.com/gs/chatlogs?auth_key=%s", sAuthKey);
+			Handle hSWReq = SteamWorks_CreateHTTPRequest(k_EHTTPMethodPOST, sUrl);
+			SteamWorks_SetHTTPRequestNetworkActivityTimeout(hSWReq, 9);
+			SteamWorks_SetHTTPRequestAbsoluteTimeoutMS(hSWReq, 10000);
+			SteamWorks_SetHTTPRequestRequiresVerifiedCertificate(hSWReq, false);
+			SteamWorks_SetHTTPRequestGetOrPostParameter(hSWReq, "auth_key", sAuthKey);
+			SteamWorks_SetHTTPRequestGetOrPostParameter(hSWReq, "ip", sPublicIP);
+			SteamWorks_SetHTTPRequestGetOrPostParameter(hSWReq, "steamid64", sSteamID64);
+			SteamWorks_SetHTTPRequestGetOrPostParameter(hSWReq, "logline", sText);
+
+			SteamWorks_SetHTTPCallbacks(hSWReq, SWReqCompleted_Dummy);
+			SteamWorks_SendHTTPRequest(hSWReq);
+		}
+
 	}
 	return Plugin_Continue;
 }

@@ -70,8 +70,9 @@ func GinInit() {
 	r.POST("/gs/fullrup", HttpReqGSFullReadyUp);
 	r.POST("/gs/partialrup", HttpReqGSPartialReadyUp);
 	r.POST("/gs/gameresults", HttpReqGSGameResults);
-	r.POST("/gs/anticheatlogs", HttpReqAntiCheatLogs);
-	r.POST("/gs/checkban", HttpReqCheckBan);
+	r.POST("/gs/anticheatlogs", HttpReqGSAntiCheatLogs);
+	r.POST("/gs/chatlogs", HttpReqGSChatLogs);
+	r.POST("/gs/checkban", HttpReqGSCheckBan);
 
 	r.GET("/smurf/list_updated", HttpReqSMURFListUpdated);
 

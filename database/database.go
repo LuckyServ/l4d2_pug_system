@@ -195,6 +195,13 @@ func AntiCheatLog(sLogLineBase64 string) {
 	}
 }
 
+func GameServerChatLog(i64Time int64, sGameID string, sSteamID64 string, sTextBase64 string) {
+	dbQuery, errDbQuery := dbConn.Query("INSERT INTO gs_chat_log(created_at, gameid, steamid64, logline) VALUES ("+fmt.Sprintf("%d", i64Time)+", '"+sGameID+"', '"+sSteamID64+"', '"+sTextBase64+"');");
+	if (errDbQuery == nil) {
+		dbQuery.Close();
+	}
+}
+
 func SaveVPNInfo(oVPNInfo DatabaseVPNInfo) {
 	MuDatabase.Lock();
 	dbQueryDelete, errQueryDelete := dbConn.Query("DELETE FROM vpn_info WHERE ipaddress = '"+oVPNInfo.IP+"';");

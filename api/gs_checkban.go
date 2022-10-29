@@ -8,7 +8,7 @@ import (
 )
 
 
-func HttpReqCheckBan(c *gin.Context) {
+func HttpReqGSCheckBan(c *gin.Context) {
 
 	var sResponse string = "\"VDFresponse\"\n{";
 
