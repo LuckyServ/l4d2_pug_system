@@ -2,6 +2,14 @@
 # l4d2center.com
 ## The backend layer of the ranked PUG system for Left 4 Dead 2
 
+### GET /ws
+##### Websocket endpoint
+Request parameters: None
+
+Response parameters: None
+
+<br/><br/>
+
 ### GET /shutdown
 ##### An admin command (access = 4) to shutdown the program
 Request parameters: None
