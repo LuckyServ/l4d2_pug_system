@@ -40,7 +40,7 @@ Request parameters:
 | Key | Type | Description
 | ------ | ------ | ------ |
 | <strong>steamid64</strong> | _string_ | SteamID 64 |
-| <strong>nickname</strong> | _int_ | Access |
+| <strong>access</strong> | _int_ | Access |
 
 Response parameters:
 | Key | Type | Description
