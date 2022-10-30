@@ -34,7 +34,7 @@ func CreateTicket(oTicket DatabaseTicket) {
 	dbQuery, errDbQuery := dbConn.Query("INSERT INTO tickets_list(ticket_id, ticket_type, created_by, cteated_at, is_closed) VALUES ('"+oTicket.TicketID+"', "+fmt.Sprintf("%d", oTicket.TicketType)+", '"+oTicket.CreatedBy+"', "+fmt.Sprintf("%d", oTicket.CreatedAt)+", false);");
 	if (errDbQuery == nil) {
 		dbQuery.Close();
-	}
+	} else {LogToFile("Error inserting ticket at CreateTicket: "+oTicket.CreatedBy);};
 	MuDatabase.Unlock();
 }
 
@@ -43,7 +43,7 @@ func CreateMessage(oMessage DatabaseTicketMessage) {
 	dbQuery, errDbQuery := dbConn.Query("INSERT INTO ticket_messages(ticket_id, message_by, message_at, message_text) VALUES ('"+oMessage.TicketID+"', '"+oMessage.MessageBy+"', "+fmt.Sprintf("%d", oMessage.MessageAt)+", '"+oMessage.MessageBase64+"');");
 	if (errDbQuery == nil) {
 		dbQuery.Close();
-	}
+	} else {LogToFile("Error inserting ticket message at CreateMessage: "+oMessage.MessageBy);};
 	MuDatabase.Unlock();
 }
 
@@ -52,7 +52,7 @@ func CloseTicket(sTicketID string) {
 	dbQuery, errDbQuery := dbConn.Query("UPDATE tickets_list SET is_closed = true WHERE ticket_id = '"+sTicketID+"';");
 	if (errDbQuery == nil) {
 		dbQuery.Close();
-	}
+	} else {LogToFile("Error updating ticket at CloseTicket: "+sTicketID);};
 	MuDatabase.Unlock();
 }
 

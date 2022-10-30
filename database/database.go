@@ -6,6 +6,8 @@ import (
 	"database/sql"
 	"../settings"
 	_ "github.com/lib/pq"
+	"log"
+	"os"
 )
 
 var dbConn *sql.DB;
@@ -76,6 +78,7 @@ func DatabaseConnect() bool {
 		return false;
 	}
 	fmt.Printf("Database connection successfull\n");
+	//LogToFile("Database connection successfull");
 	return true;
 }
 
@@ -85,12 +88,12 @@ func AddPlayer(oPlayer DatabasePlayer) {
 	dbQueryDelete, errQueryDelete := dbConn.Query("DELETE FROM players_list WHERE steamid64 = '"+oPlayer.SteamID64+"';");
 	if (errQueryDelete == nil) {
 		dbQueryDelete.Close();
-	}
+	} else {LogToFile("Error deleting player at AddPlayer: "+oPlayer.SteamID64);};
 	//Add player
 	dbQuery, errDbQuery := dbConn.Query("INSERT INTO players_list(steamid64, base64nickname, avatar_small, avatar_big, mmr, mmr_uncertainty, last_game_result, access, prof_validated, rules_accepted, initial_games) VALUES ('"+oPlayer.SteamID64+"', '"+oPlayer.NicknameBase64+"', '"+oPlayer.AvatarSmall+"', '"+oPlayer.AvatarBig+"', "+fmt.Sprintf("%d", oPlayer.Mmr)+", "+fmt.Sprintf("%.06f", oPlayer.MmrUncertainty)+", "+fmt.Sprintf("%d", oPlayer.LastGameResult)+", "+fmt.Sprintf("%d", oPlayer.Access)+", "+fmt.Sprintf("%v", oPlayer.ProfValidated)+", "+fmt.Sprintf("%v", oPlayer.RulesAccepted)+", 0);");
 	if (errDbQuery == nil) {
 		dbQuery.Close();
-	}
+	} else {LogToFile("Error inserting player at AddPlayer: "+oPlayer.SteamID64);};
 	MuDatabase.Unlock();
 }
 
@@ -99,7 +102,7 @@ func UpdatePlayer(oPlayer DatabasePlayer) {
 	dbQuery, errDbQuery := dbConn.Query("UPDATE players_list SET base64nickname = '"+oPlayer.NicknameBase64+"', avatar_small = '"+oPlayer.AvatarSmall+"', avatar_big = '"+oPlayer.AvatarBig+"', mmr = "+fmt.Sprintf("%d", oPlayer.Mmr)+", mmr_uncertainty = "+fmt.Sprintf("%.06f", oPlayer.MmrUncertainty)+", last_game_result = "+fmt.Sprintf("%d", oPlayer.LastGameResult)+", access = "+fmt.Sprintf("%d", oPlayer.Access)+", prof_validated = "+fmt.Sprintf("%v", oPlayer.ProfValidated)+", rules_accepted = "+fmt.Sprintf("%v", oPlayer.RulesAccepted)+" WHERE steamid64 = '"+oPlayer.SteamID64+"';");
 	if (errDbQuery == nil) {
 		dbQuery.Close();
-	}
+	} else {LogToFile("Error updating player at UpdatePlayer: "+oPlayer.SteamID64);};
 	MuDatabase.Unlock();
 }
 
@@ -108,7 +111,7 @@ func UpdateInitialGames(oPlayer DatabasePlayer) {
 	dbQuery, errDbQuery := dbConn.Query("UPDATE players_list SET initial_games = "+fmt.Sprintf("%d", oPlayer.InitialGames)+" WHERE steamid64 = '"+oPlayer.SteamID64+"';");
 	if (errDbQuery == nil) {
 		dbQuery.Close();
-	}
+	} else {LogToFile("Error updating player at UpdateInitialGames: "+oPlayer.SteamID64);};
 	MuDatabase.Unlock();
 }
 
@@ -117,7 +120,7 @@ func AddSession(oSession DatabaseSession) {
 	dbQuery, errDbQuery := dbConn.Query("INSERT INTO sessions_list(session_key, steamid64, since_milli) VALUES ('"+oSession.SessionID+"', '"+oSession.SteamID64+"', "+fmt.Sprintf("%d", oSession.Since)+");");
 	if (errDbQuery == nil) {
 		dbQuery.Close();
-	}
+	} else {LogToFile("Error adding session at AddSession: "+oSession.SteamID64);};
 	MuDatabase.Unlock();
 }
 
@@ -130,7 +133,7 @@ func GetMmrShift() int {
 			dbQuery.Scan(&iMmrShift);
 		}
 		dbQuery.Close();
-	}
+	} else {LogToFile("Error getting mmr shift at GetMmrShift");};
 	MuDatabase.RUnlock();
 	return iMmrShift;
 }
@@ -140,11 +143,11 @@ func ShiftMmr(iShift int) {
 	dbQueryShift, errDbQueryShift := dbConn.Query("UPDATE mmr_shift SET the_value = the_value + "+fmt.Sprintf("%d", iShift)+";");
 	if (errDbQueryShift == nil) {
 		dbQueryShift.Close();
-	}
+	} else {LogToFile("Error updating mmr shift at ShiftMmr");};
 	dbQueryPlayers, errDbQueryPlayers := dbConn.Query("UPDATE players_list SET mmr = mmr + "+fmt.Sprintf("%d", iShift)+" WHERE prof_validated = true;");
 	if (errDbQueryPlayers == nil) {
 		dbQueryPlayers.Close();
-	}
+	} else {LogToFile("Error updating players list at ShiftMmr");};
 	MuDatabase.Unlock();
 }
 
@@ -153,7 +156,7 @@ func AddBanRecord(oBanRecord DatabaseBanRecord) {
 	dbQuery, errDbQuery := dbConn.Query("INSERT INTO banlist(steamid64, access, steam_name, banned_by, created_on, accepted_on, banlength, banreason) VALUES ('"+oBanRecord.SteamID64+"', "+fmt.Sprintf("%d", oBanRecord.Access)+", '"+oBanRecord.NicknameBase64+"', '"+oBanRecord.BannedBySteamID64+"', "+fmt.Sprintf("%d", oBanRecord.CreatedAt)+", "+fmt.Sprintf("%d", oBanRecord.AcceptedAt)+", "+fmt.Sprintf("%d", oBanRecord.BanLength)+", '"+oBanRecord.BanReasonBase64+"');");
 	if (errDbQuery == nil) {
 		dbQuery.Close();
-	}
+	} else {LogToFile("Error adding ban at AddBanRecord: "+oBanRecord.SteamID64);};
 	MuDatabase.Unlock();
 }
 
@@ -162,7 +165,7 @@ func UpdateBanRecord(oBanRecord DatabaseBanRecord) {
 	dbQuery, errDbQuery := dbConn.Query("UPDATE banlist SET steamid64 = '"+oBanRecord.SteamID64+"', access = "+fmt.Sprintf("%d", oBanRecord.Access)+", steam_name = '"+oBanRecord.NicknameBase64+"', banned_by = '"+oBanRecord.BannedBySteamID64+"', accepted_on = "+fmt.Sprintf("%d", oBanRecord.AcceptedAt)+", banlength = "+fmt.Sprintf("%d", oBanRecord.BanLength)+", banreason = '"+oBanRecord.BanReasonBase64+"' WHERE created_on = "+fmt.Sprintf("%d", oBanRecord.CreatedAt)+";");
 	if (errDbQuery == nil) {
 		dbQuery.Close();
-	}
+	} else {LogToFile("Error updating ban at UpdateBanRecord: "+oBanRecord.SteamID64);};
 	MuDatabase.Unlock();
 }
 
@@ -171,7 +174,7 @@ func RemoveSession(sSessID string) {
 	dbQuery, errDbQuery := dbConn.Query("DELETE FROM sessions_list WHERE session_key = '"+sSessID+"';");
 	if (errDbQuery == nil) {
 		dbQuery.Close();
-	}
+	} else {LogToFile("Error removing session at RemoveSession: "+sSessID);};
 	MuDatabase.Unlock();
 }
 
@@ -180,33 +183,33 @@ func LogGame(oGame DatabaseGameLog) {
 	dbQueryDelete, errQueryDelete := dbConn.Query("DELETE FROM games_log WHERE game_id = '"+oGame.ID+"';");
 	if (errQueryDelete == nil) {
 		dbQueryDelete.Close();
-	}
+	} else {LogToFile("Error deleting game log at LogGame: "+oGame.ID);};
 	//Add player
 	dbQuery, errDbQuery := dbConn.Query("INSERT INTO games_log(game_id, game_valid, created_at, players_a, players_b, team_a_scores, team_b_scores, confogl_config, campaign_name, server_ip) VALUES ('"+oGame.ID+"', "+fmt.Sprintf("%v", oGame.Valid)+", "+fmt.Sprintf("%d", oGame.CreatedAt)+", '"+oGame.PlayersA+"', '"+oGame.PlayersB+"', "+fmt.Sprintf("%d", oGame.TeamAScores)+", "+fmt.Sprintf("%d", oGame.TeamBScores)+", '"+oGame.ConfoglConfig+"', '"+oGame.CampaignName+"', '"+oGame.ServerIP+"');");
 	if (errDbQuery == nil) {
 		dbQuery.Close();
-	}
+	} else {LogToFile("Error inserting game log at LogGame: "+oGame.ID);};
 }
 
 func AntiCheatLog(sLogLineBase64 string) {
 	dbQuery, errDbQuery := dbConn.Query("INSERT INTO cheat_log(clogline) VALUES ('"+sLogLineBase64+"');");
 	if (errDbQuery == nil) {
 		dbQuery.Close();
-	}
+	} else {LogToFile("Error inserting anticheat log at AntiCheatLog: "+sLogLineBase64);};
 }
 
 func GameServerChatLog(i64Time int64, sGameID string, sSteamID64 string, sTextBase64 string) {
 	dbQuery, errDbQuery := dbConn.Query("INSERT INTO gs_chat_log(created_at, gameid, steamid64, logline) VALUES ("+fmt.Sprintf("%d", i64Time)+", '"+sGameID+"', '"+sSteamID64+"', '"+sTextBase64+"');");
 	if (errDbQuery == nil) {
 		dbQuery.Close();
-	}
+	} else {LogToFile("Error inserting chat log at GameServerChatLog: "+sSteamID64);};
 }
 
 func PublicChatLog(i64Time int64, sNicknameBase64 string, sSteamID64 string, sTextBase64 string) {
 	dbQuery, errDbQuery := dbConn.Query("INSERT INTO pub_chat_log(created_at, nickname, steamid64, logline) VALUES ("+fmt.Sprintf("%d", i64Time)+", '"+sNicknameBase64+"', '"+sSteamID64+"', '"+sTextBase64+"');");
 	if (errDbQuery == nil) {
 		dbQuery.Close();
-	}
+	} else {LogToFile("Error inserting chat log at PublicChatLog: "+sSteamID64);};
 }
 
 func SaveVPNInfo(oVPNInfo DatabaseVPNInfo) {
@@ -214,11 +217,11 @@ func SaveVPNInfo(oVPNInfo DatabaseVPNInfo) {
 	dbQueryDelete, errQueryDelete := dbConn.Query("DELETE FROM vpn_info WHERE ipaddress = '"+oVPNInfo.IP+"';");
 	if (errQueryDelete == nil) {
 		dbQueryDelete.Close();
-	}
+	} else {LogToFile("Error deleting vpn info at SaveVPNInfo: "+oVPNInfo.IP);};
 	dbQuery, errDbQuery := dbConn.Query("INSERT INTO vpn_info(ipaddress, updated_at, is_vpn) VALUES ('"+oVPNInfo.IP+"', "+fmt.Sprintf("%d", oVPNInfo.UpdatedAt)+", "+fmt.Sprintf("%v", oVPNInfo.IsVPN)+");");
 	if (errDbQuery == nil) {
 		dbQuery.Close();
-	}
+	} else {LogToFile("Error inserting vpn info at SaveVPNInfo: "+oVPNInfo.IP);};
 	MuDatabase.Unlock();
 }
 
@@ -292,4 +295,13 @@ func RestoreVPNInfo() []DatabaseVPNInfo {
 	}
 	MuDatabase.RUnlock();
 	return arDBVPNInfos;
+}
+
+func LogToFile(sText string) {
+	f, err := os.OpenFile(settings.LogPath, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0777);
+	if (err == nil) {
+		logger := log.New(f, "db ", log.LstdFlags);
+		logger.Println(sText);
+		f.Close();
+	}
 }

@@ -1,4 +1,3 @@
-- [ ] Log on database write failure
 - [ ] Regularly increase mmr uncertainty value
 - [ ] Restarting mechanism
 - [ ] Setup database backups
@@ -6,6 +5,7 @@
 - [ ] Shut down RU servers on non-EU playtime
 - [ ] Automatically parse anticheat logs and ban based on them
 
+- [x] Log on database write failure
 - [x] Finish integration with io.asia
 - [x] Manage authorization expire
 - [x] Log public chat

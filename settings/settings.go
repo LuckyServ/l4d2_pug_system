@@ -10,6 +10,7 @@ import (
 )
 
 var FilePath string;
+var LogPath string;
 var ListenPort string;
 var BackendAuthKey string;
 var DefaultMmrUncertainty float32;
@@ -103,10 +104,12 @@ func Parse() bool {
 
 func CommandLine() {
 	oFilePath := flag.String("config-path", "./settings.json", "Path to the settings.json file");
+	oLogPath := flag.String("log-path", "./pugs.log", "Path to the log file");
 
 	flag.Parse();
 
 	FilePath = *oFilePath;
+	LogPath = *oLogPath;
 }
 
 func ConfigFile() bool {
