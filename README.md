@@ -22,6 +22,18 @@ Response parameters:
 
 <br/><br/>
 
+### GET /blocknewgames
+##### An admin command (access = 4) to block new games(lobbies) from creation
+Request parameters: None
+
+Response parameters:
+| Key | Type | Description
+| ------ | ------ | ------ |
+| <strong>success</strong> | _bool_ | "true" if command accepted, "false" otherwise |
+| <strong>error</strong> | _string_ | Outputs the reason if the request is rejected |
+
+<br/><br/>
+
 ### GET /addban
 ##### Add ban record
 Request parameters:
@@ -119,7 +131,7 @@ Response parameters:
 | Key | Type | Description
 | ------ | ------ | ------ |
 | <strong>success</strong> | _bool_ | Always true |
-| <strong>no_new_lobbies</strong> | _bool_ | Tells if creating new lobbies is blocked |
+| <strong>no_new_games</strong> | _bool_ | Tells if creating new games is blocked |
 | <strong>brokenmode</strong> | _bool_ | Tells if competitive plugins are broken by some L4D2 update. In this mode the gameservers are vanilla + Sourcemod. |
 | <strong>time</strong> | _int64_ | System time in milliseconds |
 | <strong>need_update_players</strong> | _bool_ | Should update players or not |

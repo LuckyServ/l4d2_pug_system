@@ -28,8 +28,10 @@ func HttpReqCreateLobby(c *gin.Context) {
 				mapResponse["error"] = "You are already in a lobby";
 			} else if (pPlayer.IsInGame) {
 				mapResponse["error"] = "You cant create lobbies, finish your game first";
-			} else if (pPlayer.LastLobbyActivity + settings.JoinLobbyCooldown > i64CurTime) {
-				mapResponse["error"] = fmt.Sprintf("You cant join lobbies that often. Please wait %d seconds.", ((pPlayer.LastLobbyActivity + settings.JoinLobbyCooldown) - i64CurTime) / 1000);
+			} else if (pPlayer.IsInGame) {
+				mapResponse["error"] = "You cant create lobbies, finish your game first";
+			} else if (lobby.NewLobbiesBlocked) {
+				mapResponse["error"] = "The site is going to be restarted soon, new games are not allowed";
 			} else if (pPlayer.LastFullLobbyLeave + settings.LeaveFullLobbyBan > i64CurTime) {
 				mapResponse["error"] = fmt.Sprintf("You are temporarily blocked from joining games for leaving a full (8/8) lobby. Please wait %d seconds.", ((pPlayer.LastFullLobbyLeave + settings.LeaveFullLobbyBan) - i64CurTime) / 1000);
 			} else if (!pPlayer.IsOnline) {

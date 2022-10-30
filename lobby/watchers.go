@@ -91,13 +91,10 @@ func WatchLobbies() {
 		}
 
 		for _, pPlayer := range arOfflinePlayers {
-			Leave(pPlayer, true);
-			pPlayer.IsAutoSearching = false;
+			Leave(pPlayer, false);
 		}
 		for _, pPlayer := range arUnreadyPlayers {
-			Leave(pPlayer, true);
-			pPlayer.IsAutoSearching = false;
-			pPlayer.LastFullLobbyLeave = i64CurTime;
+			Leave(pPlayer, false);
 		}
 		for _, pPlayer := range arTimedoutLobbiesPlayers {
 			if (Leave(pPlayer, true) && pPlayer.IsAutoSearching) {

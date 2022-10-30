@@ -21,6 +21,7 @@ var MapLobbies map[string]*EntLobby = make(map[string]*EntLobby);
 var ArrayLobbies []*EntLobby; //duplicate of MapLobbies, for faster iterating
 var MuLobbies sync.RWMutex;
 var I64LastLobbyListUpdate int64;
+var NewLobbiesBlocked bool;
 
 
 func JoinAny(pPlayer *players.EntPlayer) bool { //MuPlayers and MuLobbies must be locked outside
@@ -187,7 +188,6 @@ func Leave(pPlayer *players.EntPlayer, bForced bool) bool { //MuPlayers and MuLo
 		}
 		if (!bForced) {
 			pPlayer.LastFullLobbyLeave = i64CurTime;
-			pPlayer.IsAutoSearching = false;
 		}
 		for i := 0; i < pLobby.PlayerCount; i++ {
 			if (pLobby.Players[i].IsReadyInLobby) {
@@ -199,6 +199,9 @@ func Leave(pPlayer *players.EntPlayer, bForced bool) bool { //MuPlayers and MuLo
 
 	I64LastLobbyListUpdate = i64CurTime;
 
+	if (!bForced) {
+		pPlayer.IsAutoSearching = false;
+	}
 	pPlayer.IsInLobby = false;
 	pPlayer.IsIdle = false;
 	pPlayer.LastLobbyActivity = i64CurTime;

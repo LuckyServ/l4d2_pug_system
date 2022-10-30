@@ -32,7 +32,7 @@ func HttpReqStatus(c *gin.Context) {
 	i64CookieGlobalChatUpdatedAt, _ := strconv.ParseInt(sCookieGlobalChatUpdatedAt, 10, 64);
 
 	mapResponse["success"] = true;
-	mapResponse["no_new_lobbies"] = settings.NoNewLobbies;
+	mapResponse["no_new_games"] = lobby.NewLobbiesBlocked;
 	mapResponse["brokenmode"] = settings.BrokenMode;
 	mapResponse["time"] = i64CurTime;
 
