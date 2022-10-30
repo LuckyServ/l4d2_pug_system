@@ -14,6 +14,7 @@ var LogPath string;
 var ListenPort string;
 var BackendAuthKey string;
 var DefaultMmrUncertainty float32;
+var IncreaseMmrUncertainty float32;
 var MmrStable float32;
 var MmrAbsoluteWin float32;
 var MmrMinimumWin float32;
@@ -140,6 +141,13 @@ func ConfigFile() bool {
 		return false;
 	}
 	DefaultMmrUncertainty = float32(f64Buffer);
+
+	f64Buffer, errError = jsonparser.GetFloat(byData, "mmr", "increase_daily");
+	if (errError != nil) {
+		fmt.Printf("Error reading config file: %s\n", errError);
+		return false;
+	}
+	IncreaseMmrUncertainty = float32(f64Buffer);
 
 	f64Buffer, errError = jsonparser.GetFloat(byData, "mmr", "consider_stable");
 	if (errError != nil) {

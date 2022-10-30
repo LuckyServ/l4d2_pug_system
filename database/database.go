@@ -151,6 +151,19 @@ func ShiftMmr(iShift int) {
 	MuDatabase.Unlock();
 }
 
+func IncreaseUncertainty() {
+	MuDatabase.Lock();
+	dbQueryIncrease, errDbQueryIncrease := dbConn.Query("UPDATE players_list SET mmr_uncertainty = mmr_uncertainty + "+fmt.Sprintf("%.06f", settings.IncreaseMmrUncertainty)+";");
+	if (errDbQueryIncrease == nil) {
+		dbQueryIncrease.Close();
+	} else {LogToFile("Error increasing mmr uncertainty at IncreaseUncertainty");};
+	dbQueryCut, errDbQueryCut := dbConn.Query("UPDATE players_list SET mmr_uncertainty = "+fmt.Sprintf("%.06f", settings.DefaultMmrUncertainty)+" WHERE mmr_uncertainty > "+fmt.Sprintf("%.06f", settings.DefaultMmrUncertainty)+";");
+	if (errDbQueryCut == nil) {
+		dbQueryCut.Close();
+	} else {LogToFile("Error cutting mmr uncertainty at IncreaseUncertainty");};
+	MuDatabase.Unlock();
+}
+
 func AddBanRecord(oBanRecord DatabaseBanRecord) {
 	MuDatabase.Lock();
 	dbQuery, errDbQuery := dbConn.Query("INSERT INTO banlist(steamid64, access, steam_name, banned_by, created_on, accepted_on, banlength, banreason) VALUES ('"+oBanRecord.SteamID64+"', "+fmt.Sprintf("%d", oBanRecord.Access)+", '"+oBanRecord.NicknameBase64+"', '"+oBanRecord.BannedBySteamID64+"', "+fmt.Sprintf("%d", oBanRecord.CreatedAt)+", "+fmt.Sprintf("%d", oBanRecord.AcceptedAt)+", "+fmt.Sprintf("%d", oBanRecord.BanLength)+", '"+oBanRecord.BanReasonBase64+"');");

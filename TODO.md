@@ -1,10 +1,10 @@
-- [ ] Regularly increase mmr uncertainty value
 - [ ] Restarting mechanism
 - [ ] Setup database backups
 - [ ] An admin panel to show information about players
 - [ ] Shut down RU servers on non-EU playtime
 - [ ] Automatically parse anticheat logs and ban based on them
 
+- [x] Regularly increase mmr uncertainty value
 - [x] Log on database write failure
 - [x] Finish integration with io.asia
 - [x] Manage authorization expire

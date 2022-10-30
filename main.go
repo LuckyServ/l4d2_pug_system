@@ -7,6 +7,7 @@ import (
 	"./database"
 	"./lobby"
 	"./api"
+	"./rating"
 	"./games"
 	"./chat"
 	"./smurf"
@@ -63,6 +64,7 @@ func main() {
 	go smurf.Watchers();
 	go bans.Watchers();
 	go utils.Watchers();
+	go rating.Watchers();
 
 
 

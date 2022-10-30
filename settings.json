@@ -19,6 +19,7 @@
 	},
 	"mmr": {
 		"default_uncertainty": 33.3333,
+		"increase_daily": 0.05,
 		"default_max": 3000,
 		"consider_stable": 1.0,
 		"absolute_win": 30,
