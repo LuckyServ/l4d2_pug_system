@@ -34,6 +34,22 @@ Response parameters:
 
 <br/><br/>
 
+### GET /setadmin
+##### An admin command (access = 4) to add or remove admins
+Request parameters:
+| Key | Type | Description
+| ------ | ------ | ------ |
+| <strong>steamid64</strong> | _string_ | SteamID 64 |
+| <strong>nickname</strong> | _int_ | Access |
+
+Response parameters:
+| Key | Type | Description
+| ------ | ------ | ------ |
+| <strong>success</strong> | _bool_ | "true" if command accepted, "false" otherwise |
+| <strong>error</strong> | _string_ | Outputs the reason if the request is rejected |
+
+<br/><br/>
+
 ### GET /addban
 ##### Add ban record
 Request parameters:
