@@ -26,7 +26,7 @@ int iLastUnpause;
 bool bPrinted[8]; //parallel with arPlayersAll[]
 int iSingleAbsence[8]; //parallel with arPlayersAll[]
 
-char sAuthKey[40];
+char sAuthKey[64];
 char sPublicIP[32];
 int iMaxSpecs;
 

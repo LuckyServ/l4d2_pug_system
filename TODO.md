@@ -3,6 +3,7 @@
 - [ ] Restarting mechanism
 - [ ] Regularly increase mmr uncertainty value
 - [ ] Finish integration with SirPlease and io.asia
+- [ ] An admin panel to show information about players
 - [ ] Shut down RU servers on non-EU playtime
 - [ ] Automatically parse anticheat logs and ban based on them
 - [ ] Setup database backups
