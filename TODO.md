@@ -1,4 +1,3 @@
-- [ ] Manage authorization expire
 - [ ] Log on database write failure
 - [ ] Restarting mechanism
 - [ ] Regularly increase mmr uncertainty value
@@ -8,6 +7,7 @@
 - [ ] Automatically parse anticheat logs and ban based on them
 - [ ] Setup database backups
 
+- [x] Manage authorization expire
 - [x] Log public chat
 - [x] Log game chat
 - [x] Adapt to timer throttling in JS https://developer.chrome.com/blog/timer-throttling-in-chrome-88/

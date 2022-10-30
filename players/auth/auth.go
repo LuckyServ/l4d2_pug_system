@@ -4,6 +4,7 @@ import (
 	"sync"
 	"../../settings"
 	"../../database"
+	"time"
 )
 
 type EntSession struct {
@@ -13,6 +14,32 @@ type EntSession struct {
 
 var MapSessions map[string]EntSession = make(map[string]EntSession);
 var MuSessions sync.RWMutex;
+
+func Watchers() {
+	go WatchAuthExpire();
+}
+
+
+func WatchAuthExpire() {
+	for {
+
+		var arDeleteSessions []string;
+
+		MuSessions.RLock();
+		i64CurTime := time.Now().UnixMilli();
+		for sSessID, oSession := range MapSessions {
+			if (oSession.Since + settings.PlayerAuthExpire <= i64CurTime) {
+				arDeleteSessions = append(arDeleteSessions, sSessID);
+			}
+		}
+		MuSessions.RUnlock();
+		for _, sSessID := range arDeleteSessions {
+			RemoveSession(sSessID);
+		}
+
+		time.Sleep(86400 * time.Second); //once per day
+	}
+}
 
 
 func GetSession(sSessID string) (EntSession, bool) {

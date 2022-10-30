@@ -74,7 +74,8 @@
 		"online_seconds": 10,
 		"idle_minutes": 60,
 		"readyup_seconds": 25,
-		"lobby_fill_minutes": 10
+		"lobby_fill_minutes": 10,
+		"player_auth_expire_days": 30
 	},
 	"ratelimits": {
 		"lobby_join_cooldown_sec": 30,

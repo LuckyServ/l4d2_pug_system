@@ -55,6 +55,7 @@ func main() {
 	api.GinInit();
 
 	go players.Watchers();
+	go auth.Watchers();
 	go api.AuthRatelimits();
 	go lobby.Watchers();
 	go games.Watchers();

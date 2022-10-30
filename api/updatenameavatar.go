@@ -34,7 +34,7 @@ func HttpReqUpdateNameAvatar(c *gin.Context) {
 				mapResponse["error"] = "Sorry, you are banned, you have to wait until it expires";
 			} else if (pPlayer.LastSteamRequest + settings.SteamAPICooldown > i64CurTime) {
 				players.MuPlayers.RUnlock();
-				mapResponse["error"] = fmt.Sprintf("You cant request name update that often. Try again in %d seconds.", ((pPlayer.LastSteamRequest + settings.SteamAPICooldown) - i64CurTime) / 1000);
+				mapResponse["error"] = fmt.Sprintf("You cant request name&avatar update that often. Try again in %d seconds.", ((pPlayer.LastSteamRequest + settings.SteamAPICooldown) - i64CurTime) / 1000);
 			} else if (!pPlayer.ProfValidated) {
 				players.MuPlayers.RUnlock();
 				mapResponse["error"] = "Please validate your profile first";

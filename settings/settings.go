@@ -38,6 +38,7 @@ var IdleTimeout int64;
 var OnlineTimeout int64;
 var ReadyUpTimeout int64;
 var LobbyFillTimeout int64;
+var PlayerAuthExpire int64;
 
 var JoinLobbyCooldown int64;
 var LeaveFullLobbyBan int64;
@@ -308,6 +309,13 @@ func ConfigFile() bool {
 		return false;
 	}
 	LobbyFillTimeout = i64Buffer * 60 * 1000;
+
+	i64Buffer, errError = jsonparser.GetInt(byData, "timeouts", "player_auth_expire_days");
+	if (errError != nil) {
+		fmt.Printf("Error reading config file: %s\n", errError);
+		return false;
+	}
+	PlayerAuthExpire = i64Buffer * 24 * 60 * 60 * 1000;
 
 	i64Buffer, errError = jsonparser.GetInt(byData, "game", "max_wait_pings_seconds");
 	if (errError != nil) {
