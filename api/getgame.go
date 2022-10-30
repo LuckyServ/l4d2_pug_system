@@ -11,6 +11,7 @@ import (
 
 
 type GameResponse struct {
+	ID					string				`json:"id"`
 	PlayersA			[]PlayerResponse	`json:"players_a"`
 	PlayersB			[]PlayerResponse	`json:"players_b"`
 	GameConfig			string				`json:"game_config"`
@@ -66,6 +67,7 @@ func HttpReqGetGame(c *gin.Context) {
 				}
 
 				mapResponse["game"] = GameResponse{
+					ID:					pGame.ID,
 					PlayersA:			arPlayersA,
 					PlayersB:			arPlayersB,
 					GameConfig:			pGame.GameConfig.Name,
