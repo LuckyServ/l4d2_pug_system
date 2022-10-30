@@ -1,12 +1,12 @@
 - [ ] Log on database write failure
-- [ ] Restarting mechanism
 - [ ] Regularly increase mmr uncertainty value
-- [ ] Finish integration with SirPlease and io.asia
+- [ ] Restarting mechanism
+- [ ] Setup database backups
 - [ ] An admin panel to show information about players
 - [ ] Shut down RU servers on non-EU playtime
 - [ ] Automatically parse anticheat logs and ban based on them
-- [ ] Setup database backups
 
+- [x] Finish integration with io.asia
 - [x] Manage authorization expire
 - [x] Log public chat
 - [x] Log game chat
