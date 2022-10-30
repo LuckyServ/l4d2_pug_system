@@ -1,6 +1,7 @@
 - [ ] Setup database backups
 - [ ] An admin panel to show information about players
 - [ ] Shut down RU servers on non-EU playtime
+- [ ] T2 and T1 configs for lower tier players
 - [ ] Default config for the case when zonemod is broken
 - [ ] Automatically parse anticheat logs and ban based on them
 
