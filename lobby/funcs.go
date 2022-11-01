@@ -51,10 +51,10 @@ func CalcMmrLimits(pLobbyCreator *players.EntPlayer) (int, int, error) { //MuPla
 	if (iPlayer >= 1) {
 		for i := iPlayer - 1; i >= 0; i-- {
 			if (PlayerSuitableForMmrRangeCalc(players.ArrayPlayers[i])) {
-				iMinMmr = players.ArrayPlayers[i].Mmr;
-				iCurRangeMin++;
+				iMaxMmr = players.ArrayPlayers[i].Mmr;
+				iCurRangeMax++;
 			}
-			if (iCurRangeMin >= settings.OnlineMmrRange) {
+			if (iCurRangeMax >= settings.OnlineMmrRange) {
 				break;
 			}
 		}
@@ -63,10 +63,10 @@ func CalcMmrLimits(pLobbyCreator *players.EntPlayer) (int, int, error) { //MuPla
 	if (iPlayer < (iCount - 1)) {
 		for i := iPlayer + 1; i < iCount; i++ {
 			if (PlayerSuitableForMmrRangeCalc(players.ArrayPlayers[i])) {
-				iMaxMmr = players.ArrayPlayers[i].Mmr;
-				iCurRangeMax++;
+				iMinMmr = players.ArrayPlayers[i].Mmr;
+				iCurRangeMin++;
 			}
-			if (iCurRangeMax >= settings.OnlineMmrRange) {
+			if (iCurRangeMin >= settings.OnlineMmrRange) {
 				break;
 			}
 		}

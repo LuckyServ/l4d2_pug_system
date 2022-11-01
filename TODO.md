@@ -1,5 +1,6 @@
 - [ ] Setup database backups
 - [ ] An admin panel to show information about players
+- [ ] An admin panel to show anticheat logs
 - [ ] Shut down RU servers on non-EU playtime
 - [ ] T2 and T1 configs for lower tier players
 - [ ] Check double html escaping of names
