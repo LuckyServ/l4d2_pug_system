@@ -307,12 +307,12 @@ func ConfigFile() bool {
 	}
 	ReadyUpTimeout = i64Buffer * 1000;
 
-	i64Buffer, errError = jsonparser.GetInt(byData, "timeouts", "lobby_fill_minutes");
+	i64Buffer, errError = jsonparser.GetInt(byData, "timeouts", "lobby_fill_seconds");
 	if (errError != nil) {
 		fmt.Printf("Error reading config file: %s\n", errError);
 		return false;
 	}
-	LobbyFillTimeout = i64Buffer * 60 * 1000;
+	LobbyFillTimeout = i64Buffer * 1000;
 
 	i64Buffer, errError = jsonparser.GetInt(byData, "timeouts", "player_auth_expire_days");
 	if (errError != nil) {
