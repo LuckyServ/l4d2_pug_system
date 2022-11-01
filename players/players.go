@@ -58,7 +58,7 @@ var iMaxStableMmr, iMinStableMmr, iMmrDiff int;
 
 func Watchers() {
 	go WatchOnline();
-	go SortPlayers();
+	go WatchSortPlayers();
 }
 
 func UpdatePlayerActivity(sSteamID64 string, sCookieUniqueKey string, sIP string) { //Maps must be locked outside!!!
@@ -197,59 +197,63 @@ func AddPlayerAuth(sSteamID64 string, sNicknameBase64 string, sAvatarSmall strin
 	return sSessionKey;
 }
 
-func SortPlayers() {
+func WatchSortPlayers() {
 	for {
 		time.Sleep(5 * time.Second);
-
-		bEdited := false;
+		
 		MuPlayers.Lock();
-		iSize := len(ArrayPlayers);
-		if (iSize > 1) {
-			bSorted := false;
-			for !bSorted {
-				bSorted = true;
-				for i := 1; i < iSize; i++ {
-					if (ArrayPlayers[i].Mmr > ArrayPlayers[i - 1].Mmr) {
-						ArrayPlayers[i], ArrayPlayers[i - 1] = ArrayPlayers[i - 1], ArrayPlayers[i]; //switch
+		SortPlayers();
+		MuPlayers.Unlock();
+	}
+}
+
+func SortPlayers() { //Players must be locked outside
+	bEdited := false;
+	iSize := len(ArrayPlayers);
+	if (iSize > 1) {
+		bSorted := false;
+		for !bSorted {
+			bSorted = true;
+			for i := 1; i < iSize; i++ {
+				if (ArrayPlayers[i].Mmr > ArrayPlayers[i - 1].Mmr) {
+					ArrayPlayers[i], ArrayPlayers[i - 1] = ArrayPlayers[i - 1], ArrayPlayers[i]; //switch
+					if (!bEdited) {
+						bEdited = true;
+					}
+					if (bSorted) {
+						bSorted = false;
+					}
+				}
+			}
+			if (!bSorted) {
+				for i := iSize - 2; i >= 0; i-- {
+					if (ArrayPlayers[i].Mmr < ArrayPlayers[i + 1].Mmr) {
+						ArrayPlayers[i], ArrayPlayers[i + 1] = ArrayPlayers[i + 1], ArrayPlayers[i]; //switch
 						if (!bEdited) {
 							bEdited = true;
 						}
-						if (bSorted) {
-							bSorted = false;
-						}
-					}
-				}
-				if (!bSorted) {
-					for i := iSize - 2; i >= 0; i-- {
-						if (ArrayPlayers[i].Mmr < ArrayPlayers[i + 1].Mmr) {
-							ArrayPlayers[i], ArrayPlayers[i + 1] = ArrayPlayers[i + 1], ArrayPlayers[i]; //switch
-							if (!bEdited) {
-								bEdited = true;
-							}
-						}
 					}
 				}
 			}
 		}
-		for i := iSize - 1; i >= 0; i-- {
-			if (ArrayPlayers[i].MmrUncertainty <= settings.MmrStable) {
-				iMinStableMmr = ArrayPlayers[i].Mmr;
-				break;
-			}
+	}
+	for i := iSize - 1; i >= 0; i-- {
+		if (ArrayPlayers[i].MmrUncertainty <= settings.MmrStable) {
+			iMinStableMmr = ArrayPlayers[i].Mmr;
+			break;
 		}
-		for i := 0; i < iSize; i++ {
-			if (ArrayPlayers[i].MmrUncertainty <= settings.MmrStable) {
-				iMaxStableMmr = ArrayPlayers[i].Mmr;
-				break;
-			}
+	}
+	for i := 0; i < iSize; i++ {
+		if (ArrayPlayers[i].MmrUncertainty <= settings.MmrStable) {
+			iMaxStableMmr = ArrayPlayers[i].Mmr;
+			break;
 		}
-		if (iMaxStableMmr > iMinStableMmr) {
-			iMmrDiff = iMaxStableMmr - iMinStableMmr;
-		}
-		MuPlayers.Unlock();
-		if (bEdited) {
-			I64LastPlayerlistUpdate = time.Now().UnixMilli();
-		}
+	}
+	if (iMaxStableMmr > iMinStableMmr) {
+		iMmrDiff = iMaxStableMmr - iMinStableMmr;
+	}
+	if (bEdited) {
+		I64LastPlayerlistUpdate = time.Now().UnixMilli();
 	}
 }
 

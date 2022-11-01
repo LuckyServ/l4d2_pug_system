@@ -6,7 +6,6 @@ import (
 	"../players"
 	"../settings"
 	"../games"
-	"sort"
 	"errors"
 )
 
@@ -30,86 +29,76 @@ func GenerateID() string { //MuLobbies must be blocked outside
 }
 
 func CalcMmrLimits(pLobbyCreator *players.EntPlayer) (int, int, error) { //MuPlayers must be locked outside
-	//get list of online mmr's
-	var arOnlineMmrs []int;
-	var iOnlineCount int;
-	games.MuGames.RLock();
-	for _, pPlayer := range players.ArrayPlayers {
-		if (pPlayer.ProfValidated && pPlayer.RulesAccepted && pPlayer.Access >= -1 && !pPlayer.IsIdle && (pPlayer.IsOnline || pPlayer.IsInLobby || IsFinishingGameSoon(pPlayer))) {
-			arOnlineMmrs = append(arOnlineMmrs, pPlayer.Mmr);
-		}
-	}
-	games.MuGames.RUnlock();
-	if (pLobbyCreator.IsIdle) { //this is a very bad fix
-		arOnlineMmrs = append(arOnlineMmrs, pLobbyCreator.Mmr);
-	}
-	iOnlineCount = len(arOnlineMmrs);
 
-	//check if we already know the results
-	if (iOnlineCount < settings.OnlineMmrRange * 2) {
-		return -2000000000, 2000000000, nil;
-	}
+	players.SortPlayers();
 
-	//sort
-	sort.Ints(arOnlineMmrs);
-
-	//find index in the array of the lobby initial mmr
-	iIndex := FindInitLobbyIndex(pLobbyCreator.Mmr, arOnlineMmrs);
-	if (iIndex == -1) {
+	iPlayer := FindPlayerIndex(pLobbyCreator);
+	if (iPlayer == -1) {
 		return -1, -1, errors.New("Error calculating players range");
 	}
 
-	iOnlineMaxIdx := iOnlineCount - 1;
-	iMaxMmrIdx := iIndex + settings.OnlineMmrRange;
-	iMinMmrIdx := iIndex - settings.OnlineMmrRange;
-	iMinMmr := -2000000000;
-	iMaxMmr := 2000000000;
-	if (iMaxMmrIdx > iOnlineMaxIdx) {
-		iMinMmrIdx = iOnlineMaxIdx - (settings.OnlineMmrRange * 2);
-		iMinMmr = arOnlineMmrs[iMinMmrIdx];
-	} else if (iMinMmrIdx < settings.OnlineMmrRange - 1) {
-		iMaxMmrIdx = settings.OnlineMmrRange * 2;
-		iMaxMmr = arOnlineMmrs[iMaxMmrIdx];
-	} else {
-		iMinMmr = arOnlineMmrs[iMinMmrIdx];
-		iMaxMmr = arOnlineMmrs[iMaxMmrIdx];
+	iCount := len(players.ArrayPlayers);
+	if (iCount < (settings.OnlineMmrRange * 2) + 1) {
+		return -2000000000, 2000000000, nil;
 	}
 
+	var iMinMmr int = -2000000000;
+	var iMaxMmr int = 2000000000;
+	var iCurRangeMin, iCurRangeMax int;
+
+	games.MuGames.RLock();
+
+	if (iPlayer >= 1) {
+		for i := iPlayer - 1; i >= 0; i-- {
+			if (PlayerSuitableForMmrRangeCalc(players.ArrayPlayers[i])) {
+				iMinMmr = players.ArrayPlayers[i].Mmr;
+				iCurRangeMin++;
+			}
+			if (iCurRangeMin >= settings.OnlineMmrRange) {
+				break;
+			}
+		}
+	}
+
+	if (iPlayer < (iCount - 1)) {
+		for i := iPlayer + 1; i < iCount; i++ {
+			if (PlayerSuitableForMmrRangeCalc(players.ArrayPlayers[i])) {
+				iMaxMmr = players.ArrayPlayers[i].Mmr;
+				iCurRangeMax++;
+			}
+			if (iCurRangeMax >= settings.OnlineMmrRange) {
+				break;
+			}
+		}
+	}
+
+	games.MuGames.RUnlock();
+
+
+	if (iCurRangeMin < settings.OnlineMmrRange) {
+		iMinMmr = -2000000000;
+	}
+	if (iCurRangeMax < settings.OnlineMmrRange) {
+		iMaxMmr = 2000000000;
+	}
 
 	return iMinMmr, iMaxMmr, nil;
 }
 
-func FindInitLobbyIndex(iMmr int, arOnlineMmrs []int) int {
-	iOnlineCount := len(arOnlineMmrs);
-	if (iMmr < arOnlineMmrs[0]) { //shouldn't be possible, but just in case
-		return 0;
-	} else if (iMmr > arOnlineMmrs[iOnlineCount - 1]) { //shouldn't be possible, but just in case
-		return iOnlineCount - 1;
+func PlayerSuitableForMmrRangeCalc(pPlayer *players.EntPlayer) bool { //MuPlayers and MyGames must be locked outside
+	if (pPlayer.ProfValidated && pPlayer.RulesAccepted && pPlayer.Access >= -1 && !pPlayer.IsIdle && (pPlayer.IsOnline || pPlayer.IsInLobby || IsFinishingGameSoon(pPlayer))) {
+		return true;
 	}
+	return false;
+}
 
-	iStartIdx := -1;
-	iEndIdx := -1;
-	for i, iOnlineMmr := range arOnlineMmrs {
-		if (iMmr == iOnlineMmr) {
-			iStartIdx = i;
-			break;
+func FindPlayerIndex(pSearchedPlayer *players.EntPlayer) int { //MuPlayers must be locked outside
+	for i, pPlayer := range players.ArrayPlayers {
+		if (pSearchedPlayer == pPlayer) {
+			return i;
 		}
 	}
-	if (iStartIdx == -1) {
-		return -1;
-	}
-
-	for i := iOnlineCount - 1; i >= iStartIdx; i-- {
-		if (iMmr == arOnlineMmrs[i]) {
-			iEndIdx = i;
-			break;
-		}
-	}
-	if (iEndIdx == -1 || iEndIdx < iStartIdx) {
-		return -1;
-	}
-
-	return ((iStartIdx + iEndIdx) / 2);
+	return -1;
 }
 
 func GetJoinableLobbies(iMmr int) []*EntLobby { //MuLobbies must be locked outside
