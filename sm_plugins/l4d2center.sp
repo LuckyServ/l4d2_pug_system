@@ -23,6 +23,7 @@ int iLastActivity[MAXPLAYERS + 1];
 
 int bResponsibleForPause[8]; //parallel with arPlayersAll[]
 int iLastUnpause;
+int iLastMapChangeSign;
 bool bPrinted[8]; //parallel with arPlayersAll[]
 int iSingleAbsence[8]; //parallel with arPlayersAll[]
 
@@ -297,6 +298,14 @@ public Action GameInfoReceived(Handle timer) {
 	return Plugin_Continue;
 }
 
+public void OnMapStart() {
+	iLastMapChangeSign = GetTime();
+}
+
+public void OnMapEnd() {
+	iLastMapChangeSign = GetTime();
+}
+
 public Action UpdateGameResults(Handle timer) {
 
 	//Check if players left
@@ -306,6 +315,9 @@ public Action UpdateGameResults(Handle timer) {
 			bClientsConnected = true;
 			break;
 		}
+	}
+	if (GetTime() - iLastMapChangeSign < 30) {
+		bClientsConnected = false;
 	}
 	int iPlayers;
 	if (bClientsConnected) {
@@ -722,6 +734,7 @@ public void Event_RoundEnd(Event event, const char[] name, bool dontBroadcast) {
 
 			bInMapTransition = true;
 			iMapsFinished++;
+			iLastMapChangeSign = GetTime();
 
 			iSettledScores[0] = GameRules_GetProp("m_iCampaignScore", 4, 0);
 			iSettledScores[1] = GameRules_GetProp("m_iCampaignScore", 4, 1);
