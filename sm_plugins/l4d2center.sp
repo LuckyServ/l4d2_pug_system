@@ -263,6 +263,13 @@ public Action GameInfoReceived(Handle timer) {
 			}
 		}
 
+		if (ReadyUpLoaded && IsInReady()) {
+			for (int i = 1; i <= MaxClients; i++) {
+				if (IsClientInGame(i) && !IsFakeClient(i) && !IsReady(i) && GetClientLobbyParticipant(i) != -1) {
+					PrintToChat(i, "[l4d2center.com] You need to !ready up in order to not get banned for quitting the game");
+				}
+			}
+		}
 
 		if (StrEqual(sGameState, "readyup_expired")) {
 			CreateTimer(1.0, SendReadyPlayers);
