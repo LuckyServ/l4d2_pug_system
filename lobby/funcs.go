@@ -45,6 +45,7 @@ func CalcMmrLimits(pLobbyCreator *players.EntPlayer) (int, int, error) { //MuPla
 	var iMinMmr int = -2000000000;
 	var iMaxMmr int = 2000000000;
 	var iCurRangeMin, iCurRangeMax int;
+	var iEndedOnPlayerMin, iEndedOnPlayerMax int;
 
 	games.MuGames.RLock();
 
@@ -52,6 +53,7 @@ func CalcMmrLimits(pLobbyCreator *players.EntPlayer) (int, int, error) { //MuPla
 		for i := iPlayer - 1; i >= 0; i-- {
 			if (PlayerSuitableForMmrRangeCalc(players.ArrayPlayers[i])) {
 				iMaxMmr = players.ArrayPlayers[i].Mmr;
+				iEndedOnPlayerMax = i;
 				iCurRangeMax++;
 			}
 			if (iCurRangeMax >= settings.OnlineMmrRange) {
@@ -64,6 +66,7 @@ func CalcMmrLimits(pLobbyCreator *players.EntPlayer) (int, int, error) { //MuPla
 		for i := iPlayer + 1; i < iCount; i++ {
 			if (PlayerSuitableForMmrRangeCalc(players.ArrayPlayers[i])) {
 				iMinMmr = players.ArrayPlayers[i].Mmr;
+				iEndedOnPlayerMin = i;
 				iCurRangeMin++;
 			}
 			if (iCurRangeMin >= settings.OnlineMmrRange) {
@@ -72,24 +75,58 @@ func CalcMmrLimits(pLobbyCreator *players.EntPlayer) (int, int, error) { //MuPla
 		}
 	}
 
-	games.MuGames.RUnlock();
-
-
+	var iMoreMaxMmrNeeded, iMoreMinMmrNeeded int;
 	if (iCurRangeMin < settings.OnlineMmrRange) {
+		iMoreMaxMmrNeeded = settings.OnlineMmrRange - iCurRangeMin;
 		iMinMmr = -2000000000;
 	}
 	if (iCurRangeMax < settings.OnlineMmrRange) {
+		iMoreMinMmrNeeded = settings.OnlineMmrRange - iCurRangeMax;
 		iMaxMmr = 2000000000;
 	}
 
+	var iCurRangeMinAdd, iCurRangeMaxAdd int;
+
+	if (iMoreMaxMmrNeeded > 0 && iEndedOnPlayerMax - iMoreMaxMmrNeeded >= 0) {
+		for i := iEndedOnPlayerMax - 1; i >= 0; i-- {
+			if (PlayerSuitableForMmrRangeCalc(players.ArrayPlayers[i])) {
+				iMaxMmr = players.ArrayPlayers[i].Mmr;
+				iCurRangeMaxAdd++;
+			}
+			if (iCurRangeMaxAdd >= iMoreMaxMmrNeeded) {
+				break;
+			}
+		}
+	}
+	if (iMoreMinMmrNeeded > 0 && iEndedOnPlayerMin + iMoreMinMmrNeeded < iCount) {
+		for i := iEndedOnPlayerMin + 1; i < iCount; i++ {
+			if (PlayerSuitableForMmrRangeCalc(players.ArrayPlayers[i])) {
+				iMinMmr = players.ArrayPlayers[i].Mmr;
+				iCurRangeMinAdd++;
+			}
+			if (iCurRangeMinAdd >= iMoreMinMmrNeeded) {
+				break;
+			}
+		}
+	}
+
+	games.MuGames.RUnlock();
+
+	
 	return iMinMmr, iMaxMmr, nil;
 }
 
 func PlayerSuitableForMmrRangeCalc(pPlayer *players.EntPlayer) bool { //MuPlayers and MyGames must be locked outside
-	if (pPlayer.ProfValidated && pPlayer.RulesAccepted && pPlayer.Access >= -1 && !pPlayer.IsIdle && (pPlayer.IsOnline || pPlayer.IsInLobby || IsFinishingGameSoon(pPlayer))) {
-		return true;
+	if (!pPlayer.ProfValidated || !pPlayer.RulesAccepted || pPlayer.Access < 0) {
+		return false;
 	}
-	return false;
+	if ((!pPlayer.IsOnline || pPlayer.IsIdle) && !pPlayer.IsInLobby && !pPlayer.IsInGame) {
+		return false;
+	}
+	if (pPlayer.IsInGame && !IsFinishingGameSoon(pPlayer)) {
+		return false;
+	}
+	return true;
 }
 
 func FindPlayerIndex(pSearchedPlayer *players.EntPlayer) int { //MuPlayers must be locked outside

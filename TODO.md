@@ -1,4 +1,9 @@
+- [ ] Log pings of players
+- [ ] Test if anticheat logging works
 - [ ] Setup database backups
+- [ ] Recheck penalties for rq
+- [ ] Fix exploiting the initial ready up timelimit
+- [ ] Consider better idle calculation
 - [ ] An admin panel to show information about players
 - [ ] An admin panel to show anticheat logs
 - [ ] Shut down RU servers on non-EU playtime
@@ -7,6 +12,8 @@
 - [ ] Default config for the case when zonemod is broken
 - [ ] Automatically parse anticheat logs and ban based on them
 
+- [x] Fix mmr ranges for lobby not accounting for 1-side array borders
+- [x] Fix counting in-game players as ready to join lobby
 - [x] Restarting mechanism
 - [x] Regularly increase mmr uncertainty value
 - [x] Log on database write failure
