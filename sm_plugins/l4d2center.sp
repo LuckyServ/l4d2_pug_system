@@ -267,7 +267,10 @@ public Action GameInfoReceived(Handle timer) {
 		if (ReadyUpLoaded && IsInReady()) {
 			for (int i = 1; i <= MaxClients; i++) {
 				if (IsClientInGame(i) && !IsFakeClient(i) && !IsReady(i) && GetClientLobbyParticipant(i) != -1) {
-					PrintToChat(i, "[l4d2center.com] You need to !ready up in order to not get banned for quitting the game");
+					int iLeftSingleAbsence = iMaxSingleAbsent - iSingleAbsence[i];
+					int iLeftMaxAbsence = iMaxAbsent - iAbsenceCounter[i];
+					PrintToChat(i, "[l4d2center.com] Please !ready up");
+					PrintToChat(i, "[l4d2center.com] You have %d (%d) seconds left before game ends because of you", MinVal(iLeftSingleAbsence, iLeftMaxAbsence), iLeftMaxAbsence);
 				}
 			}
 		}
