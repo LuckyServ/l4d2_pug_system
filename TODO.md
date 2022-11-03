@@ -1,4 +1,3 @@
-- [ ] Make sure players always connect to the oldest lobby
 - [ ] Log pings of players
 - [ ] Test if anticheat logging works
 - [ ] Setup database backups
@@ -13,6 +12,7 @@
 - [ ] Default config for the case when zonemod is broken
 - [ ] Automatically parse anticheat logs and ban based on them
 
+- [x] Make sure players always connect to the oldest lobby
 - [x] Better readyup prints in SM plugin during 1st readyup
 - [x] Fix mmr ranges for lobby not accounting for 1-side array borders
 - [x] Fix counting in-game players as ready to join lobby

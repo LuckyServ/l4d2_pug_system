@@ -81,19 +81,19 @@ func Create(pPlayer *players.EntPlayer) bool { //MuPlayers and MuLobbies must be
 	}
 
 	//Write lobby
-	i64CurTime := time.Now().UnixMilli();
 	sLobbyID := GenerateID();
 
 	pLobby := &EntLobby{
 		ID:					sLobbyID,
 		MmrMin:				iMmrMin,
 		MmrMax:				iMmrMax,
-		CreatedAt:			i64CurTime,
+		CreatedAt:			<-ChanUniqueTime,
 	};
 	MapLobbies[sLobbyID] = pLobby;
 	ArrayLobbies = append(ArrayLobbies, pLobby);
 	pLobby.Players = append(pLobby.Players, pPlayer); //join lobby
 	pLobby.PlayerCount++;
+	i64CurTime := time.Now().UnixMilli();
 	I64LastLobbyListUpdate = i64CurTime;
 	pPlayer.IsInLobby = true;
 	pPlayer.IsIdle = false;

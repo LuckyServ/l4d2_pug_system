@@ -7,9 +7,23 @@ import (
 	"time"
 )
 
+var ChanUniqueTime = make(chan int64);
+
 func Watchers() {
 	go WatchLobbies();
 	go SortLobbies();
+	go WatchUniqueTimeChan();
+}
+
+func WatchUniqueTimeChan() {
+	for {
+		select {
+		case ChanUniqueTime <- func()(int64) {
+			return time.Now().UnixMilli();
+		}():
+		}
+		time.Sleep(1 * time.Millisecond);
+	}
 }
 
 func SortLobbies() {
