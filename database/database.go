@@ -61,6 +61,7 @@ type DatabaseGameLog struct {
 	ConfoglConfig		string
 	CampaignName		string
 	ServerIP			string
+	Pings				string
 }
 
 var MuDatabase sync.RWMutex;
@@ -198,7 +199,7 @@ func LogGame(oGame DatabaseGameLog) {
 		dbQueryDelete.Close();
 	} else {LogToFile("Error deleting game log at LogGame: "+oGame.ID);};
 	//Add player
-	dbQuery, errDbQuery := dbConn.Query("INSERT INTO games_log(game_id, game_valid, created_at, players_a, players_b, team_a_scores, team_b_scores, confogl_config, campaign_name, server_ip) VALUES ('"+oGame.ID+"', "+fmt.Sprintf("%v", oGame.Valid)+", "+fmt.Sprintf("%d", oGame.CreatedAt)+", '"+oGame.PlayersA+"', '"+oGame.PlayersB+"', "+fmt.Sprintf("%d", oGame.TeamAScores)+", "+fmt.Sprintf("%d", oGame.TeamBScores)+", '"+oGame.ConfoglConfig+"', '"+oGame.CampaignName+"', '"+oGame.ServerIP+"');");
+	dbQuery, errDbQuery := dbConn.Query("INSERT INTO games_log(game_id, game_valid, created_at, players_a, players_b, team_a_scores, team_b_scores, confogl_config, campaign_name, server_ip, glpings) VALUES ('"+oGame.ID+"', "+fmt.Sprintf("%v", oGame.Valid)+", "+fmt.Sprintf("%d", oGame.CreatedAt)+", '"+oGame.PlayersA+"', '"+oGame.PlayersB+"', "+fmt.Sprintf("%d", oGame.TeamAScores)+", "+fmt.Sprintf("%d", oGame.TeamBScores)+", '"+oGame.ConfoglConfig+"', '"+oGame.CampaignName+"', '"+oGame.ServerIP+"', '"+oGame.Pings+"');");
 	if (errDbQuery == nil) {
 		dbQuery.Close();
 	} else {LogToFile("Error inserting game log at LogGame: "+oGame.ID);};

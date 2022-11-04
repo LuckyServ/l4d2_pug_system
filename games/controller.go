@@ -288,6 +288,7 @@ func Control(pGame *EntGame) {
 	SetLastUpdated(pGame.PlayersUnpaired);
 	players.I64LastPlayerlistUpdate = time.Now().UnixMilli();
 
+	//Log game
 	go database.LogGame(database.DatabaseGameLog{
 		ID:					pGame.ID,
 		Valid:				true,
@@ -299,6 +300,7 @@ func Control(pGame *EntGame) {
 		ConfoglConfig:		pGame.GameConfig.CodeName,
 		CampaignName:		pGame.CampaignName,
 		ServerIP:			pGame.ServerIP,
+		Pings:				FormatPingsLog(pGame.PlayersUnpaired),
 	});
 
 	Destroy(pGame);

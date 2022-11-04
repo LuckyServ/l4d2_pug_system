@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"sync"
 	"time"
+	"strings"
 	"../players"
 	"../settings"
 	"../rating"
@@ -169,4 +170,17 @@ func Implode4Players(arPlayers []*players.EntPlayer) string {
 		sSteamID64s = sSteamID64s + "," + arPlayers[i].SteamID64;
 	}
 	return sSteamID64s;
+}
+
+func FormatPingsLog(arPlayers []*players.EntPlayer) string {
+	var arFormatPings []string;
+	for _, pPlayer := range arPlayers {
+		for sIP, iPing := range pPlayer.GameServerPings {
+			arFormatPings = append(arFormatPings, fmt.Sprintf("%s: %d", sIP, iPing));
+		}
+	}
+	if (len(arFormatPings) > 0) {
+		return strings.Join(arFormatPings, ", ");
+	}
+	return "none";
 }

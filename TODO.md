@@ -1,5 +1,4 @@
 - [ ] Allow dead survivors to rq games without ban on last map on 2nd chapter
-- [ ] Log pings of players
 - [ ] Test if anticheat logging works
 - [ ] Setup database backups
 - [ ] Recheck penalties for rq
@@ -13,6 +12,7 @@
 - [ ] Default config for the case when zonemod is broken
 - [ ] Automatically parse anticheat logs and ban based on them
 
+- [x] Log pings of players
 - [x] Fix automatic switching between lobbies too often
 - [x] Make sure players always connect to the oldest lobby
 - [x] Better readyup prints in SM plugin during 1st readyup
