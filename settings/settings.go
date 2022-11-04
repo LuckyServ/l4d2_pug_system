@@ -38,7 +38,6 @@ var OnlineMmrRange int;
 var IdleTimeout int64;
 var OnlineTimeout int64;
 var ReadyUpTimeout int64;
-var LobbyFillTimeout int64;
 var PlayerAuthExpire int64;
 
 var JoinLobbyCooldown int64;
@@ -306,13 +305,6 @@ func ConfigFile() bool {
 		return false;
 	}
 	ReadyUpTimeout = i64Buffer * 1000;
-
-	i64Buffer, errError = jsonparser.GetInt(byData, "timeouts", "lobby_fill_seconds");
-	if (errError != nil) {
-		fmt.Printf("Error reading config file: %s\n", errError);
-		return false;
-	}
-	LobbyFillTimeout = i64Buffer * 1000;
 
 	i64Buffer, errError = jsonparser.GetInt(byData, "timeouts", "player_auth_expire_days");
 	if (errError != nil) {

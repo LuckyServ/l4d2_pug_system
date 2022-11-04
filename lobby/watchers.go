@@ -13,6 +13,7 @@ func Watchers() {
 	go WatchLobbies();
 	go SortLobbies();
 	go WatchUniqueTimeChan();
+	go RecreateLobbies();
 }
 
 func WatchUniqueTimeChan() {
@@ -68,54 +69,30 @@ func SortLobbies() {
 	}
 }
 
-func WatchLobbies() {
+func RecreateLobbies() {
 	for {
-		time.Sleep(3 * time.Second);
+		time.Sleep(30 * time.Second);
 
 		MuLobbies.Lock();
 		players.MuPlayers.Lock();
 
-		var arReadyLobbies []string;
-		var arUnreadyPlayers, arOfflinePlayers, arTimedoutLobbiesPlayers, arJoinLobbyPlayers, arGamePlayers []*players.EntPlayer;
-		
-		i64CurTime := time.Now().UnixMilli();
+
+		var arRecreateLobbiesPlayers, arJoinLobbyPlayers []*players.EntPlayer;
 
 		for _, pLobby := range ArrayLobbies {
-			if (pLobby.PlayerCount == 8 && pLobby.ReadyPlayers == 8) {
-				arReadyLobbies = append(arReadyLobbies, pLobby.ID);
-			} else if (pLobby.PlayerCount == 8 && pLobby.ReadyPlayers < 8 && i64CurTime - pLobby.ReadyUpSince >= settings.ReadyUpTimeout) {
+			if (pLobby.PlayerCount < 8) {
 				for _, pPlayer := range pLobby.Players {
-					if (!pPlayer.IsReadyInLobby) {
-						arUnreadyPlayers = append(arUnreadyPlayers, pPlayer);
-					}
-				}
-			} else if (pLobby.PlayerCount < 8) {
-				if (i64CurTime - pLobby.CreatedAt >= settings.LobbyFillTimeout) {
-					for _, pPlayer := range pLobby.Players {
-						arTimedoutLobbiesPlayers = append(arTimedoutLobbiesPlayers, pPlayer);
-					}
-				} else {
-					for _, pPlayer := range pLobby.Players {
-						if (!pPlayer.IsOnline) {
-							arOfflinePlayers = append(arOfflinePlayers, pPlayer);
-						}
-					}
+					arRecreateLobbiesPlayers = append(arRecreateLobbiesPlayers, pPlayer);
 				}
 			}
 		}
 
-		for _, pPlayer := range arOfflinePlayers {
-			Leave(pPlayer, false);
-		}
-		for _, pPlayer := range arUnreadyPlayers {
-			Leave(pPlayer, false);
-		}
-		for _, pPlayer := range arTimedoutLobbiesPlayers {
+		for _, pPlayer := range arRecreateLobbiesPlayers {
 			if (Leave(pPlayer, true) && pPlayer.IsAutoSearching) {
 				arJoinLobbyPlayers = append(arJoinLobbyPlayers, pPlayer);
 			}
 		}
-		//sort
+
 		iSize := len(arJoinLobbyPlayers);
 		if (iSize > 1) {
 			bSorted := false;
@@ -140,6 +117,49 @@ func WatchLobbies() {
 		}
 		for _, pPlayer := range arJoinLobbyPlayers {
 			JoinAny(pPlayer);
+		}
+
+
+		MuLobbies.Unlock();
+		players.MuPlayers.Unlock();
+	}
+}
+
+func WatchLobbies() {
+	for {
+		time.Sleep(3 * time.Second);
+
+		MuLobbies.Lock();
+		players.MuPlayers.Lock();
+
+		var arReadyLobbies []string;
+		var arUnreadyPlayers, arOfflinePlayers, arGamePlayers []*players.EntPlayer;
+		
+		i64CurTime := time.Now().UnixMilli();
+
+		for _, pLobby := range ArrayLobbies {
+			if (pLobby.PlayerCount == 8 && pLobby.ReadyPlayers == 8) {
+				arReadyLobbies = append(arReadyLobbies, pLobby.ID);
+			} else if (pLobby.PlayerCount == 8 && pLobby.ReadyPlayers < 8 && i64CurTime - pLobby.ReadyUpSince >= settings.ReadyUpTimeout) {
+				for _, pPlayer := range pLobby.Players {
+					if (!pPlayer.IsReadyInLobby) {
+						arUnreadyPlayers = append(arUnreadyPlayers, pPlayer);
+					}
+				}
+			} else if (pLobby.PlayerCount < 8) {
+				for _, pPlayer := range pLobby.Players {
+					if (!pPlayer.IsOnline) {
+						arOfflinePlayers = append(arOfflinePlayers, pPlayer);
+					}
+				}
+			}
+		}
+
+		for _, pPlayer := range arOfflinePlayers {
+			Leave(pPlayer, false);
+		}
+		for _, pPlayer := range arUnreadyPlayers {
+			Leave(pPlayer, false);
 		}
 
 
