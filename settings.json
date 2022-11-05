@@ -139,19 +139,16 @@
 		{
 			"domain": "srv.domain1.com",
 			"ip": "127.0.0.1",
-			"region": "europe",
 			"ports": ["27016", "27017"]
 		},
 		{
 			"domain": "srv.domain2.com",
 			"ip": "127.0.0.2",
-			"region": "asia",
 			"ports": ["27016"]
 		},
 		{
 			"domain": "srv.domain3.com",
 			"ip": "127.0.0.3",
-			"region": "america",
 			"ports": ["27016"]
 		}
 	]

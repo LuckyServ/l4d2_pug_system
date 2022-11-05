@@ -81,7 +81,7 @@ func Control(pGame *EntGame) {
 	for {
 
 		players.MuPlayers.Lock();
-		sIPPORT := SelectBestAvailableServer(pGame.PlayersUnpaired); //unlocks players, but doesnt lock them
+		sIPPORT := SelectBestAvailableServer(pGame.PlayersA, pGame.PlayersB); //unlocks players, but doesnt lock them
 
 		MuGames.Lock();
 		bSuccess := (sIPPORT != "");

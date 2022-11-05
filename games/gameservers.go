@@ -39,70 +39,77 @@ func CheckVersion() {
 	}
 }
 
-func SelectBestAvailableServer(arPlayers []*players.EntPlayer) string { //must unlock players inside, but they are locked outside
-
-	//find player ping weight based on their region and time of the day
-	for _, pPlayer := range arPlayers {
-		var sLowestPingIP string;
-		var iLowestPing int = 999999;
-		for sIP, iPing := range pPlayer.GameServerPings {
-			if (iPing < iLowestPing) {
-				iLowestPing = iPing;
-				sLowestPingIP = sIP;
-			}
-		}
-		sRegion := GetRegionFromIP(sLowestPingIP);
-		iCurHour := time.Now().Hour();
-		if (iCurHour >= 0 && iCurHour < 8 && sRegion == "america") { //America time
-			pPlayer.GameServerPingWeight = 2;
-		} else if (iCurHour >= 8 && iCurHour < 16 && sRegion == "asia") { //Asia time
-			pPlayer.GameServerPingWeight = 2;
-		} else if (iCurHour >= 16 && iCurHour < 24 && sRegion == "europe") { //Europe time
-			pPlayer.GameServerPingWeight = 2;
-		} else {
-			pPlayer.GameServerPingWeight = 1;
-		}
-	}
+func SelectBestAvailableServer(arPlayersA []*players.EntPlayer, arPlayersB []*players.EntPlayer) string { //must unlock players inside, but they are locked outside
 
 
-	//select region based on weighted average ping
-	var iBestWeightedPing int = 350;
-	var sSelectedRegion string = "europe";
-	for _, oServer := range settings.GameServers {
-		iWeightedAverage := WeightedAvgPing(arPlayers, oServer.IP);
-		if (iWeightedAverage < iBestWeightedPing && iWeightedAverage > 0) {
-			iBestWeightedPing = iWeightedAverage;
-			sSelectedRegion = oServer.Region;
-		}
-	}
-
-
-	//get servers within region selected above
+	//Get 
 	var arGameServers []string;
-	var arWAvgPing []int;
+	var arPriority []int;
 
 	for _, oServer := range settings.GameServers {
-		var iWAvgPing = WeightedAvgPing(arPlayers, oServer.IP);
-		if (iWAvgPing == 0) {
-			iWAvgPing = 999999;
-		}
-		for _, sPort := range oServer.Ports {
-			if (oServer.Region == sSelectedRegion) {
+		var iTeamPingDiff, iAvgPing = CalcPings(arPlayersA, arPlayersB, oServer.IP);
+		if (iAvgPing <= 200 && iTeamPingDiff <= 80) { //limits for playable conditions
+			for _, sPort := range oServer.Ports {
 				arGameServers = append(arGameServers, oServer.IP+":"+sPort);
-				arWAvgPing = append(arWAvgPing, iWAvgPing);
+				arPriority = append(arPriority, (iTeamPingDiff + iAvgPing) / 2);
 			}
 		}
 	}
+
 
 	players.MuPlayers.Unlock();
 
-	//sort by weighted average ping, exclude occupied and outdated servers, return 1st server
-	return GetAvailableServer(arGameServers, arWAvgPing);
+
+	return GetAvailableServer(arGameServers, arPriority);
+}
+
+func CalcPings(arPlayersA []*players.EntPlayer, arPlayersB []*players.EntPlayer, sIP string) (int, int) {
+	var iTeamPingDiff int;
+	var iSumOfPings, iNumOfPings, iAvgPing int;
+	var iSumOfPingsA, iNumOfPingsA, iAvgPingA int;
+	for _, pPlayer := range arPlayersA {
+		iPing, bPingExists := pPlayer.GameServerPings[sIP];
+		if (bPingExists && iPing > 0) {
+			iSumOfPingsA = iSumOfPingsA + iPing;
+			iNumOfPingsA++;
+			iSumOfPings = iSumOfPings + iPing;
+			iNumOfPings++;
+		}
+	}
+	if (iNumOfPingsA > 0) {
+		iAvgPingA = iSumOfPingsA / iNumOfPingsA;
+	}
+
+	var iSumOfPingsB, iNumOfPingsB, iAvgPingB int;
+	for _, pPlayer := range arPlayersB {
+		iPing, bPingExists := pPlayer.GameServerPings[sIP];
+		if (bPingExists && iPing > 0) {
+			iSumOfPingsB = iSumOfPingsB + iPing;
+			iNumOfPingsB++;
+			iSumOfPings = iSumOfPings + iPing;
+			iNumOfPings++;
+		}
+	}
+	if (iNumOfPingsB > 0) {
+		iAvgPingB = iSumOfPingsB / iNumOfPingsB;
+	}
+
+	if (iAvgPingA > 0 && iAvgPingB > 0) {
+		iTeamPingDiff = iAvgPingA - iAvgPingB;
+		if (iTeamPingDiff < 0) {iTeamPingDiff = iTeamPingDiff * -1;};
+	}
+
+
+	if (iNumOfPings > 0) {
+		iAvgPing = iSumOfPings / iNumOfPings;
+	}
+
+	return iTeamPingDiff, iAvgPing;
 }
 
 
-func GetAvailableServer(arGameServers []string, arWAvgPing []int) string {
-	SortByWAvgPing(arGameServers, arWAvgPing);
+func GetAvailableServer(arGameServers []string, arPriority []int) string {
+	SortByPriority(arGameServers, arPriority);
 	var arEmptyGameSrvs []string;
 	var arQueryCh []chan int;
 	for range arGameServers {
@@ -123,32 +130,15 @@ func GetAvailableServer(arGameServers []string, arWAvgPing []int) string {
 	return "";
 }
 
-func WeightedAvgPing(arPlayers []*players.EntPlayer, sIP string) int {
-	var iSumOfWPings int;
-	var iSumOfWeights int;
-	for _, pPlayer := range arPlayers {
-		iPing, _ := pPlayer.GameServerPings[sIP];
-		iSumOfWPings = iSumOfWPings + (iPing * pPlayer.GameServerPingWeight);
-		if (iPing > 0) {
-			iSumOfWeights = iSumOfWeights + pPlayer.GameServerPingWeight;
-		}
-	}
-	var iWeightedAvg int;
-	if (iSumOfWeights > 0) {
-		iWeightedAvg = iSumOfWPings / iSumOfWeights;
-	}
-	return iWeightedAvg;
-}
-
-func SortByWAvgPing(arGameServers []string, arWAvgPing []int) {
+func SortByPriority(arGameServers []string, arPriority []int) {
 	iSize := len(arGameServers);
 	if (iSize > 1) {
 		bSorted := false;
 		for !bSorted {
 			bSorted = true;
 			for i := 1; i < iSize; i++ {
-				if (arWAvgPing[i] < arWAvgPing[i - 1]) {
-					arWAvgPing[i], arWAvgPing[i - 1] = arWAvgPing[i - 1], arWAvgPing[i]; //switch
+				if (arPriority[i] < arPriority[i - 1]) {
+					arPriority[i], arPriority[i - 1] = arPriority[i - 1], arPriority[i]; //switch
 					arGameServers[i], arGameServers[i - 1] = arGameServers[i - 1], arGameServers[i]; //switch
 					if (bSorted) {
 						bSorted = false;
@@ -157,23 +147,14 @@ func SortByWAvgPing(arGameServers []string, arWAvgPing []int) {
 			}
 			if (!bSorted) {
 				for i := iSize - 2; i >= 0; i-- {
-					if (arWAvgPing[i] > arWAvgPing[i + 1]) {
-						arWAvgPing[i], arWAvgPing[i + 1] = arWAvgPing[i + 1], arWAvgPing[i]; //switch
+					if (arPriority[i] > arPriority[i + 1]) {
+						arPriority[i], arPriority[i + 1] = arPriority[i + 1], arPriority[i]; //switch
 						arGameServers[i], arGameServers[i + 1] = arGameServers[i + 1], arGameServers[i]; //switch
 					}
 				}
 			}
 		}
 	}
-}
-
-func GetRegionFromIP(sIP string) string {
-	for _, oServer := range settings.GameServers {
-		if (oServer.IP == sIP) {
-			return oServer.Region;
-		}
-	}
-	return ""; //can't happen
 }
 
 func GetPlayersCount(chCount chan int, sIPPORT string) { //-1 if server version is outdated or unavailable

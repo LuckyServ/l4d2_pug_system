@@ -176,7 +176,7 @@ func FormatPingsLog(arPlayers []*players.EntPlayer) string {
 	var arFormatPings []string;
 	for _, pPlayer := range arPlayers {
 		for sIP, iPing := range pPlayer.GameServerPings {
-			arFormatPings = append(arFormatPings, fmt.Sprintf("%s->%s: %d/%d", pPlayer.SteamID64, sIP, iPing, pPlayer.GameServerPingWeight));
+			arFormatPings = append(arFormatPings, fmt.Sprintf("%s->%s: %d", pPlayer.SteamID64, sIP, iPing));
 		}
 	}
 	if (len(arFormatPings) > 0) {

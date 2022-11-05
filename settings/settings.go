@@ -79,7 +79,6 @@ type GameServer struct {
 	IP				string		`json:"ip"`
 	Domain			string		`json:"domain"`
 	Ports			[]string	`json:"ports"`
-	Region			string		`json:"region"` //europe, asia, or america
 }
 
 type ConfoglConfig struct {
@@ -515,11 +514,9 @@ func ConfigFile() bool {
 
 		sDomain, _ := jsonparser.GetString(valueServer, "domain");
 		sServIP, _ := jsonparser.GetString(valueServer, "ip");
-		sRegion, _ := jsonparser.GetString(valueServer, "region");
 		oGameServer := GameServer{
 			IP:			sServIP,
 			Domain:		sDomain,
-			Region:		sRegion,
 		};
 		
 		jsonparser.ArrayEach(valueServer, func(valuePort []byte, dataType jsonparser.ValueType, offset int, err error) {

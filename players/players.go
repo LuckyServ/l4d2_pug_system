@@ -46,7 +46,6 @@ type EntPlayer struct {
 	LastChatMessage			int64 //Last chat message //unix timestamp in milliseconds
 	LastTicketActivity		int64 //Last ticket activity //unix timestamp in milliseconds
 	GameServerPings			map[string]int
-	GameServerPingWeight	int
 }
 
 var MapPlayers map[string]*EntPlayer = make(map[string]*EntPlayer);
