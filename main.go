@@ -67,6 +67,8 @@ func main() {
 	go rating.Watchers();
 
 
+	//Watch memory leaks
+	go WatchMemory();
 
 
 	//Test
