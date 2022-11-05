@@ -1,3 +1,4 @@
+- [ ] Rethink server selection
 - [ ] Allow dead survivors to rq games without ban on last map on 2nd chapter
 - [ ] Test if anticheat logging works
 - [ ] Setup database backups
