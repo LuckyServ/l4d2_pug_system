@@ -107,7 +107,7 @@ func UpdateMmr(oResult EntGameResult, arFinalScores [2]int, arPlayers [2][]*play
 				utils.GetStringIdxInArray(arPlayers[0][iP].SteamID64, oResult.AbsentPlayers) == -1) {
 				arPlayers[0][iP].Mmr = arPlayers[0][iP].Mmr + (iTeamAgets + int(f32TeamAgets * arPlayers[0][iP].MmrUncertainty));
 				if (arPlayers[0][iP].LastGameResult == 2) { //lost prev game
-					arPlayers[0][iP].MmrUncertainty = arPlayers[0][iP].MmrUncertainty * 0.66; //reduce uncertainty
+					arPlayers[0][iP].MmrUncertainty = arPlayers[0][iP].MmrUncertainty * 0.75; //reduce uncertainty
 				}
 			}
 			arPlayers[0][iP].LastGameResult = 3; //won
@@ -117,7 +117,7 @@ func UpdateMmr(oResult EntGameResult, arFinalScores [2]int, arPlayers [2][]*play
 				utils.GetStringIdxInArray(arPlayers[1][iP].SteamID64, oResult.AbsentPlayers) != -1) {
 				arPlayers[1][iP].Mmr = arPlayers[1][iP].Mmr - (iTeamAgets + int(f32TeamAgets * arPlayers[1][iP].MmrUncertainty));
 				if (arPlayers[1][iP].LastGameResult == 3) { //won prev game
-					arPlayers[1][iP].MmrUncertainty = arPlayers[1][iP].MmrUncertainty * 0.66; //reduce uncertainty
+					arPlayers[1][iP].MmrUncertainty = arPlayers[1][iP].MmrUncertainty * 0.75; //reduce uncertainty
 				}
 			}
 			arPlayers[1][iP].LastGameResult = 2; //lost
@@ -128,7 +128,7 @@ func UpdateMmr(oResult EntGameResult, arFinalScores [2]int, arPlayers [2][]*play
 				utils.GetStringIdxInArray(arPlayers[0][iP].SteamID64, oResult.AbsentPlayers) != -1) {
 				arPlayers[0][iP].Mmr = arPlayers[0][iP].Mmr + (iTeamAgets + int(f32TeamAgets * arPlayers[0][iP].MmrUncertainty));
 				if (arPlayers[0][iP].LastGameResult == 3) { //won prev game
-					arPlayers[0][iP].MmrUncertainty = arPlayers[0][iP].MmrUncertainty * 0.66; //reduce uncertainty
+					arPlayers[0][iP].MmrUncertainty = arPlayers[0][iP].MmrUncertainty * 0.75; //reduce uncertainty
 				}
 			}
 			arPlayers[0][iP].LastGameResult = 2; //lost
@@ -138,7 +138,7 @@ func UpdateMmr(oResult EntGameResult, arFinalScores [2]int, arPlayers [2][]*play
 				utils.GetStringIdxInArray(arPlayers[1][iP].SteamID64, oResult.AbsentPlayers) == -1) {
 				arPlayers[1][iP].Mmr = arPlayers[1][iP].Mmr - (iTeamAgets + int(f32TeamAgets * arPlayers[1][iP].MmrUncertainty));
 				if (arPlayers[1][iP].LastGameResult == 2) { //lost prev game
-					arPlayers[1][iP].MmrUncertainty = arPlayers[1][iP].MmrUncertainty * 0.66; //reduce uncertainty
+					arPlayers[1][iP].MmrUncertainty = arPlayers[1][iP].MmrUncertainty * 0.75; //reduce uncertainty
 				}
 			}
 			arPlayers[1][iP].LastGameResult = 3; //won
@@ -146,7 +146,7 @@ func UpdateMmr(oResult EntGameResult, arFinalScores [2]int, arPlayers [2][]*play
 	} else { //draw
 		for iT := 0; iT < 2; iT++ {
 			for iP := 0; iP < 4; iP++ {
-				arPlayers[iT][iP].MmrUncertainty = arPlayers[iT][iP].MmrUncertainty * 0.66; //reduce uncertainty
+				arPlayers[iT][iP].MmrUncertainty = arPlayers[iT][iP].MmrUncertainty * 0.75; //reduce uncertainty
 				arPlayers[iT][iP].LastGameResult = 1; //draw
 			}
 		}

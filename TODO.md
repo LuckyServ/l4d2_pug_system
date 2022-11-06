@@ -1,4 +1,3 @@
-- [ ] Adjust mmr system values
 - [ ] Allow dead survivors to rq games without ban on last map on 2nd chapter
 - [ ] Test if anticheat logging works
 - [ ] Setup database backups
@@ -14,6 +13,7 @@
 - [ ] Automatically parse anticheat logs and ban based on them
 - [ ] Custom maps
 
+- [x] Adjust mmr system values
 - [x] Rethink server selection
 - [x] Log pings of players
 - [x] Fix automatic switching between lobbies too often

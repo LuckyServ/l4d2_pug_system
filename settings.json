@@ -17,22 +17,22 @@
 		"reason_text": "[AutoBan] Excessively long AFK / disconnected midgame / failed to ready up in time"
 	},
 	"mmr": {
-		"default_uncertainty": 33.3333,
-		"increase_daily": 0.05,
+		"default_uncertainty": 12.0,
+		"increase_daily": 0.03,
 		"default_max": 3000,
 		"consider_stable": 1.0,
-		"absolute_win": 30,
-		"minimum_win": 10,
+		"absolute_win": 33,
+		"minimum_win": 20,
 		"mmr_diff_guaranteed_win": 1000,
 		"mmr_grades": 8
 	},
 	"chat": {
-		"store_n_messages": 10,
-		"message_delay_ms": 1000,
+		"store_n_messages": 50,
+		"message_delay_ms": 2000,
 		"max_chars": 256
 	},
 	"lobby": {
-		"online_mmr_range": 8,
+		"online_mmr_range": 12,
 		"confogl_configs": [
 			{
 				"name": "ZoneMod",
@@ -52,7 +52,7 @@
 		]
 	},
 	"game": {
-		"max_wait_pings_seconds": 8,
+		"max_wait_pings_seconds": 12,
 		"get_available_servers_max_tries": 5,
 		"new_game_first_readyup_minutes": 6,
 		"max_absent_minutes": 7,
@@ -71,13 +71,13 @@
 		"name": "databasename"
 	},
 	"timeouts": {
-		"online_seconds": 10,
-		"idle_minutes": 60,
+		"online_seconds": 90,
+		"idle_minutes": 30,
 		"readyup_seconds": 25,
 		"player_auth_expire_days": 30
 	},
 	"ratelimits": {
-		"lobby_join_cooldown_sec": 30,
+		"lobby_join_cooldown_sec": 5,
 		"lobby_leave_full_lobby_ban_minutes": 5,
 		"steam_api_cooldown_sec": 60,
 		"auth_per_hour": 5
