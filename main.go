@@ -68,7 +68,9 @@ func main() {
 
 
 	//Watch memory leaks
-	go WatchMemory();
+	//go WatchMemory();
+	//Watch deadlocks
+	go WatchDeadlocks();
 
 
 	//Test
