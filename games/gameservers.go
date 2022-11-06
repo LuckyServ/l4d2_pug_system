@@ -42,7 +42,6 @@ func CheckVersion() {
 func SelectBestAvailableServer(arPlayersA []*players.EntPlayer, arPlayersB []*players.EntPlayer) string { //must unlock players inside, but they are locked outside
 
 
-	//Get 
 	var arGameServers []string;
 	var arPriority []int;
 

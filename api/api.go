@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"../settings"
-	"github.com/gin-contrib/gzip"
+	"github.com/remerge/gzip"
 )
 
 

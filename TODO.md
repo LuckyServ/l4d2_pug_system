@@ -1,4 +1,4 @@
-- [ ] Rethink server selection
+- [ ] Adjust mmr system values
 - [ ] Allow dead survivors to rq games without ban on last map on 2nd chapter
 - [ ] Test if anticheat logging works
 - [ ] Setup database backups
@@ -12,7 +12,9 @@
 - [ ] Check double html escaping of names
 - [ ] Default config for the case when zonemod is broken
 - [ ] Automatically parse anticheat logs and ban based on them
+- [ ] Custom maps
 
+- [x] Rethink server selection
 - [x] Log pings of players
 - [x] Fix automatic switching between lobbies too often
 - [x] Make sure players always connect to the oldest lobby
