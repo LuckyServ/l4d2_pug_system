@@ -140,7 +140,7 @@ func CheckVPN(sIP string) {
 	}
 	MuVPN.Lock();
 	var oNewVPNInfo EntVPNInfo;
-	if (f64Result >= 0.8) {
+	if (f64Result >= 1.0) {
 		oNewVPNInfo = EntVPNInfo{
 			IsVPN:		true,
 			IsInCheck:	false,

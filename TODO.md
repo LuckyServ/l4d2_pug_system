@@ -1,3 +1,6 @@
+- [ ] Log games even if they ended early
+- [ ] Adapt to Cloudflare challenges
+- [ ] Add visible timer on readyup timeout
 - [ ] Allow dead survivors to rq games without ban on last map on 2nd chapter
 - [ ] Test if anticheat logging works
 - [ ] Setup database backups
