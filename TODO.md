@@ -1,3 +1,5 @@
+- [ ] Rules page
+- [ ] FAQ page
 - [ ] Log games even if they ended early
 - [ ] Adapt to Cloudflare challenges
 - [ ] Add visible timer on readyup timeout
@@ -10,12 +12,16 @@
 - [ ] An admin panel to show information about players
 - [ ] An admin panel to show anticheat logs
 - [ ] Shut down RU servers on non-EU playtime
+- [ ] Page with list of all players
+- [ ] Searching in bans page
+- [ ] Visualize server selection
 - [ ] T2 and T1 configs for lower tier players
 - [ ] Check double html escaping of names
 - [ ] Default config for the case when zonemod is broken
 - [ ] Automatically parse anticheat logs and ban based on them
 - [ ] Custom maps
 
+- [x] Fix deadlocks, remove leftovers
 - [x] Adjust mmr system values
 - [x] Rethink server selection
 - [x] Log pings of players

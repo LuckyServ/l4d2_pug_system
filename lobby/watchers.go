@@ -73,8 +73,8 @@ func RecreateLobbies() {
 	for {
 		time.Sleep(30 * time.Second);
 
-		MuLobbies.Lock();
 		players.MuPlayers.Lock();
+		MuLobbies.Lock();
 
 
 		var arRecreateLobbiesPlayers, arJoinLobbyPlayers []*players.EntPlayer;
@@ -120,8 +120,8 @@ func RecreateLobbies() {
 		}
 
 
-		MuLobbies.Unlock();
 		players.MuPlayers.Unlock();
+		MuLobbies.Unlock();
 	}
 }
 
@@ -129,8 +129,8 @@ func WatchLobbies() {
 	for {
 		time.Sleep(3 * time.Second);
 
-		MuLobbies.Lock();
 		players.MuPlayers.Lock();
+		MuLobbies.Lock();
 
 		var arReadyLobbies []string;
 		var arUnreadyPlayers, arOfflinePlayers, arGamePlayers []*players.EntPlayer;
@@ -193,7 +193,7 @@ func WatchLobbies() {
 			pPlayer.IsAutoSearching = false;
 		}
 
-		MuLobbies.Unlock();
 		players.MuPlayers.Unlock();
+		MuLobbies.Unlock();
 	}
 }

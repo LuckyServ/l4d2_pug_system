@@ -20,6 +20,7 @@ func HttpReqGSGameResults(c *gin.Context) {
 	if (auth.Backend(sAuthKey)) {
 		sIP := c.PostForm("ip");
 		if (sIP != "") {
+			players.MuPlayers.RLock();
 			games.MuGames.RLock();
 			pGame := games.GetGameByIP(sIP);
 			if (pGame != nil) {
@@ -44,8 +45,6 @@ func HttpReqGSGameResults(c *gin.Context) {
 				iPlayers, _ := strconv.Atoi(c.PostForm("players_connected"));
 				iMapsFinished, _ := strconv.Atoi(c.PostForm("maps_finished"));
 
-				players.MuPlayers.RLock();
-
 				var arAbsentPlayers []string;
 				var bSomeoneBanned bool;
 				for _, pPlayer := range pGame.PlayersUnpaired {
@@ -57,8 +56,6 @@ func HttpReqGSGameResults(c *gin.Context) {
 						arAbsentPlayers = append(arAbsentPlayers, pPlayer.SteamID64);
 					}
 				}
-
-				players.MuPlayers.RUnlock();
 
 
 				oResult := rating.EntGameResult{
@@ -106,6 +103,7 @@ func HttpReqGSGameResults(c *gin.Context) {
 				sResponse = fmt.Sprintf("%s\n	\"error\" \"No game on this IP\"", sResponse);
 			}
 			games.MuGames.RUnlock();
+			players.MuPlayers.RUnlock();
 		} else {
 			sResponse = fmt.Sprintf("%s\n	\"success\" \"0\"", sResponse);
 			sResponse = fmt.Sprintf("%s\n	\"error\" \"No ip parameter\"", sResponse);

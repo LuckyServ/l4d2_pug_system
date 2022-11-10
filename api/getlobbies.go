@@ -30,8 +30,6 @@ func HttpReqGetLobbies(c *gin.Context) {
 	var iLobbiesCount int;
 	var bNeedReadyUp bool;
 
-	lobby.MuLobbies.RLock();
-
 	mapResponse["authorized"] = false;
 	mapResponse["is_inlobby"] = false;
 	if (errCookieSessID == nil && sCookieSessID != "") {
@@ -42,6 +40,10 @@ func HttpReqGetLobbies(c *gin.Context) {
 			pPlayer := players.MapPlayers[oSession.SteamID64];
 			if (pPlayer.IsInLobby) {
 				mapResponse["is_inlobby"] = true;
+
+				lobby.MuLobbies.RLock();
+
+
 				pLobby := lobby.MapLobbies[pPlayer.LobbyID];
 				mapResponse["mylobby"] = LobbyResponse{
 					ID:				pLobby.ID,
@@ -55,10 +57,14 @@ func HttpReqGetLobbies(c *gin.Context) {
 				if (pLobby.PlayerCount >= 8 && !pPlayer.IsReadyInLobby) {
 					bNeedReadyUp = true;
 				}
+
+				lobby.MuLobbies.RUnlock();
 			}
 			players.MuPlayers.RUnlock();
 		}
 	}
+
+	lobby.MuLobbies.RLock();
 
 	for _, pLobby := range lobby.ArrayLobbies {
 		arRespLobbies = append(arRespLobbies, LobbyResponse{

@@ -16,8 +16,8 @@ import (
 func Control(pGame *EntGame) {
 
 	//Create
-	MuGames.Lock();
 	players.MuPlayers.Lock();
+	MuGames.Lock();
 
 	Create(pGame);
 	pGame.State = StateCreated;
@@ -29,8 +29,8 @@ func Control(pGame *EntGame) {
 
 	//Choose maps
 	i64CmpgnIdx := time.Now().UnixNano() % int64(len(settings.CampaignNames));
-	MuGames.Lock();
 	players.MuPlayers.Lock();
+	MuGames.Lock();
 	pGame.CampaignName = settings.CampaignNames[i64CmpgnIdx];
 	pGame.Maps = settings.MapPool[i64CmpgnIdx];
 	pGame.State = StateCampaignChosen;
@@ -40,8 +40,8 @@ func Control(pGame *EntGame) {
 
 
 	//Pair players
-	MuGames.Lock();
 	players.MuPlayers.Lock();
+	MuGames.Lock();
 
 	pGame.PlayersA, pGame.PlayersB = rating.Pair(pGame.PlayersUnpaired);
 
@@ -52,8 +52,8 @@ func Control(pGame *EntGame) {
 
 
 	//Request pings
-	MuGames.Lock();
 	players.MuPlayers.Lock();
+	MuGames.Lock();
 	for _, pPlayer := range pGame.PlayersUnpaired {
 		pPlayer.GameServerPings = make(map[string]int, len(settings.GameServers));
 	}
@@ -68,8 +68,8 @@ func Control(pGame *EntGame) {
 
 
 	//Cancel the ping request
-	MuGames.Lock();
 	players.MuPlayers.Lock();
+	MuGames.Lock();
 	pGame.State = StateSelectServer;
 	SetLastUpdated(pGame.PlayersUnpaired);
 	MuGames.Unlock();
@@ -83,6 +83,7 @@ func Control(pGame *EntGame) {
 		players.MuPlayers.Lock();
 		sIPPORT := SelectBestAvailableServer(pGame.PlayersA, pGame.PlayersB); //unlocks players, but doesnt lock them
 
+		players.MuPlayers.Lock();
 		MuGames.Lock();
 		bSuccess := (sIPPORT != "");
 		if (bSuccess) {
@@ -94,7 +95,6 @@ func Control(pGame *EntGame) {
 			}
 		}
 
-		players.MuPlayers.Lock();
 		if (bSuccess) {
 			pGame.ServerIP = sIPPORT;
 			pGame.State = StateWaitPlayersJoin;
@@ -111,8 +111,8 @@ func Control(pGame *EntGame) {
 
 			iTryCount++;
 			if (iTryCount >= settings.AvailGameSrvsMaxTries) { //destroy lobby if too many tries
-				MuGames.Lock();
 				players.MuPlayers.Lock();
+				MuGames.Lock();
 				Destroy(pGame);
 				MuGames.Unlock();
 				players.MuPlayers.Unlock();
@@ -139,15 +139,15 @@ func Control(pGame *EntGame) {
 	MuGames.Unlock();
 	select {
 	case <-chRUpExpired:
-		MuGames.Lock();
 		players.MuPlayers.Lock();
+		MuGames.Lock();
 		pGame.State = StateReadyUpExpired;
 		SetLastUpdated(pGame.PlayersUnpaired);
 		MuGames.Unlock();
 		players.MuPlayers.Unlock();
 	case <-chFullRUpReceived:
-		MuGames.Lock();
 		players.MuPlayers.Lock();
+		MuGames.Lock();
 		pGame.State = StateGameProceeds;
 		SetLastUpdated(pGame.PlayersUnpaired);
 		MuGames.Unlock();
@@ -177,8 +177,8 @@ func Control(pGame *EntGame) {
 		select {
 		case <-chListOfReadyPlayersExpired:
 			//Ban no one, destroy the game
-			MuGames.Lock();
 			players.MuPlayers.Lock();
+			MuGames.Lock();
 			Destroy(pGame);
 			MuGames.Unlock();
 			players.MuPlayers.Unlock();
@@ -206,16 +206,16 @@ func Control(pGame *EntGame) {
 				}
 			}
 			//Destroy the game
-			MuGames.Lock();
 			players.MuPlayers.Lock();
+			MuGames.Lock();
 			Destroy(pGame);
 			MuGames.Unlock();
 			players.MuPlayers.Unlock();
 			return;
 		case <-chFullRUpReceived:
 			//Proceed to the next state
-			MuGames.Lock();
 			players.MuPlayers.Lock();
+			MuGames.Lock();
 			pGame.State = StateGameProceeds;
 			SetLastUpdated(pGame.PlayersUnpaired);
 			MuGames.Unlock();
@@ -260,8 +260,8 @@ func Control(pGame *EntGame) {
 
 
 	//Game ended, settle results, destroy game
-	MuGames.Lock();
 	players.MuPlayers.Lock();
+	MuGames.Lock();
 
 	pGame.State = StateGameEnded;
 	oResult := pGame.GameResult;

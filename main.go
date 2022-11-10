@@ -21,6 +21,17 @@ import (
 	//"encoding/base64"
 )
 
+/*
+Mutex lock order:
+MuSessions
+MuPlayers
+MuLobbies
+MuGames
+MuDatabase
+MuVPN
+MuAuth
+*/
+
 
 func main() {
 	fmt.Printf("Started.\n");
@@ -68,9 +79,7 @@ func main() {
 
 
 	//Watch memory leaks
-	//go WatchMemory();
-	//Watch deadlocks
-	go WatchDeadlocks();
+	go WatchMemory();
 
 
 	//Test

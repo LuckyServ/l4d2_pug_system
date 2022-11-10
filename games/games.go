@@ -51,6 +51,7 @@ var MuGames sync.RWMutex;
 
 var ChanNewGameID chan string = make(chan string);
 
+
 func Watchers() {
 	go HandleUniqID();
 	go CheckVersion();

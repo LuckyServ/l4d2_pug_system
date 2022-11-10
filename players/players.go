@@ -55,6 +55,7 @@ var MuPlayers sync.RWMutex;
 var I64LastPlayerlistUpdate int64;
 var iMaxStableMmr, iMinStableMmr, iMmrDiff int;
 
+
 func Watchers() {
 	go WatchOnline();
 	go WatchSortPlayers();

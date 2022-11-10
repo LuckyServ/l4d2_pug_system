@@ -112,7 +112,7 @@ func HttpReqGetOnlinePlayers(c *gin.Context) {
 		}
 	}
 	players.MuPlayers.RUnlock();
-	//fmt.Printf("Was locked for %d μs\n", (time.Now().UnixNano() - iStartTime) / 1000);
+	
 	iActiveCount = iOnlineCount + iInLobbyCount + iInGameCount;
 
 

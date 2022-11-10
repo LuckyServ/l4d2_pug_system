@@ -26,8 +26,8 @@ func HttpReqBlockNewGames(c *gin.Context) {
 				mapResponse["success"] = true;
 				lobby.NewLobbiesBlocked = true;
 
-				lobby.MuLobbies.Lock();
 				players.MuPlayers.Lock();
+				lobby.MuLobbies.Lock();
 
 				for _, pPlayer := range players.ArrayPlayers {
 					lobby.Leave(pPlayer, true);
