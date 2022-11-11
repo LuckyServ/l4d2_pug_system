@@ -73,6 +73,8 @@ func Create(pPlayer *players.EntPlayer) bool { //MuPlayers and MuLobbies must be
 	if (pPlayer.IsInLobby) {
 		return false;
 	}
+	
+	pPlayer.IsIdle = false;
 
 	//calculate mmr limits
 	iMmrMin, iMmrMax, errMmrLimits := CalcMmrLimits(pPlayer);
@@ -96,7 +98,6 @@ func Create(pPlayer *players.EntPlayer) bool { //MuPlayers and MuLobbies must be
 	i64CurTime := time.Now().UnixMilli();
 	I64LastLobbyListUpdate = i64CurTime;
 	pPlayer.IsInLobby = true;
-	pPlayer.IsIdle = false;
 	pPlayer.LastLobbyActivity = i64CurTime;
 	pPlayer.LobbyID = sLobbyID;
 	players.I64LastPlayerlistUpdate = i64CurTime;

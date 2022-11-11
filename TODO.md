@@ -1,5 +1,7 @@
+- [ ] Re-check if mmr uncertainty is correctly reducing
 - [ ] Rules page
 - [ ] FAQ page
+- [ ] Alerts on site that dont block scripts
 - [ ] Log games even if they ended early
 - [ ] Adapt to Cloudflare challenges
 - [ ] Add visible timer on readyup timeout
