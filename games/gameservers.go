@@ -11,9 +11,11 @@ import (
 	"net/http"
 	"github.com/buger/jsonparser"
 	"strconv"
+	"sync"
 )
 
 var sLatestGameVersion string;
+var MuA2S sync.RWMutex;
 
 
 func CheckVersion() {
@@ -39,9 +41,7 @@ func CheckVersion() {
 	}
 }
 
-func SelectBestAvailableServer(arPlayersA []*players.EntPlayer, arPlayersB []*players.EntPlayer) string { //must unlock players inside, but they are locked outside
-
-
+func GetPotentialGameServers(arPlayersA []*players.EntPlayer, arPlayersB []*players.EntPlayer) ([]string) { //Players must be locked outside
 	var arGameServers []string;
 	var arPriority []int;
 
@@ -55,11 +55,9 @@ func SelectBestAvailableServer(arPlayersA []*players.EntPlayer, arPlayersB []*pl
 		}
 	}
 
+	SortByPriority(arGameServers, arPriority);
 
-	players.MuPlayers.Unlock();
-
-
-	return GetAvailableServer(arGameServers, arPriority);
+	return arGameServers;
 }
 
 func CalcPings(arPlayersA []*players.EntPlayer, arPlayersB []*players.EntPlayer, sIP string) (int, int) {
@@ -107,8 +105,7 @@ func CalcPings(arPlayersA []*players.EntPlayer, arPlayersB []*players.EntPlayer,
 }
 
 
-func GetAvailableServer(arGameServers []string, arPriority []int) string {
-	SortByPriority(arGameServers, arPriority);
+func GetEmptyServers(arGameServers []string) []string {
 	var arEmptyGameSrvs []string;
 	var arQueryCh []chan int;
 	for range arGameServers {
@@ -123,10 +120,17 @@ func GetAvailableServer(arGameServers []string, arPriority []int) string {
 			arEmptyGameSrvs = append(arEmptyGameSrvs, sIPPORT);
 		}
 	}
-	if (len(arEmptyGameSrvs) > 0) {
-		return arEmptyGameSrvs[0];
+	return arEmptyGameSrvs;
+}
+
+func GetUnreservedServers(arGameServers []string) []string {
+	var arUnreservedGameSrvs []string;
+	for _, sIPPORT := range arGameServers {
+		if (GetGameByIP(sIPPORT) == nil) {
+			arUnreservedGameSrvs = append(arUnreservedGameSrvs, sIPPORT);
+		}
 	}
-	return "";
+	return arUnreservedGameSrvs;
 }
 
 func SortByPriority(arGameServers []string, arPriority []int) {

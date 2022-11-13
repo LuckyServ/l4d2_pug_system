@@ -1,16 +1,19 @@
-- [ ] Re-check if mmr uncertainty is correctly reducing
+- [ ] Replace lobbies with one single queue
+- [ ] Increasing timeout after leaving full lobby
+- [ ] Add visible timer on readyup timeout
+- [ ] Exclude previously played campaigns from mappool
+- [ ] Replace campaign picker by crypto-random number generator
+- [ ] Edit mmr system, you need twice as higher scores to win max mmr
 - [ ] Rules page
 - [ ] FAQ page
 - [ ] Alerts on site that dont block scripts
 - [ ] Log games even if they ended early
 - [ ] Adapt to Cloudflare challenges
-- [ ] Add visible timer on readyup timeout
 - [ ] Allow dead survivors to rq games without ban on last map on 2nd chapter
 - [ ] Test if anticheat logging works
 - [ ] Setup database backups
 - [ ] Recheck penalties for rq
 - [ ] Fix exploiting the initial ready up timelimit
-- [ ] Consider better idle calculation
 - [ ] An admin panel to show information about players
 - [ ] An admin panel to show anticheat logs
 - [ ] Shut down RU servers on non-EU playtime
@@ -23,6 +26,9 @@
 - [ ] Automatically parse anticheat logs and ban based on them
 - [ ] Custom maps
 
+- [x] Optimize concurrent gameserver selection in Games
+- [x] Check if LastGameResult is correctry restoring on reboots
+- [x] Re-check if mmr uncertainty is correctly reducing
 - [x] Fix deadlocks, remove leftovers
 - [x] Adjust mmr system values
 - [x] Rethink server selection

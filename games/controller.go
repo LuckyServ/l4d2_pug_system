@@ -81,22 +81,21 @@ func Control(pGame *EntGame) {
 	for {
 
 		players.MuPlayers.Lock();
-		sIPPORT := SelectBestAvailableServer(pGame.PlayersA, pGame.PlayersB); //unlocks players, but doesnt lock them
+		arGameServers := GetPotentialGameServers(pGame.PlayersA, pGame.PlayersB); //sorted by priority
+		players.MuPlayers.Unlock();
+
+		MuA2S.Lock();
+		arGameServers = GetEmptyServers(arGameServers); //long execution, a2s queries here
+		time.Sleep(1 * time.Second);
+		MuA2S.Unlock();
 
 		players.MuPlayers.Lock();
 		MuGames.Lock();
-		bSuccess := (sIPPORT != "");
-		if (bSuccess) {
-			for _, pGameI := range ArrayGames {
-				if (pGameI.ServerIP == sIPPORT) {
-					bSuccess = false;
-					break;
-				}
-			}
-		}
+		
+		arGameServers = GetUnreservedServers(arGameServers);
 
-		if (bSuccess) {
-			pGame.ServerIP = sIPPORT;
+		if (len(arGameServers) > 0) {
+			pGame.ServerIP = arGameServers[0];
 			pGame.State = StateWaitPlayersJoin;
 			SetLastUpdated(pGame.PlayersUnpaired);
 			MuGames.Unlock();

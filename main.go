@@ -30,6 +30,7 @@ MuGames
 MuDatabase
 MuVPN
 MuAuth
+MuA2S
 */
 
 
