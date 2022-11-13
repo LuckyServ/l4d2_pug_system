@@ -41,10 +41,11 @@ func CheckVersion() {
 	}
 }
 
-func GetPotentialGameServers(arPlayersA []*players.EntPlayer, arPlayersB []*players.EntPlayer) ([]string) { //Players must be locked outside
+func GetPotentialGameServers(arPlayersA []*players.EntPlayer, arPlayersB []*players.EntPlayer) ([]string) {
 	var arGameServers []string;
 	var arPriority []int;
 
+	players.MuPlayers.RLock();
 	for _, oServer := range settings.GameServers {
 		var iTeamPingDiff, iAvgPing = CalcPings(arPlayersA, arPlayersB, oServer.IP);
 		if (iAvgPing <= 200 && iTeamPingDiff <= 80) { //limits for playable conditions
@@ -54,6 +55,7 @@ func GetPotentialGameServers(arPlayersA []*players.EntPlayer, arPlayersB []*play
 			}
 		}
 	}
+	players.MuPlayers.RUnlock();
 
 	SortByPriority(arGameServers, arPriority);
 

@@ -80,9 +80,7 @@ func Control(pGame *EntGame) {
 	iTryCount := 0;
 	for {
 
-		players.MuPlayers.Lock();
-		arGameServers := GetPotentialGameServers(pGame.PlayersA, pGame.PlayersB); //sorted by priority
-		players.MuPlayers.Unlock();
+		arGameServers := GetPotentialGameServers(pGame.PlayersA, pGame.PlayersB); //Locks Players
 
 		MuA2S.Lock();
 		arGameServers = GetEmptyServers(arGameServers); //long execution, a2s queries here
