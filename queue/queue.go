@@ -69,7 +69,10 @@ func Leave(pPlayer *players.EntPlayer, bGameStart bool) { //Players must be lock
 }
 
 func ReadyUp(pPlayer *players.EntPlayer) { //Players must be locked outside
-	pPlayer.IsReadyConfirmed = true;
+	if (!pPlayer.IsReadyConfirmed) {
+		pPlayer.IsReadyConfirmed = true;
+		IReadyPlayers++;
+	}
 	SetLastUpdated();
 }
 
