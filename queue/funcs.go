@@ -34,18 +34,29 @@ func GetLongestWaitPlayer() (*players.EntPlayer) { //Players must be locked outs
 	return pOldestWaitPlayer;
 }
 
-func TrimQueue() ([]*players.EntPlayer) { //IPlayersCount must be >= 8 and arQueue sorted by wait time
+func TrimQueue(arReadyOnly []*players.EntPlayer) ([]*players.EntPlayer) { //IPlayersCount must be >= 8 and arQueue sorted by wait time
 	var arTrimmedQueue []*players.EntPlayer;
-	iGamePlayers := IPlayersCount - (IPlayersCount % 8);
+	iSize := len(arReadyOnly);
+	iGamePlayers := iSize - (iSize % 8);
 	for i := 0; i < iGamePlayers; i++ {
-		arTrimmedQueue = append(arTrimmedQueue, arQueue[i]);
+		arTrimmedQueue = append(arTrimmedQueue, arReadyOnly[i]);
 	}
 	return arTrimmedQueue;
 }
 
+func GetReadyPlayersOnly() ([]*players.EntPlayer) {
+	var arReadyQueue []*players.EntPlayer;
+	for _, pPlayer := range arQueue {
+		if (pPlayer.IsReadyUpRequested && pPlayer.IsReadyConfirmed) {
+			arReadyQueue = append(arReadyQueue, pPlayer);
+		}
+	}
+	return arReadyQueue;
+}
+
 func SortTrimmedByMmr(arTrimmedQueue []*players.EntPlayer) {
 	iSize := len(arTrimmedQueue);
-	if (IPlayersCount > 1) {
+	if (iSize > 1) {
 		bSorted := false;
 		for !bSorted {
 			bSorted = true;
@@ -68,23 +79,24 @@ func SortTrimmedByMmr(arTrimmedQueue []*players.EntPlayer) {
 	}
 }
 
-func SortQueueByWait() {
-	if (IPlayersCount > 1) {
+func SortQueueByWait(arReadyOnly []*players.EntPlayer) {
+	iSize := len(arReadyOnly);
+	if (iSize > 1) {
 		bSorted := false;
 		for !bSorted {
 			bSorted = true;
-			for i := 1; i < IPlayersCount; i++ {
-				if (arQueue[i].InQueueSince < arQueue[i - 1].InQueueSince) {
-					arQueue[i], arQueue[i - 1] = arQueue[i - 1], arQueue[i]; //switch
+			for i := 1; i < iSize; i++ {
+				if (arReadyOnly[i].InQueueSince < arReadyOnly[i - 1].InQueueSince) {
+					arReadyOnly[i], arReadyOnly[i - 1] = arReadyOnly[i - 1], arReadyOnly[i]; //switch
 					if (bSorted) {
 						bSorted = false;
 					}
 				}
 			}
 			if (!bSorted) {
-				for i := IPlayersCount - 2; i >= 0; i-- {
-					if (arQueue[i].InQueueSince > arQueue[i + 1].InQueueSince) {
-						arQueue[i], arQueue[i + 1] = arQueue[i + 1], arQueue[i]; //switch
+				for i := iSize - 2; i >= 0; i-- {
+					if (arReadyOnly[i].InQueueSince > arReadyOnly[i + 1].InQueueSince) {
+						arReadyOnly[i], arReadyOnly[i + 1] = arReadyOnly[i + 1], arReadyOnly[i]; //switch
 					}
 				}
 			}

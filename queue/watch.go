@@ -33,10 +33,12 @@ func WatchQueue() {
 				//kick unready
 				KickUnready();
 
+				arReadyOnly := GetReadyPlayersOnly();
+
 				//check if longest wait player is still there
-				if (IPlayersCount >= 8 && pPlayerReadyUpReason == PLongestWaitPlayer) {
-					SortQueueByWait();
-					arTrimmedQueue := TrimQueue();
+				if (len(arReadyOnly) >= 8 && pPlayerReadyUpReason == PLongestWaitPlayer) {
+					SortQueueByWait(arReadyOnly);
+					arTrimmedQueue := TrimQueue(arReadyOnly);
 					SortTrimmedByMmr(arTrimmedQueue);
 
 					//create games
