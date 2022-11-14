@@ -31,26 +31,6 @@
 		"message_delay_ms": 2000,
 		"max_chars": 256
 	},
-	"lobby": {
-		"online_mmr_range": 12,
-		"confogl_configs": [
-			{
-				"name": "ZoneMod",
-				"codename": "zonemod",
-				"max_mmr": 2000000000
-			},
-			{
-				"name": "T1",
-				"codename": "t1",
-				"max_mmr": 1000
-			},
-			{
-				"name": "T2",
-				"codename": "t2",
-				"max_mmr": 150
-			}
-		]
-	},
 	"game": {
 		"max_wait_pings_seconds": 12,
 		"get_available_servers_max_tries": 5,
@@ -72,13 +52,10 @@
 	},
 	"timeouts": {
 		"online_seconds": 90,
-		"idle_minutes": 30,
 		"readyup_seconds": 25,
 		"player_auth_expire_days": 30
 	},
 	"ratelimits": {
-		"lobby_join_cooldown_sec": 5,
-		"lobby_leave_full_lobby_ban_minutes": 5,
 		"steam_api_cooldown_sec": 60,
 		"auth_per_hour": 5
 	},
@@ -89,6 +66,13 @@
 		"host": "https://api.smurf.detector",
 		"auth_key": "verystrongauthkey"
 	},
+	"confogl_configs": [
+		{
+			"name": "ZoneMod",
+			"codename": "zonemod",
+			"max_mmr": 2000000000
+		}
+	],
 	"map_pool": [
 		{
 			"name": "Dead Center",

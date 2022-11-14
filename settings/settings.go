@@ -35,13 +35,10 @@ var MinVersusGamesPlayed int;
 var DefaultMaxMmr int;
 var OnlineMmrRange int;
 
-var IdleTimeout int64;
 var OnlineTimeout int64;
 var ReadyUpTimeout int64;
 var PlayerAuthExpire int64;
 
-var JoinLobbyCooldown int64;
-var LeaveFullLobbyBan int64;
 var AuthPerHour int;
 var SteamAPICooldown int64;
 
@@ -263,27 +260,6 @@ func ConfigFile() bool {
 	}
 	OnlineTimeout = i64Buffer * 1000;
 
-	i64Buffer, errError = jsonparser.GetInt(byData, "timeouts", "idle_minutes");
-	if (errError != nil) {
-		fmt.Printf("Error reading config file: %s\n", errError);
-		return false;
-	}
-	IdleTimeout = i64Buffer * 60 * 1000;
-
-	i64Buffer, errError = jsonparser.GetInt(byData, "ratelimits", "lobby_join_cooldown_sec");
-	if (errError != nil) {
-		fmt.Printf("Error reading config file: %s\n", errError);
-		return false;
-	}
-	JoinLobbyCooldown = i64Buffer * 1000;
-
-	i64Buffer, errError = jsonparser.GetInt(byData, "ratelimits", "lobby_leave_full_lobby_ban_minutes");
-	if (errError != nil) {
-		fmt.Printf("Error reading config file: %s\n", errError);
-		return false;
-	}
-	LeaveFullLobbyBan = i64Buffer * 60 * 1000;
-
 	i64Buffer, errError = jsonparser.GetInt(byData, "ratelimits", "auth_per_hour");
 	if (errError != nil) {
 		fmt.Printf("Error reading config file: %s\n", errError);
@@ -476,7 +452,7 @@ func ConfigFile() bool {
 
 
 
-	}, "lobby", "confogl_configs");
+	}, "confogl_configs");
 	if (bErrorReadingConfoglConfigs) {
 		fmt.Printf("Error reading config file on Confogl configs list\n");
 		return false;

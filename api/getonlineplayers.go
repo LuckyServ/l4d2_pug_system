@@ -3,6 +3,7 @@ package api
 import (
 	"github.com/gin-gonic/gin"
 	"../players"
+	"../queue"
 	"fmt"
 	"time"
 	"../players/auth"
@@ -15,8 +16,7 @@ type PlayerResponse struct {
 	Mmr				int			`json:"mmr"`
 	Access			int 		`json:"access"` //-2 - completely banned, -1 - chat banned, 0 - regular player, 1 - behaviour moderator, 2 - cheat moderator, 3 - behaviour+cheat moderator, 4 - full admin access
 	IsInGame		bool		`json:"is_ingame"`
-	IsIdle			bool		`json:"is_idle"`
-	IsInLobby		bool		`json:"is_inlobby"`
+	IsInQueue		bool		`json:"is_inqueue"`
 	MmrGrade		int			`json:"mmr_grade"`
 }
 
@@ -31,8 +31,7 @@ type PlayerResponseMe struct {
 	BanAcceptedAt	int64 		`json:"ban_accepted_at"`
 	BanLength		int64 		`json:"ban_length"`
 	IsInGame		bool		`json:"is_ingame"`
-	IsIdle			bool		`json:"is_idle"`
-	IsInLobby		bool		`json:"is_inlobby"`
+	IsInQueue		bool		`json:"is_inqueue"`
 	MmrGrade		int			`json:"mmr_grade"`
 	ProfValidated	bool		`json:"profile_validated"` //Steam profile validated
 	RulesAccepted	bool		`json:"rules_accepted"` //Rules accepted
@@ -67,8 +66,7 @@ func HttpReqGetOnlinePlayers(c *gin.Context) {
 				BanAcceptedAt:	pPlayer.BanAcceptedAt,
 				BanLength:		pPlayer.BanLength,
 				IsInGame:		pPlayer.IsInGame,
-				IsInLobby:		pPlayer.IsInLobby,
-				IsIdle:			pPlayer.IsIdle,
+				IsInQueue:		pPlayer.IsInQueue,
 				ProfValidated:	pPlayer.ProfValidated,
 				RulesAccepted:	pPlayer.RulesAccepted,
 				MmrGrade:		players.GetMmrGrade(pPlayer),
@@ -80,14 +78,14 @@ func HttpReqGetOnlinePlayers(c *gin.Context) {
 	}
 
 	var arPlayers []PlayerResponse;
-	var iActiveCount, iOnlineCount, iInLobbyCount, iInGameCount, iIdleCount int;
+	var iActiveCount, iOnlineCount, iInGameCount int;
 
 	//iStartTime := time.Now().UnixNano();
 	players.MuPlayers.RLock();
 
 	i64CurTime := time.Now().UnixMilli();
 	for _, pPlayer := range players.ArrayPlayers {
-		if ((pPlayer.IsOnline || pPlayer.IsInGame || pPlayer.IsInLobby) && pPlayer.ProfValidated && pPlayer.RulesAccepted && pPlayer.Access >= -1/*not banned*/) {
+		if ((pPlayer.IsOnline || pPlayer.IsInGame || pPlayer.IsInQueue) && pPlayer.ProfValidated && pPlayer.RulesAccepted && pPlayer.Access >= -1/*not banned*/) {
 			arPlayers = append(arPlayers, PlayerResponse{
 				SteamID64:		pPlayer.SteamID64,
 				NicknameBase64:	pPlayer.NicknameBase64,
@@ -95,29 +93,23 @@ func HttpReqGetOnlinePlayers(c *gin.Context) {
 				Mmr:			pPlayer.Mmr,
 				Access:			pPlayer.Access,
 				IsInGame:		pPlayer.IsInGame,
-				IsInLobby:		pPlayer.IsInLobby,
-				IsIdle:			pPlayer.IsIdle,
+				IsInQueue:		pPlayer.IsInQueue,
 				MmrGrade:		players.GetMmrGrade(pPlayer),
 			});
 			if (pPlayer.IsInGame) {
 				iInGameCount++;
-			} else if (pPlayer.IsInLobby) {
-				iInLobbyCount++;
 			} else if (pPlayer.IsOnline) {
 				iOnlineCount++;
-				if (pPlayer.IsIdle) {
-					iIdleCount++;
-				}
 			}
 		}
 	}
 	players.MuPlayers.RUnlock();
 	
-	iActiveCount = iOnlineCount + iInLobbyCount + iInGameCount;
+	iActiveCount = iOnlineCount + queue.IPlayersCount + iInGameCount;
 
 
 	mapResponse["success"] = true;
-	mapResponse["count"] = map[string]int{"online": iActiveCount, "in_lobby": iInLobbyCount, "in_game": iInGameCount, "idle": iIdleCount};
+	mapResponse["count"] = map[string]int{"online": iActiveCount, "in_queue": queue.IPlayersCount, "in_game": iInGameCount};
 	mapResponse["list"] = arPlayers;
 
 	

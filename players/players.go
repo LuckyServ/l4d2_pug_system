@@ -29,19 +29,17 @@ type EntPlayer struct {
 	RulesAccepted			bool //Rules accepted
 	LastActivity			int64 //unix timestamp in milliseconds
 	IsOnline				bool
-	IsIdle					bool
 	OnlineSince				int64 //unix timestamp in milliseconds
 	IsInGame				bool
-	IsInLobby				bool
-	IsAutoSearching			bool
-	AutoSearchingSince		int64 //unix timestamp in milliseconds
-	LobbyID					string
+	IsInQueue				bool
+	InQueueSince			int64 //unix timestamp in milliseconds
+	LastQueueChanged		int64 //unix timestamp in milliseconds
+	IsReadyUpRequested		bool
+	IsReadyConfirmed		bool
+	NextQueueingAllowed		int64 //unix timestamp in milliseconds
 	GameID					string
 	LastGameChanged			int64  //unix timestamp in milliseconds
-	IsReadyInLobby			bool
 	LastSteamRequest		int64 //Last steam api request //unix timestamp in milliseconds
-	LastLobbyActivity		int64 //Last lobby activity //unix timestamp in milliseconds
-	LastFullLobbyLeave		int64 //Last leaving from full lobby //unix timestamp in milliseconds
 	LastGameActivity		int64 //Last game activity //unix timestamp in milliseconds
 	LastChatMessage			int64 //Last chat message //unix timestamp in milliseconds
 	LastTicketActivity		int64 //Last ticket activity //unix timestamp in milliseconds
@@ -71,7 +69,6 @@ func UpdatePlayerActivity(sSteamID64 string, sCookieUniqueKey string, sIP string
 	if (!pPlayer.IsOnline) {
 		pPlayer.IsOnline = true;
 		pPlayer.OnlineSince = i64CurTime;
-		pPlayer.IsIdle = false;
 		I64LastPlayerlistUpdate = i64CurTime;
 
 		byNickname, _ := base64.StdEncoding.DecodeString(pPlayer.NicknameBase64);

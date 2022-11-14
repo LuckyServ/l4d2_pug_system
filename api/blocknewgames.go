@@ -4,7 +4,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"../players/auth"
 	"../players"
-	"../lobby"
+	"../queue"
 )
 
 
@@ -24,17 +24,16 @@ func HttpReqBlockNewGames(c *gin.Context) {
 				players.MuPlayers.RUnlock();
 
 				mapResponse["success"] = true;
-				lobby.NewLobbiesBlocked = true;
+				queue.NewGamesBlocked = true;
 
 				players.MuPlayers.Lock();
-				lobby.MuLobbies.Lock();
 
 				for _, pPlayer := range players.ArrayPlayers {
-					lobby.Leave(pPlayer, true);
-					pPlayer.IsAutoSearching = false;
+					if (pPlayer.IsInQueue) {
+						queue.Leave(pPlayer, false);
+					}
 				}
 
-				lobby.MuLobbies.Unlock();
 				players.MuPlayers.Unlock();
 
 			} else {

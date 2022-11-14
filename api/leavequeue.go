@@ -4,11 +4,11 @@ import (
 	"github.com/gin-gonic/gin"
 	"../players/auth"
 	"../players"
-	"../lobby"
+	"../queue"
 )
 
 
-func HttpReqLeaveLobby(c *gin.Context) {
+func HttpReqLeaveQueue(c *gin.Context) {
 
 	mapResponse := make(map[string]interface{});
 	
@@ -20,19 +20,14 @@ func HttpReqLeaveLobby(c *gin.Context) {
 		if (bAuthorized) {
 			players.MuPlayers.Lock();
 			pPlayer := players.MapPlayers[oSession.SteamID64];
-			if (!pPlayer.IsInLobby) {
-				mapResponse["error"] = "You are not in a lobby";
+			if (!pPlayer.IsInQueue) {
+				mapResponse["error"] = "You are not in queue";
 			} else if (!pPlayer.IsOnline) {
 				mapResponse["error"] = "Somehow you are not Online, try to refresh the page";
 			} else {
-				//Leave lobby
-				lobby.MuLobbies.Lock();
-				if (lobby.Leave(pPlayer, false)) {
-					mapResponse["success"] = true;
-				} else {
-					mapResponse["error"] = "Race condition. Try again.";
-				}
-				lobby.MuLobbies.Unlock();
+				//Leave queue
+				queue.Leave(pPlayer, false);
+				mapResponse["success"] = true;
 			}
 			players.MuPlayers.Unlock();
 		} else {

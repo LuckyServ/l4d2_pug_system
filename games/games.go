@@ -45,6 +45,8 @@ const ( //game states
 
 var MapGameStatus map[int]string;
 
+var IPlayersFinishingGameSoon int;
+
 var MapGames map[string]*EntGame = make(map[string]*EntGame);
 var ArrayGames []*EntGame; //duplicate of MapGames, for faster iterating
 var MuGames sync.RWMutex;
@@ -55,6 +57,7 @@ var ChanNewGameID chan string = make(chan string);
 func Watchers() {
 	go HandleUniqID();
 	go CheckVersion();
+	go WatchFinishingGameSoon();
 
 	//init game statuses text for response
 	MapGameStatus = map[int]string{
@@ -84,6 +87,30 @@ func HandleUniqID() {
 	}
 }
 
+func WatchFinishingGameSoon() {
+	for {
+		players.MuPlayers.Lock();
+		IPlayersFinishingGameSoon = 0;
+		i64CurTime := time.Now().UnixMilli();
+
+		for _, pPlayer := range players.ArrayPlayers {
+			if (pPlayer.IsInGame) {
+				oGameResult := MapGames[pPlayer.GameID].GameResult;
+				if (oGameResult.IsLastMap && oGameResult.CurrentHalf == 2) {
+					IPlayersFinishingGameSoon++;
+				}
+			} else {
+				if (pPlayer.LastGameActivity + 60000/*60s*/ > i64CurTime) {
+					IPlayersFinishingGameSoon++;
+				}
+			}
+		}
+
+		players.MuPlayers.Unlock();
+		time.Sleep(10 * time.Second);
+	}
+}
+
 
 func Create(pGame *EntGame) { //MuGames and MuPlayers must be locked outside
 	MapGames[pGame.ID] = pGame;
@@ -93,7 +120,6 @@ func Create(pGame *EntGame) { //MuGames and MuPlayers must be locked outside
 	for _, pPlayer := range pGame.PlayersUnpaired {
 		pPlayer.IsInGame = true;
 		pPlayer.GameID = pGame.ID;
-		pPlayer.IsIdle = false;
 		pPlayer.LastGameActivity = i64CurTime;
 		iMmrSum = iMmrSum + pPlayer.Mmr;
 	}
@@ -116,7 +142,6 @@ func Destroy(pGame *EntGame) { //MuGames and MuPlayers must be locked outside
 		pPlayer.IsInGame = false;
 		pPlayer.GameID = "";
 		pPlayer.LastGameChanged = i64CurTime;
-		pPlayer.IsIdle = false;
 		pPlayer.LastGameActivity = i64CurTime;
 	}
 	players.I64LastPlayerlistUpdate = i64CurTime;

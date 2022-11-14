@@ -1,9 +1,9 @@
-- [ ] Replace lobbies with one single queue
 - [ ] Increasing timeout after leaving full lobby
 - [ ] Add visible timer on readyup timeout
 - [ ] Exclude previously played campaigns from mappool
-- [ ] Replace campaign picker by crypto-random number generator
-- [ ] Edit mmr system, you need twice as higher scores to win max mmr
+- [ ] Replace anotime-based random numbers by crypto-random number generator
+- [ ] Edit mmr system, you need twice as higher scores to win max mmr + reconsider some mmr settings
+- [ ] If no ping info available, use the old info
 - [ ] Rules page
 - [ ] FAQ page
 - [ ] Alerts on site that dont block scripts
@@ -26,6 +26,7 @@
 - [ ] Automatically parse anticheat logs and ban based on them
 - [ ] Custom maps
 
+- [x] Replace lobbies with one single queue
 - [x] Optimize concurrent gameserver selection in Games
 - [x] Check if LastGameResult is correctry restoring on reboots
 - [x] Re-check if mmr uncertainty is correctly reducing

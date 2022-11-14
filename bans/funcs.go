@@ -315,12 +315,12 @@ func BanIfSmurfBanned(arAccounts []string) {
 		}
 
 		if (oMimicBanRecord.CreatedAt > 0) {
-			//check if any one of them is online || in game || in lobby
+			//check if any one of them is online || in game || in queue
 			var arToBan []string;
 			players.MuPlayers.RLock();
 			for _, sSteamID64 := range arAccounts {
 				pPlayer, bFound := players.MapPlayers[sSteamID64];
-				if (bFound && (pPlayer.IsOnline || pPlayer.IsInGame || pPlayer.IsInLobby) && pPlayer.Access >= -1) {
+				if (bFound && (pPlayer.IsOnline || pPlayer.IsInGame || pPlayer.IsInQueue) && pPlayer.Access >= -1) {
 					arToBan = append(arToBan, sSteamID64);
 				}
 			}

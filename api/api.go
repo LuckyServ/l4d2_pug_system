@@ -45,11 +45,9 @@ func GinInit() {
 
 	r.GET("/getbanrecords", HttpReqGetBanRecords);
 
-	r.GET("/createlobby", HttpReqCreateLobby);
-	r.GET("/joinlobby", HttpReqJoinLobby);
-	r.GET("/leavelobby", HttpReqLeaveLobby);
-	r.GET("/getlobbies", HttpReqGetLobbies);
-	r.GET("/joinanylobby", HttpReqJoinAnyLobby);
+	r.GET("/getqueue", HttpReqGetQueue);
+	r.GET("/joinqueue", HttpReqJoinQueue);
+	r.GET("/leavequeue", HttpReqLeaveQueue);
 	r.GET("/readyup", HttpReqReadyUp);
 
 	r.GET("/openidcallback", HttpReqOpenID);

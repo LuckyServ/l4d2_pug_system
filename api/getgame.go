@@ -49,8 +49,7 @@ func HttpReqGetGame(c *gin.Context) {
 						Access:			pGamePlayer.Access,
 						IsInGame:		pGamePlayer.IsInGame,
 						MmrGrade:		players.GetMmrGrade(pGamePlayer),
-						IsInLobby:		pGamePlayer.IsInLobby,
-						IsIdle:			pGamePlayer.IsIdle,
+						IsInQueue:		pGamePlayer.IsInQueue,
 					});
 				}
 				for _, pGamePlayer := range pGame.PlayersB {
@@ -61,8 +60,7 @@ func HttpReqGetGame(c *gin.Context) {
 						Access:			pGamePlayer.Access,
 						IsInGame:		pGamePlayer.IsInGame,
 						MmrGrade:		players.GetMmrGrade(pGamePlayer),
-						IsInLobby:		pGamePlayer.IsInLobby,
-						IsIdle:			pGamePlayer.IsIdle,
+						IsInQueue:		pGamePlayer.IsInQueue,
 					});
 				}
 

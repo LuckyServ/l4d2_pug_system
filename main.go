@@ -5,9 +5,9 @@ import (
 	"./settings"
 	"./players"
 	"./database"
-	"./lobby"
 	"./api"
 	"./rating"
+	"./queue"
 	"./games"
 	"./chat"
 	"./smurf"
@@ -25,7 +25,6 @@ import (
 Mutex lock order:
 MuSessions
 MuPlayers
-MuLobbies
 MuGames
 MuDatabase
 MuVPN
@@ -61,7 +60,6 @@ func main() {
 		return;
 	}
 	i64CurTime := time.Now().UnixMilli();
-	lobby.I64LastLobbyListUpdate = i64CurTime;
 	players.I64LastPlayerlistUpdate = i64CurTime;
 
 	//HTTP server init
@@ -70,7 +68,7 @@ func main() {
 	go players.Watchers();
 	go auth.Watchers();
 	go api.AuthRatelimits();
-	go lobby.Watchers();
+	go queue.Watchers();
 	go games.Watchers();
 	go chat.ChannelWatchers();
 	go smurf.Watchers();
