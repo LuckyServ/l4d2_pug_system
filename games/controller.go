@@ -107,7 +107,7 @@ func Control(pGame *EntGame) {
 			players.MuPlayers.Unlock();
 
 			iTryCount++;
-			if (iTryCount >= settings.AvailGameSrvsMaxTries) { //destroy lobby if too many tries
+			if (iTryCount >= settings.AvailGameSrvsMaxTries) { //destroy game if too many tries
 				players.MuPlayers.Lock();
 				MuGames.Lock();
 				Destroy(pGame);

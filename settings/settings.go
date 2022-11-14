@@ -33,7 +33,6 @@ var DatabaseName string;
 var SteamApiKey string;
 var MinVersusGamesPlayed int;
 var DefaultMaxMmr int;
-var OnlineMmrRange int;
 
 var OnlineTimeout int64;
 var ReadyUpTimeout int64;
@@ -245,13 +244,6 @@ func ConfigFile() bool {
 		return false;
 	}
 	MmrGrades = int(i64Buffer);
-
-	i64Buffer, errError = jsonparser.GetInt(byData, "lobby", "online_mmr_range");
-	if (errError != nil) {
-		fmt.Printf("Error reading config file: %s\n", errError);
-		return false;
-	}
-	OnlineMmrRange = int(i64Buffer);
 
 	i64Buffer, errError = jsonparser.GetInt(byData, "timeouts", "online_seconds");
 	if (errError != nil) {

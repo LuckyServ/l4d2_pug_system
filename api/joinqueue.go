@@ -31,7 +31,7 @@ func HttpReqJoinQueue(c *gin.Context) {
 			if (pPlayer.IsInQueue) {
 				mapResponse["error"] = "You are already in queue";
 			} else if (pPlayer.IsInGame) {
-				mapResponse["error"] = "You cant join lobbies, finish your game first";
+				mapResponse["error"] = "You cant join queue, finish your game first";
 			} else if (queue.NewGamesBlocked) {
 				mapResponse["error"] = "The site is going to be restarted soon, new games are not allowed";
 			} else if (pPlayer.NextQueueingAllowed > i64CurTime) {
