@@ -18,7 +18,7 @@ func WatchQueue() {
 	for {
 		players.MuPlayers.Lock();
 
-		if (bIsInReadyUp) {
+		if (BIsInReadyUp) {
 			if (i64InReadyUpSince + settings.ReadyUpTimeout <= time.Now().UnixMilli()) {
 				//kick unready
 				KickUnready();
@@ -56,6 +56,7 @@ func WatchQueue() {
 				//stop readyup
 				StopReadyUp();
 				SetLastUpdated();
+				players.I64LastPlayerlistUpdate = time.Now().UnixMilli();
 			}
 		} else {
 			if (IPlayersCount >= 8) {

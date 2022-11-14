@@ -8,7 +8,7 @@ import (
 var arQueue []*players.EntPlayer;
 var NewGamesBlocked bool;
 var IPlayersCount int;
-var bIsInReadyUp bool;
+var BIsInReadyUp bool;
 var i64InReadyUpSince int64;
 var PLongestWaitPlayer *players.EntPlayer;
 var pPlayerReadyUpReason *players.EntPlayer;
@@ -24,16 +24,18 @@ func Join(pPlayer *players.EntPlayer) { //Players must be locked outside
 		return;
 	}
 
+	i64CurTime := time.Now().UnixMilli();
 	arQueue = append(arQueue, pPlayer);
 	IPlayersCount++;
 	pPlayer.IsInQueue = true;
-	pPlayer.InQueueSince = time.Now().UnixMilli();
+	pPlayer.InQueueSince = i64CurTime;
 	pPlayer.IsReadyUpRequested = false;
 	pPlayer.IsReadyConfirmed = false;
 	if (IPlayersCount == 1) {
 		PLongestWaitPlayer = pPlayer;
 	}
 	SetLastUpdated();
+	players.I64LastPlayerlistUpdate = i64CurTime;
 }
 
 func Leave(pPlayer *players.EntPlayer, bGameStart bool) { //Players must be locked outside
@@ -43,12 +45,13 @@ func Leave(pPlayer *players.EntPlayer, bGameStart bool) { //Players must be lock
 		arQueue = arQueue[:len(arQueue)-1];
 		IPlayersCount--;
 
+		i64CurTime := time.Now().UnixMilli();
 		if (bGameStart) {
 			pPlayer.NextQueueingAllowed = 0;
 		} else if (pPlayer.IsReadyUpRequested) {
-			pPlayer.NextQueueingAllowed = time.Now().UnixMilli() + i64CooldownForReadyUpLeave;
+			pPlayer.NextQueueingAllowed = i64CurTime + i64CooldownForReadyUpLeave;
 		} else {
-			pPlayer.NextQueueingAllowed = time.Now().UnixMilli() + i64CooldownForLeave;
+			pPlayer.NextQueueingAllowed = i64CurTime + i64CooldownForLeave;
 		}
 
 		pPlayer.IsInQueue = false;
@@ -65,6 +68,7 @@ func Leave(pPlayer *players.EntPlayer, bGameStart bool) { //Players must be lock
 		}
 
 		SetLastUpdated();
+		players.I64LastPlayerlistUpdate = i64CurTime;
 	}
 }
 
@@ -77,7 +81,7 @@ func ReadyUp(pPlayer *players.EntPlayer) { //Players must be locked outside
 }
 
 func RequestReadyUp() { //queue is >= 8 players
-	bIsInReadyUp = true;
+	BIsInReadyUp = true;
 	i64InReadyUpSince = time.Now().UnixMilli();
 	pPlayerReadyUpReason = PLongestWaitPlayer;
 	IReadyPlayers = 0;
@@ -89,7 +93,7 @@ func RequestReadyUp() { //queue is >= 8 players
 }
 
 func StopReadyUp() {
-	bIsInReadyUp = false;
+	BIsInReadyUp = false;
 	i64InReadyUpSince = 0;
 	IReadyPlayers = 0;
 	pPlayerReadyUpReason = nil;

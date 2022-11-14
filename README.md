@@ -257,6 +257,7 @@ Response parameters:
 | <strong>success</strong> | _bool_ | Always "true" |
 | <strong>authorized</strong> | _bool_ | Authorized or not |
 | <strong>is_inqueue</strong> | _bool_ | In queue or not (if authorized) |
+| <strong>ready_state</strong> | _bool_ | Is queue in ReadyUp state |
 | <strong>need_readyup</strong> | _bool_ | ReadyUp requested or not |
 | <strong>player_count</strong> | _int_ | Number of players in queue |
 | <strong>waiting_since</strong> | _int64_ | Since when this queue is waiting for players |

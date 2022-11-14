@@ -40,8 +40,13 @@ func HttpReqGetQueue(c *gin.Context) {
 	mapResponse["success"] = true;
 	mapResponse["player_count"] = queue.IPlayersCount;
 	players.MuPlayers.RLock();
-	mapResponse["waiting_since"] = queue.PLongestWaitPlayer.InQueueSince;
+	if (queue.PLongestWaitPlayer != nil) {
+		mapResponse["waiting_since"] = queue.PLongestWaitPlayer.InQueueSince;
+	} else {
+		mapResponse["waiting_since"] = 0;
+	}
 	mapResponse["ready_players"] = queue.IReadyPlayers;
+	mapResponse["ready_state"] = queue.BIsInReadyUp;
 	mapResponse["finishing_game"] = games.IPlayersFinishingGameSoon;
 	players.MuPlayers.RUnlock();
 

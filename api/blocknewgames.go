@@ -28,11 +28,13 @@ func HttpReqBlockNewGames(c *gin.Context) {
 
 				players.MuPlayers.Lock();
 
-				for _, pPlayer := range players.ArrayPlayers {
-					if (pPlayer.IsInQueue) {
-						queue.Leave(pPlayer, false);
+				for _, pKickPlayer := range players.ArrayPlayers {
+					if (pKickPlayer.IsInQueue) {
+						queue.Leave(pKickPlayer, false);
 					}
 				}
+				queue.SetLastUpdated();
+
 
 				players.MuPlayers.Unlock();
 

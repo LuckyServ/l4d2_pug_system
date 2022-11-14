@@ -3,7 +3,6 @@ package api
 import (
 	"github.com/gin-gonic/gin"
 	"../players"
-	"../queue"
 	"fmt"
 	"time"
 	"../players/auth"
@@ -78,7 +77,7 @@ func HttpReqGetOnlinePlayers(c *gin.Context) {
 	}
 
 	var arPlayers []PlayerResponse;
-	var iActiveCount, iOnlineCount, iInGameCount int;
+	var iActiveCount, iOnlineCount, iInQueueCount, iInGameCount int;
 
 	//iStartTime := time.Now().UnixNano();
 	players.MuPlayers.RLock();
@@ -98,6 +97,8 @@ func HttpReqGetOnlinePlayers(c *gin.Context) {
 			});
 			if (pPlayer.IsInGame) {
 				iInGameCount++;
+			} else if (pPlayer.IsInQueue) {
+				iInQueueCount++;
 			} else if (pPlayer.IsOnline) {
 				iOnlineCount++;
 			}
@@ -105,11 +106,11 @@ func HttpReqGetOnlinePlayers(c *gin.Context) {
 	}
 	players.MuPlayers.RUnlock();
 	
-	iActiveCount = iOnlineCount + queue.IPlayersCount + iInGameCount;
+	iActiveCount = iOnlineCount + iInQueueCount + iInGameCount;
 
 
 	mapResponse["success"] = true;
-	mapResponse["count"] = map[string]int{"online": iActiveCount, "in_queue": queue.IPlayersCount, "in_game": iInGameCount};
+	mapResponse["count"] = map[string]int{"online": iActiveCount, "in_queue": iInQueueCount, "in_game": iInGameCount};
 	mapResponse["list"] = arPlayers;
 
 	
