@@ -35,7 +35,6 @@ func Join(pPlayer *players.EntPlayer) { //Players must be locked outside
 		PLongestWaitPlayer = pPlayer;
 	}
 	SetLastUpdated();
-	players.I64LastPlayerlistUpdate = i64CurTime;
 }
 
 func Leave(pPlayer *players.EntPlayer, bGameStart bool) { //Players must be locked outside
@@ -44,6 +43,9 @@ func Leave(pPlayer *players.EntPlayer, bGameStart bool) { //Players must be lock
 		arQueue[iPlayer] = arQueue[len(arQueue)-1];
 		arQueue = arQueue[:len(arQueue)-1];
 		IPlayersCount--;
+		if (pPlayer.IsReadyUpRequested && pPlayer.IsReadyConfirmed) {
+			IReadyPlayers--;
+		}
 
 		i64CurTime := time.Now().UnixMilli();
 		if (bGameStart) {
@@ -68,7 +70,6 @@ func Leave(pPlayer *players.EntPlayer, bGameStart bool) { //Players must be lock
 		}
 
 		SetLastUpdated();
-		players.I64LastPlayerlistUpdate = i64CurTime;
 	}
 }
 
@@ -107,6 +108,18 @@ func KickUnready() {
 	var arKickPlayers []*players.EntPlayer;
 	for _, pPlayer := range arQueue {
 		if (pPlayer.IsReadyUpRequested && !pPlayer.IsReadyConfirmed) {
+			arKickPlayers = append(arKickPlayers, pPlayer);
+		}
+	}
+	for _, pPlayer := range arKickPlayers {
+		Leave(pPlayer, false);
+	}
+}
+
+func KickOffline() {
+	var arKickPlayers []*players.EntPlayer;
+	for _, pPlayer := range arQueue {
+		if (!pPlayer.IsOnline) {
 			arKickPlayers = append(arKickPlayers, pPlayer);
 		}
 	}

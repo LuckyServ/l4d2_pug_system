@@ -1,7 +1,7 @@
+- [ ] Edit mmr system, you need twice as higher scores to win max mmr + reconsider some mmr settings
 - [ ] Increasing timeout after leaving full lobby
 - [ ] Add visible timer on readyup timeout
 - [ ] Exclude previously played campaigns from mappool
-- [ ] Edit mmr system, you need twice as higher scores to win max mmr + reconsider some mmr settings
 - [ ] If no ping info available, use the old info
 - [ ] Rules page
 - [ ] FAQ page

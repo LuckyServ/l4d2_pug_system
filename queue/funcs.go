@@ -10,6 +10,7 @@ func SetLastUpdated() { //Players must be locked outside
 	for _, pPlayer := range arQueue {
 		pPlayer.LastQueueChanged = i64CurTime;
 	}
+	players.I64LastPlayerlistUpdate = i64CurTime;
 }
 
 func FindPlayerInQueue(pPlayer *players.EntPlayer) int { //Players must be locked outside
@@ -43,11 +44,12 @@ func TrimQueue() ([]*players.EntPlayer) { //IPlayersCount must be >= 8 and arQue
 }
 
 func SortTrimmedByMmr(arTrimmedQueue []*players.EntPlayer) {
+	iSize := len(arTrimmedQueue);
 	if (IPlayersCount > 1) {
 		bSorted := false;
 		for !bSorted {
 			bSorted = true;
-			for i := 1; i < IPlayersCount; i++ {
+			for i := 1; i < iSize; i++ {
 				if (arTrimmedQueue[i].Mmr < arTrimmedQueue[i - 1].Mmr) {
 					arTrimmedQueue[i], arTrimmedQueue[i - 1] = arTrimmedQueue[i - 1], arTrimmedQueue[i]; //switch
 					if (bSorted) {
@@ -56,7 +58,7 @@ func SortTrimmedByMmr(arTrimmedQueue []*players.EntPlayer) {
 				}
 			}
 			if (!bSorted) {
-				for i := IPlayersCount - 2; i >= 0; i-- {
+				for i := iSize - 2; i >= 0; i-- {
 					if (arTrimmedQueue[i].Mmr > arTrimmedQueue[i + 1].Mmr) {
 						arTrimmedQueue[i], arTrimmedQueue[i + 1] = arTrimmedQueue[i + 1], arTrimmedQueue[i]; //switch
 					}

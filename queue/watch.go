@@ -12,6 +12,16 @@ var i64MaxWait int64 = 15 * 60 * 1000; //ms
 
 func Watchers() {
 	go WatchQueue();
+	go WatchKickOffline();
+}
+
+func WatchKickOffline() {
+	for {
+		players.MuPlayers.Lock();
+		KickOffline();
+		players.MuPlayers.Unlock();
+		time.Sleep(5 * time.Second);
+	}
 }
 
 func WatchQueue() {
@@ -56,7 +66,6 @@ func WatchQueue() {
 				//stop readyup
 				StopReadyUp();
 				SetLastUpdated();
-				players.I64LastPlayerlistUpdate = time.Now().UnixMilli();
 			}
 		} else {
 			if (IPlayersCount >= 8) {
