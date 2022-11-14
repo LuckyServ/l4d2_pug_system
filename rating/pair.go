@@ -2,7 +2,7 @@ package rating
 
 import (
 	"../players"
-	"time"
+	"../utils"
 )
 
 
@@ -34,7 +34,8 @@ func Pair(arUnpairedPlayers []*players.EntPlayer) ([]*players.EntPlayer, []*play
 
 	i := 0;
 	iPicker := 0;
-	iBPicksTwo := int(1 + ((time.Now().UnixNano() % int64(3)) * 2)); //random 1, 3, or 5
+	iRandInt, _ := utils.GetRandInt(0, 2);
+	iBPicksTwo := (iRandInt * 2) + 1; //random 1, 3, or 5
 	for len(arTeams[0]) < 4 || len(arTeams[1]) < 4 {
 		arTeams[iPicker] = append(arTeams[iPicker], arUnpairedPlayers[i]);
 		if (iPicker == 0) {

@@ -28,7 +28,7 @@ func Control(pGame *EntGame) {
 
 
 	//Choose maps
-	i64CmpgnIdx := time.Now().UnixNano() % int64(len(settings.CampaignNames));
+	i64CmpgnIdx, _ := utils.GetRandInt(0, len(settings.CampaignNames) - 1);
 	players.MuPlayers.Lock();
 	MuGames.Lock();
 	pGame.CampaignName = settings.CampaignNames[i64CmpgnIdx];

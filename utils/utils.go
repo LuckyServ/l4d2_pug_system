@@ -34,6 +34,14 @@ func GenerateRandomString(n int, letters string) (string, error) {
 	return string(ret), nil;
 }
 
+func GetRandInt(iMin int, iMax int) (int, error) {
+	num, err := rand.Int(rand.Reader, big.NewInt(int64((iMax - iMin) + 1)));
+	if err != nil {
+		return 0, err;
+	}
+	return (iMin + int(num.Int64())), nil;
+}
+
 func MaxValInt64(val1 int64, val2 int64) int64 {
 	if (val1 > val2) {
 		return val1;
