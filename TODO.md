@@ -1,4 +1,3 @@
-- [ ] Edit mmr system, you need twice as higher scores to win max mmr + reconsider some mmr settings
 - [ ] Increasing timeout after leaving full lobby
 - [ ] Add visible timer on readyup timeout
 - [ ] Exclude previously played campaigns from mappool
@@ -25,6 +24,7 @@
 - [ ] Automatically parse anticheat logs and ban based on them
 - [ ] Custom maps
 
+- [x] Edit mmr system, you need twice as higher scores to win max mmr + reconsider some mmr settings
 - [x] Replace nanotime-based random numbers by crypto-random number generator
 - [x] Replace lobbies with one single queue
 - [x] Optimize concurrent gameserver selection in Games
