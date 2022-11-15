@@ -77,13 +77,13 @@ func UpdateMmr(oResult EntGameResult, arFinalScores [2]int, arPlayers [2][]*play
 	var f32TeamAgets float32;
 	if (iWinner == iFavorited) {
 		if (iWinner != -1) {
-			f32TeamAgets = (settings.MmrAbsoluteWin * (f32WinCoef - f32FavorCoef)) + settings.MmrMinimumWin;
+			f32TeamAgets = ((settings.MmrAbsoluteWin - settings.MmrMinimumWin) * (f32WinCoef - f32FavorCoef)) + settings.MmrMinimumWin;
 		}
 	} else {
 		if (iWinner != -1) {
-			f32TeamAgets = (settings.MmrAbsoluteWin * (f32WinCoef + f32FavorCoef)) + settings.MmrMinimumWin;
+			f32TeamAgets = ((settings.MmrAbsoluteWin - settings.MmrMinimumWin) * (f32WinCoef + f32FavorCoef)) + settings.MmrMinimumWin;
 		} else {
-			f32TeamAgets = settings.MmrAbsoluteWin * f32FavorCoef;
+			f32TeamAgets = (settings.MmrAbsoluteWin - settings.MmrMinimumWin) * f32FavorCoef;
 			if (iFavorited == 0) {
 				f32TeamAgets = f32TeamAgets * -1.0;
 			}
