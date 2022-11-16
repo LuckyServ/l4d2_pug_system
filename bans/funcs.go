@@ -75,7 +75,7 @@ func BanRagequitter(oBanReq EntAutoBanReq) { //expensive
 
 		AddRecord(oBanRecord);
 
-		ApplyBanToPlayer(oBanReq.SteamID64, -2, sBanReason, i64BannedAt, i64BanLength);
+		ApplyBanToPlayer(oBanReq.SteamID64, -2, sBanReason, i64BannedAt, i64BanLength, 0);
 	}
 }
 
@@ -113,18 +113,18 @@ func BanManual(oBanReq EntManualBanReq) {
 
 		AddRecord(oBanRecord);
 
-		ApplyBanToPlayer(oBanReq.SteamID64, oBanReq.Access, sBanReason, i64BannedAt, oBanReq.BanLength);
+		ApplyBanToPlayer(oBanReq.SteamID64, oBanReq.Access, sBanReason, i64BannedAt, oBanReq.BanLength, 0);
 	}
 }
 
-func ApplyBanToPlayer(sSteamID64 string, iAccess int, sBanReason string, i64BannedAt int64, i64BanLength int64) {
+func ApplyBanToPlayer(sSteamID64 string, iAccess int, sBanReason string, i64BannedAt int64, i64BanLength int64, i64AcceptedAt int64) {
 	players.MuPlayers.Lock();
 	pPlayer, bFound := players.MapPlayers[sSteamID64];
 	if (bFound) {
 
 		pPlayer.BanReason = sBanReason;
 		pPlayer.BannedAt = i64BannedAt;
-		pPlayer.BanAcceptedAt = 0;
+		pPlayer.BanAcceptedAt = i64AcceptedAt;
 		pPlayer.BanLength = i64BanLength;
 		pPlayer.Access = iAccess;
 		go database.UpdatePlayer(database.DatabasePlayer{
@@ -205,7 +205,7 @@ func SearchBan(sSteamID64 string) {
 	for i := iSize - 1; i >= 0; i-- {
 		if (ArrayBanRecords[i].SteamID64 == sSteamID64) {
 			if (ArrayBanRecords[i].AcceptedAt == 0 || ArrayBanRecords[i].AcceptedAt + ArrayBanRecords[i].BanLength > i64CurTime) {
-				ApplyBanToPlayer(ArrayBanRecords[i].SteamID64, ArrayBanRecords[i].Access, ArrayBanRecords[i].BanReasonBase64, ArrayBanRecords[i].CreatedAt, ArrayBanRecords[i].BanLength);
+				ApplyBanToPlayer(ArrayBanRecords[i].SteamID64, ArrayBanRecords[i].Access, ArrayBanRecords[i].BanReasonBase64, ArrayBanRecords[i].CreatedAt, ArrayBanRecords[i].BanLength, ArrayBanRecords[i].AcceptedAt);
 				return;
 			}
 		}
