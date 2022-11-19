@@ -57,7 +57,7 @@ func HttpReqUpdateNameAvatar(c *gin.Context) {
 					if (respSteam.StatusCode == 200) {
 						byResult, _ := ioutil.ReadAll(respSteam.Body);
 						sName, errName := jsonparser.GetString(byResult, "response", "players", "[0]", "personaname");
-						sAvatarSmall, errAvatarSmall := jsonparser.GetString(byResult, "response", "players", "[0]", "avatar");
+						sAvatarSmall, errAvatarSmall := jsonparser.GetString(byResult, "response", "players", "[0]", "avatarmedium");
 						sAvatarBig, errAvatarBig := jsonparser.GetString(byResult, "response", "players", "[0]", "avatarfull");
 						sSteamID64, _ := jsonparser.GetString(byResult, "response", "players", "[0]", "steamid");
 						if (sSteamID64 == oSession.SteamID64 && errName == nil && sName != "" && errAvatarSmall == nil && sAvatarSmall != "" && errAvatarBig == nil && sAvatarBig != "") {

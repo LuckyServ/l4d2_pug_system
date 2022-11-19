@@ -150,7 +150,7 @@ func HttpReqOpenID(c *gin.Context) {
 	if n := root.SelectElement("//steamID"); n != nil {
 		sNickname = n.InnerText();
 	}
-	if n := root.SelectElement("//avatarIcon"); n != nil {
+	if n := root.SelectElement("//avatarMedium"); n != nil {
 		sAvatarSmall = n.InnerText();
 	}
 	if n := root.SelectElement("//avatarFull"); n != nil {
