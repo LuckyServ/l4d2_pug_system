@@ -90,22 +90,34 @@ func HandleUniqID() {
 func WatchFinishingGameSoon() {
 	for {
 		players.MuPlayers.Lock();
-		IPlayersFinishingGameSoon = 0;
+		MuGames.RLock();
+		iCounter := 0;
 		i64CurTime := time.Now().UnixMilli();
 
 		for _, pPlayer := range players.ArrayPlayers {
 			if (pPlayer.IsInGame) {
 				oGameResult := MapGames[pPlayer.GameID].GameResult;
 				if (oGameResult.IsLastMap && oGameResult.CurrentHalf == 2) {
-					IPlayersFinishingGameSoon++;
+					iCounter++;
 				}
 			} else {
 				if (pPlayer.LastGameActivity + 60000/*60s*/ > i64CurTime) {
-					IPlayersFinishingGameSoon++;
+					iCounter++;
 				}
 			}
 		}
 
+		if (IPlayersFinishingGameSoon != iCounter) {
+			IPlayersFinishingGameSoon = iCounter;
+			for _, pPlayer := range players.ArrayPlayers {
+				if (pPlayer.IsInQueue) {
+					pPlayer.LastQueueChanged = i64CurTime;
+				}
+			}
+			players.I64LastPlayerlistUpdate = i64CurTime;
+		}
+
+		MuGames.RUnlock();
 		players.MuPlayers.Unlock();
 		time.Sleep(10 * time.Second);
 	}
