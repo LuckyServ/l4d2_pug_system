@@ -45,6 +45,7 @@ func HttpReqGetGame(c *gin.Context) {
 					arPlayersA = append(arPlayersA, PlayerResponse{
 						SteamID64:		pGamePlayer.SteamID64,
 						NicknameBase64:	pGamePlayer.NicknameBase64,
+						AvatarSmall:	pGamePlayer.AvatarSmall,
 						Mmr:			pGamePlayer.Mmr,
 						Access:			pGamePlayer.Access,
 						IsInGame:		pGamePlayer.IsInGame,
@@ -56,6 +57,7 @@ func HttpReqGetGame(c *gin.Context) {
 					arPlayersB = append(arPlayersB, PlayerResponse{
 						SteamID64:		pGamePlayer.SteamID64,
 						NicknameBase64:	pGamePlayer.NicknameBase64,
+						AvatarSmall:	pGamePlayer.AvatarSmall,
 						Mmr:			pGamePlayer.Mmr,
 						Access:			pGamePlayer.Access,
 						IsInGame:		pGamePlayer.IsInGame,
