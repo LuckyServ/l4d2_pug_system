@@ -29,18 +29,12 @@ func HttpReqUpdateNameAvatar(c *gin.Context) {
 			players.MuPlayers.RLock();
 			i64CurTime := time.Now().UnixMilli();
 			pPlayer := players.MapPlayers[oSession.SteamID64];
-			if (pPlayer.Access <= -2) {
-				players.MuPlayers.RUnlock();
-				mapResponse["error"] = "Sorry, you are banned, you have to wait until it expires";
-			} else if (pPlayer.LastSteamRequest + settings.SteamAPICooldown > i64CurTime) {
+			if (pPlayer.LastSteamRequest + settings.SteamAPICooldown > i64CurTime) {
 				players.MuPlayers.RUnlock();
 				mapResponse["error"] = fmt.Sprintf("You cant request name&avatar update that often. Try again in %d seconds.", ((pPlayer.LastSteamRequest + settings.SteamAPICooldown) - i64CurTime) / 1000);
 			} else if (!pPlayer.ProfValidated) {
 				players.MuPlayers.RUnlock();
 				mapResponse["error"] = "Please validate your profile first";
-			} else if (!pPlayer.RulesAccepted) {
-				players.MuPlayers.RUnlock();
-				mapResponse["error"] = "Please accept our rules first";
 			} else if (!pPlayer.IsOnline) {
 				players.MuPlayers.RUnlock();
 				mapResponse["error"] = "Somehow you are not Online, try to refresh the page";
