@@ -1,4 +1,3 @@
-- [ ] Exclude previously played campaigns from mappool
 - [ ] Test if anticheat logging works
 - [ ] Searching in bans page
 - [ ] An admin panel to show information about players
@@ -21,6 +20,7 @@
 - [ ] Automatically parse anticheat logs and ban based on them
 - [ ] Custom maps
 
+- [x] Exclude previously played campaigns from mappool
 - [x] Rules page
 - [x] FAQ page
 - [x] Edit mmr system, you need twice as higher scores to win max mmr + reconsider some mmr settings

@@ -66,6 +66,21 @@ func GetStringIdxInArray(sValueBuffer string, arBuffer []string) int {
 	return -1;
 }
 
+func GetIntIdxInArray(iValueBuffer int, arBuffer []int) int {
+	iMax := len(arBuffer);
+	for i := 0; i < iMax; i++ {
+		if (arBuffer[i] == iValueBuffer) {
+			return i;
+		}
+	}
+	return -1;
+}
+
+func RemoveIntFromArray(iIndex int, arBuffer []int) []int {
+	arBuffer[iIndex] = arBuffer[len(arBuffer)-1];
+	return arBuffer[:len(arBuffer)-1];
+}
+
 func InsertDots(s string, n int) string {
 	var buffer bytes.Buffer;
 	var n_1 = n - 1;

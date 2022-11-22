@@ -28,9 +28,9 @@ func Control(pGame *EntGame) {
 
 
 	//Choose maps
-	i64CmpgnIdx, _ := utils.GetRandInt(0, len(settings.CampaignNames) - 1);
 	players.MuPlayers.Lock();
 	MuGames.Lock();
+	i64CmpgnIdx := ChooseCampaign(pGame.PlayersUnpaired);
 	pGame.CampaignName = settings.CampaignNames[i64CmpgnIdx];
 	pGame.Maps = settings.MapPool[i64CmpgnIdx];
 	pGame.State = StateCampaignChosen;
@@ -266,6 +266,9 @@ func Control(pGame *EntGame) {
 	rating.UpdateMmr(oResult, arFinalScores, [2][]*players.EntPlayer{pGame.PlayersA, pGame.PlayersB});
 
 	for _, pPlayer := range pGame.PlayersUnpaired {
+
+		pPlayer.LastCampaignPlayed = i64CmpgnIdx + 1; //store played campaign index + 1
+
 		if (strings.HasPrefix(pPlayer.SteamID64, "7")) {
 			go database.UpdatePlayer(database.DatabasePlayer{
 				SteamID64:			pPlayer.SteamID64,

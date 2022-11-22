@@ -202,6 +202,30 @@ func ChooseConfoglConfig(iMmr int) (settings.ConfoglConfig) {
 	}; //shouldn't happen
 }
 
+func ChooseCampaign(arPlayers []*players.EntPlayer) int {
+	var arCampaigns []int;
+	for i, _ := range settings.CampaignNames {
+		arCampaigns = append(arCampaigns, i);
+	}
+
+	for _, pPlayer := range arPlayers {
+		if (pPlayer.LastCampaignPlayed > 0) {
+			iIndex := utils.GetIntIdxInArray(pPlayer.LastCampaignPlayed - 1, arCampaigns);
+			if (iIndex != -1) {
+				arCampaigns = utils.RemoveIntFromArray(iIndex, arCampaigns);
+			}
+		}
+	}
+
+	if (len(arCampaigns) > 0) {
+		iBuffer, _ := utils.GetRandInt(0, len(arCampaigns) - 1);
+		return arCampaigns[iBuffer];
+	} else {
+		iBuffer, _ := utils.GetRandInt(0, len(settings.CampaignNames) - 1);
+		return iBuffer;
+	}
+}
+
 func Implode4Players(arPlayers []*players.EntPlayer) string {
 	var sSteamID64s string = arPlayers[0].SteamID64;
 	for i := 1; i < 4; i++ {
