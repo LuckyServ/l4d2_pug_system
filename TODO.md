@@ -1,22 +1,19 @@
-- [ ] Increasing timeout after leaving full lobby
-- [ ] Add visible timer on readyup timeout
 - [ ] Exclude previously played campaigns from mappool
-- [ ] If no ping info available, use the old info
-- [ ] Rules page
-- [ ] FAQ page
-- [ ] Alerts on site that dont block scripts
-- [ ] Log games even if they ended early
-- [ ] Adapt to Cloudflare challenges
-- [ ] Allow dead survivors to rq games without ban on last map on 2nd chapter
 - [ ] Test if anticheat logging works
-- [ ] Setup database backups
-- [ ] Recheck penalties for rq
-- [ ] Fix exploiting the initial ready up timelimit
+- [ ] Searching in bans page
 - [ ] An admin panel to show information about players
 - [ ] An admin panel to show anticheat logs
 - [ ] Shut down RU servers on non-EU playtime
 - [ ] Page with list of all players
-- [ ] Searching in bans page
+- [ ] Add visible timer on readyup timeout
+- [ ] If no ping info available, use the old info
+- [ ] Alerts on site that dont block scripts
+- [ ] Log games even if they ended early
+- [ ] Adapt to Cloudflare challenges
+- [ ] Allow dead survivors to rq games without ban on last map on 2nd chapter
+- [ ] Setup database backups
+- [ ] Recheck penalties for rq
+- [ ] Fix exploiting the initial ready up timelimit
 - [ ] Visualize server selection
 - [ ] T2 and T1 configs for lower tier players
 - [ ] Check double html escaping of names
@@ -24,6 +21,8 @@
 - [ ] Automatically parse anticheat logs and ban based on them
 - [ ] Custom maps
 
+- [x] Rules page
+- [x] FAQ page
 - [x] Edit mmr system, you need twice as higher scores to win max mmr + reconsider some mmr settings
 - [x] Replace nanotime-based random numbers by crypto-random number generator
 - [x] Replace lobbies with one single queue
