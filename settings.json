@@ -24,7 +24,7 @@
 		"absolute_win": 33,
 		"minimum_win": 20,
 		"mmr_diff_guaranteed_win": 3000,
-		"mmr_grades": 8
+		"mmr_grades": 11
 	},
 	"chat": {
 		"store_n_messages": 50,

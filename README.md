@@ -222,7 +222,7 @@ Response parameters:
 | &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>avatar_small</strong> | _string_ | Small avatar |
 | &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>avatar_big</strong> | _string_ | Big avatar |
 | &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>mmr</strong> | _int_ | Player's rating |
-| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>mmr_grade</strong> | _int_ | 1-8 if mmr valid and stable, 0 otherwise |
+| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>mmr_grade</strong> | _int_ | 1-11 if mmr valid and stable, 0 otherwise |
 | &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>access</strong> | _int_ | Player's access level<br>-2 - completely banned, -1 - chat banned, 0 - regular player, 1 - behaviour moderator, 2 - cheat moderator, 3 - behaviour+cheat moderator, 4 - full admin access |
 | &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>banreason</strong> | _string_ | Ban reason (base64 encoded), or empty if not banned |
 | &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>ban_accepted_at</strong> | _int64_ | When did the player confirm that he read the ban reason. 0 - if didnt confirm or not banned |
@@ -240,7 +240,7 @@ Response parameters:
 | &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>nickname_base64</strong> | _string_ | Base64 encoded nickname |
 | &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>avatar_small</strong> | _string_ | Small avatar |
 | &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>mmr</strong> | _int_ | Player's rating |
-| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>mmr_grade</strong> | _int_ | 1-8 if mmr valid and stable, 0 otherwise |
+| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>mmr_grade</strong> | _int_ | 1-11 if mmr valid and stable, 0 otherwise |
 | &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>access</strong> | _int_ | Player's access level<br>-2 - completely banned, -1 - chat banned, 0 - regular player, 1 - behaviour moderator, 2 - cheat moderator, 3 - behaviour+cheat moderator, 4 - full admin access |
 | &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>is_ingame</strong> | _bool_ | Is player in game right now |
 | &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>is_inqueue</strong> | _bool_ | Is player in queue right now |
