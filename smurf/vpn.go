@@ -56,7 +56,7 @@ func HandleLimits() {
 			if (iCutAt >= 0) {
 				arGetIPIntelRequests = arGetIPIntelRequests[(iCutAt + 1):];
 			}
-			if (iPerMin < 10 && iPerDay < 300) {
+			if (iPerMin < 10 && iPerDay < 150) {
 				arGetIPIntelRequests = append(arGetIPIntelRequests, time.Now());
 				return true;
 			}
@@ -74,7 +74,7 @@ func ClearOutdated() {
 		MuVPN.RLock();
 		i64CurTime := time.Now().Unix();
 		for sIP, oVPNInfo := range MapVPNs {
-			if (oVPNInfo.UpdatedAt + 1209600/*2weeks*/ <= i64CurTime) {
+			if (oVPNInfo.UpdatedAt + 5356800000/*2 month*/ <= i64CurTime) {
 				arRemoveIP = append(arRemoveIP, sIP);
 			}
 		}

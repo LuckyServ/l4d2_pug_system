@@ -20,6 +20,7 @@
 - [ ] Automatically parse anticheat logs and ban based on them
 - [ ] Custom maps
 
+- [x] Increase timeout on VPN info
 - [x] Exclude previously played campaigns from mappool
 - [x] Rules page
 - [x] FAQ page
