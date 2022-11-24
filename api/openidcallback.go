@@ -168,7 +168,7 @@ func HttpReqOpenID(c *gin.Context) {
 	go smurf.AnnounceIPAndKey(sSteamID64, c.ClientIP(), sNickname, sCookieUniqueKey);
 
 	//Set cookie
-	c.SetCookie("session_id", sSessionID, 2592000, "/", "", true, false);
+	c.SetCookie("session_id", sSessionID, 2592000, "/", "", true, true);
 
 	//Redirect to home page
 	c.Redirect(303, sHomepage);

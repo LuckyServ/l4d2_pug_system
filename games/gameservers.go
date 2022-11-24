@@ -47,8 +47,8 @@ func GetPotentialGameServers(arPlayersA []*players.EntPlayer, arPlayersB []*play
 
 	players.MuPlayers.RLock();
 	for _, oServer := range settings.GameServers {
-		var iTeamPingDiff, iAvgPing = CalcPings(arPlayersA, arPlayersB, oServer.IP);
-		if (iAvgPing <= 200 && iTeamPingDiff <= 80) { //limits for playable conditions
+		var iTeamPingDiff, iAvgPing, iMaxPing = CalcPings(arPlayersA, arPlayersB, oServer.IP);
+		if (iAvgPing <= 200 && iTeamPingDiff <= 80 && iMaxPing <= 260) { //limits for playable conditions
 			for _, sPort := range oServer.Ports {
 				arGameServers = append(arGameServers, oServer.IP+":"+sPort);
 				arPriority = append(arPriority, (iTeamPingDiff + iAvgPing) / 2);
@@ -62,8 +62,8 @@ func GetPotentialGameServers(arPlayersA []*players.EntPlayer, arPlayersB []*play
 	return arGameServers;
 }
 
-func CalcPings(arPlayersA []*players.EntPlayer, arPlayersB []*players.EntPlayer, sIP string) (int, int) {
-	var iTeamPingDiff int;
+func CalcPings(arPlayersA []*players.EntPlayer, arPlayersB []*players.EntPlayer, sIP string) (int, int, int) {
+	var iTeamPingDiff, iMaxPing int;
 	var iSumOfPings, iNumOfPings, iAvgPing int;
 	var iSumOfPingsA, iNumOfPingsA, iAvgPingA int;
 	for _, pPlayer := range arPlayersA {
@@ -73,6 +73,9 @@ func CalcPings(arPlayersA []*players.EntPlayer, arPlayersB []*players.EntPlayer,
 			iNumOfPingsA++;
 			iSumOfPings = iSumOfPings + iPing;
 			iNumOfPings++;
+			if (iPing > iMaxPing) {
+				iMaxPing = iPing;
+			}
 		}
 	}
 	if (iNumOfPingsA > 0) {
@@ -87,6 +90,9 @@ func CalcPings(arPlayersA []*players.EntPlayer, arPlayersB []*players.EntPlayer,
 			iNumOfPingsB++;
 			iSumOfPings = iSumOfPings + iPing;
 			iNumOfPings++;
+			if (iPing > iMaxPing) {
+				iMaxPing = iPing;
+			}
 		}
 	}
 	if (iNumOfPingsB > 0) {
@@ -103,7 +109,7 @@ func CalcPings(arPlayersA []*players.EntPlayer, arPlayersB []*players.EntPlayer,
 		iAvgPing = iSumOfPings / iNumOfPings;
 	}
 
-	return iTeamPingDiff, iAvgPing;
+	return iTeamPingDiff, iAvgPing, iMaxPing;
 }
 
 

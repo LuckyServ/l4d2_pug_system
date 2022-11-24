@@ -1,3 +1,5 @@
+- [ ] Store update timestamp locally, not in cookies
+- [ ] CSRF security
 - [ ] Test if anticheat logging works
 - [ ] Searching in bans page
 - [ ] An admin panel to show information about players

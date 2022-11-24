@@ -80,7 +80,7 @@ func HttpReqStatus(c *gin.Context) {
 	bKeyValid, _ := regexp.MatchString(`^[0-9a-z]{16,200}$`, sCookieUniqueKey);
 	if (!bKeyValid) {
 		sRand, _ := utils.GenerateRandomString(40, "0123456789abcdefghijklmnopqrstuvwxyz");
-		c.SetCookie("auth2", sRand, 2000000000, "/", "", true, false);
+		c.SetCookie("auth2", sRand, 2000000000, "/", "", true, true);
 	}
 	c.Header("Access-Control-Allow-Origin", c.Request.Header.Get("origin"));
 	c.Header("Access-Control-Allow-Credentials", "true");

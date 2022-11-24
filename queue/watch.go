@@ -8,7 +8,8 @@ import (
 )
 
 var i64MinWait int64 = 5 * 60 * 1000; //ms
-var i64MaxWait int64 = 15 * 60 * 1000; //ms
+var i64MaxWait int64 = 20 * 60 * 1000; //ms
+var iMaxDifferenceInQueue int = 4000;
 
 func Watchers() {
 	go WatchQueue();
@@ -77,8 +78,8 @@ func WatchQueue() {
 					if (i64LongestWait >= i64MaxWait) {
 						RequestReadyUp();
 					} else {
-						//check if we have opportunity for more players to come soon
-						if (games.IPlayersFinishingGameSoon > 0) {
+						if (games.IPlayersFinishingGameSoon > 0) { //check if we have opportunity for more players to come soon
+						} else if (GetMmrDifferenceInQueue() >= iMaxDifferenceInQueue) { //check if the mmr difference in the queue is too big
 						} else {
 							RequestReadyUp();
 						}
