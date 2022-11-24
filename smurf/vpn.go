@@ -56,7 +56,7 @@ func HandleLimits() {
 			if (iCutAt >= 0) {
 				arGetIPIntelRequests = arGetIPIntelRequests[(iCutAt + 1):];
 			}
-			if (iPerMin < 10 && iPerDay < 150) {
+			if (iPerMin < 15 && iPerDay < 500) {
 				arGetIPIntelRequests = append(arGetIPIntelRequests, time.Now());
 				return true;
 			}
