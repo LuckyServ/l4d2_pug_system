@@ -1,5 +1,8 @@
+- [ ] Fix server selection
+- [ ] Support text copy on steambrowser on frontend
 - [ ] Store update timestamp locally, not in cookies
 - [ ] CSRF security
+- [ ] Log games even if they ended early
 - [ ] Test if anticheat logging works
 - [ ] Searching in bans page
 - [ ] An admin panel to show information about players
@@ -9,7 +12,6 @@
 - [ ] Add visible timer on readyup timeout
 - [ ] If no ping info available, use the old info
 - [ ] Alerts on site that dont block scripts
-- [ ] Log games even if they ended early
 - [ ] Adapt to Cloudflare challenges
 - [ ] Allow dead survivors to rq games without ban on last map on 2nd chapter
 - [ ] Setup database backups
