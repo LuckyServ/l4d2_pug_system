@@ -1,4 +1,3 @@
-- [ ] Fix server selection
 - [ ] Support text copy on steambrowser on frontend
 - [ ] Store update timestamp locally, not in cookies
 - [ ] CSRF security
@@ -24,6 +23,7 @@
 - [ ] Automatically parse anticheat logs and ban based on them
 - [ ] Custom maps
 
+- [x] Fix server selection
 - [x] Increase timeout on VPN info
 - [x] Exclude previously played campaigns from mappool
 - [x] Rules page
