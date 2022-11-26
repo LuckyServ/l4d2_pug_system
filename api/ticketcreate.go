@@ -22,7 +22,7 @@ func HttpReqTicketCreate(c *gin.Context) {
 	sRedirectTo := c.PostForm("redirect_to");
 	iTextLen := utf8.RuneCountInString(sTicketText);
 	if (errCookieSessID == nil && sCookieSessID != "" && iTextLen > 0 && iTextLen < 10000 && iTicketType > 0 && iTicketType < database.TicketTypeDummy2) {
-		oSession, bAuthorized := auth.GetSession(sCookieSessID);
+		oSession, bAuthorized := auth.GetSession(sCookieSessID, c.PostForm("csrf"));
 		if (bAuthorized) {
 			players.MuPlayers.Lock();
 			pPlayer := players.MapPlayers[oSession.SteamID64];

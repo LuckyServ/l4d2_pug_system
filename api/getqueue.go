@@ -21,7 +21,7 @@ func HttpReqGetQueue(c *gin.Context) {
 	mapResponse["is_inqueue"] = false;
 	mapResponse["need_readyup"] = false;
 	if (errCookieSessID == nil && sCookieSessID != "") {
-		oSession, bAuthorized := auth.GetSession(sCookieSessID);
+		oSession, bAuthorized := auth.GetSession(sCookieSessID, c.Query("csrf"));
 		if (bAuthorized) {
 			mapResponse["authorized"] = true;
 			players.MuPlayers.RLock();

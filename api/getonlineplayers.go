@@ -45,7 +45,7 @@ func HttpReqGetOnlinePlayers(c *gin.Context) {
 
 	mapResponse["authorized"] = false;
 	if (errCookieSessID == nil && sCookieSessID != "") {
-		oSession, bAuthorized := auth.GetSession(sCookieSessID);
+		oSession, bAuthorized := auth.GetSession(sCookieSessID, c.Query("csrf"));
 		if (bAuthorized) {
 			mapResponse["authorized"] = true;
 			mapResponse["steamid64"] = oSession.SteamID64;

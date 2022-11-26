@@ -21,7 +21,7 @@ func HttpReqOverrideVPN(c *gin.Context) {
 	mapResponse["success"] = false;
 	if (sIP != "" && sVPN != "") {
 		if (errCookieSessID == nil && sCookieSessID != "") {
-			oSession, bAuthorized := auth.GetSession(sCookieSessID);
+			oSession, bAuthorized := auth.GetSession(sCookieSessID, c.Query("csrf"));
 			if (bAuthorized) {
 				players.MuPlayers.RLock();
 				iAccess := players.MapPlayers[oSession.SteamID64].Access;

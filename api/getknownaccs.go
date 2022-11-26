@@ -20,7 +20,7 @@ func HttpReqGetKnownAccs(c *gin.Context) {
 	bSteamIDValid, _ := regexp.MatchString(`^[0-9]{17}$`, sSteamID64);
 	if (bSteamIDValid) {
 		if (errCookieSessID == nil && sCookieSessID != "") {
-			oSession, bAuthorized := auth.GetSession(sCookieSessID);
+			oSession, bAuthorized := auth.GetSession(sCookieSessID, c.Query("csrf"));
 			if (bAuthorized) {
 				players.MuPlayers.RLock();
 				iAccess := players.MapPlayers[oSession.SteamID64].Access;

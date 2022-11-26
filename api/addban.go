@@ -23,7 +23,7 @@ func HttpReqAddBan(c *gin.Context) {
 	mapResponse["success"] = false;
 	if (sSteamID64 != "" && sNickname != "" && i64BanLength > 0 && iBanType <= -2 && iBanType >= -3) {
 		if (errCookieSessID == nil && sCookieSessID != "") {
-			oSession, bAuthorized := auth.GetSession(sCookieSessID);
+			oSession, bAuthorized := auth.GetSession(sCookieSessID, c.Query("csrf"));
 			if (bAuthorized) {
 				players.MuPlayers.RLock();
 				iAccess := players.MapPlayers[oSession.SteamID64].Access;

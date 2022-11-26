@@ -14,7 +14,7 @@ func HttpReqLogout(c *gin.Context) {
 	sCookieSessID, errCookieSessID := c.Cookie("session_id");
 	mapResponse["success"] = false;
 	if (errCookieSessID == nil && sCookieSessID != "") {
-		_, bAuthorized := auth.GetSession(sCookieSessID);
+		_, bAuthorized := auth.GetSession(sCookieSessID, c.Query("csrf"));
 		if (bAuthorized) {
 			if (auth.RemoveSession(sCookieSessID)) {
 				mapResponse["success"] = true;

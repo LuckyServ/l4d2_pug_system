@@ -17,6 +17,7 @@ import (
 	"strings"
 	"sync"
 	"../smurf"
+	"crypto/sha256"
 )
 
 type NoOpDiscoveryCache struct{};
@@ -161,8 +162,6 @@ func HttpReqOpenID(c *gin.Context) {
 	sSessionID := players.AddPlayerAuth(sSteamID64, base64.StdEncoding.EncodeToString([]byte(sNickname)), sAvatarSmall, sAvatarBig);
 	bans.ChanSearchBan <- sSteamID64;
 
-	fmt.Printf("New auth: %s, %s\n", sSteamID64, sNickname);
-
 	//smurf
 	sCookieUniqueKey, _ := c.Cookie("auth2");
 	go smurf.AnnounceIPAndKey(sSteamID64, c.ClientIP(), sNickname, sCookieUniqueKey);
@@ -171,5 +170,9 @@ func HttpReqOpenID(c *gin.Context) {
 	c.SetCookie("session_id", sSessionID, 2592000, "/", "", true, true);
 
 	//Redirect to home page
-	c.Redirect(303, sHomepage);
+	by32Buffer := sha256.Sum256([]byte(sSessionID));
+	byBuffer := by32Buffer[:];
+	sCSRF := base64.StdEncoding.EncodeToString(byBuffer);
+	c.Redirect(303, sHomepage + "?auth3=" + url.QueryEscape(sCSRF));
+	fmt.Printf("New auth: %s, %s, %s\n", sSteamID64, sNickname, sCSRF);
 }

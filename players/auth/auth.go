@@ -5,6 +5,8 @@ import (
 	"../../settings"
 	"../../database"
 	"time"
+	"crypto/sha256"
+	"encoding/base64"
 )
 
 type EntSession struct {
@@ -42,15 +44,19 @@ func WatchAuthExpire() {
 }
 
 
-func GetSession(sSessID string) (EntSession, bool) {
+func GetSession(sSessID string, sCSRF string) (EntSession, bool) {
 	MuSessions.RLock();
-	if _, ok := MapSessions[sSessID]; !ok {
-		MuSessions.RUnlock();
-		return EntSession{}, false;
+	defer MuSessions.RUnlock();
+
+	oSession, bFound := MapSessions[sSessID];
+	if (bFound) {
+		by32Buffer := sha256.Sum256([]byte(sSessID));
+		byBuffer := by32Buffer[:];
+		if (sCSRF == base64.StdEncoding.EncodeToString(byBuffer)) {
+			return oSession, true;
+		}
 	}
-	oSession := MapSessions[sSessID];
-	MuSessions.RUnlock();
-	return oSession, true;
+	return EntSession{}, false;
 }
 
 func RemoveSession(sSessID string) bool {

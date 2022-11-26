@@ -17,7 +17,7 @@ func HttpReqTicketList(c *gin.Context) {
 
 	mapResponse["success"] = false;
 	if (errCookieSessID == nil && sCookieSessID != "") {
-		oSession, bAuthorized := auth.GetSession(sCookieSessID);
+		oSession, bAuthorized := auth.GetSession(sCookieSessID, c.Query("csrf"));
 		if (bAuthorized) {
 			players.MuPlayers.Lock();
 			pPlayer := players.MapPlayers[oSession.SteamID64];

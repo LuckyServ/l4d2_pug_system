@@ -37,7 +37,7 @@ func HttpReqStatus(c *gin.Context) {
 	mapResponse["need_update_queue"] = false;
 	mapResponse["need_emit_readyup_sound"] = false;
 	if (errCookieSessID == nil && sCookieSessID != "") {
-		oSession, bAuthorized := auth.GetSession(sCookieSessID);
+		oSession, bAuthorized := auth.GetSession(sCookieSessID, c.Query("csrf"));
 		if (bAuthorized) {
 			mapResponse["authorized"] = true;
 			go smurf.AnnounceIP(c.ClientIP()); //for faster VPN info retrieve in the future
