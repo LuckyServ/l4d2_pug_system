@@ -22,14 +22,10 @@ func HttpReqStatus(c *gin.Context) {
 	i64CurTime := time.Now().UnixMilli();
 
 	sCookieSessID, errCookieSessID := c.Cookie("session_id");
-	sCookiePlayersUpdatedAt, _ := c.Cookie("players_updated_at");
-	i64CookiePlayersUpdatedAt, _ := strconv.ParseInt(sCookiePlayersUpdatedAt, 10, 64);
-	sCookieQueueUpdatedAt, _ := c.Cookie("queue_updated_at");
-	i64CookieQueueUpdatedAt, _ := strconv.ParseInt(sCookieQueueUpdatedAt, 10, 64);
-	sCookieGameUpdatedAt, _ := c.Cookie("game_updated_at");
-	i64CookieGameUpdatedAt, _ := strconv.ParseInt(sCookieGameUpdatedAt, 10, 64);
-	sCookieGlobalChatUpdatedAt, _ := c.Cookie("globalchat_updated_at");
-	i64CookieGlobalChatUpdatedAt, _ := strconv.ParseInt(sCookieGlobalChatUpdatedAt, 10, 64);
+	i64QueryPlayersUpdatedAt, _ := strconv.ParseInt(c.Query("players_updated_at"), 10, 64);
+	i64QueryQueueUpdatedAt, _ := strconv.ParseInt(c.Query("queue_updated_at"), 10, 64);
+	i64QueryGameUpdatedAt, _ := strconv.ParseInt(c.Query("game_updated_at"), 10, 64);
+	i64QueryGlobalChatUpdatedAt, _ := strconv.ParseInt(c.Query("globalchat_updated_at"), 10, 64);
 
 	mapResponse["success"] = true;
 	mapResponse["no_new_games"] = queue.NewGamesBlocked;
@@ -52,10 +48,10 @@ func HttpReqStatus(c *gin.Context) {
 
 			players.MuPlayers.RLock();
 			pPlayer := players.MapPlayers[oSession.SteamID64];
-			if (i64CookieGameUpdatedAt <= pPlayer.LastGameChanged) {
+			if (i64QueryGameUpdatedAt <= pPlayer.LastGameChanged) {
 				mapResponse["need_update_game"] = true;
 			}
-			if (i64CookieQueueUpdatedAt <= pPlayer.LastQueueChanged) {
+			if (i64QueryQueueUpdatedAt <= pPlayer.LastQueueChanged) {
 				mapResponse["need_update_queue"] = true;
 			}
 			if (pPlayer.IsInQueue && pPlayer.IsReadyUpRequested && !pPlayer.IsReadyConfirmed) {
@@ -65,12 +61,12 @@ func HttpReqStatus(c *gin.Context) {
 		}
 	}
 
-	if (i64CookiePlayersUpdatedAt <= players.I64LastPlayerlistUpdate) {
+	if (i64QueryPlayersUpdatedAt <= players.I64LastPlayerlistUpdate) {
 		mapResponse["need_update_players"] = true;
 	} else {
 		mapResponse["need_update_players"] = false;
 	}
-	if (i64CookieGlobalChatUpdatedAt <= chat.I64LastGlobalChatUpdate) {
+	if (i64QueryGlobalChatUpdatedAt <= chat.I64LastGlobalChatUpdate) {
 		mapResponse["need_update_globalchat"] = true;
 	} else {
 		mapResponse["need_update_globalchat"] = false;

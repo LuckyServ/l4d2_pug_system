@@ -3,7 +3,7 @@ package api
 import (
 	"github.com/gin-gonic/gin"
 	"../players"
-	"fmt"
+	//"fmt"
 	"time"
 	"../players/auth"
 )
@@ -113,9 +113,11 @@ func HttpReqGetOnlinePlayers(c *gin.Context) {
 	mapResponse["count"] = map[string]int{"online": iActiveCount, "in_queue": iInQueueCount, "in_game": iInGameCount};
 	mapResponse["list"] = arPlayers;
 
+	mapResponse["updated_at"] = i64CurTime;
+
 	
 	c.Header("Access-Control-Allow-Origin", c.Request.Header.Get("origin"));
 	c.Header("Access-Control-Allow-Credentials", "true");
-	c.SetCookie("players_updated_at", fmt.Sprintf("%d", i64CurTime), 2592000, "/", "", true, false);
+	//c.SetCookie("players_updated_at", fmt.Sprintf("%d", i64CurTime), 2592000, "/", "", true, false);
 	c.JSON(200, mapResponse);
 }

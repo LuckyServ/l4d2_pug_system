@@ -5,7 +5,7 @@ import (
 	"../chat"
 	"encoding/base64"
 	"time"
-	"fmt"
+	//"fmt"
 )
 
 
@@ -37,9 +37,10 @@ func HttpReqGetGlobalChat(c *gin.Context) {
 
 	mapResponse["success"] = true;
 	mapResponse["messages"] = arRespChat;
+	mapResponse["updated_at"] = time.Now().UnixMilli();
 
 	c.Header("Access-Control-Allow-Origin", c.Request.Header.Get("origin"));
-	c.SetCookie("globalchat_updated_at", fmt.Sprintf("%d", time.Now().UnixMilli()), 2592000, "/", "", true, false);
+	//c.SetCookie("globalchat_updated_at", fmt.Sprintf("%d", time.Now().UnixMilli()), 2592000, "/", "", true, false);
 	c.Header("Access-Control-Allow-Credentials", "true");
 	c.JSON(200, mapResponse);
 }

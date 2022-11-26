@@ -6,7 +6,7 @@ import (
 	"../players"
 	"../queue"
 	"../games"
-	"fmt"
+	//"fmt"
 	"time"
 )
 
@@ -50,9 +50,11 @@ func HttpReqGetQueue(c *gin.Context) {
 	mapResponse["finishing_game"] = games.IPlayersFinishingGameSoon;
 	players.MuPlayers.RUnlock();
 
+	mapResponse["updated_at"] = time.Now().UnixMilli();
+
 	
 	c.Header("Access-Control-Allow-Origin", c.Request.Header.Get("origin"));
 	c.Header("Access-Control-Allow-Credentials", "true");
-	c.SetCookie("queue_updated_at", fmt.Sprintf("%d", time.Now().UnixMilli()), 2592000, "/", "", true, false);
+	//c.SetCookie("queue_updated_at", fmt.Sprintf("%d", time.Now().UnixMilli()), 2592000, "/", "", true, false);
 	c.JSON(200, mapResponse);
 }
