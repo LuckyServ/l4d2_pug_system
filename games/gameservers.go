@@ -43,12 +43,13 @@ func CheckVersion() {
 
 func GetPotentialGameServers(arPlayersA []*players.EntPlayer, arPlayersB []*players.EntPlayer) ([]string) {
 	var arGameServers, arGameServersFiltered []string;
-	var arPriority, arPriorityFiltered []int;
+	//var arPriority, arPriorityFiltered []int;
+	var arPriorityFiltered []int;
 
 	players.MuPlayers.RLock();
 	for _, oServer := range settings.GameServers {
 		var iTeamPingDiff, iAvgPing, iMaxPing = CalcPings(arPlayersA, arPlayersB, oServer.IP);
-		if (iAvgPing <= 200 && iMaxPing <= 300) { //limits for playable conditions
+		if (iAvgPing <= 200 && iMaxPing <= 250) { //limits for playable conditions
 			for _, sPort := range oServer.Ports {
 				arGameServersFiltered = append(arGameServersFiltered, oServer.IP+":"+sPort);
 				arPriorityFiltered = append(arPriorityFiltered, (iTeamPingDiff + iAvgPing) / 2);
@@ -56,7 +57,7 @@ func GetPotentialGameServers(arPlayersA []*players.EntPlayer, arPlayersB []*play
 		}
 		for _, sPort := range oServer.Ports {
 			arGameServers = append(arGameServers, oServer.IP+":"+sPort);
-			arPriority = append(arPriority, (iTeamPingDiff + iAvgPing) / 2);
+			//arPriority = append(arPriority, (iTeamPingDiff + iAvgPing) / 2);
 		}
 	}
 	players.MuPlayers.RUnlock();
@@ -65,7 +66,7 @@ func GetPotentialGameServers(arPlayersA []*players.EntPlayer, arPlayersB []*play
 		SortByPriority(arGameServersFiltered, arPriorityFiltered);
 		return arGameServersFiltered;
 	}
-	SortByPriority(arGameServers, arPriority);
+	//SortByPriority(arGameServers, arPriority);
 	return arGameServers;
 }
 

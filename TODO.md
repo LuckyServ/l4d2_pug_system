@@ -1,4 +1,3 @@
-- [ ] CSRF security
 - [ ] Visible timer in queue
 - [ ] Add visible timer on readyup timeout
 - [ ] Improve map selection
@@ -8,6 +7,7 @@
 - [ ] An admin panel to show information about players
 - [ ] An admin panel to show anticheat logs
 - [ ] Shut down RU servers on non-EU playtime
+- [ ] Advertising on the servers
 - [ ] Page with list of all players
 - [ ] If no ping info available, use the old info
 - [ ] Alerts on site that dont block scripts
@@ -23,6 +23,7 @@
 - [ ] Automatically parse anticheat logs and ban based on them
 - [ ] Custom maps
 
+- [x] CSRF security
 - [x] Store update timestamp locally, not in cookies
 - [x] Support text copy on steambrowser on frontend
 - [x] Fix server selection
