@@ -23,6 +23,7 @@
 - [ ] Automatically parse anticheat logs and ban based on them
 - [ ] Custom maps
 
+- [x] Fix mmr system issues caused by multiple accounts
 - [x] CSRF security
 - [x] Store update timestamp locally, not in cookies
 - [x] Support text copy on steambrowser on frontend

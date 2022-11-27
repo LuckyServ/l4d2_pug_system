@@ -76,6 +76,7 @@ func BanRagequitter(oBanReq EntAutoBanReq) { //expensive
 		AddRecord(oBanRecord);
 
 		ApplyBanToPlayer(oBanReq.SteamID64, -2, sBanReason, i64BannedAt, i64BanLength, 0);
+		time.Sleep(2 * time.Millisecond);
 	}
 }
 
@@ -114,6 +115,7 @@ func BanManual(oBanReq EntManualBanReq) {
 		AddRecord(oBanRecord);
 
 		ApplyBanToPlayer(oBanReq.SteamID64, oBanReq.Access, sBanReason, i64BannedAt, oBanReq.BanLength, 0);
+		time.Sleep(2 * time.Millisecond);
 	}
 }
 
@@ -293,6 +295,37 @@ func RestoreBans() bool {
 	return true;
 }
 
+func BanExcessiveSmurfs(arAccounts []string) {
+	iLenAccounts := len(arAccounts);
+	if (iLenAccounts > 2) {
+
+		var arToBan, arToBanNames []string;
+		players.MuPlayers.RLock();
+		for i := 2; i < iLenAccounts; i++ {
+			pPlayer, bFound := players.MapPlayers[arAccounts[i]];
+			if (bFound && (pPlayer.IsOnline || pPlayer.IsInGame || pPlayer.IsInQueue) && pPlayer.Access >= -1) {
+				arToBan = append(arToBan, arAccounts[i]);
+				arToBanNames = append(arToBanNames, pPlayer.NicknameBase64);
+			}
+		}
+		players.MuPlayers.RUnlock();
+
+
+		for i, _ := range arToBan {
+			byNickname, _ := base64.StdEncoding.DecodeString(arToBanNames[i]);
+			oBanReq := EntManualBanReq{
+				SteamID64:			arToBan[i],
+				Access:				-2,
+				Nickname:			string(byNickname),
+				Reason:				fmt.Sprintf("Excessive smurfing, only allowed to play from: %s,%s", arAccounts[0], arAccounts[1]),
+				BanLength:			14191200000000,
+				RequestedBy:		"smurf",
+			}
+			BanManual(oBanReq);
+		}
+	}
+}
+
 func BanIfSmurfBanned(arAccounts []string) {
 	if (len(arAccounts) > 1) {
 		//check if any one of them is banned
@@ -302,7 +335,7 @@ func BanIfSmurfBanned(arAccounts []string) {
 		iBanlistSize := len(ArrayBanRecords);
 		for _, sSteamID64 := range arAccounts {
 			for i := iBanlistSize - 1; i >= 0; i-- {
-				if (ArrayBanRecords[i].SteamID64 == sSteamID64) {
+				if (ArrayBanRecords[i].SteamID64 == sSteamID64 && ArrayBanRecords[i].BannedBySteamID64 != "smurf") {
 					if (ArrayBanRecords[i].AcceptedAt == 0 || ArrayBanRecords[i].AcceptedAt + ArrayBanRecords[i].BanLength > i64CurTime) {
 						oMimicBanRecord = ArrayBanRecords[i];
 						break;

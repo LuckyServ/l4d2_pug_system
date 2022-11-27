@@ -87,10 +87,8 @@ func WatchChannels() {
 		select {
 		case oBanReq := <-ChanBanRQ: //locks Players
 			BanRagequitter(oBanReq);
-			time.Sleep(2 * time.Millisecond);
 		case oBanReq := <-ChanBanManual: //locks Players
 			BanManual(oBanReq);
-			time.Sleep(2 * time.Millisecond);
 		case sSteamID64 := <-ChanAcceptBan: //locks Players
 			AcceptBan(sSteamID64);
 		case sSteamID64 := <-ChanSearchBan: //locks Players
@@ -98,8 +96,8 @@ func WatchChannels() {
 		case sSteamID64 := <-ChanUnbanManual: //locks Players
 			UnbanManual(sSteamID64);
 		case arAccounts := <-ChanAutoBanSmurfs: //locks Players
+			BanExcessiveSmurfs(arAccounts);
 			BanIfSmurfBanned(arAccounts);
-			time.Sleep(2 * time.Millisecond);
 		case <-ChanLock:
 			<-ChanUnlock;
 		}
