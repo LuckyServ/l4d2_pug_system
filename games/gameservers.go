@@ -43,8 +43,7 @@ func CheckVersion() {
 
 func GetPotentialGameServers(arPlayersA []*players.EntPlayer, arPlayersB []*players.EntPlayer) ([]string) {
 	var arGameServers, arGameServersFiltered []string;
-	//var arPriority, arPriorityFiltered []int;
-	var arPriorityFiltered []int;
+	var arPriority, arPriorityFiltered []int;
 
 	players.MuPlayers.RLock();
 	for _, oServer := range settings.GameServers {
@@ -58,6 +57,7 @@ func GetPotentialGameServers(arPlayersA []*players.EntPlayer, arPlayersB []*play
 		for _, sPort := range oServer.Ports {
 			arGameServers = append(arGameServers, oServer.IP+":"+sPort);
 			//arPriority = append(arPriority, (iTeamPingDiff + iAvgPing) / 2);
+			arPriority = append(arPriority, 1);
 		}
 	}
 	players.MuPlayers.RUnlock();
@@ -66,7 +66,7 @@ func GetPotentialGameServers(arPlayersA []*players.EntPlayer, arPlayersB []*play
 		SortByPriority(arGameServersFiltered, arPriorityFiltered);
 		return arGameServersFiltered;
 	}
-	//SortByPriority(arGameServers, arPriority);
+	SortByPriority(arGameServers, arPriority);
 	return arGameServers;
 }
 
