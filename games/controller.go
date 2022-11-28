@@ -267,7 +267,12 @@ func Control(pGame *EntGame) {
 
 	for _, pPlayer := range pGame.PlayersUnpaired {
 
-		pPlayer.LastCampaignPlayed = i64CmpgnIdx + 1; //store played campaign index + 1
+		arCampaignsPlayed := pPlayer.LastCampaignsPlayed; //store played campaign
+		iBuffer := utils.GetIntIdxInArray(i64CmpgnIdx, arCampaignsPlayed);
+		if (iBuffer != -1) {
+			arCampaignsPlayed = append(arCampaignsPlayed[:iBuffer], arCampaignsPlayed[iBuffer+1:]...);
+		}
+		pPlayer.LastCampaignsPlayed = append([]int{i64CmpgnIdx}, arCampaignsPlayed...);
 
 		if (strings.HasPrefix(pPlayer.SteamID64, "7")) {
 			go database.UpdatePlayer(database.DatabasePlayer{

@@ -203,27 +203,32 @@ func ChooseConfoglConfig(iMmr int) (settings.ConfoglConfig) {
 }
 
 func ChooseCampaign(arPlayers []*players.EntPlayer) int {
-	var arCampaigns []int;
+
+	var arCampaigns, arTestCampaigns []int;
 	for i, _ := range settings.CampaignNames {
 		arCampaigns = append(arCampaigns, i);
+		arTestCampaigns = append(arTestCampaigns, i);
 	}
 
-	for _, pPlayer := range arPlayers {
-		if (pPlayer.LastCampaignPlayed > 0) {
-			iIndex := utils.GetIntIdxInArray(pPlayer.LastCampaignPlayed - 1, arCampaigns);
-			if (iIndex != -1) {
-				arCampaigns = utils.RemoveIntFromArray(iIndex, arCampaigns);
+	iGamesAgo := 0;
+	for {
+		bSomeonePlayedThisGamesAgo := false;
+		for _, pPlayer := range arPlayers {
+			if (len(pPlayer.LastCampaignsPlayed) > iGamesAgo) {
+				if (!bSomeonePlayedThisGamesAgo) {
+					bSomeonePlayedThisGamesAgo = true;
+				}
+				arTestCampaigns = utils.RemoveIntFromArray(pPlayer.LastCampaignsPlayed[iGamesAgo], arTestCampaigns);
 			}
 		}
+		if (!bSomeonePlayedThisGamesAgo || len(arTestCampaigns) == 0) {
+			break;
+		}
+		arCampaigns = arTestCampaigns;
+		iGamesAgo++;
 	}
 
-	if (len(arCampaigns) > 0) {
-		iBuffer, _ := utils.GetRandInt(0, len(arCampaigns) - 1);
-		return arCampaigns[iBuffer];
-	} else {
-		iBuffer, _ := utils.GetRandInt(0, len(settings.CampaignNames) - 1);
-		return iBuffer;
-	}
+	return utils.GetRandIntFromArray(arCampaigns);
 }
 
 func Implode4Players(arPlayers []*players.EntPlayer) string {

@@ -44,7 +44,7 @@ type EntPlayer struct {
 	LastChatMessage			int64 //Last chat message //unix timestamp in milliseconds
 	LastTicketActivity		int64 //Last ticket activity //unix timestamp in milliseconds
 	GameServerPings			map[string]int
-	LastCampaignPlayed		int; //from 1 to len(settings.CampaignNames), 0 means no info
+	LastCampaignsPlayed		[]int; //array of values from 0 to (len(settings.CampaignNames) - 1)
 }
 
 var MapPlayers map[string]*EntPlayer = make(map[string]*EntPlayer);

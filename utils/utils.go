@@ -35,11 +35,19 @@ func GenerateRandomString(n int, letters string) (string, error) {
 }
 
 func GetRandInt(iMin int, iMax int) (int, error) {
+	if (iMin >= iMax) {
+		return iMin, nil;
+	}
 	num, err := rand.Int(rand.Reader, big.NewInt(int64((iMax - iMin) + 1)));
 	if err != nil {
 		return 0, err;
 	}
 	return (iMin + int(num.Int64())), nil;
+}
+
+func GetRandIntFromArray(arBuffer []int) int {
+	iBuffer, _ := GetRandInt(0, len(arBuffer) - 1);
+	return arBuffer[iBuffer];
 }
 
 func MaxValInt64(val1 int64, val2 int64) int64 {
@@ -76,9 +84,12 @@ func GetIntIdxInArray(iValueBuffer int, arBuffer []int) int {
 	return -1;
 }
 
-func RemoveIntFromArray(iIndex int, arBuffer []int) []int {
-	arBuffer[iIndex] = arBuffer[len(arBuffer)-1];
-	return arBuffer[:len(arBuffer)-1];
+func RemoveIntFromArray(iValue int, arBuffer []int) []int {
+	iIndex := GetIntIdxInArray(iValue, arBuffer);
+	if (iIndex != -1) {
+		return append(arBuffer[:iIndex], arBuffer[iIndex+1:]...);
+	}
+	return arBuffer;
 }
 
 func InsertDots(s string, n int) string {
