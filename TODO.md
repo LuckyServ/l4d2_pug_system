@@ -1,4 +1,3 @@
-- [ ] Improve map selection
 - [ ] Log games even if they ended early
 - [ ] Test if anticheat logging works
 - [ ] Searching in bans page
@@ -21,6 +20,8 @@
 - [ ] Automatically parse anticheat logs and ban based on them
 - [ ] Custom maps
 
+- [x] Block abuse of pauses and !unready
+- [x] Improve map selection
 - [x] Visible timer in queue
 - [x] Fix mmr system issues caused by multiple accounts
 - [x] CSRF security

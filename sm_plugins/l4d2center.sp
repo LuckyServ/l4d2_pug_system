@@ -22,6 +22,7 @@ int iPrevMouse[MAXPLAYERS + 1][2];
 int iLastActivity[MAXPLAYERS + 1];
 
 int bResponsibleForPause[8]; //parallel with arPlayersAll[]
+int iResponsibleForPauseCounter[8]; //parallel with arPlayersAll[]
 int iLastUnpause;
 int iLastMapChangeSign;
 bool bPrinted[8]; //parallel with arPlayersAll[]
@@ -30,6 +31,8 @@ int iSingleAbsence[8]; //parallel with arPlayersAll[]
 char sAuthKey[64];
 char sPublicIP[32];
 int iMaxSpecs;
+
+int iMaxPauses = 5;
 
 //GameInfo
 int iServerReserved = -1; //-2 - check failed, -1 - not checked, 0 - not reserved, 1 - reserved
@@ -394,7 +397,7 @@ public Action UpdateGameResults(Handle timer) {
 	Format(sBuffer, sizeof(sBuffer), "%d", iMapsFinished);
 	SteamWorks_SetHTTPRequestGetOrPostParameter(hSWReq, "maps_finished", sBuffer);
 	for (int i = 0; i < 8; i++) {
-		Format(sBuffer, sizeof(sBuffer), "%d", iSingleAbsence[i] >= iMaxSingleAbsent ? iMaxAbsent : iAbsenceCounter[i]);
+		Format(sBuffer, sizeof(sBuffer), "%d", (iSingleAbsence[i] >= iMaxSingleAbsent || iResponsibleForPauseCounter[i] >= iMaxPauses) ? iMaxAbsent : iAbsenceCounter[i]);
 		SteamWorks_SetHTTPRequestGetOrPostParameter(hSWReq, arPlayersAll[i], sBuffer);
 	}
 
@@ -817,6 +820,7 @@ void ClearReservation() {
 		iAbsenceCounter[i] = 0;
 		iSingleAbsence[i] = 0;
 		bResponsibleForPause[i] = false;
+		iResponsibleForPauseCounter[i] = 0;
 		bPrinted[i] = false;
 	}
 	strcopy(sConfoglConfig, sizeof(sConfoglConfig), "");
@@ -1039,12 +1043,19 @@ SetResponsibleForPause(int iLobbyPlayer) {
 	}
 	if (iLobbyPlayer >= 0) {
 		bResponsibleForPause[iLobbyPlayer] = true;
+		iResponsibleForPauseCounter[iLobbyPlayer] = iResponsibleForPauseCounter[iLobbyPlayer] + 1;
 	}
 }
 
 public OnUnpause() {
 	if (iServerReserved == 1) {
 		iLastUnpause = GetTime();
+	}
+}
+
+public void OnReadyCountdownCancelled(int client) {
+	if (iServerReserved == 1) {
+		KickClient(client, "Please come back on the server when you are ready");
 	}
 }
 
