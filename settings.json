@@ -39,8 +39,7 @@
 		"max_single_absent_minutes": 4,
 		"game_ends_if_players_disconnected": 5,
 		"ragequit_penalty": {
-			"on_map_transition": 500,
-			"inf_midtank": 600
+			"default": 800
 		}
 	},
 	"database": {

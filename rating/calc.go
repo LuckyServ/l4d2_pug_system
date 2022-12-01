@@ -182,47 +182,10 @@ func DetermineFinalScores(oResult EntGameResult, arPlayers [2][]*players.EntPlay
 			return oResult.SettledScores;
 		}
 
-		//case: a player RQd om map change
-		if (oResult.InMapTransition) {
-			arScoresBuffer := oResult.SettledScores;
-			arScoresBuffer[iRQTeam] = utils.MaxValInt(arScoresBuffer[iRQTeam] - settings.RQMidMapTransPenalty, 0);
-			return arScoresBuffer;
-		}
-
-		//case: a losing player RQd on side switch
-		arChaptScores := [2]int{oResult.CurrentScores[0] - oResult.SettledScores[0], oResult.CurrentScores[1] - oResult.SettledScores[1]};
-		if (!oResult.InRound && !oResult.InMapTransition) {
-			var iLosingTeam int = -1;
-			if (arChaptScores[0] > 0 && arChaptScores[1] == 0) {
-				iLosingTeam = 1;
-			} else if (arChaptScores[0] == 0 && arChaptScores[1] > 0) {
-				iLosingTeam = 0;
-			} else { //weird situation
-				return oResult.SettledScores;
-			}
-
-			if (iLosingTeam == iRQTeam) {
-				return oResult.CurrentScores;
-			} else {
-				return oResult.SettledScores;
-			}
-		}
-
-		//case: infected player left midtank or after killing tank
-		if (oResult.InRound && ((iRQTeam == 0 && oResult.TeamsFlipped) || (iRQTeam == 1 && !oResult.TeamsFlipped)) && (oResult.TankInPlay || oResult.TankKilled)) {
-			arScoresBuffer := oResult.CurrentScores;
-			arScoresBuffer[iRQTeam] = utils.MaxValInt(arScoresBuffer[iRQTeam] - settings.RQInfMidTank, 0);
-			return arScoresBuffer;
-		}
-
-
-		//case: survivor player left midgame on 2nd half
-		if (oResult.InRound && oResult.CurrentHalf == 2 && ((iRQTeam == 0 && !oResult.TeamsFlipped) || (iRQTeam == 1 && oResult.TeamsFlipped))) {
-			return oResult.CurrentScores;
-		}
-
-		//Anything else
-		return oResult.SettledScores;
+		//everything else
+		arScoresBuffer := oResult.SettledScores;
+		arScoresBuffer[iRQTeam] = utils.MaxValInt(arScoresBuffer[iRQTeam] - settings.RQDefaultPenalty, 0);
+		return arScoresBuffer;
 
 	} else {
 		//case: game ended with no RQs

@@ -1,4 +1,3 @@
-- [ ] Adjust mmr penalties for leaving
 - [ ] Log games even if they ended early
 - [ ] Test if anticheat logging works
 - [ ] An admin panel to show information about players
@@ -21,6 +20,7 @@
 - [ ] Automatically parse anticheat logs and ban based on them
 - [ ] Custom maps
 
+- [x] Adjust mmr penalties for leaving
 - [x] Searching in bans page
 - [x] Block abuse of pauses and !unready
 - [x] Improve map selection
