@@ -34,7 +34,7 @@ func GetLongestWaitPlayer() (*players.EntPlayer) { //Players must be locked outs
 	return pOldestWaitPlayer;
 }
 
-func GetMmrDifferenceInQueue() int { //len guaranteed to be >=2
+/*func GetMmrDifferenceInQueue() int { //len guaranteed to be >=2
 	var iMinMmr int = 2000000000;
 	var iMaxMmr int = -2000000000;
 	for _, pPlayer := range arQueue {
@@ -46,7 +46,7 @@ func GetMmrDifferenceInQueue() int { //len guaranteed to be >=2
 		}
 	}
 	return iMaxMmr - iMinMmr;
-}
+}*/
 
 func TrimQueue(arReadyOnly []*players.EntPlayer) ([]*players.EntPlayer) { //IPlayersCount must be >= 8 and arQueue sorted by wait time
 	var arTrimmedQueue []*players.EntPlayer;

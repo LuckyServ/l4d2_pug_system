@@ -42,8 +42,10 @@ func HttpReqGetQueue(c *gin.Context) {
 	players.MuPlayers.RLock();
 	if (queue.PLongestWaitPlayer != nil) {
 		mapResponse["waiting_since"] = queue.PLongestWaitPlayer.InQueueSince;
+		mapResponse["waiting_till"] = queue.PLongestWaitPlayer.InQueueSince + queue.I64MaxQueueWait;
 	} else {
 		mapResponse["waiting_since"] = 0;
+		mapResponse["waiting_till"] = 0;
 	}
 	mapResponse["ready_players"] = queue.IReadyPlayers;
 	mapResponse["ready_state"] = queue.BIsInReadyUp;
