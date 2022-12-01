@@ -1,10 +1,11 @@
+- [ ] Adjust mmr penalties for leaving
 - [ ] Log games even if they ended early
 - [ ] Test if anticheat logging works
-- [ ] Searching in bans page
 - [ ] An admin panel to show information about players
 - [ ] An admin panel to show anticheat logs
 - [ ] Shut down RU servers on non-EU playtime
 - [ ] Advertising on the servers
+- [ ] Block unwanted games on the servers
 - [ ] Page with list of all players
 - [ ] If no ping info available, use the old info
 - [ ] Alerts on site that dont block scripts
@@ -20,6 +21,7 @@
 - [ ] Automatically parse anticheat logs and ban based on them
 - [ ] Custom maps
 
+- [x] Searching in bans page
 - [x] Block abuse of pauses and !unready
 - [x] Improve map selection
 - [x] Visible timer in queue

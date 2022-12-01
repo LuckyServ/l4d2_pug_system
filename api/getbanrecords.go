@@ -4,7 +4,9 @@ import (
 	"github.com/gin-gonic/gin"
 	"../settings"
 	"../bans"
+	"../utils"
 	"strconv"
+	"encoding/base64"
 )
 
 type BanRecordResponse struct {
@@ -22,11 +24,29 @@ func HttpReqGetBanRecords(c *gin.Context) {
 	mapResponse := make(map[string]interface{});
 
 	iPage, _ := strconv.Atoi(c.Query("page"));
+	sSearch := c.Query("search");
 
 	mapResponse["success"] = false;
 	mapResponse["page"] = iPage;
+
+	var arFilteredBanRecords []bans.EntBanRecord;
 	bans.ChanLock <- true;
-	iMaxBanRecords := len(bans.ArrayBanRecords);
+
+	if (sSearch == "") {
+		arFilteredBanRecords = bans.ArrayBanRecords;
+	} else {
+		for _, oBanRecord := range bans.ArrayBanRecords {
+			byNickname, _ := base64.StdEncoding.DecodeString(oBanRecord.NicknameBase64);
+			sNickname := string(byNickname);
+			byReason, _ := base64.StdEncoding.DecodeString(oBanRecord.BanReasonBase64);
+			sReason := string(byReason);
+			if (utils.StringContainsCI(sSearch, sNickname) || utils.StringContainsCI(sSearch, oBanRecord.SteamID64) || utils.StringContainsCI(sSearch, sReason)) {
+				arFilteredBanRecords = append(arFilteredBanRecords, oBanRecord);
+			}
+		}
+	}
+
+	iMaxBanRecords := len(arFilteredBanRecords);
 	iStartItem := (iMaxBanRecords - 1) - (iPage * settings.BanListPagination);
 	if (iStartItem < iMaxBanRecords && iStartItem >= 0) {
 		var arBanRecordsResp []BanRecordResponse;
@@ -37,12 +57,12 @@ func HttpReqGetBanRecords(c *gin.Context) {
 		}
 		for i := iStartItem; i >= iEndItem; i-- {
 			arBanRecordsResp = append(arBanRecordsResp, BanRecordResponse{
-				NicknameBase64:		bans.ArrayBanRecords[i].NicknameBase64,
-				SteamID64:			bans.ArrayBanRecords[i].SteamID64,
-				CreatedAt:			bans.ArrayBanRecords[i].CreatedAt,
-				AcceptedAt:			bans.ArrayBanRecords[i].AcceptedAt,
-				BanLength:			bans.ArrayBanRecords[i].BanLength,
-				BanReasonBase64:	bans.ArrayBanRecords[i].BanReasonBase64,
+				NicknameBase64:		arFilteredBanRecords[i].NicknameBase64,
+				SteamID64:			arFilteredBanRecords[i].SteamID64,
+				CreatedAt:			arFilteredBanRecords[i].CreatedAt,
+				AcceptedAt:			arFilteredBanRecords[i].AcceptedAt,
+				BanLength:			arFilteredBanRecords[i].BanLength,
+				BanReasonBase64:	arFilteredBanRecords[i].BanReasonBase64,
 			});
 		}
 		bans.ChanUnlock <- true;

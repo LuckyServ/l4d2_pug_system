@@ -6,6 +6,7 @@ import (
 	"bytes"
 	"time"
 	"fmt"
+	"strings"
 )
 
 var ChanUniqueString = make(chan string);
@@ -103,4 +104,8 @@ func InsertDots(s string, n int) string {
 		}
 	}
 	return buffer.String();
+}
+
+func StringContainsCI(sSearch string, sHeystack string) bool {
+	return strings.Contains(strings.ToLower(sHeystack), strings.ToLower(sSearch));
 }
