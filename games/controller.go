@@ -110,6 +110,21 @@ func Control(pGame *EntGame) {
 			if (iTryCount >= settings.AvailGameSrvsMaxTries) { //destroy game if too many tries
 				players.MuPlayers.Lock();
 				MuGames.Lock();
+
+				go database.LogGame(database.DatabaseGameLog{
+					ID:					pGame.ID,
+					Valid:				false,
+					CreatedAt:			pGame.CreatedAt,
+					PlayersA:			Implode4Players(pGame.PlayersA),
+					PlayersB:			Implode4Players(pGame.PlayersB),
+					TeamAScores:		0,
+					TeamBScores:		0,
+					ConfoglConfig:		pGame.GameConfig.CodeName,
+					CampaignName:		pGame.CampaignName,
+					ServerIP:			"",
+					Pings:				FormatPingsLog(pGame.PlayersUnpaired),
+				});
+
 				Destroy(pGame);
 				MuGames.Unlock();
 				players.MuPlayers.Unlock();
@@ -176,6 +191,21 @@ func Control(pGame *EntGame) {
 			//Ban no one, destroy the game
 			players.MuPlayers.Lock();
 			MuGames.Lock();
+
+			go database.LogGame(database.DatabaseGameLog{
+				ID:					pGame.ID,
+				Valid:				false,
+				CreatedAt:			pGame.CreatedAt,
+				PlayersA:			Implode4Players(pGame.PlayersA),
+				PlayersB:			Implode4Players(pGame.PlayersB),
+				TeamAScores:		0,
+				TeamBScores:		0,
+				ConfoglConfig:		pGame.GameConfig.CodeName,
+				CampaignName:		pGame.CampaignName,
+				ServerIP:			pGame.ServerIP,
+				Pings:				FormatPingsLog(pGame.PlayersUnpaired),
+			});
+
 			Destroy(pGame);
 			MuGames.Unlock();
 			players.MuPlayers.Unlock();
@@ -205,6 +235,21 @@ func Control(pGame *EntGame) {
 			//Destroy the game
 			players.MuPlayers.Lock();
 			MuGames.Lock();
+
+			go database.LogGame(database.DatabaseGameLog{
+				ID:					pGame.ID,
+				Valid:				false,
+				CreatedAt:			pGame.CreatedAt,
+				PlayersA:			Implode4Players(pGame.PlayersA),
+				PlayersB:			Implode4Players(pGame.PlayersB),
+				TeamAScores:		0,
+				TeamBScores:		0,
+				ConfoglConfig:		pGame.GameConfig.CodeName,
+				CampaignName:		pGame.CampaignName,
+				ServerIP:			pGame.ServerIP,
+				Pings:				FormatPingsLog(pGame.PlayersUnpaired),
+			});
+
 			Destroy(pGame);
 			MuGames.Unlock();
 			players.MuPlayers.Unlock();

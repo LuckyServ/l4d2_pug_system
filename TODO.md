@@ -1,4 +1,5 @@
-- [ ] Log games even if they ended early
+- [ ] Suicide on !spec command
+- [ ] Fix readyup bug
 - [ ] Test if anticheat logging works
 - [ ] An admin panel to show information about players
 - [ ] An admin panel to show anticheat logs
@@ -11,15 +12,14 @@
 - [ ] Adapt to Cloudflare challenges
 - [ ] Allow dead survivors to rq games without ban on last map on 2nd chapter
 - [ ] Setup database backups
-- [ ] Recheck penalties for rq
 - [ ] Fix exploiting the initial ready up timelimit
-- [ ] Visualize server selection
 - [ ] T2 and T1 configs for lower tier players
 - [ ] Check double html escaping of names
 - [ ] Default config for the case when zonemod is broken
 - [ ] Automatically parse anticheat logs and ban based on them
 - [ ] Custom maps
 
+- [x] Log games even if they ended early
 - [x] Adjust mmr penalties for leaving
 - [x] Searching in bans page
 - [x] Block abuse of pauses and !unready
