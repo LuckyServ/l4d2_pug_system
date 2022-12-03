@@ -20,22 +20,22 @@ func HttpReqGSAntiCheatLogs(c *gin.Context) {
 	if (auth.Backend(sAuthKey)) {
 		sIP := c.PostForm("ip");
 		if (sIP != "" && sLogLine != "") {
+			var sGameID string;
 			games.MuGames.RLock();
 			pGame := games.GetGameByIP(sIP);
 			if (pGame != nil) {
-				sGameID := pGame.ID;
-				games.MuGames.RUnlock();
-
-				sResponse = fmt.Sprintf("%s\n	\"success\" \"1\"", sResponse);
-
-				sBuffer := fmt.Sprintf("Time: %s, game %s, log line: %s", time.Now().Format("01/Jan/2006 - 15:04:05.00 MST"), sGameID, sLogLine);
-				go database.AntiCheatLog(base64.StdEncoding.EncodeToString([]byte(sBuffer)));
-
+				sGameID = pGame.ID;
 			} else {
-				games.MuGames.RUnlock();
-				sResponse = fmt.Sprintf("%s\n	\"success\" \"0\"", sResponse);
-				sResponse = fmt.Sprintf("%s\n	\"error\" \"No game on this IP\"", sResponse);
+				sGameID = "Not a l4d2center game";
 			}
+			games.MuGames.RUnlock();
+
+
+			sResponse = fmt.Sprintf("%s\n	\"success\" \"1\"", sResponse);
+
+			sBuffer := fmt.Sprintf("Time: %s, game %s, log line: %s", time.Now().Format("01/Jan/2006 - 15:04:05.00 MST"), sGameID, sLogLine);
+			go database.AntiCheatLog(base64.StdEncoding.EncodeToString([]byte(sBuffer)));
+
 		} else {
 			sResponse = fmt.Sprintf("%s\n	\"success\" \"0\"", sResponse);
 			sResponse = fmt.Sprintf("%s\n	\"error\" \"Bad parameters\"", sResponse);
