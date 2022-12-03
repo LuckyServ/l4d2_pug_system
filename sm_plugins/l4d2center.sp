@@ -142,7 +142,7 @@ public Action GameID_Cmd(int client, int args) {
 }
 
 public Action Suicide_Cmd(int client, int args) {
-	if (iServerReserved == 1 && !bWaitFirstReadyUp && bInRound && client > 0 && IsClientInGame(client) && GetClientTeam(client) == 3 && IsPlayerAlive(client) && GetEntProp(client, Prop_Send, "m_zombieClass") != 8) {
+	if (iServerReserved == 1 && !bWaitFirstReadyUp && bInRound && client > 0 && IsClientInGame(client) && GetClientTeam(client) == 3 && IsPlayerAlive(client) && GetEntProp(client, Prop_Send, "m_isGhost") != 1 && GetEntProp(client, Prop_Send, "m_zombieClass") != 8) {
 		CreateTimer(7.0, SuicideRequestTimer, GetClientUserId(client));
 		PrintToChat(client, "[l4d2center.com] You will die in 7 deconds");
 	}
@@ -151,7 +151,7 @@ public Action Suicide_Cmd(int client, int args) {
 
 public Action SuicideRequestTimer(Handle timer, any userid) {
 	int client = GetClientOfUserId(userid);
-	if (client > 0 && iServerReserved == 1 && !bWaitFirstReadyUp && bInRound && IsClientInGame(client) && GetClientTeam(client) == 3 && IsPlayerAlive(client) && GetEntProp(client, Prop_Send, "m_zombieClass") != 8) {
+	if (client > 0 && iServerReserved == 1 && !bWaitFirstReadyUp && bInRound && IsClientInGame(client) && GetClientTeam(client) == 3 && IsPlayerAlive(client) && GetEntProp(client, Prop_Send, "m_isGhost") != 1 && GetEntProp(client, Prop_Send, "m_zombieClass") != 8) {
 		ForcePlayerSuicide(client);
 	}
 	return Plugin_Continue;
