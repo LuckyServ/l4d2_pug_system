@@ -104,6 +104,15 @@ public OnPluginStart() {
 	CreateTimer(1.0, Timer_CountAbsence, 0, TIMER_REPEAT);
 	CreateTimer(0.9876, Timer_AutoTeam, 0, TIMER_REPEAT);
 
+	//suicide
+	RegConsoleCmd("sm_spectate", Suicide_Cmd);
+	RegConsoleCmd("sm_spec", Suicide_Cmd);
+	RegConsoleCmd("sm_s", Suicide_Cmd);
+	RegConsoleCmd("sm_kill", Suicide_Cmd);
+	RegConsoleCmd("sm_killme", Suicide_Cmd);
+	RegConsoleCmd("sm_die", Suicide_Cmd);
+	RegConsoleCmd("sm_suicide", Suicide_Cmd);
+
 	//get game id
 	RegConsoleCmd("sm_id", GameID_Cmd);
 	RegConsoleCmd("sm_game", GameID_Cmd);
@@ -130,6 +139,22 @@ public Action GameID_Cmd(int client, int args) {
 		ReplyToCommand(client, "L4D2Center: current Game ID is %s", sGameID);
 	}
 	return Plugin_Handled;
+}
+
+public Action Suicide_Cmd(int client, int args) {
+	if (iServerReserved == 1 && !bWaitFirstReadyUp && bInRound && client > 0 && IsClientInGame(client) && GetClientTeam(client) == 3 && IsPlayerAlive(client) && GetEntProp(client, Prop_Send, "m_zombieClass") != 8) {
+		CreateTimer(7.0, SuicideRequestTimer, GetClientUserId(client));
+		PrintToChat(client, "[l4d2center.com] You will die in 7 deconds");
+	}
+	return Plugin_Handled;
+}
+
+public Action SuicideRequestTimer(Handle timer, any userid) {
+	int client = GetClientOfUserId(userid);
+	if (client > 0 && iServerReserved == 1 && !bWaitFirstReadyUp && bInRound && IsClientInGame(client) && GetClientTeam(client) == 3 && IsPlayerAlive(client) && GetEntProp(client, Prop_Send, "m_zombieClass") != 8) {
+		ForcePlayerSuicide(client);
+	}
+	return Plugin_Continue;
 }
 
 /*public Action Ragequit_Cmd(int client, int args) {
