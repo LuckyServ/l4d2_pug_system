@@ -74,6 +74,7 @@ type GameServer struct {
 	IP				string		`json:"ip"`
 	Domain			string		`json:"domain"`
 	Ports			[]string	`json:"ports"`
+	LowerPriority	int			`json:"lower_priority"`
 }
 
 type ConfoglConfig struct {
@@ -474,9 +475,12 @@ func ConfigFile() bool {
 
 		sDomain, _ := jsonparser.GetString(valueServer, "domain");
 		sServIP, _ := jsonparser.GetString(valueServer, "ip");
+		i64LowerPriority, _ := jsonparser.GetInt(valueServer, "lower_priority");
+		iLowerPriority := int(i64LowerPriority);
 		oGameServer := GameServer{
-			IP:			sServIP,
-			Domain:		sDomain,
+			IP:				sServIP,
+			Domain:			sDomain,
+			LowerPriority:	iLowerPriority,
 		};
 		
 		jsonparser.ArrayEach(valueServer, func(valuePort []byte, dataType jsonparser.ValueType, offset int, err error) {

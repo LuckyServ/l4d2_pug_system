@@ -51,7 +51,7 @@ func GetPotentialGameServers(arPlayersA []*players.EntPlayer, arPlayersB []*play
 		if (iAvgPing <= 140 && iMaxPing <= 250) { //limits for playable conditions
 			for _, sPort := range oServer.Ports {
 				arGameServersFiltered = append(arGameServersFiltered, oServer.IP+":"+sPort);
-				arPriorityFiltered = append(arPriorityFiltered, (iTeamPingDiff + iAvgPing) / 2);
+				arPriorityFiltered = append(arPriorityFiltered, ((iTeamPingDiff + iAvgPing) / 2) + oServer.LowerPriority);
 			}
 		}
 		for _, sPort := range oServer.Ports {
