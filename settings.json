@@ -122,18 +122,21 @@
 		{
 			"domain": "srv.domain1.com",
 			"ip": "127.0.0.1",
+			"proxy": "",
 			"ports": ["27016", "27017"],
 			"lower_priority": 0
 		},
 		{
 			"domain": "srv.domain2.com",
 			"ip": "127.0.0.2",
+			"proxy": "",
 			"ports": ["27016"],
 			"lower_priority": 0
 		},
 		{
 			"domain": "srv.domain3.com",
 			"ip": "127.0.0.3",
+			"proxy": "",
 			"ports": ["27016"],
 			"lower_priority": 0
 		}

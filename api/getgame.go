@@ -5,6 +5,7 @@ import (
 	"../players/auth"
 	"../players"
 	"../games"
+	"../settings"
 	"time"
 	//"fmt"
 )
@@ -18,6 +19,7 @@ type GameResponse struct {
 	CampaignName		string				`json:"campaign_name"`
 	PingsRequested		bool				`json:"pings_requested"`
 	ServerIP			string				`json:"server_ip"`
+	ProxyIP				string				`json:"proxy_ip"`
 	Status				string				`json:"status"`
 }
 
@@ -74,6 +76,7 @@ func HttpReqGetGame(c *gin.Context) {
 					CampaignName:		pGame.CampaignName,
 					PingsRequested:		(pGame.State == games.StateWaitPings),
 					ServerIP:			pGame.ServerIP,
+					ProxyIP:			settings.MapProxies[pGame.ServerIP],
 					Status:				games.MapGameStatus[pGame.State],
 				};
 

@@ -76,6 +76,7 @@ type GameServer struct {
 	Ports			[]string	`json:"ports"`
 	LowerPriority	int			`json:"lower_priority"`
 }
+var MapProxies = make(map[string]string);
 
 type ConfoglConfig struct {
 	CodeName		string
@@ -475,6 +476,7 @@ func ConfigFile() bool {
 
 		sDomain, _ := jsonparser.GetString(valueServer, "domain");
 		sServIP, _ := jsonparser.GetString(valueServer, "ip");
+		sProxyIP, _ := jsonparser.GetString(valueServer, "proxy");
 		i64LowerPriority, _ := jsonparser.GetInt(valueServer, "lower_priority");
 		iLowerPriority := int(i64LowerPriority);
 		oGameServer := GameServer{
@@ -487,6 +489,9 @@ func ConfigFile() bool {
 			sPORT := string(valuePort);
 			if (sPORT != "") {
 				oGameServer.Ports = append(oGameServer.Ports, sPORT);
+				if (sProxyIP != "") {
+					MapProxies[sServIP + ":" + sPORT] = sProxyIP + ":" + sPORT;
+				}
 				if (bErrorReadingGameServers == true) {
 					bErrorReadingGameServers = false;
 				}

@@ -1,5 +1,13 @@
+- [ ] Set up proxy for gameservers
+- [ ] Make some of the servers 60T
+- [ ] Cache a2s queries
+- [ ] Optimize server selection once again
+- [ ] Frontend: button "Full announcement to top"
+- [ ] Frontend: remove Accept button if already accepted
+- [ ] SM pluign: notify all player about suicide
 - [ ] Fix readyup bug
 - [ ] Test if anticheat logging works
+- [ ] IsClientTimingOut in the AFK detection in SM plugin, or solve AFKs some other way
 - [ ] An admin panel to show information about players
 - [ ] An admin panel to show anticheat logs
 - [ ] Shut down RU servers on non-EU playtime
