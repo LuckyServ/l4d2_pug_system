@@ -17,6 +17,9 @@ import (
 var sLatestGameVersion string;
 var MuA2S sync.RWMutex;
 
+var mapA2SCache map[string]int;
+var i64a2sCachedAt int64;
+
 
 func CheckVersion() {
 	for {
@@ -41,37 +44,30 @@ func CheckVersion() {
 	}
 }
 
-func GetPotentialGameServers(arPlayersA []*players.EntPlayer, arPlayersB []*players.EntPlayer) ([]string) {
-	var arGameServers, arGameServersFiltered []string;
-	var arPriority, arPriorityFiltered []int;
+func GetGameServers(arPlayersA []*players.EntPlayer, arPlayersB []*players.EntPlayer) ([]string) {
+	var arGameServers []string;
+	var arPriority []int;
 
 	players.MuPlayers.RLock();
 	for _, oServer := range settings.GameServers {
-		var iTeamPingDiff, iAvgPing, iMaxPing = CalcPings(arPlayersA, arPlayersB, oServer.IP);
-		if (iAvgPing <= 140 && iMaxPing <= 250) { //limits for playable conditions
-			for _, sPort := range oServer.Ports {
-				arGameServersFiltered = append(arGameServersFiltered, oServer.IP+":"+sPort);
-				arPriorityFiltered = append(arPriorityFiltered, ((iTeamPingDiff + iAvgPing) / 2) + oServer.LowerPriority);
-			}
-		}
+		var iTeamPingDiff, iAvgPing, iMaxPing, iMinPing = CalcPings(arPlayersA, arPlayersB, oServer.IP);
+
+		iPriority := ((iTeamPingDiff + iAvgPing + ((iMaxPing - iMinPing) / 2)) / 3) + oServer.LowerPriority;
+
 		for _, sPort := range oServer.Ports {
 			arGameServers = append(arGameServers, oServer.IP+":"+sPort);
-			//arPriority = append(arPriority, (iTeamPingDiff + iAvgPing) / 2);
-			arPriority = append(arPriority, 1);
+			arPriority = append(arPriority, iPriority);
 		}
 	}
 	players.MuPlayers.RUnlock();
 
-	if (len(arGameServersFiltered) > 0) {
-		SortByPriority(arGameServersFiltered, arPriorityFiltered);
-		return arGameServersFiltered;
-	}
 	SortByPriority(arGameServers, arPriority);
 	return arGameServers;
 }
 
-func CalcPings(arPlayersA []*players.EntPlayer, arPlayersB []*players.EntPlayer, sIP string) (int, int, int) {
+func CalcPings(arPlayersA []*players.EntPlayer, arPlayersB []*players.EntPlayer, sIP string) (int, int, int, int) {
 	var iTeamPingDiff, iMaxPing int;
+	var iMinPing int = 2000000000;
 	var iSumOfPings, iNumOfPings, iAvgPing int;
 	var iSumOfPingsA, iNumOfPingsA, iAvgPingA int;
 	for _, pPlayer := range arPlayersA {
@@ -83,6 +79,9 @@ func CalcPings(arPlayersA []*players.EntPlayer, arPlayersB []*players.EntPlayer,
 			iNumOfPings++;
 			if (iPing > iMaxPing) {
 				iMaxPing = iPing;
+			}
+			if (iPing < iMinPing) {
+				iMinPing = iPing;
 			}
 		}
 	}
@@ -101,6 +100,9 @@ func CalcPings(arPlayersA []*players.EntPlayer, arPlayersB []*players.EntPlayer,
 			if (iPing > iMaxPing) {
 				iMaxPing = iPing;
 			}
+			if (iPing < iMinPing) {
+				iMinPing = iPing;
+			}
 		}
 	}
 	if (iNumOfPingsB > 0) {
@@ -117,25 +119,45 @@ func CalcPings(arPlayersA []*players.EntPlayer, arPlayersB []*players.EntPlayer,
 		iAvgPing = iSumOfPings / iNumOfPings;
 	}
 
-	return iTeamPingDiff, iAvgPing, iMaxPing;
+	return iTeamPingDiff, iAvgPing, iMaxPing, iMinPing;
 }
 
 
 func GetEmptyServers(arGameServers []string) []string {
 	var arEmptyGameSrvs []string;
 	var arQueryCh []chan int;
-	for range arGameServers {
-		arQueryCh = append(arQueryCh, make(chan int));
-	}
-	for i, sIPPORT := range arGameServers {
-		go GetPlayersCount(arQueryCh[i], sIPPORT);
-	}
-	for i, sIPPORT := range arGameServers {
-		iCount := <-arQueryCh[i];
-		if (iCount == 0) {
-			arEmptyGameSrvs = append(arEmptyGameSrvs, sIPPORT);
+
+	MuA2S.Lock();
+
+	if (i64a2sCachedAt + 10000/*10s*/ > time.Now().UnixMilli()) {
+		for _, sIPPORT := range arGameServers {
+			iCount, bCached := mapA2SCache[sIPPORT];
+			if (bCached && iCount == 0) {
+				arEmptyGameSrvs = append(arEmptyGameSrvs, sIPPORT);
+			}
 		}
+	} else {
+
+		mapA2SCache = make(map[string]int, len(arGameServers));
+		i64a2sCachedAt = time.Now().UnixMilli();
+
+		for range arGameServers {
+			arQueryCh = append(arQueryCh, make(chan int));
+		}
+		for i, sIPPORT := range arGameServers {
+			go GetPlayersCount(arQueryCh[i], sIPPORT);
+		}
+		for i, sIPPORT := range arGameServers {
+			iCount := <-arQueryCh[i];
+			mapA2SCache[sIPPORT] = iCount;
+			if (iCount == 0) {
+				arEmptyGameSrvs = append(arEmptyGameSrvs, sIPPORT);
+			}
+		}
+
 	}
+	
+	MuA2S.Unlock();
 	return arEmptyGameSrvs;
 }
 

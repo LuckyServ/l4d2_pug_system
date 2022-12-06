@@ -80,12 +80,9 @@ func Control(pGame *EntGame) {
 	iTryCount := 0;
 	for {
 
-		arGameServers := GetPotentialGameServers(pGame.PlayersA, pGame.PlayersB); //Locks Players
+		arGameServers := GetGameServers(pGame.PlayersA, pGame.PlayersB); //Locks Players
 
-		MuA2S.Lock();
 		arGameServers = GetEmptyServers(arGameServers); //long execution, a2s queries here
-		time.Sleep(1 * time.Second);
-		MuA2S.Unlock();
 
 		players.MuPlayers.Lock();
 		MuGames.Lock();

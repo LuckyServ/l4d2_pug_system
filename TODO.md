@@ -1,8 +1,5 @@
 - [ ] Set up proxy for gameservers
-- [ ] Make some of the servers 60T
-- [ ] Cache a2s queries
-- [ ] Optimize server selection once again
-- [ ] Frontend: button "Full announcement to top"
+- [ ] Frontend: button "Full announcement" to top
 - [ ] Frontend: remove Accept button if already accepted
 - [ ] SM pluign: notify all player about suicide
 - [ ] Fix readyup bug
@@ -26,6 +23,9 @@
 - [ ] Automatically parse anticheat logs and ban based on them
 - [ ] Custom maps
 
+- [x] Optimize server selection once again
+- [x] Cache a2s queries
+- [x] Make some of the servers 60T
 - [x] Suicide on !spec command
 - [x] Log games even if they ended early
 - [x] Adjust mmr penalties for leaving
