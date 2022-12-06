@@ -1,4 +1,4 @@
-- [ ] Set up proxy for gameservers
+- [ ] Add admin command to update serverlist
 - [ ] Frontend: button "Full announcement" to top
 - [ ] Frontend: remove Accept button if already accepted
 - [ ] SM pluign: notify all player about suicide
@@ -23,6 +23,7 @@
 - [ ] Automatically parse anticheat logs and ban based on them
 - [ ] Custom maps
 
+- [x] Set up proxy for gameservers
 - [x] Optimize server selection once again
 - [x] Cache a2s queries
 - [x] Make some of the servers 60T
