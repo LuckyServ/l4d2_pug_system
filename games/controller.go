@@ -55,7 +55,7 @@ func Control(pGame *EntGame) {
 	players.MuPlayers.Lock();
 	MuGames.Lock();
 	for _, pPlayer := range pGame.PlayersUnpaired {
-		pPlayer.GameServerPings = make(map[string]int, len(settings.GameServers));
+		pPlayer.GameServerPings = make(map[string]int);
 	}
 	pGame.State = StateWaitPings;
 	SetLastUpdated(pGame.PlayersUnpaired);

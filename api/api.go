@@ -18,6 +18,7 @@ func GinInit() {
 
 	r.GET("/shutdown", HttpReqShutdown);
 	r.GET("/blocknewgames", HttpReqBlockNewGames);
+	r.GET("/refreshservers", HttpRefreshServers);
 
 	r.GET("/ws", HttpReqWebSocket);
 

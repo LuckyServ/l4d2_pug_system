@@ -469,9 +469,24 @@ func ConfigFile() bool {
 		return false;
 	}
 
-
 	//Gameservers section
+	return UpdateServersFromJSON(byData);
+
+	return true;
+}
+
+func RefreshServers() {
+	byData, errFile := ioutil.ReadFile(FilePath);
+	if (errFile != nil) {
+		fmt.Printf("Error reading config file: %s\n", errFile);
+		return;
+	}
+	UpdateServersFromJSON(byData);
+}
+
+func UpdateServersFromJSON(byData []byte) bool {
 	bErrorReadingGameServers := true;
+	GameServers = make([]GameServer, 0);
 	jsonparser.ArrayEach(byData, func(valueServer []byte, dataType jsonparser.ValueType, offset int, err error) {
 
 		sDomain, _ := jsonparser.GetString(valueServer, "domain");
@@ -505,7 +520,5 @@ func ConfigFile() bool {
 		fmt.Printf("Error reading config file on gameservers section\n");
 		return false;
 	}
-
-
 	return true;
 }

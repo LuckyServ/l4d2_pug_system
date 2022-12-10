@@ -1,9 +1,11 @@
 - [ ] Add admin command to update serverlist
+- [ ] Change abstractapi limits, + log site users
 - [ ] Frontend: button "Full announcement" to top
 - [ ] Frontend: remove Accept button if already accepted
 - [ ] SM pluign: notify all player about suicide
 - [ ] Fix readyup bug
 - [ ] Test if anticheat logging works
+- [ ] Instructions for admins
 - [ ] IsClientTimingOut in the AFK detection in SM plugin, or solve AFKs some other way
 - [ ] An admin panel to show information about players
 - [ ] An admin panel to show anticheat logs
