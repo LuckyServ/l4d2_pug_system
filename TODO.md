@@ -1,5 +1,3 @@
-- [ ] Add admin command to update serverlist
-- [ ] Change abstractapi limits, + log site users
 - [ ] Frontend: button "Full announcement" to top
 - [ ] Frontend: remove Accept button if already accepted
 - [ ] SM pluign: notify all player about suicide
@@ -25,6 +23,8 @@
 - [ ] Automatically parse anticheat logs and ban based on them
 - [ ] Custom maps
 
+- [x] Change abstractapi limits, + log site users
+- [x] Add admin command to update serverlist
 - [x] Set up proxy for gameservers
 - [x] Optimize server selection once again
 - [x] Cache a2s queries
