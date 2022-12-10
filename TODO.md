@@ -1,6 +1,4 @@
-- [ ] Frontend: button "Full announcement" to top
-- [ ] Frontend: remove Accept button if already accepted
-- [ ] SM pluign: notify all player about suicide
+- [ ] Setup database backups
 - [ ] Fix readyup bug
 - [ ] Test if anticheat logging works
 - [ ] Instructions for admins
@@ -15,14 +13,16 @@
 - [ ] Alerts on site that dont block scripts
 - [ ] Adapt to Cloudflare challenges
 - [ ] Allow dead survivors to rq games without ban on last map on 2nd chapter
-- [ ] Setup database backups
 - [ ] Fix exploiting the initial ready up timelimit
 - [ ] T2 and T1 configs for lower tier players
 - [ ] Check double html escaping of names
 - [ ] Default config for the case when zonemod is broken
 - [ ] Automatically parse anticheat logs and ban based on them
+- [ ] Frontend: remove Accept button if already accepted
 - [ ] Custom maps
 
+- [x] SM pluign: notify all player about suicide
+- [x] Frontend: button "Full announcement" to top
 - [x] Change abstractapi limits, + log site users
 - [x] Add admin command to update serverlist
 - [x] Set up proxy for gameservers

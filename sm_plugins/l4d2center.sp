@@ -153,6 +153,7 @@ public Action SuicideRequestTimer(Handle timer, any userid) {
 	int client = GetClientOfUserId(userid);
 	if (client > 0 && bInRound && IsClientInGame(client) && GetClientTeam(client) == 3 && IsPlayerAlive(client) && GetEntProp(client, Prop_Send, "m_isGhost") != 1 && GetEntProp(client, Prop_Send, "m_zombieClass") != 8) {
 		ForcePlayerSuicide(client);
+		PrintToChatAll("[l4d2center.com] Player %N suicided", client);
 	}
 	return Plugin_Continue;
 }
