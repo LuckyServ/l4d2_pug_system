@@ -1,3 +1,4 @@
+- [ ] Filter out bad ping info
 - [ ] Setup database backups
 - [ ] Fix readyup bug
 - [ ] Test if anticheat logging works
