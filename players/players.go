@@ -102,7 +102,7 @@ func RestorePlayers() bool { //no need to lock maps
 		};
 		MapPlayers[oDBPlayer.SteamID64] = pPlayer;
 		ArrayPlayers = append(ArrayPlayers, pPlayer);
-		if (oDBPlayer.ProfValidated && oDBPlayer.Mmr < iBottomMmr) {
+		if (oDBPlayer.ProfValidated && oDBPlayer.Mmr < iBottomMmr && GetMmrGrade(pPlayer) > 0) {
 			iBottomMmr = oDBPlayer.Mmr;
 		}
 	}
