@@ -100,10 +100,6 @@ func WatchFinishingGameSoon() {
 				if (oGameResult.IsLastMap && oGameResult.CurrentHalf == 2) {
 					iCounter++;
 				}
-			} else {
-				if (pPlayer.LastGameActivity + 60000/*60s*/ > i64CurTime) {
-					iCounter++;
-				}
 			}
 		}
 
