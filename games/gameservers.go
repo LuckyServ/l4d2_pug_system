@@ -71,17 +71,19 @@ func CalcPings(arPlayersA []*players.EntPlayer, arPlayersB []*players.EntPlayer,
 	var iSumOfPings, iNumOfPings, iAvgPing int;
 	var iSumOfPingsA, iNumOfPingsA, iAvgPingA int;
 	for _, pPlayer := range arPlayersA {
-		iPing, bPingExists := pPlayer.GameServerPings[sIP];
-		if (bPingExists && iPing > 0) {
-			iSumOfPingsA = iSumOfPingsA + iPing;
-			iNumOfPingsA++;
-			iSumOfPings = iSumOfPings + iPing;
-			iNumOfPings++;
-			if (iPing > iMaxPing) {
-				iMaxPing = iPing;
-			}
-			if (iPing < iMinPing) {
-				iMinPing = iPing;
+		if (IsPingInfoValid(pPlayer)) {
+			iPing, bPingExists := pPlayer.GameServerPings[sIP];
+			if (bPingExists && iPing > 0) {
+				iSumOfPingsA = iSumOfPingsA + iPing;
+				iNumOfPingsA++;
+				iSumOfPings = iSumOfPings + iPing;
+				iNumOfPings++;
+				if (iPing > iMaxPing) {
+					iMaxPing = iPing;
+				}
+				if (iPing < iMinPing) {
+					iMinPing = iPing;
+				}
 			}
 		}
 	}
@@ -91,17 +93,19 @@ func CalcPings(arPlayersA []*players.EntPlayer, arPlayersB []*players.EntPlayer,
 
 	var iSumOfPingsB, iNumOfPingsB, iAvgPingB int;
 	for _, pPlayer := range arPlayersB {
-		iPing, bPingExists := pPlayer.GameServerPings[sIP];
-		if (bPingExists && iPing > 0) {
-			iSumOfPingsB = iSumOfPingsB + iPing;
-			iNumOfPingsB++;
-			iSumOfPings = iSumOfPings + iPing;
-			iNumOfPings++;
-			if (iPing > iMaxPing) {
-				iMaxPing = iPing;
-			}
-			if (iPing < iMinPing) {
-				iMinPing = iPing;
+		if (IsPingInfoValid(pPlayer)) {
+			iPing, bPingExists := pPlayer.GameServerPings[sIP];
+			if (bPingExists && iPing > 0) {
+				iSumOfPingsB = iSumOfPingsB + iPing;
+				iNumOfPingsB++;
+				iSumOfPings = iSumOfPings + iPing;
+				iNumOfPings++;
+				if (iPing > iMaxPing) {
+					iMaxPing = iPing;
+				}
+				if (iPing < iMinPing) {
+					iMinPing = iPing;
+				}
 			}
 		}
 	}
@@ -216,4 +220,18 @@ func GetPlayersCount(chCount chan int, sIPPORT string) { //-1 if server version 
 		chCount <- -1;
 	}
 	return;
+}
+
+func IsPingInfoValid(pPlayer *players.EntPlayer) bool {
+	mapPings := pPlayer.GameServerPings;
+	if (mapPings != nil) {
+		for _, iPing := range mapPings {
+			if (iPing >= 450) {
+				return false;
+			}
+		}
+	} else {
+		return false;
+	}
+	return true;
 }
