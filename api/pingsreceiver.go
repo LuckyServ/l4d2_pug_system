@@ -35,7 +35,7 @@ func HttpReqPingsReceiver(c *gin.Context) {
 							sPingMS := c.Query(oGameServer.Domain);
 							if (sPingMS != "") {
 								iPingMS, errPingMS := strconv.Atoi(sPingMS);
-								if (errPingMS == nil && iPingMS > 0) {
+								if (errPingMS == nil && iPingMS > 0 && iPingMS < 450) {
 									iOldPing, bAlrPinged := pPlayer.GameServerPings[oGameServer.IP];
 									if (bAlrPinged) {
 										if (iPingMS < iOldPing) {

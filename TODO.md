@@ -1,4 +1,3 @@
-- [ ] Filter out bad ping info
 - [ ] Setup database backups
 - [ ] Fix readyup bug
 - [ ] Test if anticheat logging works
@@ -22,6 +21,7 @@
 - [ ] Frontend: remove Accept button if already accepted
 - [ ] Custom maps
 
+- [x] Filter out bad ping info
 - [x] SM pluign: notify all player about suicide
 - [x] Frontend: button "Full announcement" to top
 - [x] Change abstractapi limits, + log site users
