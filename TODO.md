@@ -1,10 +1,9 @@
-- [ ] Setup database backups
-- [ ] Advertising on the servers
-- [ ] Block unwanted games on the servers
 - [ ] Streamers block
 - [ ] Fix readyup bug
 - [ ] Test if anticheat logging works
-- [ ] Instructions for admins
+- [ ] Output side api requests stat
+- [ ] Limit number of tickets in history
+- [ ] Allow small pics in chat
 - [ ] IsClientTimingOut in the AFK detection in SM plugin, or solve AFKs some other way
 - [ ] An admin panel to show information about players
 - [ ] An admin panel to show anticheat logs
@@ -22,6 +21,10 @@
 - [ ] Frontend: remove Accept button if already accepted
 - [ ] Custom maps
 
+- [x] Block unwanted games on the servers
+- [x] Advertising on the servers
+- [x] Setup database backups
+- [x] Instructions for admins
 - [x] Filter out bad ping info
 - [x] SM pluign: notify all player about suicide
 - [x] Frontend: button "Full announcement" to top
