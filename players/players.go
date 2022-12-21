@@ -39,12 +39,13 @@ type EntPlayer struct {
 	NextQueueingAllowed		int64 //unix timestamp in milliseconds
 	GameID					string
 	LastGameChanged			int64  //unix timestamp in milliseconds
-	LastSteamRequest		int64 //Last steam api request //unix timestamp in milliseconds
+	LastExternalRequest		int64 //Last external api request //unix timestamp in milliseconds
 	LastGameActivity		int64 //Last game activity //unix timestamp in milliseconds
 	LastChatMessage			int64 //Last chat message //unix timestamp in milliseconds
 	LastTicketActivity		int64 //Last ticket activity //unix timestamp in milliseconds
 	GameServerPings			map[string]int
-	LastCampaignsPlayed		[]int; //array of values from 0 to (len(settings.CampaignNames) - 1)
+	LastCampaignsPlayed		[]int //array of values from 0 to (len(settings.CampaignNames) - 1)
+	Twitch					string
 }
 
 var MapPlayers map[string]*EntPlayer = make(map[string]*EntPlayer);
@@ -82,7 +83,7 @@ func RestorePlayers() bool { //no need to lock maps
 	/*if (len(arDatabasePlayers) == 0) {
 		return false;
 	}*/
-	var iBottomMmr int = 1;
+	//var iBottomMmr int = 1;
 	for _, oDBPlayer := range arDatabasePlayers {
 		iAccess := oDBPlayer.Access;
 		if (iAccess < 0) {
@@ -99,6 +100,7 @@ func RestorePlayers() bool { //no need to lock maps
 			Access:				iAccess,
 			ProfValidated:		oDBPlayer.ProfValidated,
 			RulesAccepted:		oDBPlayer.RulesAccepted,
+			Twitch:				oDBPlayer.Twitch,
 		};
 		MapPlayers[oDBPlayer.SteamID64] = pPlayer;
 		ArrayPlayers = append(ArrayPlayers, pPlayer);
@@ -175,6 +177,7 @@ func AddPlayerAuth(sSteamID64 string, sNicknameBase64 string, sAvatarSmall strin
 			Access:				pPlayer.Access,
 			ProfValidated:		pPlayer.ProfValidated,
 			RulesAccepted:		pPlayer.RulesAccepted,
+			Twitch:				pPlayer.Twitch,
 		});
 	}
 	MuPlayers.Unlock();

@@ -4,6 +4,10 @@
 		"home": "localhost",
 		"backend": "localhost"
 	},
+	"twitch": {
+		"client_id": "aaaaaaaa",
+		"client_secret": "bbbbbbbb"
+	},
 	"backend_auth_key": "Verystrongbackendauthorizationkey",
 	"broken_state": false,
 	"steam_api_key": "1AAA1AAA1AAA1AAA1AAA1AAAAAA",
@@ -55,7 +59,7 @@
 		"player_auth_expire_days": 30
 	},
 	"ratelimits": {
-		"steam_api_cooldown_sec": 60,
+		"external_api_cooldown_sec": 60,
 		"auth_per_hour": 5
 	},
 	"getipintel": {

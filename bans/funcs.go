@@ -140,6 +140,7 @@ func ApplyBanToPlayer(sSteamID64 string, iAccess int, sBanReason string, i64Bann
 			Access:				pPlayer.Access,
 			ProfValidated:		pPlayer.ProfValidated,
 			RulesAccepted:		pPlayer.RulesAccepted,
+			Twitch:				pPlayer.Twitch,
 			});
 		
 		players.I64LastPlayerlistUpdate = time.Now().UnixMilli();
@@ -236,6 +237,7 @@ func UnbanManual(sSteamID64 string) {
 			Access:				pPlayer.Access,
 			ProfValidated:		pPlayer.ProfValidated,
 			RulesAccepted:		pPlayer.RulesAccepted,
+			Twitch:				pPlayer.Twitch,
 			});
 	}
 	players.MuPlayers.Unlock();

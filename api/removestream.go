@@ -3,13 +3,12 @@ package api
 import (
 	"github.com/gin-gonic/gin"
 	"../players"
-	"../players/auth"
 	"../database"
-	"time"
+	"../players/auth"
 )
 
 
-func HttpReqAcceptRules(c *gin.Context) {
+func HttpReqRemoveStream(c *gin.Context) {
 
 	mapResponse := make(map[string]interface{});
 
@@ -21,13 +20,9 @@ func HttpReqAcceptRules(c *gin.Context) {
 		if (bAuthorized) {
 			players.MuPlayers.Lock();
 			pPlayer := players.MapPlayers[oSession.SteamID64];
-			if (pPlayer.Access <= -2) {
-				mapResponse["error"] = "Sorry, you are banned, you gotta wait until it expires";
-			} else if (pPlayer.RulesAccepted) {
-				mapResponse["error"] = "The rules are already accepted";
-			} else {
+			if (pPlayer.Twitch != "") {
 				mapResponse["success"] = true;
-				pPlayer.RulesAccepted = true;
+				pPlayer.Twitch = "";
 				go database.UpdatePlayer(database.DatabasePlayer{
 					SteamID64:			pPlayer.SteamID64,
 					NicknameBase64:		pPlayer.NicknameBase64,
@@ -41,8 +36,9 @@ func HttpReqAcceptRules(c *gin.Context) {
 					RulesAccepted:		pPlayer.RulesAccepted,
 					Twitch:				pPlayer.Twitch,
 					});
-				players.I64LastPlayerlistUpdate = time.Now().UnixMilli();
-			}		
+			} else {
+				mapResponse["error"] = "No stream attached";
+			}
 			players.MuPlayers.Unlock();
 		} else {
 			mapResponse["error"] = "Please authorize first";
@@ -50,7 +46,7 @@ func HttpReqAcceptRules(c *gin.Context) {
 	} else {
 		mapResponse["error"] = "Please authorize first";
 	}
-
+	
 	c.Header("Access-Control-Allow-Origin", c.Request.Header.Get("origin"));
 	c.Header("Access-Control-Allow-Credentials", "true");
 	c.JSON(200, mapResponse);

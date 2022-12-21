@@ -328,6 +328,7 @@ func Control(pGame *EntGame) {
 				Access:				pPlayer.Access,
 				ProfValidated:		pPlayer.ProfValidated,
 				RulesAccepted:		pPlayer.RulesAccepted,
+				Twitch:				pPlayer.Twitch,
 				});
 		}
 	}

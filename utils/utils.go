@@ -65,6 +65,13 @@ func MaxValInt(val1 int, val2 int) int {
 	return val2;
 }
 
+func MinValInt(val1 int, val2 int) int {
+	if (val1 < val2) {
+		return val1;
+	}
+	return val2;
+}
+
 func GetStringIdxInArray(sValueBuffer string, arBuffer []string) int {
 	iMax := len(arBuffer);
 	for i := 0; i < iMax; i++ {

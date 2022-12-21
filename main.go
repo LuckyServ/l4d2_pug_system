@@ -15,6 +15,7 @@ import (
 	"./players/auth"
 	"time"
 	"./utils"
+	"./streams"
 	//"crypto/rand"
 	//"math/big"
 	//"encoding/json"
@@ -27,6 +28,7 @@ MuSessions
 MuPlayers
 MuGames
 MuDatabase
+MuStreams
 MuVPN
 MuAuth
 MuA2S
@@ -75,6 +77,7 @@ func main() {
 	go bans.Watchers();
 	go utils.Watchers();
 	go rating.Watchers();
+	go streams.Watchers();
 
 
 	//Watch memory leaks

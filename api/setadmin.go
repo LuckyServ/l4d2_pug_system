@@ -44,6 +44,7 @@ func HttpReqSetAdmin(c *gin.Context) {
 							Access:				pPlayer.Access,
 							ProfValidated:		pPlayer.ProfValidated,
 							RulesAccepted:		pPlayer.RulesAccepted,
+							Twitch:				pPlayer.Twitch,
 							});
 							players.I64LastPlayerlistUpdate = time.Now().UnixMilli();
 						mapResponse["success"] = true;

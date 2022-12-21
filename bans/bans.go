@@ -73,6 +73,7 @@ func WatchUnbans() {
 					Access:				pPlayer.Access,
 					ProfValidated:		pPlayer.ProfValidated,
 					RulesAccepted:		pPlayer.RulesAccepted,
+					Twitch:				pPlayer.Twitch,
 					});
 
 				players.I64LastPlayerlistUpdate = i64CurTime;

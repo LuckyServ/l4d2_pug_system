@@ -33,13 +33,13 @@ func HttpReqValidateProf(c *gin.Context) {
 			if (pPlayer.ProfValidated) {
 				players.MuPlayers.RUnlock();
 				mapResponse["error"] = "Your profile is already validated";
-			} else if (pPlayer.LastSteamRequest + settings.SteamAPICooldown > i64CurTime) {
+			} else if (pPlayer.LastExternalRequest + settings.ExternalAPICooldown > i64CurTime) {
 				players.MuPlayers.RUnlock();
-				mapResponse["error"] = fmt.Sprintf("Too many validation requests. Try again in %d seconds.", ((pPlayer.LastSteamRequest + settings.SteamAPICooldown) - i64CurTime) / 1000);
+				mapResponse["error"] = fmt.Sprintf("Too many validation requests. Try again in %d seconds.", ((pPlayer.LastExternalRequest + settings.ExternalAPICooldown) - i64CurTime) / 1000);
 			} else {
 				players.MuPlayers.RUnlock();
 				players.MuPlayers.Lock();
-				pPlayer.LastSteamRequest = time.Now().UnixMilli();
+				pPlayer.LastExternalRequest = time.Now().UnixMilli();
 				players.MuPlayers.Unlock();
 
 				clientSteam := http.Client{
@@ -105,6 +105,7 @@ func HttpReqValidateProf(c *gin.Context) {
 										Access:				pPlayer.Access,
 										ProfValidated:		pPlayer.ProfValidated,
 										RulesAccepted:		pPlayer.RulesAccepted,
+										Twitch:				pPlayer.Twitch,
 										});
 									go database.UpdateInitialGames(database.DatabasePlayer{
 										SteamID64:			pPlayer.SteamID64,

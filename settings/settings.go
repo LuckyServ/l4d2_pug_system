@@ -39,7 +39,7 @@ var ReadyUpTimeout int64;
 var PlayerAuthExpire int64;
 
 var AuthPerHour int;
-var SteamAPICooldown int64;
+var ExternalAPICooldown int64;
 
 var GameServers []GameServer;
 
@@ -68,6 +68,9 @@ var GetIPIntelContact string;
 
 var SmurfHost string;
 var SmurfAuthKey string;
+
+var TwitchClientID string;
+var TwitchSecret string;
 
 
 type GameServer struct {
@@ -260,12 +263,12 @@ func ConfigFile() bool {
 	}
 	AuthPerHour = int(i64Buffer);
 
-	i64Buffer, errError = jsonparser.GetInt(byData, "ratelimits", "steam_api_cooldown_sec");
+	i64Buffer, errError = jsonparser.GetInt(byData, "ratelimits", "external_api_cooldown_sec");
 	if (errError != nil) {
 		fmt.Printf("Error reading config file: %s\n", errError);
 		return false;
 	}
-	SteamAPICooldown = i64Buffer * 1000;
+	ExternalAPICooldown = i64Buffer * 1000;
 
 	i64Buffer, errError = jsonparser.GetInt(byData, "timeouts", "readyup_seconds");
 	if (errError != nil) {
@@ -405,6 +408,18 @@ func ConfigFile() bool {
 	}
 
 	SmurfAuthKey, errError = jsonparser.GetString(byData, "smurf_detector", "auth_key");
+	if (errError != nil) {
+		fmt.Printf("Error reading config file: %s\n", errError);
+		return false;
+	}
+
+	TwitchClientID, errError = jsonparser.GetString(byData, "twitch", "client_id");
+	if (errError != nil) {
+		fmt.Printf("Error reading config file: %s\n", errError);
+		return false;
+	}
+
+	TwitchSecret, errError = jsonparser.GetString(byData, "twitch", "client_secret");
 	if (errError != nil) {
 		fmt.Printf("Error reading config file: %s\n", errError);
 		return false;

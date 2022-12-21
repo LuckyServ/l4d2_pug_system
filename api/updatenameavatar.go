@@ -29,9 +29,9 @@ func HttpReqUpdateNameAvatar(c *gin.Context) {
 			players.MuPlayers.RLock();
 			i64CurTime := time.Now().UnixMilli();
 			pPlayer := players.MapPlayers[oSession.SteamID64];
-			if (pPlayer.LastSteamRequest + settings.SteamAPICooldown > i64CurTime) {
+			if (pPlayer.LastExternalRequest + settings.ExternalAPICooldown > i64CurTime) {
 				players.MuPlayers.RUnlock();
-				mapResponse["error"] = fmt.Sprintf("You cant request name&avatar update that often. Try again in %d seconds.", ((pPlayer.LastSteamRequest + settings.SteamAPICooldown) - i64CurTime) / 1000);
+				mapResponse["error"] = fmt.Sprintf("You cant request name&avatar update that often. Try again in %d seconds.", ((pPlayer.LastExternalRequest + settings.ExternalAPICooldown) - i64CurTime) / 1000);
 			} else if (!pPlayer.ProfValidated) {
 				players.MuPlayers.RUnlock();
 				mapResponse["error"] = "Please validate your profile first";
@@ -41,7 +41,7 @@ func HttpReqUpdateNameAvatar(c *gin.Context) {
 			} else {
 				players.MuPlayers.RUnlock();
 				players.MuPlayers.Lock();
-				pPlayer.LastSteamRequest = i64CurTime;
+				pPlayer.LastExternalRequest = i64CurTime;
 				players.MuPlayers.Unlock();
 				clientSteam := http.Client{
 					Timeout: 10 * time.Second,
@@ -73,6 +73,7 @@ func HttpReqUpdateNameAvatar(c *gin.Context) {
 								Access:				pPlayer.Access,
 								ProfValidated:		pPlayer.ProfValidated,
 								RulesAccepted:		pPlayer.RulesAccepted,
+								Twitch:				pPlayer.Twitch,
 								});
 							players.MuPlayers.Unlock();
 
