@@ -1,4 +1,3 @@
-- [ ] Streamers block prep database: ALTER TABLE players_list ADD COLUMN twitch VARCHAR; UPDATE players_list SET twitch = '';
 - [ ] Streamers block
 - [ ] Custom maps
 - [ ] Take initial mmr from smurfs
@@ -23,6 +22,7 @@
 - [ ] Automatically parse anticheat logs and ban based on them
 - [ ] Frontend: remove Accept button if already accepted
 
+- [x] Streamers block prep database: ALTER TABLE players_list ADD COLUMN twitch VARCHAR; UPDATE players_list SET twitch = '';
 - [x] Adjust ranking for new players, prep database: UPDATE players_list SET mmr_uncertainty = mmr_uncertainty * 1.67; UPDATE players_list SET mmr_uncertainty = 20.0 WHERE mmr_uncertainty > 20.0;
 - [x] Block unwanted games on the servers
 - [x] Advertising on the servers
