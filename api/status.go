@@ -12,6 +12,7 @@ import (
 	"../players/auth"
 	"regexp"
 	"../queue"
+	"../streams"
 )
 
 
@@ -26,6 +27,7 @@ func HttpReqStatus(c *gin.Context) {
 	i64QueryQueueUpdatedAt, _ := strconv.ParseInt(c.Query("queue_updated_at"), 10, 64);
 	i64QueryGameUpdatedAt, _ := strconv.ParseInt(c.Query("game_updated_at"), 10, 64);
 	i64QueryGlobalChatUpdatedAt, _ := strconv.ParseInt(c.Query("globalchat_updated_at"), 10, 64);
+	i64QueryStreamersUpdatedAt, _ := strconv.ParseInt(c.Query("streamers_updated_at"), 10, 64);
 
 	mapResponse["success"] = true;
 	mapResponse["no_new_games"] = queue.NewGamesBlocked;
@@ -70,6 +72,11 @@ func HttpReqStatus(c *gin.Context) {
 		mapResponse["need_update_globalchat"] = true;
 	} else {
 		mapResponse["need_update_globalchat"] = false;
+	}
+	if (i64QueryStreamersUpdatedAt <= streams.I64LastStreamersUpdate) {
+		mapResponse["need_update_streamers"] = true;
+	} else {
+		mapResponse["need_update_streamers"] = false;
 	}
 
 	sCookieUniqueKey, _ := c.Cookie("auth2");

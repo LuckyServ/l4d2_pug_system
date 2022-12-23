@@ -1,6 +1,6 @@
 - [ ] Streamers block
+- [ ] Duo queue
 - [ ] Custom maps
-- [ ] Take initial mmr from smurfs
 - [ ] Fix readyup bug
 - [ ] Test if anticheat logging works
 - [ ] Output side api requests stat
