@@ -208,18 +208,31 @@ func GetPlayersCount(chCount chan int, sIPPORT string) { //-1 if server version 
 		chCount <- -1;
 		return;
 	}
+	defer vHandle.Close();
 	vInfo, vErr2 := vHandle.QueryInfo();
 	if (vErr2 != nil) {
 		chCount <- -1;
 		return;
 	}
-	vHandle.Close();
-	if (vInfo.Version == sLatestGameVersion && sLatestGameVersion != "") {
+	if (vInfo.Version == sLatestGameVersion && sLatestGameVersion != "" && GameRuleExists(vHandle, "l4d_ready_enabled") == 0) {
 		chCount <- int(vInfo.Players);
 	} else {
 		chCount <- -1;
 	}
 	return;
+}
+
+func GameRuleExists(vHandle *a2s.Client, sRule string) int { //-1 - error, 0 - doesnt exist, 1 - exists
+	vRules, vErr2 := vHandle.QueryRules();
+	if (vErr2 != nil) {
+		return -1;
+	}
+	mapRules := vRules.Rules;
+	_, bExists := mapRules[sRule];
+	if (bExists) {
+		return 1;
+	}
+	return 0;
 }
 
 func IsPingInfoValid(pPlayer *players.EntPlayer) bool {
