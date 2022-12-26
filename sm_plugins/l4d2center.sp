@@ -117,6 +117,8 @@ public OnPluginStart() {
 	RegConsoleCmd("sm_id", GameID_Cmd);
 	RegConsoleCmd("sm_game", GameID_Cmd);
 
+	RegConsoleCmd("sm_l4d2cstatus", Status_Cmd);
+
 	//admit RQ
 	//RegConsoleCmd("sm_ragequit", Ragequit_Cmd);
 	//RegConsoleCmd("sm_quit", Ragequit_Cmd);
@@ -132,6 +134,49 @@ public void OnLibraryAdded(const char[] name) {
 
 public void OnLibraryRemoved(const char[] name) {
 	ReadyUpLoaded = LibraryExists("readyup");
+}
+
+public Action Status_Cmd(int client, int args) {
+	PrintToChatAll("Server reservation: %d", iServerReserved);
+	PrintToChatAll("Requesting https://api.l4d2center.com/gs/getgame?auth_key=<hidden>");
+	PrintToChatAll("Server IP %s", sPublicIP);
+	char sUrl[256];
+	Format(sUrl, sizeof(sUrl), "https://api.l4d2center.com/gs/getgame?auth_key=%s", sAuthKey);
+	Handle hSWReq = SteamWorks_CreateHTTPRequest(k_EHTTPMethodPOST, sUrl);
+	SteamWorks_SetHTTPRequestNetworkActivityTimeout(hSWReq, 9);
+	SteamWorks_SetHTTPRequestAbsoluteTimeoutMS(hSWReq, 10000);
+	SteamWorks_SetHTTPRequestRequiresVerifiedCertificate(hSWReq, false);
+	SteamWorks_SetHTTPRequestGetOrPostParameter(hSWReq, "auth_key", sAuthKey);
+	SteamWorks_SetHTTPRequestGetOrPostParameter(hSWReq, "ip", sPublicIP);
+	SteamWorks_SetHTTPCallbacks(hSWReq, SWReqCompleted_TestRequest);
+	SteamWorks_SendHTTPRequest(hSWReq);
+	return Plugin_Handled;
+}
+
+public void SWReqCompleted_TestRequest(Handle hRequest, bool bFailure, bool bRequestSuccessful, EHTTPStatusCode eStatusCode) {
+	PrintToChatAll("Callback: bRequestSuccessful == %s, bFailure == %s, eStatusCode == %d", bRequestSuccessful ? "true" : "false", bFailure ? "true" : "false", eStatusCode);
+	int iBodySize;
+	if (bRequestSuccessful && eStatusCode == k_EHTTPStatusCode200OK	&& SteamWorks_GetHTTPResponseBodySize(hRequest, iBodySize) && iBodySize > 0) {
+		char[] sResponse = new char[iBodySize];
+		SteamWorks_GetHTTPResponseBodyData(hRequest, sResponse, iBodySize);
+		//PrintToServer("%s", sResponse);
+		Handle kvResponse = CreateKeyValues("VDFresponse");
+		if (StrContains(sResponse, "VDFresponse", true) > -1 && StringToKeyValues(kvResponse, sResponse)) {
+			int iSuccess = KvGetNum(kvResponse, "success", -1);
+			PrintToChatAll("iSuccess == %d", iSuccess);
+			if (iSuccess == 0) {
+				char sError[128];
+				KvGetString(kvResponse, "error", sError, sizeof(sError), "parse failed");
+				PrintToChatAll("Error: %s", sError);
+			}
+		}
+		CloseHandle(kvResponse);
+	}
+	CloseHandle(hRequest);
+
+	if (iServerReserved == -1) {
+		iServerReserved = -2;
+	}
 }
 
 public Action GameID_Cmd(int client, int args) {
