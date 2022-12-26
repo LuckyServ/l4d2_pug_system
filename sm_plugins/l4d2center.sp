@@ -173,10 +173,6 @@ public void SWReqCompleted_TestRequest(Handle hRequest, bool bFailure, bool bReq
 		CloseHandle(kvResponse);
 	}
 	CloseHandle(hRequest);
-
-	if (iServerReserved == -1) {
-		iServerReserved = -2;
-	}
 }
 
 public Action GameID_Cmd(int client, int args) {
