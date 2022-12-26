@@ -1,5 +1,6 @@
 - [ ] Streamers block
 - [ ] Duo queue
+- [ ] Filter out unrestarted servers
 - [ ] Custom maps
 - [ ] Fix readyup bug
 - [ ] Test if anticheat logging works

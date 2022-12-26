@@ -34,6 +34,7 @@ type PlayerResponseMe struct {
 	MmrGrade		int			`json:"mmr_grade"`
 	ProfValidated	bool		`json:"profile_validated"` //Steam profile validated
 	RulesAccepted	bool		`json:"rules_accepted"` //Rules accepted
+	DuoOffer		string		`json:"duo_offer"`
 }
 
 
@@ -69,6 +70,7 @@ func HttpReqGetOnlinePlayers(c *gin.Context) {
 				ProfValidated:	pPlayer.ProfValidated,
 				RulesAccepted:	pPlayer.RulesAccepted,
 				MmrGrade:		players.GetMmrGrade(pPlayer),
+				DuoOffer:		pPlayer.DuoOffer,
 			};
 
 			players.MuPlayers.RUnlock();

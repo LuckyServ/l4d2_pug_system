@@ -149,6 +149,7 @@ func Destroy(pGame *EntGame) { //MuGames and MuPlayers must be locked outside
 	for _, pPlayer := range pGame.PlayersUnpaired {
 		pPlayer.IsInGame = false;
 		pPlayer.GameID = "";
+		pPlayer.DuoWith = "";
 		pPlayer.LastGameChanged = i64CurTime;
 		pPlayer.LastGameActivity = i64CurTime;
 	}

@@ -46,6 +46,8 @@ type EntPlayer struct {
 	GameServerPings			map[string]int
 	LastCampaignsPlayed		[]int //array of values from 0 to (len(settings.CampaignNames) - 1)
 	Twitch					string
+	DuoWith					string
+	DuoOffer				string
 }
 
 var MapPlayers map[string]*EntPlayer = make(map[string]*EntPlayer);

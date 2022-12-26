@@ -5,15 +5,18 @@ import (
 	"time"
 	"../settings"
 	"../games"
+	"math/big"
+	"strings"
+	"fmt"
 )
 
-//var i64MinWait int64 = 5 * 60 * 1000; //ms
 var I64MaxQueueWait int64 = 15 * 60 * 1000; //ms
-//var iMaxDifferenceInQueue int = 4000;
+var GenInviteCode = make(chan string);
 
 func Watchers() {
 	go WatchQueue();
 	go WatchKickOffline();
+	go DuoOfferIDGenerator();
 }
 
 func WatchKickOffline() {
@@ -38,31 +41,34 @@ func WatchQueue() {
 
 				//check if longest wait player is still there
 				if (len(arReadyOnly) >= 8 && pPlayerReadyUpReason == PLongestWaitPlayer) {
-					SortQueueByWait(arReadyOnly);
 					arTrimmedQueue := TrimQueue(arReadyOnly);
-					SortTrimmedByMmr(arTrimmedQueue);
+					if (len(arTrimmedQueue) == 0) {
+						bWaitingForSinglePlayer = true;
+					} else {
+						SortTrimmedByMmr(arTrimmedQueue);
 
-					//create games
-					iNewGames := len(arTrimmedQueue) / 8;
-					for iG := 0; iG < iNewGames; iG++ {
+						//create games
+						iNewGames := len(arTrimmedQueue) / 8;
+						for iG := 0; iG < iNewGames; iG++ {
 
-						pGame := &games.EntGame{
-							ID:					<-games.ChanNewGameID,
-							CreatedAt:			time.Now().UnixMilli(),
-							State:				games.StateCreating,
-						};
+							pGame := &games.EntGame{
+								ID:					<-games.ChanNewGameID,
+								CreatedAt:			time.Now().UnixMilli(),
+								State:				games.StateCreating,
+							};
 
-						var arGamePlayers []*players.EntPlayer;
+							var arGamePlayers []*players.EntPlayer;
 
-						for iP := 0; iP < 8; iP++ {
-							pPlayer := arTrimmedQueue[(8 * iG) + iP];
-							arGamePlayers = append(arGamePlayers, pPlayer);
-							Leave(pPlayer, true);
+							for iP := 0; iP < 8; iP++ {
+								pPlayer := arTrimmedQueue[(8 * iG) + iP];
+								arGamePlayers = append(arGamePlayers, pPlayer);
+								Leave(pPlayer, true);
+							}
+
+							pGame.PlayersUnpaired = arGamePlayers;
+
+							go games.Control(pGame);
 						}
-
-						pGame.PlayersUnpaired = arGamePlayers;
-
-						go games.Control(pGame);
 					}
 				}
 
@@ -71,7 +77,7 @@ func WatchQueue() {
 				SetLastUpdated();
 			}
 		} else {
-			if (IPlayersCount >= 8) {
+			if (IPlayersCount >= 8 && !bWaitingForSinglePlayer) {
 				//check if minimal waiting time passed
 				i64LongestWait := time.Now().UnixMilli() - PLongestWaitPlayer.InQueueSince;
 				if (i64LongestWait >= I64MaxQueueWait) {
@@ -82,5 +88,16 @@ func WatchQueue() {
 
 		players.MuPlayers.Unlock();
 		time.Sleep(5 * time.Second);
+	}
+}
+
+func DuoOfferIDGenerator() {
+	for {
+		select {
+		case GenInviteCode <- func()(string) {
+			return strings.ToUpper(fmt.Sprintf("L4D2C%s", big.NewInt(time.Now().UnixNano()).Text(36)));
+		}():
+		}
+		time.Sleep(1 * time.Nanosecond);
 	}
 }

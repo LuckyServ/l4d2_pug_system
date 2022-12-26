@@ -31,6 +31,13 @@ func HttpReqGetQueue(c *gin.Context) {
 				if (pPlayer.IsReadyUpRequested && !pPlayer.IsReadyConfirmed) {
 					mapResponse["need_readyup"] = true;
 				}
+				mapResponse["duo_with_nickbase64"] = "";
+				if (pPlayer.DuoWith != "") {
+					pPlayer2, bFound := players.MapPlayers[pPlayer.DuoWith];
+					if (bFound && pPlayer2 != nil) {
+						mapResponse["duo_with_nickbase64"] = pPlayer2.NicknameBase64;
+					}
+				}
 			}
 			players.MuPlayers.RUnlock();
 		}

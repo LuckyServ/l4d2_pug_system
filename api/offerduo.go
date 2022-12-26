@@ -13,7 +13,7 @@ import (
 )
 
 
-func HttpReqJoinQueue(c *gin.Context) {
+func HttpOfferDuo(c *gin.Context) {
 
 	mapResponse := make(map[string]interface{});
 
@@ -44,10 +44,13 @@ func HttpReqJoinQueue(c *gin.Context) {
 				mapResponse["error"] = "Please accept our rules first";
 			} else if (pPlayer.Access <= -2) {
 				mapResponse["error"] = "Sorry, you are banned, you gotta wait until it expires";
+			} else if (players.GetMmrGrade(pPlayer) == 0) {
+				mapResponse["error"] = "You need to gain a rank before queueing up with your friend";
 			} else {
 
-				queue.Join(pPlayer);
+				queue.OfferDuo(pPlayer);
 				mapResponse["success"] = true;
+				mapResponse["invite_code"] = pPlayer.DuoOffer;
 
 				sCookieUniqueKey, _ := c.Cookie("auth2");
 				byNickname, _ := base64.StdEncoding.DecodeString(pPlayer.NicknameBase64);

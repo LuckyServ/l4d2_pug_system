@@ -3,6 +3,7 @@ package queue
 import (
 	"../players"
 	"time"
+	"errors"
 )
 
 var arQueue []*players.EntPlayer;
@@ -13,16 +14,59 @@ var i64InReadyUpSince int64;
 var PLongestWaitPlayer *players.EntPlayer;
 var pPlayerReadyUpReason *players.EntPlayer;
 var IReadyPlayers int;
+var bWaitingForSinglePlayer bool;
+
+var MapDuoOffers = make(map[string]*players.EntPlayer, 0);
 
 var i64CooldownForReadyUpLeave int64 = 5 * 60 * 1000; //ms
 var i64CooldownForLeave int64 = 5 * 1000; //ms
 
 
-func Join(pPlayer *players.EntPlayer) { //Players must be locked outside
-
-	if (pPlayer.IsInQueue) { //repeat critical check
-		return;
+func OfferDuo(pPlayer *players.EntPlayer) { //Players must be locked outside
+	if (pPlayer.DuoOffer != "") {
+		delete(MapDuoOffers, pPlayer.DuoOffer);
 	}
+	pPlayer.DuoOffer = <-GenInviteCode;
+	MapDuoOffers[pPlayer.DuoOffer] = pPlayer;
+	players.I64LastPlayerlistUpdate = time.Now().UnixMilli();
+}
+
+func AcceptDuo(pPlayer *players.EntPlayer, sInviteCode string) error { //Players must be locked outside
+
+	pPlayer2, bInviteFound := MapDuoOffers[sInviteCode];
+	if (bInviteFound && pPlayer2 != nil) {
+		if (pPlayer2.IsInQueue || pPlayer2.IsInGame || pPlayer2.DuoOffer == "") {
+			return errors.New("Very bad error happened, go slap the admin");
+		}
+		if (pPlayer2 == pPlayer) {
+			return errors.New("You cannot accept your own Invite Code");
+		}
+		if (!pPlayer2.IsOnline) {
+			return errors.New("Your friend is not online");
+		}
+		if (pPlayer2.Access <= -2) {
+			return errors.New("Your friend is banned");
+		}
+
+		pPlayer.DuoWith = pPlayer2.SteamID64;
+		pPlayer2.DuoWith = pPlayer.SteamID64;
+
+		Join(pPlayer);
+		Join(pPlayer2);
+
+		return nil;
+	}
+	return errors.New("Invite Code not valid");
+}
+
+func CancelDuo(pPlayer *players.EntPlayer) { //Players must be locked outside
+	delete(MapDuoOffers, pPlayer.DuoOffer);
+	pPlayer.DuoOffer = "";
+	players.I64LastPlayerlistUpdate = time.Now().UnixMilli();
+}
+
+
+func Join(pPlayer *players.EntPlayer) { //Players must be locked outside
 
 	i64CurTime := time.Now().UnixMilli();
 	arQueue = append(arQueue, pPlayer);
@@ -34,17 +78,26 @@ func Join(pPlayer *players.EntPlayer) { //Players must be locked outside
 	if (IPlayersCount == 1) {
 		PLongestWaitPlayer = pPlayer;
 	}
+	if (bWaitingForSinglePlayer && pPlayer.DuoWith == "") {
+		bWaitingForSinglePlayer = false;
+	}
+	if (pPlayer.DuoOffer != "") {
+		delete(MapDuoOffers, pPlayer.DuoOffer);
+		pPlayer.DuoOffer = "";
+	}
 	SetLastUpdated();
 }
 
 func Leave(pPlayer *players.EntPlayer, bGameStart bool) { //Players must be locked outside
-	iPlayer := FindPlayerInQueue(pPlayer);
+	iPlayer := FindPlayerInArray(pPlayer, arQueue);
 	if (iPlayer != -1) {
-		arQueue[iPlayer] = arQueue[len(arQueue)-1];
-		arQueue = arQueue[:len(arQueue)-1];
+		arQueue = append(arQueue[:iPlayer], arQueue[iPlayer+1:]...);
 		IPlayersCount--;
 		if (pPlayer.IsReadyUpRequested && pPlayer.IsReadyConfirmed) {
 			IReadyPlayers--;
+		}
+		if (bWaitingForSinglePlayer && pPlayer.DuoWith == "") {
+			bWaitingForSinglePlayer = false;
 		}
 
 		i64CurTime := time.Now().UnixMilli();
@@ -52,8 +105,10 @@ func Leave(pPlayer *players.EntPlayer, bGameStart bool) { //Players must be lock
 			pPlayer.NextQueueingAllowed = 0;
 		} else if (pPlayer.IsReadyUpRequested) {
 			pPlayer.NextQueueingAllowed = i64CurTime + i64CooldownForReadyUpLeave;
+			pPlayer.DuoWith = "";
 		} else {
 			pPlayer.NextQueueingAllowed = i64CurTime + i64CooldownForLeave;
+			pPlayer.DuoWith = "";
 		}
 
 		pPlayer.IsInQueue = false;
@@ -109,6 +164,12 @@ func KickUnready() {
 	for _, pPlayer := range arQueue {
 		if (pPlayer.IsReadyUpRequested && !pPlayer.IsReadyConfirmed) {
 			arKickPlayers = append(arKickPlayers, pPlayer);
+			if (pPlayer.DuoWith != "") {
+				pDuoPlayer, bFound := players.MapPlayers[pPlayer.DuoWith];
+				if (bFound && FindPlayerInArray(pDuoPlayer, arKickPlayers) == -1) {
+					arKickPlayers = append(arKickPlayers, pDuoPlayer);
+				}
+			}
 		}
 	}
 	for _, pPlayer := range arKickPlayers {
@@ -121,6 +182,12 @@ func KickOffline() {
 	for _, pPlayer := range arQueue {
 		if (!pPlayer.IsOnline) {
 			arKickPlayers = append(arKickPlayers, pPlayer);
+			if (pPlayer.DuoWith != "") {
+				pDuoPlayer, bFound := players.MapPlayers[pPlayer.DuoWith];
+				if (bFound && FindPlayerInArray(pDuoPlayer, arKickPlayers) == -1) {
+					arKickPlayers = append(arKickPlayers, pDuoPlayer);
+				}
+			}
 		}
 	}
 	for _, pPlayer := range arKickPlayers {

@@ -69,6 +69,10 @@ func GinInit() {
 	r.GET("/addstream", HttpReqAddStream);
 	r.GET("/removestream", HttpReqRemoveStream);
 
+	r.GET("/offerduo", HttpOfferDuo);
+	r.GET("/acceptduo", HttpAcceptDuo);
+	r.GET("/cancelduo", HttpCancelDuo);
+
 
 	r.POST("/gs/getgame", HttpReqGSGetGame);
 	r.POST("/gs/fullrup", HttpReqGSFullReadyUp);
