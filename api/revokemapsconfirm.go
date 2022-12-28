@@ -3,12 +3,13 @@ package api
 import (
 	"github.com/gin-gonic/gin"
 	"../players"
-	"../database"
 	"../players/auth"
+	"../database"
+	"time"
 )
 
 
-func HttpReqRemoveStream(c *gin.Context) {
+func HttpRevokeMapsConfirm(c *gin.Context) {
 
 	mapResponse := make(map[string]interface{});
 
@@ -20,9 +21,13 @@ func HttpReqRemoveStream(c *gin.Context) {
 		if (bAuthorized) {
 			players.MuPlayers.Lock();
 			pPlayer := players.MapPlayers[oSession.SteamID64];
-			if (pPlayer.Twitch != "") {
+			if (pPlayer.Access <= -2) {
+				mapResponse["error"] = "Sorry, you are banned, you gotta wait until it expires";
+			} else if (pPlayer.CustomMapsConfirmed == 0) {
+				mapResponse["error"] = "You are not playing custom maps";
+			} else {
 				mapResponse["success"] = true;
-				pPlayer.Twitch = "";
+				pPlayer.CustomMapsConfirmed = 0;
 				go database.UpdatePlayer(database.DatabasePlayer{
 					SteamID64:				pPlayer.SteamID64,
 					NicknameBase64:			pPlayer.NicknameBase64,
@@ -37,9 +42,8 @@ func HttpReqRemoveStream(c *gin.Context) {
 					Twitch:					pPlayer.Twitch,
 					CustomMapsConfirmed:	pPlayer.CustomMapsConfirmed,
 					});
-			} else {
-				mapResponse["error"] = "No stream attached";
-			}
+				players.I64LastPlayerlistUpdate = time.Now().UnixMilli();
+			}		
 			players.MuPlayers.Unlock();
 		} else {
 			mapResponse["error"] = "Please authorize first";
@@ -47,7 +51,7 @@ func HttpReqRemoveStream(c *gin.Context) {
 	} else {
 		mapResponse["error"] = "Please authorize first";
 	}
-	
+
 	c.Header("Access-Control-Allow-Origin", c.Request.Header.Get("origin"));
 	c.Header("Access-Control-Allow-Credentials", "true");
 	c.JSON(200, mapResponse);

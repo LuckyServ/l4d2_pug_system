@@ -20,6 +20,7 @@ type EntGame struct {
 	GameConfig			settings.ConfoglConfig
 	CampaignName		string
 	Maps				[]string
+	MapDownloadLink		string
 	State				int
 	ServerIP			string
 	GameResult			rating.EntGameResult
@@ -201,10 +202,25 @@ func ChooseConfoglConfig(iMmr int) (settings.ConfoglConfig) {
 
 func ChooseCampaign(arPlayers []*players.EntPlayer) int {
 
+	//decide if this lobby eligible for custom maps
+	var bCustomMapsAllowed bool;
+	var i64EarliestConfirmation int64;
+	for _, pPlayer := range arPlayers {
+		if (pPlayer.CustomMapsConfirmed < i64EarliestConfirmation) {
+			i64EarliestConfirmation = pPlayer.CustomMapsConfirmed;
+		}
+	}
+	if (settings.NewestCustomMap < i64EarliestConfirmation) {
+		bCustomMapsAllowed = true;
+	}
+	//if not, remove them
+	
 	var arCampaigns, arTestCampaigns []int;
-	for i, _ := range settings.CampaignNames {
-		arCampaigns = append(arCampaigns, i);
-		arTestCampaigns = append(arTestCampaigns, i);
+	for i, oCampaign := range settings.MapPool {
+		if (oCampaign.DownloadLink == "" || bCustomMapsAllowed) {
+			arCampaigns = append(arCampaigns, i);
+			arTestCampaigns = append(arTestCampaigns, i);
+		}
 	}
 
 	iGamesAgo := 0;

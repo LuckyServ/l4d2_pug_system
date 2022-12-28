@@ -31,8 +31,9 @@ func Control(pGame *EntGame) {
 	players.MuPlayers.Lock();
 	MuGames.Lock();
 	i64CmpgnIdx := ChooseCampaign(pGame.PlayersUnpaired);
-	pGame.CampaignName = settings.CampaignNames[i64CmpgnIdx];
-	pGame.Maps = settings.MapPool[i64CmpgnIdx];
+	pGame.CampaignName = settings.MapPool[i64CmpgnIdx].Name;
+	pGame.Maps = settings.MapPool[i64CmpgnIdx].Maps;
+	pGame.MapDownloadLink = settings.MapPool[i64CmpgnIdx].DownloadLink;
 	pGame.State = StateCampaignChosen;
 	SetLastUpdated(pGame.PlayersUnpaired);
 	MuGames.Unlock();
@@ -318,17 +319,18 @@ func Control(pGame *EntGame) {
 
 		if (strings.HasPrefix(pPlayer.SteamID64, "7")) {
 			go database.UpdatePlayer(database.DatabasePlayer{
-				SteamID64:			pPlayer.SteamID64,
-				NicknameBase64:		pPlayer.NicknameBase64,
-				AvatarSmall:		pPlayer.AvatarSmall,
-				AvatarBig:			pPlayer.AvatarBig,
-				Mmr:				pPlayer.Mmr,
-				MmrUncertainty:		pPlayer.MmrUncertainty,
-				LastGameResult:		pPlayer.LastGameResult,
-				Access:				pPlayer.Access,
-				ProfValidated:		pPlayer.ProfValidated,
-				RulesAccepted:		pPlayer.RulesAccepted,
-				Twitch:				pPlayer.Twitch,
+				SteamID64:				pPlayer.SteamID64,
+				NicknameBase64:			pPlayer.NicknameBase64,
+				AvatarSmall:			pPlayer.AvatarSmall,
+				AvatarBig:				pPlayer.AvatarBig,
+				Mmr:					pPlayer.Mmr,
+				MmrUncertainty:			pPlayer.MmrUncertainty,
+				LastGameResult:			pPlayer.LastGameResult,
+				Access:					pPlayer.Access,
+				ProfValidated:			pPlayer.ProfValidated,
+				RulesAccepted:			pPlayer.RulesAccepted,
+				Twitch:					pPlayer.Twitch,
+				CustomMapsConfirmed:	pPlayer.CustomMapsConfirmed,
 				});
 		}
 	}

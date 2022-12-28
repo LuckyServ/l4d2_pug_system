@@ -3,12 +3,13 @@ package api
 import (
 	"github.com/gin-gonic/gin"
 	"../players"
-	"../database"
 	"../players/auth"
+	"../database"
+	"time"
 )
 
 
-func HttpReqRemoveStream(c *gin.Context) {
+func HttpConfirmMaps(c *gin.Context) {
 
 	mapResponse := make(map[string]interface{});
 
@@ -19,10 +20,16 @@ func HttpReqRemoveStream(c *gin.Context) {
 		oSession, bAuthorized := auth.GetSession(sCookieSessID, c.Query("csrf"));
 		if (bAuthorized) {
 			players.MuPlayers.Lock();
+			i64CurTime := time.Now().UnixMilli();
 			pPlayer := players.MapPlayers[oSession.SteamID64];
-			if (pPlayer.Twitch != "") {
+			if (pPlayer.Access <= -2) {
+				mapResponse["error"] = "Sorry, you are banned, you gotta wait until it expires";
+			} else if (pPlayer.LastLimitedRequest + 3000 > i64CurTime) {
+				mapResponse["error"] = "Too many requests";
+			} else {
 				mapResponse["success"] = true;
-				pPlayer.Twitch = "";
+				pPlayer.LastLimitedRequest = i64CurTime;
+				pPlayer.CustomMapsConfirmed = i64CurTime;
 				go database.UpdatePlayer(database.DatabasePlayer{
 					SteamID64:				pPlayer.SteamID64,
 					NicknameBase64:			pPlayer.NicknameBase64,
@@ -37,9 +44,8 @@ func HttpReqRemoveStream(c *gin.Context) {
 					Twitch:					pPlayer.Twitch,
 					CustomMapsConfirmed:	pPlayer.CustomMapsConfirmed,
 					});
-			} else {
-				mapResponse["error"] = "No stream attached";
-			}
+				players.I64LastPlayerlistUpdate = i64CurTime;
+			}		
 			players.MuPlayers.Unlock();
 		} else {
 			mapResponse["error"] = "Please authorize first";
@@ -47,7 +53,7 @@ func HttpReqRemoveStream(c *gin.Context) {
 	} else {
 		mapResponse["error"] = "Please authorize first";
 	}
-	
+
 	c.Header("Access-Control-Allow-Origin", c.Request.Header.Get("origin"));
 	c.Header("Access-Control-Allow-Credentials", "true");
 	c.JSON(200, mapResponse);

@@ -21,6 +21,7 @@ type GameResponse struct {
 	ServerIP			string				`json:"server_ip"`
 	ProxyIP				string				`json:"proxy_ip"`
 	Status				string				`json:"status"`
+	MapDownloadLink		string				`json:"map_download"`
 }
 
 
@@ -78,6 +79,7 @@ func HttpReqGetGame(c *gin.Context) {
 					ServerIP:			pGame.ServerIP,
 					ProxyIP:			settings.MapProxies[pGame.ServerIP],
 					Status:				games.MapGameStatus[pGame.State],
+					MapDownloadLink:	pGame.MapDownloadLink,
 				};
 
 				games.MuGames.RUnlock();

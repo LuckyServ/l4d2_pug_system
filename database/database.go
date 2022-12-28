@@ -14,18 +14,19 @@ var dbConn *sql.DB;
 var dbErr error;
 
 type DatabasePlayer struct {
-	SteamID64			string
-	NicknameBase64		string
-	AvatarSmall			string
-	AvatarBig			string
-	Mmr					int
-	MmrUncertainty		float32
-	LastGameResult		int
-	Access				int //-2 - completely banned, -1 - chat banned, 0 - regular player, 1 - behaviour moderator, 2 - cheat moderator, 3 - behaviour+cheat moderator, 4 - full admin access
-	ProfValidated		bool
-	RulesAccepted		bool
-	InitialGames		int
-	Twitch				string
+	SteamID64				string
+	NicknameBase64			string
+	AvatarSmall				string
+	AvatarBig				string
+	Mmr						int
+	MmrUncertainty			float32
+	LastGameResult			int
+	Access					int //-2 - completely banned, -1 - chat banned, 0 - regular player, 1 - behaviour moderator, 2 - cheat moderator, 3 - behaviour+cheat moderator, 4 - full admin access
+	ProfValidated			bool
+	RulesAccepted			bool
+	InitialGames			int
+	Twitch					string
+	CustomMapsConfirmed		int64
 }
 
 type DatabaseSession struct {
@@ -92,7 +93,7 @@ func AddPlayer(oPlayer DatabasePlayer) {
 		dbQueryDelete.Close();
 	} else {LogToFile("Error deleting player at AddPlayer: "+oPlayer.SteamID64);};
 	//Add player
-	dbQuery, errDbQuery := dbConn.Query("INSERT INTO players_list(steamid64, base64nickname, avatar_small, avatar_big, mmr, mmr_uncertainty, last_game_result, access, prof_validated, rules_accepted, initial_games, twitch) VALUES ('"+oPlayer.SteamID64+"', '"+oPlayer.NicknameBase64+"', '"+oPlayer.AvatarSmall+"', '"+oPlayer.AvatarBig+"', "+fmt.Sprintf("%d", oPlayer.Mmr)+", "+fmt.Sprintf("%.06f", oPlayer.MmrUncertainty)+", "+fmt.Sprintf("%d", oPlayer.LastGameResult)+", "+fmt.Sprintf("%d", oPlayer.Access)+", "+fmt.Sprintf("%v", oPlayer.ProfValidated)+", "+fmt.Sprintf("%v", oPlayer.RulesAccepted)+", 0, '"+oPlayer.Twitch+"');");
+	dbQuery, errDbQuery := dbConn.Query("INSERT INTO players_list(steamid64, base64nickname, avatar_small, avatar_big, mmr, mmr_uncertainty, last_game_result, access, prof_validated, rules_accepted, initial_games, twitch, custom_maps) VALUES ('"+oPlayer.SteamID64+"', '"+oPlayer.NicknameBase64+"', '"+oPlayer.AvatarSmall+"', '"+oPlayer.AvatarBig+"', "+fmt.Sprintf("%d", oPlayer.Mmr)+", "+fmt.Sprintf("%.06f", oPlayer.MmrUncertainty)+", "+fmt.Sprintf("%d", oPlayer.LastGameResult)+", "+fmt.Sprintf("%d", oPlayer.Access)+", "+fmt.Sprintf("%v", oPlayer.ProfValidated)+", "+fmt.Sprintf("%v", oPlayer.RulesAccepted)+", 0, '"+oPlayer.Twitch+"', "+fmt.Sprintf("%d", oPlayer.CustomMapsConfirmed)+");");
 	if (errDbQuery == nil) {
 		dbQuery.Close();
 	} else {LogToFile("Error inserting player at AddPlayer: "+oPlayer.SteamID64);};
@@ -101,7 +102,7 @@ func AddPlayer(oPlayer DatabasePlayer) {
 
 func UpdatePlayer(oPlayer DatabasePlayer) {
 	MuDatabase.Lock();
-	dbQuery, errDbQuery := dbConn.Query("UPDATE players_list SET base64nickname = '"+oPlayer.NicknameBase64+"', avatar_small = '"+oPlayer.AvatarSmall+"', avatar_big = '"+oPlayer.AvatarBig+"', mmr = "+fmt.Sprintf("%d", oPlayer.Mmr)+", mmr_uncertainty = "+fmt.Sprintf("%.06f", oPlayer.MmrUncertainty)+", last_game_result = "+fmt.Sprintf("%d", oPlayer.LastGameResult)+", access = "+fmt.Sprintf("%d", oPlayer.Access)+", prof_validated = "+fmt.Sprintf("%v", oPlayer.ProfValidated)+", rules_accepted = "+fmt.Sprintf("%v", oPlayer.RulesAccepted)+", twitch = '"+oPlayer.Twitch+"' WHERE steamid64 = '"+oPlayer.SteamID64+"';");
+	dbQuery, errDbQuery := dbConn.Query("UPDATE players_list SET base64nickname = '"+oPlayer.NicknameBase64+"', avatar_small = '"+oPlayer.AvatarSmall+"', avatar_big = '"+oPlayer.AvatarBig+"', mmr = "+fmt.Sprintf("%d", oPlayer.Mmr)+", mmr_uncertainty = "+fmt.Sprintf("%.06f", oPlayer.MmrUncertainty)+", last_game_result = "+fmt.Sprintf("%d", oPlayer.LastGameResult)+", access = "+fmt.Sprintf("%d", oPlayer.Access)+", prof_validated = "+fmt.Sprintf("%v", oPlayer.ProfValidated)+", rules_accepted = "+fmt.Sprintf("%v", oPlayer.RulesAccepted)+", twitch = '"+oPlayer.Twitch+"', custom_maps = "+fmt.Sprintf("%d", oPlayer.CustomMapsConfirmed)+" WHERE steamid64 = '"+oPlayer.SteamID64+"';");
 	if (errDbQuery == nil) {
 		dbQuery.Close();
 	} else {LogToFile("Error updating player at UpdatePlayer: "+oPlayer.SteamID64);};
@@ -243,12 +244,12 @@ func SaveVPNInfo(oVPNInfo DatabaseVPNInfo) {
 func RestorePlayers() []DatabasePlayer {
 	MuDatabase.RLock();
 	var arDBPlayers []DatabasePlayer;
-	dbQueryRetrieve, errQueryRetrieve := dbConn.Query("SELECT steamid64,base64nickname,avatar_small,avatar_big,mmr,mmr_uncertainty,last_game_result,access,prof_validated,rules_accepted,twitch FROM players_list;");
+	dbQueryRetrieve, errQueryRetrieve := dbConn.Query("SELECT steamid64,base64nickname,avatar_small,avatar_big,mmr,mmr_uncertainty,last_game_result,access,prof_validated,rules_accepted,twitch,custom_maps FROM players_list;");
 	if (errQueryRetrieve == nil) {
 
 		for (dbQueryRetrieve.Next()) {
 			oDBPlayer := DatabasePlayer{};
-			dbQueryRetrieve.Scan(&oDBPlayer.SteamID64, &oDBPlayer.NicknameBase64, &oDBPlayer.AvatarSmall, &oDBPlayer.AvatarBig, &oDBPlayer.Mmr, &oDBPlayer.MmrUncertainty, &oDBPlayer.LastGameResult, &oDBPlayer.Access, &oDBPlayer.ProfValidated, &oDBPlayer.RulesAccepted, &oDBPlayer.Twitch);
+			dbQueryRetrieve.Scan(&oDBPlayer.SteamID64, &oDBPlayer.NicknameBase64, &oDBPlayer.AvatarSmall, &oDBPlayer.AvatarBig, &oDBPlayer.Mmr, &oDBPlayer.MmrUncertainty, &oDBPlayer.LastGameResult, &oDBPlayer.Access, &oDBPlayer.ProfValidated, &oDBPlayer.RulesAccepted, &oDBPlayer.Twitch, &oDBPlayer.CustomMapsConfirmed);
 			arDBPlayers = append(arDBPlayers, oDBPlayer);
 		}
 

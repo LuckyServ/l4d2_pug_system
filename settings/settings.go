@@ -90,8 +90,15 @@ type ConfoglConfig struct {
 var MapConfoglConfigs map[int]ConfoglConfig = make(map[int]ConfoglConfig);
 var ArrayConfoglConfigsMmrs []int;
 
-var MapPool [][]string;
-var CampaignNames []string; //parallel with MapPool
+
+type Campaign struct {
+	Name			string		`json:"name"`
+	Maps			[]string	`json:"maps"`
+	DownloadLink	string		`json:"download"`
+	LastUpdated		int64		`json:"last_updated"`
+}
+var MapPool []Campaign;
+var NewestCustomMap int64;
 
 
 
@@ -462,31 +469,63 @@ func ConfigFile() bool {
 
 
 	//Map pool section
+	if (!UpdateMapsFromJSON(byData)) {
+		return false;
+	}
+
+	//Gameservers section
+	if (!UpdateServersFromJSON(byData)) {
+		return false;
+	}
+
+	return true;
+}
+
+func RefreshMaps() {
+	byData, errFile := ioutil.ReadFile(FilePath);
+	if (errFile != nil) {
+		fmt.Printf("Error reading config file: %s\n", errFile);
+		return;
+	}
+	UpdateMapsFromJSON(byData);
+}
+
+func UpdateMapsFromJSON(byData []byte) bool {
 	bErrorReadingMapPool := true;
+	NewestCustomMap = 0;
+	MapPool = make([]Campaign, 0);
 	jsonparser.ArrayEach(byData, func(valueCampaign []byte, dataType jsonparser.ValueType, offset int, err error) {
 		sCampaignName, _ := jsonparser.GetString(valueCampaign, "name");
-		var arCampaign []string;
+		sDownloadLink, _ := jsonparser.GetString(valueCampaign, "download");
+		i64UpdatedAt, _ := jsonparser.GetInt(valueCampaign, "last_updated");
+		var arMaps []string;
 		jsonparser.ArrayEach(valueCampaign, func(valueMap []byte, dataType jsonparser.ValueType, offset int, err error) {
 			sMap := string(valueMap);
 			if (sMap != "") {
-				arCampaign = append(arCampaign, sMap);
+				arMaps = append(arMaps, sMap);
 				bErrorReadingMapPool = false;
 			}
 		}, "maps");
-		if (len(arCampaign) > 0 && sCampaignName != "") {
-			MapPool = append(MapPool, arCampaign);
-			CampaignNames = append(CampaignNames, sCampaignName);
+		if (len(arMaps) > 0 && sCampaignName != "" && i64UpdatedAt > 0) {
+
+			oCampaign := Campaign{
+				Name:			sCampaignName,
+				Maps:			arMaps,
+				DownloadLink:	sDownloadLink,
+				LastUpdated:	i64UpdatedAt,
+			}
+
+			MapPool = append(MapPool, oCampaign);
 			bErrorReadingMapPool = false;
+			if (i64UpdatedAt > NewestCustomMap) {
+				NewestCustomMap = i64UpdatedAt;
+			}
 		}
 	}, "map_pool");
 	if (bErrorReadingMapPool) {
 		fmt.Printf("Error reading config file on map pool section\n");
 		return false;
 	}
-
-	//Gameservers section
-	return UpdateServersFromJSON(byData);
-
 	return true;
 }
 

@@ -40,6 +40,7 @@ type EntPlayer struct {
 	GameID					string
 	LastGameChanged			int64  //unix timestamp in milliseconds
 	LastExternalRequest		int64 //Last external api request //unix timestamp in milliseconds
+	LastLimitedRequest		int64 //unix timestamp in milliseconds
 	LastGameActivity		int64 //Last game activity //unix timestamp in milliseconds
 	LastChatMessage			int64 //Last chat message //unix timestamp in milliseconds
 	LastTicketActivity		int64 //Last ticket activity //unix timestamp in milliseconds
@@ -48,6 +49,7 @@ type EntPlayer struct {
 	Twitch					string
 	DuoWith					string
 	DuoOffer				string
+	CustomMapsConfirmed		int64 //unix timestamp in milliseconds
 }
 
 var MapPlayers map[string]*EntPlayer = make(map[string]*EntPlayer);
@@ -92,17 +94,18 @@ func RestorePlayers() bool { //no need to lock maps
 			iAccess = 0;
 		}
 		pPlayer := &EntPlayer{
-			SteamID64:			oDBPlayer.SteamID64,
-			NicknameBase64:		oDBPlayer.NicknameBase64,
-			AvatarSmall:		oDBPlayer.AvatarSmall,
-			AvatarBig:			oDBPlayer.AvatarBig,
-			Mmr:				oDBPlayer.Mmr,
-			MmrUncertainty:		oDBPlayer.MmrUncertainty,
-			LastGameResult:		oDBPlayer.LastGameResult,
-			Access:				iAccess,
-			ProfValidated:		oDBPlayer.ProfValidated,
-			RulesAccepted:		oDBPlayer.RulesAccepted,
-			Twitch:				oDBPlayer.Twitch,
+			SteamID64:				oDBPlayer.SteamID64,
+			NicknameBase64:			oDBPlayer.NicknameBase64,
+			AvatarSmall:			oDBPlayer.AvatarSmall,
+			AvatarBig:				oDBPlayer.AvatarBig,
+			Mmr:					oDBPlayer.Mmr,
+			MmrUncertainty:			oDBPlayer.MmrUncertainty,
+			LastGameResult:			oDBPlayer.LastGameResult,
+			Access:					iAccess,
+			ProfValidated:			oDBPlayer.ProfValidated,
+			RulesAccepted:			oDBPlayer.RulesAccepted,
+			Twitch:					oDBPlayer.Twitch,
+			CustomMapsConfirmed:	oDBPlayer.CustomMapsConfirmed,
 		};
 		MapPlayers[oDBPlayer.SteamID64] = pPlayer;
 		ArrayPlayers = append(ArrayPlayers, pPlayer);
@@ -169,18 +172,19 @@ func AddPlayerAuth(sSteamID64 string, sNicknameBase64 string, sAvatarSmall strin
 	if (bEdited) {
 		I64LastPlayerlistUpdate = time.Now().UnixMilli();
 		go database.UpdatePlayer(database.DatabasePlayer{
-			SteamID64:			pPlayer.SteamID64,
-			NicknameBase64:		pPlayer.NicknameBase64,
-			AvatarSmall:		pPlayer.AvatarSmall,
-			AvatarBig:			pPlayer.AvatarBig,
-			Mmr:				pPlayer.Mmr,
-			MmrUncertainty:		pPlayer.MmrUncertainty,
-			LastGameResult:		pPlayer.LastGameResult,
-			Access:				pPlayer.Access,
-			ProfValidated:		pPlayer.ProfValidated,
-			RulesAccepted:		pPlayer.RulesAccepted,
-			Twitch:				pPlayer.Twitch,
-		});
+			SteamID64:				pPlayer.SteamID64,
+			NicknameBase64:			pPlayer.NicknameBase64,
+			AvatarSmall:			pPlayer.AvatarSmall,
+			AvatarBig:				pPlayer.AvatarBig,
+			Mmr:					pPlayer.Mmr,
+			MmrUncertainty:			pPlayer.MmrUncertainty,
+			LastGameResult:			pPlayer.LastGameResult,
+			Access:					pPlayer.Access,
+			ProfValidated:			pPlayer.ProfValidated,
+			RulesAccepted:			pPlayer.RulesAccepted,
+			Twitch:					pPlayer.Twitch,
+			CustomMapsConfirmed:	pPlayer.CustomMapsConfirmed,
+			});
 	}
 	MuPlayers.Unlock();
 

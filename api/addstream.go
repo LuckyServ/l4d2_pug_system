@@ -55,17 +55,18 @@ func HttpReqAddStream(c *gin.Context) {
 						players.MuPlayers.Lock();
 						pPlayer.Twitch = sUserID;
 						go database.UpdatePlayer(database.DatabasePlayer{
-							SteamID64:			pPlayer.SteamID64,
-							NicknameBase64:		pPlayer.NicknameBase64,
-							AvatarSmall:		pPlayer.AvatarSmall,
-							AvatarBig:			pPlayer.AvatarBig,
-							Mmr:				pPlayer.Mmr,
-							MmrUncertainty:		pPlayer.MmrUncertainty,
-							LastGameResult:		pPlayer.LastGameResult,
-							Access:				pPlayer.Access,
-							ProfValidated:		pPlayer.ProfValidated,
-							RulesAccepted:		pPlayer.RulesAccepted,
-							Twitch:				pPlayer.Twitch,
+							SteamID64:				pPlayer.SteamID64,
+							NicknameBase64:			pPlayer.NicknameBase64,
+							AvatarSmall:			pPlayer.AvatarSmall,
+							AvatarBig:				pPlayer.AvatarBig,
+							Mmr:					pPlayer.Mmr,
+							MmrUncertainty:			pPlayer.MmrUncertainty,
+							LastGameResult:			pPlayer.LastGameResult,
+							Access:					pPlayer.Access,
+							ProfValidated:			pPlayer.ProfValidated,
+							RulesAccepted:			pPlayer.RulesAccepted,
+							Twitch:					pPlayer.Twitch,
+							CustomMapsConfirmed:	pPlayer.CustomMapsConfirmed,
 							});
 						players.MuPlayers.Unlock();
 					}

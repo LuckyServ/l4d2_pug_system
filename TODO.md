@@ -1,5 +1,6 @@
 - [ ] Streamers block
 - [ ] Duo queue
+- [ ] Custom maps: prep database: ALTER TABLE players_list ADD COLUMN custom_maps BIGINT; UPDATE players_list SET custom_maps = 0;
 - [ ] Custom maps
 - [ ] Add match info to server gamerules
 - [ ] Fix readyup bug

@@ -27,4 +27,8 @@ func HttpReqSMURFListUpdated(c *gin.Context) {
 	} else {
 		mapResponse["error"] = "Bad auth";
 	}
+
+	c.Header("Access-Control-Allow-Origin", c.Request.Header.Get("origin"));
+	c.Header("Access-Control-Allow-Credentials", "true");
+	c.JSON(200, mapResponse);
 }

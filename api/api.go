@@ -73,6 +73,11 @@ func GinInit() {
 	r.GET("/acceptduo", HttpAcceptDuo);
 	r.GET("/cancelduo", HttpCancelDuo);
 
+	r.GET("/getmaps", HttpGetMaps);
+	r.GET("/confirmmaps", HttpConfirmMaps);
+	r.GET("/revokemapsconfirm", HttpRevokeMapsConfirm);
+	r.GET("/refreshmaps", HttpRefreshMaps);
+
 
 	r.POST("/gs/getgame", HttpReqGSGetGame);
 	r.POST("/gs/fullrup", HttpReqGSFullReadyUp);
