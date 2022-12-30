@@ -138,12 +138,6 @@
 			"last_updated": 1
 		},
 		{
-			"name": "Cold Stream",
-			"maps": ["c13m1_alpinecreek", "c13m2_southpinestream", "c13m3_memorialbridge", "c13m4_cutthroatcreek"],
-			"download": "",
-			"last_updated": 1
-		},
-		{
 			"name": "Carried Off",
 			"maps": ["cwm1_intro", "cwm2_warehouse", "cwm3_drain", "cwm4_building"],
 			"download": "https://l4d2center.com/maps/carriedoff_1.zip",

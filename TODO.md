@@ -1,6 +1,5 @@
 - [ ] Streamers block
 - [ ] Duo queue
-- [ ] Custom maps: prep database: ALTER TABLE players_list ADD COLUMN custom_maps BIGINT; UPDATE players_list SET custom_maps = 0;
 - [ ] Custom maps
 - [ ] Add match info to server gamerules
 - [ ] Fix readyup bug
@@ -24,6 +23,9 @@
 - [ ] Automatically parse anticheat logs and ban based on them
 - [ ] Frontend: remove Accept button if already accepted
 
+- [x] Fix banning those who stuck loading in game in team 0
+- [x] Fix notifications of time left (AFK after readyup)
+- [x] Custom maps: prep database: ALTER TABLE players_list ADD COLUMN custom_maps BIGINT; UPDATE players_list SET custom_maps = 0;
 - [x] Filter out unrestarted servers
 - [x] Streamers block prep database: ALTER TABLE players_list ADD COLUMN twitch VARCHAR; UPDATE players_list SET twitch = '';
 - [x] Adjust ranking for new players, prep database: UPDATE players_list SET mmr_uncertainty = mmr_uncertainty * 1.67; UPDATE players_list SET mmr_uncertainty = 20.0 WHERE mmr_uncertainty > 20.0;

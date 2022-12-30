@@ -93,6 +93,7 @@ public OnPluginStart() {
 	AddCommandListener(OnCommandExecute, "spec_prev");
 	AddCommandListener(OnCommandExecute, "say");
 	AddCommandListener(OnCommandExecute, "say_team");
+	AddCommandListener(OnCommandExecute, "Vote");
 	AddCommandListener(OnBlockedCommand, "callvote");
 	AddCommandListener(OnBlockedCommand, "jointeam");
 
@@ -1028,12 +1029,11 @@ public Action Timer_CountAbsence(Handle timer) {
 					}
 				}
 			} else {
-				int player = (client > 0 && GetClientTeam(client) > 0) ? client : -1;
-				if (player > 0) {
-					int iTeam = GetClientTeam(player);
+				if (client > 0) {
+					int iTeam = GetClientTeam(client);
 					if (bInRound) {
 						if (iTeam > 1) {
-							if (iTime - iLastActivity[player] >= 30 && !(iTeam == 2 && !IsPlayerAlive(player))) {
+							if (iTime - iLastActivity[client] >= 30 && !(iTeam == 2 && !IsPlayerAlive(client))) {
 								if (arPlayersAll[i][0] == '7') {
 									iAbsenceCounter[i] = iAbsenceCounter[i] + 1;
 									iSingleAbsence[i] = iSingleAbsence[i] + 1;
@@ -1044,7 +1044,7 @@ public Action Timer_CountAbsence(Handle timer) {
 										}
 										if (!bPrinted[i]) {
 											bPrinted[i] = true;
-											PrintToChatAll("[l4d2center.com] %N is AFK. If he doesnt ready up in %d seconds, the game ends", player, MinVal(iMaxAbsent - iAbsenceCounter[i], iMaxSingleAbsent));
+											PrintToChatAll("[l4d2center.com] %N is AFK. If he doesnt ready up in %d seconds, the game ends", client, MinVal(iMaxAbsent - iAbsenceCounter[i], iMaxSingleAbsent - iSingleAbsence[i]));
 										}
 										return Plugin_Continue;
 									}
@@ -1057,7 +1057,7 @@ public Action Timer_CountAbsence(Handle timer) {
 									iSingleAbsence[i] = 0;
 								}
 							}
-						} else if (iTeam == 1) {
+						} else if (iTeam == 1) { //redundant, l4d2center players cant spectate
 							if (arPlayersAll[i][0] == '7') {
 								iAbsenceCounter[i] = iAbsenceCounter[i] + 1;
 								iSingleAbsence[i] = iSingleAbsence[i] + 1;
@@ -1068,13 +1068,25 @@ public Action Timer_CountAbsence(Handle timer) {
 									}
 									if (!bPrinted[i]) {
 										bPrinted[i] = true;
-										PrintToChatAll("[l4d2center.com] %N left the game. If he doesnt come back and ready up in %d seconds, the game ends", player, MinVal(iMaxAbsent - iAbsenceCounter[i], iMaxSingleAbsent));
+										PrintToChatAll("[l4d2center.com] %N left the game. If he doesnt come back and ready up in %d seconds, the game ends", client, MinVal(iMaxAbsent - iAbsenceCounter[i], iMaxSingleAbsent - iSingleAbsence[i]));
+									}
+									return Plugin_Continue;
+								}
+							}
+						} else {
+							if (arPlayersAll[i][0] == '7') {
+								iAbsenceCounter[i] = iAbsenceCounter[i] + 1;
+								iSingleAbsence[i] = iSingleAbsence[i] + 1;
+								if (iTime - iLastUnpause >= 5) {
+									if (!bPrinted[i]) {
+										bPrinted[i] = true;
+										PrintToChatAll("[l4d2center.com] %N is loading. If he doesnt join in %d seconds, the game ends", client, MinVal(iMaxAbsent - iAbsenceCounter[i], iMaxSingleAbsent - iSingleAbsence[i]));
 									}
 									return Plugin_Continue;
 								}
 							}
 						}
-					} else if (IsInReady() && (iTeam <= 1 || !IsReady(player))) {
+					} else if (IsInReady() && (iTeam <= 1 || !IsReady(client))) {
 						if (arPlayersAll[i][0] == '7') {
 							iAbsenceCounter[i] = iAbsenceCounter[i] + 1;
 							iSingleAbsence[i] = iSingleAbsence[i] + 1;
@@ -1091,7 +1103,7 @@ public Action Timer_CountAbsence(Handle timer) {
 							}
 							if (!bPrinted[i]) {
 								bPrinted[i] = true;
-								PrintToChatAll("[l4d2center.com] %s left the game. If he doesnt come back in %d seconds, the game ends", arPlayersAll[i], MinVal(iMaxAbsent - iAbsenceCounter[i], iMaxSingleAbsent));
+								PrintToChatAll("[l4d2center.com] %s left the game. If he doesnt come back in %d seconds, the game ends", arPlayersAll[i], MinVal(iMaxAbsent - iAbsenceCounter[i], iMaxSingleAbsent - iSingleAbsence[i]));
 							}
 							return Plugin_Continue;
 						}
