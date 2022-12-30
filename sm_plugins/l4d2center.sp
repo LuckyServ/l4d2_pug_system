@@ -83,6 +83,7 @@ public OnPluginStart() {
 	Format(sPublicIP, sizeof(sPublicIP), "%s:%d", sPublicIP, GetConVarInt(FindConVar("hostport")));
 
 	hMaxPlayers = FindConVar("sv_maxplayers");
+	mapConnected = CreateTrie();
 	ReadyUpLoaded = LibraryExists("readyup");
 	CreateTimer(10.0, Timer_UpdateGameState, 0, TIMER_REPEAT);
 	HookEvent("round_end", Event_RoundEnd);
