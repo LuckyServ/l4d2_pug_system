@@ -56,6 +56,7 @@ func GinInit() {
 	r.GET("/auth", HttpReqAuth);
 	r.GET("/home", HttpReqHome);
 	r.POST("/home", HttpReqHome);
+	r.GET("/steamid32to64", HttpSteamID32to64);
 
 	r.GET("/getgame", HttpReqGetGame);
 
