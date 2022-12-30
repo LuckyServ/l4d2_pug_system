@@ -13,6 +13,7 @@ Handle hForwardGameEnded;
 
 Handle hMaxPlayers;
 bool ReadyUpLoaded;
+Handle mapConnected;
 //bool bRQDeclared;
 
 bool bWaitFirstReadyUp = true;
@@ -86,6 +87,8 @@ public OnPluginStart() {
 	CreateTimer(10.0, Timer_UpdateGameState, 0, TIMER_REPEAT);
 	HookEvent("round_end", Event_RoundEnd);
 	HookEvent("player_team", Event_PlayerTeam);
+	HookEvent("player_connect", Event_PlayerConnect);
+	HookEvent("player_disconnect", Event_PlayerDisconnect);
 
 	//AFK
 	AddCommandListener(OnCommandExecute, "spec_mode");
@@ -118,15 +121,14 @@ public OnPluginStart() {
 	RegConsoleCmd("sm_id", GameID_Cmd);
 	RegConsoleCmd("sm_game", GameID_Cmd);
 
-	RegConsoleCmd("sm_l4d2cstatus", Status_Cmd);
-
 	//admit RQ
 	//RegConsoleCmd("sm_ragequit", Ragequit_Cmd);
 	//RegConsoleCmd("sm_quit", Ragequit_Cmd);
 	//RegConsoleCmd("sm_exit", Ragequit_Cmd);
 
 	//Test
-	//RegAdminCmd("sm_test", Cmd_Test, 0);
+	RegConsoleCmd("sm_l4d2cstatus", Status_Cmd);
+	RegAdminCmd("sm_l4d2ctestlogging", Cmd_TestLogging, ADMFLAG_ROOT);
 }
 
 public void OnLibraryAdded(const char[] name) {
@@ -135,6 +137,11 @@ public void OnLibraryAdded(const char[] name) {
 
 public void OnLibraryRemoved(const char[] name) {
 	ReadyUpLoaded = LibraryExists("readyup");
+}
+
+public Action Cmd_TestLogging(int client, int args) {
+	GoLogSteamAuthIssue("sm_l4d2ctestlogging executed");
+	return Plugin_Handled;
 }
 
 public Action Status_Cmd(int client, int args) {
@@ -1169,6 +1176,49 @@ int MinVal(int val1, int val2) {
 	}
 	return val2;
 }
+
+Action Event_PlayerConnect(Event event, const char[] name, bool dontBroadcast) {
+	if (GetEventBool(event, "bot")) {
+		return Plugin_Continue;
+	}
+	char sSteamID[20];
+	GetEventString(event, "networkid", sSteamID, sizeof(sSteamID));
+	SetTrieValue(mapConnected, sSteamID, GetTime(), true);
+	return Plugin_Continue;
+}
+
+Action Event_PlayerDisconnect(Event event, const char[] name, bool dontBroadcast) {
+	if (GetEventBool(event, "bot")) {
+		return Plugin_Continue;
+	}
+	char sSteamID[20];
+	GetEventString(event, "networkid", sSteamID, sizeof(sSteamID));
+	char sReason[256];
+	GetEventString(event, "reason", sReason, sizeof(sReason));
+	int iTime;
+	if (GetTrieValue(mapConnected, sSteamID, iTime) && GetTime() < (iTime + 20) && StrContains(sReason, "lient timed out") != -1) {
+		GoLogSteamAuthIssue(sSteamID);
+	}
+	RemoveFromTrie(mapConnected, sSteamID);
+	return Plugin_Continue;
+}
+
+void GoLogSteamAuthIssue(char[] sSteamID) {
+	char sUrl[256];
+	Format(sUrl, sizeof(sUrl), "https://api.l4d2center.com/gs/anticheatlogs?auth_key=%s", sAuthKey);
+	Handle hSWReq = SteamWorks_CreateHTTPRequest(k_EHTTPMethodPOST, sUrl);
+	SteamWorks_SetHTTPRequestNetworkActivityTimeout(hSWReq, 9);
+	SteamWorks_SetHTTPRequestAbsoluteTimeoutMS(hSWReq, 10000);
+	SteamWorks_SetHTTPRequestRequiresVerifiedCertificate(hSWReq, false);
+	SteamWorks_SetHTTPRequestGetOrPostParameter(hSWReq, "auth_key", sAuthKey);
+	SteamWorks_SetHTTPRequestGetOrPostParameter(hSWReq, "ip", sPublicIP);
+	char sText[256];
+	Format(sText, sizeof(sText), "%s is having Steam auth issue", sSteamID);
+	SteamWorks_SetHTTPRequestGetOrPostParameter(hSWReq, "logline", sText);
+	SteamWorks_SetHTTPCallbacks(hSWReq, SWReqCompleted_Dummy);
+	SteamWorks_SendHTTPRequest(hSWReq);
+}
+
 
 
 
