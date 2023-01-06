@@ -1,11 +1,10 @@
-- [ ] Streamers block
-- [ ] Duo queue
-- [ ] Custom maps
+- [ ] "Banned by" in the public banlist
 - [ ] Add match info to server gamerules
 - [ ] Fix readyup bug
 - [ ] Test if anticheat logging works
 - [ ] Output side api requests stat
 - [ ] Limit number of tickets in history
+- [ ] Add check on protest page if a player can protest ban
 - [ ] Allow small pics in chat
 - [ ] IsClientTimingOut in the AFK detection in SM plugin, or solve AFKs some other way
 - [ ] An admin panel to show information about players
@@ -23,6 +22,10 @@
 - [ ] Automatically parse anticheat logs and ban based on them
 - [ ] Frontend: remove Accept button if already accepted
 
+- [x] Force playerlist update on maplist refresh
+- [x] Streamers block
+- [x] Duo queue
+- [x] Custom maps
 - [x] Fix banning those who stuck loading in game in team 0
 - [x] Fix notifications of time left (AFK after readyup)
 - [x] Custom maps: prep database: ALTER TABLE players_list ADD COLUMN custom_maps BIGINT; UPDATE players_list SET custom_maps = 0;

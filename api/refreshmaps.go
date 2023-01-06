@@ -5,6 +5,7 @@ import (
 	"../players/auth"
 	"../players"
 	"../settings"
+	"time"
 )
 
 
@@ -22,7 +23,10 @@ func HttpRefreshMaps(c *gin.Context) {
 			pPlayer := players.MapPlayers[oSession.SteamID64];
 			if (pPlayer.Access == 4) { //admin
 				mapResponse["success"] = true;
-				go settings.RefreshMaps();
+				go func()() {
+					settings.RefreshMaps();
+					players.I64LastPlayerlistUpdate = time.Now().UnixMilli();
+				}();
 			} else {
 				mapResponse["error"] = "You dont have access to this command";
 			}
