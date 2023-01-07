@@ -18,7 +18,7 @@ type PlayerResponse struct {
 	IsInGame				bool		`json:"is_ingame"`
 	IsInQueue				bool		`json:"is_inqueue"`
 	MmrGrade				int			`json:"mmr_grade"`
-	CustomMapsConfirmed		int64		`json:"custom_maps"`
+	CustomMapsState			int			`json:"custom_maps"` //1 - never confirmed, 2 - update required, 3 - confirmed
 }
 
 type PlayerResponseMe struct {
@@ -37,7 +37,7 @@ type PlayerResponseMe struct {
 	ProfValidated			bool		`json:"profile_validated"` //Steam profile validated
 	RulesAccepted			bool		`json:"rules_accepted"` //Rules accepted
 	DuoOffer				string		`json:"duo_offer"`
-	CustomMapsConfirmed		int64		`json:"custom_maps"`
+	CustomMapsState			int			`json:"custom_maps"` //1 - never confirmed, 2 - update required, 3 - confirmed
 }
 
 
@@ -74,7 +74,14 @@ func HttpReqGetOnlinePlayers(c *gin.Context) {
 				RulesAccepted:			pPlayer.RulesAccepted,
 				MmrGrade:				players.GetMmrGrade(pPlayer),
 				DuoOffer:				pPlayer.DuoOffer,
-				CustomMapsConfirmed:	pPlayer.CustomMapsConfirmed,
+				CustomMapsState:		func()(int) {
+					if (pPlayer.CustomMapsConfirmed == 0) {
+						return 1;
+					} else if (settings.NewestCustomMap < pPlayer.CustomMapsConfirmed) {
+						return 3;
+					}
+					return 2;
+				}(),
 			};
 
 			players.MuPlayers.RUnlock();
@@ -100,7 +107,14 @@ func HttpReqGetOnlinePlayers(c *gin.Context) {
 				IsInGame:				pPlayer.IsInGame,
 				IsInQueue:				pPlayer.IsInQueue,
 				MmrGrade:				players.GetMmrGrade(pPlayer),
-				CustomMapsConfirmed:	pPlayer.CustomMapsConfirmed,
+				CustomMapsState:		func()(int) {
+					if (pPlayer.CustomMapsConfirmed == 0) {
+						return 1;
+					} else if (settings.NewestCustomMap < pPlayer.CustomMapsConfirmed) {
+						return 3;
+					}
+					return 2;
+				}(),
 			});
 			if (pPlayer.IsInGame) {
 				iInGameCount++;

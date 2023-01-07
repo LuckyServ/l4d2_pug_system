@@ -1,4 +1,7 @@
 - [ ] "Banned by" in the public banlist
+- [ ] Personal backend auth keys
+- [ ] Check cert / handle lack of cert, during server selection
+- [ ] Finish game if the scores difference is too big
 - [ ] Add match info to server gamerules
 - [ ] Fix readyup bug
 - [ ] Test if anticheat logging works
