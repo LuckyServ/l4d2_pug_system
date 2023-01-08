@@ -54,6 +54,14 @@ func HttpReqGetGame(c *gin.Context) {
 						IsInGame:		pGamePlayer.IsInGame,
 						MmrGrade:		players.GetMmrGrade(pGamePlayer),
 						IsInQueue:		pGamePlayer.IsInQueue,
+						CustomMapsState:		func()(int) {
+							if (pGamePlayer.CustomMapsConfirmed == 0) {
+								return 1;
+							} else if (settings.NewestCustomMap < pGamePlayer.CustomMapsConfirmed) {
+								return 3;
+							}
+							return 2;
+						}(),
 					});
 				}
 				for _, pGamePlayer := range pGame.PlayersB {
@@ -66,6 +74,14 @@ func HttpReqGetGame(c *gin.Context) {
 						IsInGame:		pGamePlayer.IsInGame,
 						MmrGrade:		players.GetMmrGrade(pGamePlayer),
 						IsInQueue:		pGamePlayer.IsInQueue,
+						CustomMapsState:		func()(int) {
+							if (pGamePlayer.CustomMapsConfirmed == 0) {
+								return 1;
+							} else if (settings.NewestCustomMap < pGamePlayer.CustomMapsConfirmed) {
+								return 3;
+							}
+							return 2;
+						}(),
 					});
 				}
 

@@ -1,7 +1,8 @@
 - [ ] "Banned by" in the public banlist
 - [ ] Personal backend auth keys
-- [ ] Check cert / handle lack of cert, during server selection
+- [ ] Check cert expiration date on /ping/ page
 - [ ] Finish game if the scores difference is too big
+- [ ] Check for max mmr difference when pairing teams
 - [ ] Add match info to server gamerules
 - [ ] Fix readyup bug
 - [ ] Test if anticheat logging works
