@@ -19,6 +19,7 @@ type PlayerResponse struct {
 	IsInQueue				bool		`json:"is_inqueue"`
 	MmrGrade				int			`json:"mmr_grade"`
 	CustomMapsState			int			`json:"custom_maps"` //1 - never confirmed, 2 - update required, 3 - confirmed
+	IsInDuo					bool		`json:"in_duo"`
 }
 
 type PlayerResponseMe struct {
@@ -38,6 +39,7 @@ type PlayerResponseMe struct {
 	RulesAccepted			bool		`json:"rules_accepted"` //Rules accepted
 	DuoOffer				string		`json:"duo_offer"`
 	CustomMapsState			int			`json:"custom_maps"` //1 - never confirmed, 2 - update required, 3 - confirmed
+	IsInDuo					bool		`json:"in_duo"`
 }
 
 
@@ -74,6 +76,7 @@ func HttpReqGetOnlinePlayers(c *gin.Context) {
 				RulesAccepted:			pPlayer.RulesAccepted,
 				MmrGrade:				players.GetMmrGrade(pPlayer),
 				DuoOffer:				pPlayer.DuoOffer,
+				IsInDuo:				(pPlayer.DuoWith != ""),
 				CustomMapsState:		func()(int) {
 					if (pPlayer.CustomMapsConfirmed == 0) {
 						return 1;
@@ -107,6 +110,7 @@ func HttpReqGetOnlinePlayers(c *gin.Context) {
 				IsInGame:				pPlayer.IsInGame,
 				IsInQueue:				pPlayer.IsInQueue,
 				MmrGrade:				players.GetMmrGrade(pPlayer),
+				IsInDuo:				(pPlayer.DuoWith != ""),
 				CustomMapsState:		func()(int) {
 					if (pPlayer.CustomMapsConfirmed == 0) {
 						return 1;

@@ -54,6 +54,7 @@ func HttpReqGetGame(c *gin.Context) {
 						IsInGame:		pGamePlayer.IsInGame,
 						MmrGrade:		players.GetMmrGrade(pGamePlayer),
 						IsInQueue:		pGamePlayer.IsInQueue,
+						IsInDuo:		(pGamePlayer.DuoWith != ""),
 						CustomMapsState:		func()(int) {
 							if (pGamePlayer.CustomMapsConfirmed == 0) {
 								return 1;
@@ -74,6 +75,7 @@ func HttpReqGetGame(c *gin.Context) {
 						IsInGame:		pGamePlayer.IsInGame,
 						MmrGrade:		players.GetMmrGrade(pGamePlayer),
 						IsInQueue:		pGamePlayer.IsInQueue,
+						IsInDuo:		(pGamePlayer.DuoWith != ""),
 						CustomMapsState:		func()(int) {
 							if (pGamePlayer.CustomMapsConfirmed == 0) {
 								return 1;
