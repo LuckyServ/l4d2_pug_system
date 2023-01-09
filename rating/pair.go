@@ -96,7 +96,7 @@ func Pair(arUnpairedPlayers []*players.EntPlayer) ([]*players.EntPlayer, []*play
 	}
 
 	iRandInt, _ := utils.GetRandInt(0, len(arMostOfHappyDuos) - 1);
-	return arVariantsP[iRandInt][0], arVariantsP[iRandInt][1];
+	return arVariantsP[arMostOfHappyDuos[iRandInt]][0], arVariantsP[arMostOfHappyDuos[iRandInt]][1];
 }
 
 func PlacePlayers(arUnpairedPlayers []*players.EntPlayer, iBPicksTwo int) ([2][]*players.EntPlayer) {
