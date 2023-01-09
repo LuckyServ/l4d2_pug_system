@@ -9,7 +9,6 @@ import (
 
 
 func Watchers() {
-	GeneratePairingVariants();
 	go SetCron();
 }
 

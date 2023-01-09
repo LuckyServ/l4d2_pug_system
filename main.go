@@ -63,6 +63,7 @@ func main() {
 	}
 	i64CurTime := time.Now().UnixMilli();
 	players.I64LastPlayerlistUpdate = i64CurTime;
+	rating.GeneratePairingVariants();
 
 	//HTTP server init
 	api.GinInit();
