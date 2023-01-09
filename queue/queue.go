@@ -72,7 +72,19 @@ func Join(pPlayer *players.EntPlayer) { //Players must be locked outside
 	arQueue = append(arQueue, pPlayer);
 	IPlayersCount++;
 	pPlayer.IsInQueue = true;
-	pPlayer.InQueueSince = i64CurTime;
+
+	var iOnline int;
+	for _, pPlayer := range players.ArrayPlayers {
+		if ((pPlayer.IsOnline || pPlayer.IsInGame || pPlayer.IsInQueue) && pPlayer.ProfValidated && pPlayer.RulesAccepted && pPlayer.Access >= -1/*not banned*/) {
+			iOnline++;
+		}
+	}
+
+	if (iOnline >= 50) {
+		pPlayer.InQueueSince = i64CurTime;
+	} else {
+		pPlayer.InQueueSince = i64CurTime - I64MaxQueueWait;
+	}
 	pPlayer.IsReadyUpRequested = false;
 	pPlayer.IsReadyConfirmed = false;
 	if (IPlayersCount == 1) {

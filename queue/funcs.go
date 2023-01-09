@@ -69,7 +69,7 @@ func GetReadyPlayersOnly() ([]*players.EntPlayer) {
 	return arReadyQueue;
 }
 
-func SortTrimmedByMmr(arTrimmedQueue []*players.EntPlayer) {
+func SortTrimmedByMmr(arTrimmedQueue []*players.EntPlayer) []*players.EntPlayer {
 
 	//convert players into arrays of 1 or 2 players
 	var arOfArraysOfPlayers [][]*players.EntPlayer;
@@ -137,6 +137,7 @@ func SortTrimmedByMmr(arTrimmedQueue []*players.EntPlayer) {
 			arTrimmedQueue = append(arTrimmedQueue[:iNewPlace], append([]*players.EntPlayer{pNewerSinglePlayer}, arTrimmedQueue[iNewPlace:]...)...);
 		}
 	}
+	return arTrimmedQueue;
 }
 
 func AreDuoQueued(pPlayer1 *players.EntPlayer, pPlayer2 *players.EntPlayer) bool {

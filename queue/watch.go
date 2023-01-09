@@ -45,7 +45,7 @@ func WatchQueue() {
 					if (len(arTrimmedQueue) == 0) {
 						bWaitingForSinglePlayer = true;
 					} else {
-						SortTrimmedByMmr(arTrimmedQueue);
+						arTrimmedQueue = SortTrimmedByMmr(arTrimmedQueue);
 
 						//create games
 						iNewGames := len(arTrimmedQueue) / 8;

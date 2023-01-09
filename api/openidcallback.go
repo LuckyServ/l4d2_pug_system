@@ -174,5 +174,5 @@ func HttpReqOpenID(c *gin.Context) {
 	byBuffer := by32Buffer[:];
 	sCSRF := base64.StdEncoding.EncodeToString(byBuffer);
 	c.Redirect(303, sHomepage + "?auth3=" + url.QueryEscape(sCSRF));
-	fmt.Printf("New auth: %s, %s, %s\n", sSteamID64, sNickname, sCSRF);
+	//fmt.Printf("New auth: %s, %s, %s\n", sSteamID64, sNickname, sCSRF);
 }
