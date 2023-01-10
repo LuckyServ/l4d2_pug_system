@@ -86,7 +86,7 @@ func SortTrimmedByMmr(arTrimmedQueue []*players.EntPlayer) []*players.EntPlayer 
 		arOfArraysOfPlayers = append(arOfArraysOfPlayers, []*players.EntPlayer{arTrimmedQueue[iSize - 1]});
 	}
 
-	//sort
+	//sort by ranked/unranked and mmr
 	iArSize := len(arOfArraysOfPlayers);
 	if (iArSize > 1) {
 		bSorted := false;
@@ -103,6 +103,25 @@ func SortTrimmedByMmr(arTrimmedQueue []*players.EntPlayer) []*players.EntPlayer 
 			if (!bSorted) {
 				for i := iArSize - 2; i >= 0; i-- {
 					if (GetAvgMmr(arOfArraysOfPlayers[i]) > GetAvgMmr(arOfArraysOfPlayers[i + 1])) {
+						arOfArraysOfPlayers[i], arOfArraysOfPlayers[i + 1] = arOfArraysOfPlayers[i + 1], arOfArraysOfPlayers[i]; //switch
+					}
+				}
+			}
+		}
+		bSorted = false;
+		for !bSorted {
+			bSorted = true;
+			for i := 1; i < iArSize; i++ {
+				if (!IsGroupRanked(arOfArraysOfPlayers[i]) && IsGroupRanked(arOfArraysOfPlayers[i - 1])) {
+					arOfArraysOfPlayers[i], arOfArraysOfPlayers[i - 1] = arOfArraysOfPlayers[i - 1], arOfArraysOfPlayers[i]; //switch
+					if (bSorted) {
+						bSorted = false;
+					}
+				}
+			}
+			if (!bSorted) {
+				for i := iArSize - 2; i >= 0; i-- {
+					if (IsGroupRanked(arOfArraysOfPlayers[i]) && !IsGroupRanked(arOfArraysOfPlayers[i + 1])) {
 						arOfArraysOfPlayers[i], arOfArraysOfPlayers[i + 1] = arOfArraysOfPlayers[i + 1], arOfArraysOfPlayers[i]; //switch
 					}
 				}
@@ -199,4 +218,17 @@ func GetAvgMmr(arPlayers []*players.EntPlayer) int {
 		return (iMmrSum / iSize);
 	}
 	return 0;
+}
+
+func IsGroupRanked(arPlayers []*players.EntPlayer) bool {
+	iSize := len(arPlayers);
+	if (iSize > 0) {
+		for _, pPlayer := range arPlayers {
+			if (players.GetMmrGrade(pPlayer) == 0) {
+				return false;
+			}
+		}
+		return true;
+	}
+	return false;
 }

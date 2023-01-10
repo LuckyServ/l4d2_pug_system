@@ -1,5 +1,3 @@
-- [ ] Fix duo game placement
-- [ ] ReadyUp instantly pops during low online hours
 - [ ] "Banned by" in the public banlist
 - [ ] Personal backend auth keys
 - [ ] Check cert expiration date on /ping/ page
@@ -28,6 +26,9 @@
 - [ ] Automatically parse anticheat logs and ban based on them
 - [ ] Frontend: remove Accept button if already accepted
 
+- [x] Split ranked and unranked players
+- [x] ReadyUp instantly pops during low online hours
+- [x] Fix duo game placement
 - [x] Improve pairings
 - [x] Force playerlist update on maplist refresh
 - [x] Streamers block
