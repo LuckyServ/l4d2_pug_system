@@ -541,6 +541,7 @@ func RefreshServers() {
 func UpdateServersFromJSON(byData []byte) bool {
 	bErrorReadingGameServers := true;
 	GameServers = make([]GameServer, 0);
+	MapProxies = make(map[string]string);
 	jsonparser.ArrayEach(byData, func(valueServer []byte, dataType jsonparser.ValueType, offset int, err error) {
 
 		sDomain, _ := jsonparser.GetString(valueServer, "domain");

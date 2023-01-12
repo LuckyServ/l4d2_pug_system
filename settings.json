@@ -54,7 +54,7 @@
 		"name": "databasename"
 	},
 	"timeouts": {
-		"online_seconds": 90,
+		"online_seconds": 130,
 		"readyup_seconds": 25,
 		"player_auth_expire_days": 30
 	},

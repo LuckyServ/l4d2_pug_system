@@ -18,7 +18,7 @@ func WatchMemory() {
 		var memStat runtime.MemStats;
 		runtime.ReadMemStats(&memStat);
 
-		if (memStat.Sys > 2 * 1024 * 1024 * 1024) { //more than 2 gigs
+		if (memStat.Sys > 5 * 1024 * 1024 * 1024) { //more than 5 gigs
 			hMemStatDump, errMemStatDump := os.OpenFile("/root/memleakdump", os.O_CREATE|os.O_WRONLY, 0777);
 			if (errMemStatDump == nil) {
 				pprof.WriteHeapProfile(hMemStatDump);
