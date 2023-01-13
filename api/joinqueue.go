@@ -44,6 +44,8 @@ func HttpReqJoinQueue(c *gin.Context) {
 				mapResponse["error"] = "Please accept our rules first";
 			} else if (pPlayer.Access <= -2) {
 				mapResponse["error"] = "Sorry, you are banned, you gotta wait until it expires";
+			} else if (players.GetMmrGrade(pPlayer) >= 6 && players.CustomMapsConfirmState(pPlayer) != 3) {
+				mapResponse["error"] = "🇬🇧 Before joining game, please confirm download/installation of custom/addon maps<br><br>🇪🇸 Antes de buscar una partida, debes confirmar que has descargado e instalado los mapas custom<br><br>🇷🇺 Перед входом в игру, пожалуйста подтвердите что вы установили кастомные/аддоновые карты";
 			} else {
 
 				queue.Join(pPlayer);

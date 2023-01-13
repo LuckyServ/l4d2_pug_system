@@ -203,15 +203,11 @@ func ChooseConfoglConfig(iMmr int) (settings.ConfoglConfig) {
 func ChooseCampaign(arPlayers []*players.EntPlayer) int {
 
 	//decide if this lobby eligible for custom maps
-	var bCustomMapsAllowed bool;
-	var i64EarliestConfirmation int64;
+	var bCustomMapsAllowed bool = true;
 	for _, pPlayer := range arPlayers {
-		if (pPlayer.CustomMapsConfirmed < i64EarliestConfirmation) {
-			i64EarliestConfirmation = pPlayer.CustomMapsConfirmed;
+		if (players.CustomMapsConfirmState(pPlayer) != 3 && bCustomMapsAllowed) {
+			bCustomMapsAllowed = false;
 		}
-	}
-	if (settings.NewestCustomMap < i64EarliestConfirmation) {
-		bCustomMapsAllowed = true;
 	}
 	//if not, remove them
 	

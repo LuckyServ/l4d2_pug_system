@@ -280,3 +280,12 @@ func GetMmrGrade(pPlayer *EntPlayer) int { //Players must be locked outside
 	}
 	return iGrade;
 }
+
+func CustomMapsConfirmState(pPlayer *EntPlayer) int { //Players must be locked outside
+	if (pPlayer.CustomMapsConfirmed == 0) {
+		return 1;
+	} else if (settings.NewestCustomMap < pPlayer.CustomMapsConfirmed) {
+		return 3;
+	}
+	return 2;
+}

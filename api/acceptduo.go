@@ -31,6 +31,7 @@ func HttpAcceptDuo(c *gin.Context) {
 
 				i64CurTime := time.Now().UnixMilli();
 				pPlayer := players.MapPlayers[oSession.SteamID64];
+				iMmrGrade := players.GetMmrGrade(pPlayer);
 				if (pPlayer.IsInQueue) {
 					mapResponse["error"] = "You are already in queue";
 				} else if (pPlayer.IsInGame) {
@@ -47,8 +48,10 @@ func HttpAcceptDuo(c *gin.Context) {
 					mapResponse["error"] = "Please accept our rules first";
 				} else if (pPlayer.Access <= -2) {
 					mapResponse["error"] = "Sorry, you are banned, you gotta wait until it expires";
-				} else if (players.GetMmrGrade(pPlayer) == 0) {
+				} else if (iMmrGrade == 0) {
 					mapResponse["error"] = "You need to gain a rank before queueing up with your friend";
+				} else if (iMmrGrade >= 6 && players.CustomMapsConfirmState(pPlayer) != 3) {
+					mapResponse["error"] = "🇬🇧 Before joining game, please confirm download/installation of custom/addon maps<br><br>🇪🇸 Antes de buscar una partida, debes confirmar que has descargado e instalado los mapas custom<br><br>🇷🇺 Перед входом в игру, пожалуйста подтвердите что вы установили кастомные/аддоновые карты";
 				} else {
 					errAcceptDuo := queue.AcceptDuo(pPlayer, sInviteCode);
 					if (errAcceptDuo != nil) {

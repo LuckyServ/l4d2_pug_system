@@ -46,44 +46,30 @@ func HttpReqGetGame(c *gin.Context) {
 				var arPlayersA, arPlayersB []PlayerResponse;
 				for _, pGamePlayer := range pGame.PlayersA {
 					arPlayersA = append(arPlayersA, PlayerResponse{
-						SteamID64:		pGamePlayer.SteamID64,
-						NicknameBase64:	pGamePlayer.NicknameBase64,
-						AvatarSmall:	pGamePlayer.AvatarSmall,
-						Mmr:			pGamePlayer.Mmr,
-						Access:			pGamePlayer.Access,
-						IsInGame:		pGamePlayer.IsInGame,
-						MmrGrade:		players.GetMmrGrade(pGamePlayer),
-						IsInQueue:		pGamePlayer.IsInQueue,
-						IsInDuo:		(pGamePlayer.DuoWith != ""),
-						CustomMapsState:		func()(int) {
-							if (pGamePlayer.CustomMapsConfirmed == 0) {
-								return 1;
-							} else if (settings.NewestCustomMap < pGamePlayer.CustomMapsConfirmed) {
-								return 3;
-							}
-							return 2;
-						}(),
+						SteamID64:			pGamePlayer.SteamID64,
+						NicknameBase64:		pGamePlayer.NicknameBase64,
+						AvatarSmall:		pGamePlayer.AvatarSmall,
+						Mmr:				pGamePlayer.Mmr,
+						Access:				pGamePlayer.Access,
+						IsInGame:			pGamePlayer.IsInGame,
+						MmrGrade:			players.GetMmrGrade(pGamePlayer),
+						IsInQueue:			pGamePlayer.IsInQueue,
+						IsInDuo:			(pGamePlayer.DuoWith != ""),
+						CustomMapsState:	players.CustomMapsConfirmState(pGamePlayer),
 					});
 				}
 				for _, pGamePlayer := range pGame.PlayersB {
 					arPlayersB = append(arPlayersB, PlayerResponse{
-						SteamID64:		pGamePlayer.SteamID64,
-						NicknameBase64:	pGamePlayer.NicknameBase64,
-						AvatarSmall:	pGamePlayer.AvatarSmall,
-						Mmr:			pGamePlayer.Mmr,
-						Access:			pGamePlayer.Access,
-						IsInGame:		pGamePlayer.IsInGame,
-						MmrGrade:		players.GetMmrGrade(pGamePlayer),
-						IsInQueue:		pGamePlayer.IsInQueue,
-						IsInDuo:		(pGamePlayer.DuoWith != ""),
-						CustomMapsState:		func()(int) {
-							if (pGamePlayer.CustomMapsConfirmed == 0) {
-								return 1;
-							} else if (settings.NewestCustomMap < pGamePlayer.CustomMapsConfirmed) {
-								return 3;
-							}
-							return 2;
-						}(),
+						SteamID64:			pGamePlayer.SteamID64,
+						NicknameBase64:		pGamePlayer.NicknameBase64,
+						AvatarSmall:		pGamePlayer.AvatarSmall,
+						Mmr:				pGamePlayer.Mmr,
+						Access:				pGamePlayer.Access,
+						IsInGame:			pGamePlayer.IsInGame,
+						MmrGrade:			players.GetMmrGrade(pGamePlayer),
+						IsInQueue:			pGamePlayer.IsInQueue,
+						IsInDuo:			(pGamePlayer.DuoWith != ""),
+						CustomMapsState:	players.CustomMapsConfirmState(pGamePlayer),
 					});
 				}
 

@@ -47,6 +47,9 @@ func AcceptDuo(pPlayer *players.EntPlayer, sInviteCode string) error { //Players
 		if (pPlayer2.Access <= -2) {
 			return errors.New("Your friend is banned");
 		}
+		if (players.GetMmrGrade(pPlayer2) >= 6 && players.CustomMapsConfirmState(pPlayer2) != 3) {
+			return errors.New("Your friend needs to download/install custom maps before playing");
+		}
 
 		pPlayer.DuoWith = pPlayer2.SteamID64;
 		pPlayer2.DuoWith = pPlayer.SteamID64;

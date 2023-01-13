@@ -1,3 +1,4 @@
+- [ ] Shorten the period of resetting rq ban length
 - [ ] Twitch auth https://github.com/markbates/goth
 - [ ] "Banned by" in the public banlist
 - [ ] Personal backend auth keys

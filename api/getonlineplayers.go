@@ -77,14 +77,7 @@ func HttpReqGetOnlinePlayers(c *gin.Context) {
 				MmrGrade:				players.GetMmrGrade(pPlayer),
 				DuoOffer:				pPlayer.DuoOffer,
 				IsInDuo:				(pPlayer.DuoWith != ""),
-				CustomMapsState:		func()(int) {
-					if (pPlayer.CustomMapsConfirmed == 0) {
-						return 1;
-					} else if (settings.NewestCustomMap < pPlayer.CustomMapsConfirmed) {
-						return 3;
-					}
-					return 2;
-				}(),
+				CustomMapsState:		players.CustomMapsConfirmState(pPlayer),
 			};
 
 			players.MuPlayers.RUnlock();
@@ -111,14 +104,7 @@ func HttpReqGetOnlinePlayers(c *gin.Context) {
 				IsInQueue:				pPlayer.IsInQueue,
 				MmrGrade:				players.GetMmrGrade(pPlayer),
 				IsInDuo:				(pPlayer.DuoWith != ""),
-				CustomMapsState:		func()(int) {
-					if (pPlayer.CustomMapsConfirmed == 0) {
-						return 1;
-					} else if (settings.NewestCustomMap < pPlayer.CustomMapsConfirmed) {
-						return 3;
-					}
-					return 2;
-				}(),
+				CustomMapsState:		players.CustomMapsConfirmState(pPlayer),
 			});
 			if (pPlayer.IsInGame) {
 				iInGameCount++;
