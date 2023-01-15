@@ -12,7 +12,7 @@ import (
 	"../players"
 	"../settings"
 	"../utils"
-	"errors"
+	//"errors"
 )
 
 type TwitchStream struct {
@@ -199,86 +199,4 @@ func StreamlistEqual(arStreams []TwitchStream) bool {
 		}
 	}
 	return true;
-}
-
-func GetTwitchUserID(sUsername string) (string, error) {
-	if (sTwitchAuthToken == "") {
-		if (RequestTwitchAuthToken()) {
-			sUserID, iRespCode := RequestTwitchUserID(sUsername);
-			if (iRespCode == 200) {
-				return sUserID, nil;
-			} else if (iRespCode == -1) {
-				return "", errors.New("Twitch username not found");
-			} else {
-				return "", errors.New("Error communicating with Twitch api");
-			}
-		} else {
-			return "", errors.New("Error communicating with Twitch api");
-		}
-	} else {
-		sUserID, iRespCode := RequestTwitchUserID(sUsername);
-		if (iRespCode == 200) {
-			return sUserID, nil;
-		} else if (iRespCode == 401) {
-			if (RequestTwitchAuthToken()) {
-				sUserID2, iRespCode2 := RequestTwitchUserID(sUsername);
-				if (iRespCode2 == 200) {
-					return sUserID2, nil;
-				} else if (iRespCode == -1) {
-					return "", errors.New("Twitch username not found");
-				} else {
-					return "", errors.New("Error communicating with Twitch api");
-				}
-			} else {
-				return "", errors.New("Error communicating with Twitch api");
-			}
-		} else if (iRespCode == -1) {
-			return "", errors.New("Twitch username not found");
-		} else {
-			return "", errors.New("Error communicating with Twitch api");
-		}
-	}
-	return "", errors.New("Unknown error");
-}
-
-func RequestTwitchUserID(sUsername string) (string, int) {
-
-	clientUser := http.Client{
-		Timeout: 10 * time.Second,
-	}
-	var sUrl = fmt.Sprintf("https://api.twitch.tv/helix/users?login=%s", sUsername);
-	reqUser, _ := http.NewRequest("GET", sUrl, nil);
-	reqUser.Header.Set("Authorization", "Bearer "+sTwitchAuthToken);
-	reqUser.Header.Set("Client-Id", settings.TwitchClientID);
-	respUser, errUser := clientUser.Do(reqUser);
-	if (errUser != nil) {
-		return "", 0;
-	}
-	defer respUser.Body.Close();
-	if (respUser.StatusCode == 200) {
-		byResBody, errResBody := ioutil.ReadAll(respUser.Body);
-		if (errResBody != nil) {
-			return "", 0;
-		}
-
-		var sFoundUserID string;
-		jsonparser.ArrayEach(byResBody, func(valueUser []byte, dataType jsonparser.ValueType, offset int, err error) {
-			sUserLogin, _ := jsonparser.GetString(valueUser, "login");
-			sUserID, _ := jsonparser.GetString(valueUser, "id");
-			if (sUserLogin == sUsername && sUserID != "") {
-				sFoundUserID = sUserID;
-			}
-
-		}, "data");
-
-		if (sFoundUserID != "") {
-			return sFoundUserID, 200;
-		}
-		return "", -1;
-
-	} else {
-		iStatusCode := respUser.StatusCode;
-		return "", iStatusCode;
-	}
-	return "", 0;
 }

@@ -32,6 +32,7 @@ var MuAuth sync.RWMutex;
 
 //Limit authorizations per hour per IP
 func AuthRatelimits() {
+	go TwitchAuthRatelimits();
 	for {
 		time.Sleep(3600 * time.Second); //1 hour
 		MuAuth.Lock();

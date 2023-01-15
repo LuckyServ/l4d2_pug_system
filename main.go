@@ -31,6 +31,7 @@ MuDatabase
 MuStreams
 MuVPN
 MuAuth
+MuAuthTwitch
 MuA2S
 */
 
@@ -64,6 +65,7 @@ func main() {
 	i64CurTime := time.Now().UnixMilli();
 	players.I64LastPlayerlistUpdate = i64CurTime;
 	rating.GeneratePairingVariants();
+	api.SetupOpenID();
 
 	//HTTP server init
 	api.GinInit();

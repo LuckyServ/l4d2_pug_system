@@ -67,8 +67,9 @@ func GinInit() {
 	r.GET("/getglobalchat", HttpReqGetGlobalChat);
 
 	r.GET("/getstreams", HttpReqGetStreams);
-	r.GET("/addstream", HttpReqAddStream);
 	r.GET("/removestream", HttpReqRemoveStream);
+	r.GET("/twitchcallback", HttpTwitchOpenIDCallback);
+	r.GET("/twitchauth", HttpTwitchAuth);
 
 	r.GET("/offerduo", HttpOfferDuo);
 	r.GET("/acceptduo", HttpAcceptDuo);

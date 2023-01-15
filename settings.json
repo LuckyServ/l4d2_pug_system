@@ -14,7 +14,7 @@
 	"min_versus_games_played": 10,
 	"banlist_items_per_page": 50,
 	"ragequit_bans": {
-		"forget_ban_history_in_days": 60,
+		"forget_ban_history_in_days": 30,
 		"first_ban_hours": 12,
 		"second_ban_hours": 48,
 		"third_ban_hours": 240,

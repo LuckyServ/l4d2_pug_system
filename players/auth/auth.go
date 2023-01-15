@@ -59,6 +59,18 @@ func GetSession(sSessID string, sCSRF string) (EntSession, bool) {
 	return EntSession{}, false;
 }
 
+
+func GetSessionNoCSRF(sSessID string) (EntSession, bool) {
+	MuSessions.RLock();
+	defer MuSessions.RUnlock();
+
+	oSession, bFound := MapSessions[sSessID];
+	if (bFound) {
+		return oSession, true;
+	}
+	return EntSession{}, false;
+}
+
 func RemoveSession(sSessID string) bool {
 	MuSessions.Lock();
 	if _, ok := MapSessions[sSessID]; !ok {
