@@ -87,6 +87,26 @@ func HttpTwitchOpenIDCallback(c *gin.Context) {
 			players.MuPlayers.Lock();
 			pPlayer := players.MapPlayers[oSession.SteamID64];
 
+			for _, pPlayerSearch := range players.ArrayPlayers {
+				if (pPlayerSearch.Twitch == oAuthResponse.UserID && pPlayerSearch != pPlayer) {
+					pPlayerSearch.Twitch = "";
+					go database.UpdatePlayer(database.DatabasePlayer{
+						SteamID64:				pPlayerSearch.SteamID64,
+						NicknameBase64:			pPlayerSearch.NicknameBase64,
+						AvatarSmall:			pPlayerSearch.AvatarSmall,
+						AvatarBig:				pPlayerSearch.AvatarBig,
+						Mmr:					pPlayerSearch.Mmr,
+						MmrUncertainty:			pPlayerSearch.MmrUncertainty,
+						LastGameResult:			pPlayerSearch.LastGameResult,
+						Access:					pPlayerSearch.Access,
+						ProfValidated:			pPlayerSearch.ProfValidated,
+						RulesAccepted:			pPlayerSearch.RulesAccepted,
+						Twitch:					pPlayerSearch.Twitch,
+						CustomMapsConfirmed:	pPlayerSearch.CustomMapsConfirmed,
+						});
+				}
+			}
+
 			pPlayer.Twitch = oAuthResponse.UserID;
 			go database.UpdatePlayer(database.DatabasePlayer{
 				SteamID64:				pPlayer.SteamID64,
