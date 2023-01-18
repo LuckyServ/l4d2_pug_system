@@ -5,6 +5,8 @@ import (
 	"github.com/gin-gonic/gin"
 	"../players"
 	"../bans"
+	"strings"
+	"encoding/base64"
 )
 
 
@@ -23,6 +25,8 @@ func HttpReqGSCheckBan(c *gin.Context) {
 		if (bFound) {
 			if (pPlayer.Access <= -2) {
 				sResponse = fmt.Sprintf("%s\n	\"isbanned\" \"1\"", sResponse);
+				byBanReason, _ := base64.StdEncoding.DecodeString(pPlayer.BanReason);
+				sResponse = fmt.Sprintf("%s\n	\"ban_reason\" \"%s\"", sResponse, strings.ReplaceAll(string(byBanReason), `"`, `\"`));
 			} else {
 				sResponse = fmt.Sprintf("%s\n	\"isbanned\" \"0\"", sResponse);
 			}
@@ -31,19 +35,21 @@ func HttpReqGSCheckBan(c *gin.Context) {
 			players.MuPlayers.RUnlock();
 
 
-			var bIsDatabaseBanned bool;
+			var sDatabaseBanReason string;
 			bans.ChanLock <- true;
 			iBanlistSize := len(bans.ArrayBanRecords);
 			for i := iBanlistSize - 1; i >= 0; i-- {
 				if (bans.ArrayBanRecords[i].AcceptedAt == 0 && bans.ArrayBanRecords[i].SteamID64 == sSteamID64) {
-					bIsDatabaseBanned = true;
+					byBanReason, _ := base64.StdEncoding.DecodeString(bans.ArrayBanRecords[i].BanReasonBase64);
+					sDatabaseBanReason = string(byBanReason);
 					break;
 				}
 			}
 			bans.ChanUnlock <- true;
 
-			if (bIsDatabaseBanned) {
+			if (sDatabaseBanReason != "") {
 				sResponse = fmt.Sprintf("%s\n	\"isbanned\" \"1\"", sResponse);
+				sResponse = fmt.Sprintf("%s\n	\"ban_reason\" \"%s\"", sResponse, strings.ReplaceAll(sDatabaseBanReason, `"`, `\"`));
 			} else {
 				sResponse = fmt.Sprintf("%s\n	\"isbanned\" \"0\"", sResponse);
 			}
