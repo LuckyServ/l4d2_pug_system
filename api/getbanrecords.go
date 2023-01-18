@@ -13,6 +13,7 @@ type BanRecordResponse struct {
 	NicknameBase64		string		`json:"base64name"`
 	SteamID64			string		`json:"steamid64"`
 	CreatedAt			int64		`json:"created_at"`
+	BannedBySteamID64	string		`json:"banned_by"`
 	AcceptedAt			int64		`json:"accepted_at"`
 	BanLength			int64		`json:"ban_length"`
 	BanReasonBase64		string		`json:"base64reason"`
@@ -60,6 +61,7 @@ func HttpReqGetBanRecords(c *gin.Context) {
 				NicknameBase64:		arFilteredBanRecords[i].NicknameBase64,
 				SteamID64:			arFilteredBanRecords[i].SteamID64,
 				CreatedAt:			arFilteredBanRecords[i].CreatedAt,
+				BannedBySteamID64:	arFilteredBanRecords[i].BannedBySteamID64,
 				AcceptedAt:			arFilteredBanRecords[i].AcceptedAt,
 				BanLength:			arFilteredBanRecords[i].BanLength,
 				BanReasonBase64:	arFilteredBanRecords[i].BanReasonBase64,
