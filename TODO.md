@@ -1,4 +1,5 @@
 - [ ] Test if anticheat logging works
+- [ ] More chat messages about AFKing
 - [ ] "Banned by" in the public banlist
 - [ ] Personal backend auth keys
 - [ ] Check cert expiration date on /ping/ page
