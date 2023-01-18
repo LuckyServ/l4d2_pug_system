@@ -1,8 +1,6 @@
-- [x] Increase necessary players count on first readyup
 - [ ] Test if anticheat logging works
 - [ ] More chat messages about AFKing
 - [ ] "Banned by" in the public banlist
-- [ ] If player fails to ready up, his duo doesnt need to get blocked for 5 minutes
 - [ ] Personal backend auth keys
 - [ ] Check cert expiration date on /ping/ page
 - [ ] Finish game if the scores difference is too big
@@ -28,6 +26,8 @@
 - [ ] Automatically parse anticheat logs and ban based on them
 - [ ] Frontend: remove Accept button if already accepted
 
+- [x] If player fails to ready up, his duo doesnt need to get blocked for 5 minutes
+- [x] Increase necessary players count on first readyup
 - [x] Check for max mmr difference when pairing teams
 - [x] Twitch auth https://github.com/markbates/goth
 - [x] Shorten the period of resetting rq ban length

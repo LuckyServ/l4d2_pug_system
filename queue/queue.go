@@ -118,7 +118,7 @@ func Leave(pPlayer *players.EntPlayer, bGameStart bool) { //Players must be lock
 		i64CurTime := time.Now().UnixMilli();
 		if (bGameStart) {
 			pPlayer.NextQueueingAllowed = 0;
-		} else if (pPlayer.IsReadyUpRequested) {
+		} else if (pPlayer.IsReadyUpRequested && !pPlayer.IsReadyConfirmed) {
 			pPlayer.NextQueueingAllowed = i64CurTime + i64CooldownForReadyUpLeave;
 			pPlayer.DuoWith = "";
 		} else {
