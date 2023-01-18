@@ -21,8 +21,8 @@
 		"reason_text": "[AutoBan] Excessively long AFK / disconnected midgame / failed to ready up in time"
 	},
 	"mmr": {
-		"default_uncertainty": 20.0,
-		"increase_daily": 0.055,
+		"default_uncertainty": 33.0,
+		"increase_daily": 0.066,
 		"default_max": 3000,
 		"consider_stable": 1.5,
 		"absolute_win": 35,
