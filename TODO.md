@@ -1,7 +1,7 @@
+- [x] Increase necessary players count on first readyup
 - [ ] Test if anticheat logging works
 - [ ] More chat messages about AFKing
 - [ ] "Banned by" in the public banlist
-- [ ] Increase necessary players count on first readyup
 - [ ] If player fails to ready up, his duo doesnt need to get blocked for 5 minutes
 - [ ] Personal backend auth keys
 - [ ] Check cert expiration date on /ping/ page

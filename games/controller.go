@@ -213,7 +213,7 @@ func Control(pGame *EntGame) {
 				//do nothing
 			} else {
 				//ban those who isnt ready
-				if (len(arReadyPlayers) >= 2) { //at least 2 players must be ready for bans to happen
+				if (len(arReadyPlayers) >= 4) { //at least 4 players must be ready for bans to happen
 					var arBanReq []bans.EntAutoBanReq;
 					players.MuPlayers.RLock();
 					for _, pPlayer := range pGame.PlayersUnpaired {
