@@ -24,7 +24,7 @@
 		"default_uncertainty": 33.0,
 		"increase_daily": 0.066,
 		"default_max": 3000,
-		"consider_stable": 1.5,
+		"consider_stable": 4.0,
 		"absolute_win": 35,
 		"minimum_win": 20,
 		"mmr_diff_guaranteed_win": 1000,
