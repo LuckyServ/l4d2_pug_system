@@ -373,7 +373,7 @@ func BanIfSmurfBanned(arAccounts []string) {
 					Nickname:			string(byNickname),
 					Reason:				fmt.Sprintf("Duplicate of banned account (%s)", oMimicBanRecord.SteamID64),
 					BanLength:			oMimicBanRecord.BanLength,
-					RequestedBy:		oMimicBanRecord.BannedBySteamID64,
+					RequestedBy:		"bannedsmurf",
 				}
 				BanManual(oBanReq);
 			}
