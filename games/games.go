@@ -200,7 +200,7 @@ func ChooseConfoglConfig(iMmr int) (settings.ConfoglConfig) {
 	}; //shouldn't happen
 }
 
-func ChooseCampaign(arPlayers []*players.EntPlayer) int {
+func ChooseCampaign(arPlayers []*players.EntPlayer) settings.Campaign {
 
 	//decide if this lobby eligible for custom maps
 	var bCustomMapsAllowed bool = true;
@@ -211,11 +211,11 @@ func ChooseCampaign(arPlayers []*players.EntPlayer) int {
 	}
 	//if not, remove them
 	
-	var arCampaigns, arTestCampaigns []int;
-	for i, oCampaign := range settings.MapPool {
+	var arCampaigns, arTestCampaigns []settings.Campaign;
+	for _, oCampaign := range settings.MapPool {
 		if (oCampaign.DownloadLink == "" || bCustomMapsAllowed) {
-			arCampaigns = append(arCampaigns, i);
-			arTestCampaigns = append(arTestCampaigns, i);
+			arCampaigns = append(arCampaigns, oCampaign);
+			arTestCampaigns = append(arTestCampaigns, oCampaign);
 		}
 	}
 
@@ -227,7 +227,7 @@ func ChooseCampaign(arPlayers []*players.EntPlayer) int {
 				if (!bSomeonePlayedThisGamesAgo) {
 					bSomeonePlayedThisGamesAgo = true;
 				}
-				arTestCampaigns = utils.RemoveIntFromArray(pPlayer.LastCampaignsPlayed[iGamesAgo], arTestCampaigns);
+				arTestCampaigns = RemoveCampaignFromArray(pPlayer.LastCampaignsPlayed[iGamesAgo], arTestCampaigns);
 			}
 		}
 		if (!bSomeonePlayedThisGamesAgo || len(arTestCampaigns) == 0) {
@@ -237,7 +237,8 @@ func ChooseCampaign(arPlayers []*players.EntPlayer) int {
 		iGamesAgo++;
 	}
 
-	return utils.GetRandIntFromArray(arCampaigns);
+	iRand, _ := utils.GetRandInt(0, len(arCampaigns) - 1);
+	return arCampaigns[iRand];
 }
 
 func Implode4Players(arPlayers []*players.EntPlayer) string {
@@ -259,4 +260,18 @@ func FormatPingsLog(arPlayers []*players.EntPlayer) string {
 		return strings.Join(arFormatPings, ", ");
 	}
 	return "none";
+}
+
+func RemoveCampaignFromArray(sCampaignName string, arCampaigns []settings.Campaign) []settings.Campaign {
+	var iIndex int = -1;
+	for i, _ := range arCampaigns {
+		if (arCampaigns[i].Name == sCampaignName) {
+			iIndex = i;
+			break;
+		}
+	}
+	if (iIndex != -1) {
+		return append(arCampaigns[:iIndex], arCampaigns[iIndex+1:]...);
+	}
+	return arCampaigns;
 }

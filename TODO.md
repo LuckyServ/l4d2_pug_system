@@ -1,4 +1,3 @@
-- [ ] Save map history across reboots
 - [ ] Personal backend auth keys
 - [ ] Remove delay before joining queue
 - [ ] Visible anticheat logs
@@ -26,6 +25,7 @@
 - [ ] Automatically parse anticheat logs and ban based on them
 - [ ] Frontend: remove Accept button if already accepted
 
+- [x] Save map history across reboots
 - [x] More chat messages about AFKing
 - [x] Test if anticheat logging works
 - [x] "Banned by" in the public banlist

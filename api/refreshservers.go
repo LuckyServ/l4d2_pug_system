@@ -4,6 +4,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"../players/auth"
 	"../players"
+	"../games"
 	"../settings"
 )
 
@@ -22,7 +23,9 @@ func HttpRefreshServers(c *gin.Context) {
 			pPlayer := players.MapPlayers[oSession.SteamID64];
 			if (pPlayer.Access == 4) { //admin
 				mapResponse["success"] = true;
-				go settings.RefreshServers();
+				games.MuGames.Lock();
+				settings.RefreshServers();
+				games.MuGames.Unlock();
 			} else {
 				mapResponse["error"] = "You dont have access to this command";
 			}

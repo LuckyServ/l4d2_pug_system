@@ -12,6 +12,7 @@ import (
 	"github.com/buger/jsonparser"
 	"../database"
 	"../smurf"
+	"strings"
 )
 
 var sProfileClosed string = "Couldnt get your game details. Make sure your L4D2 stats is public, and try again in a minute. If you have just made your L4D2 stats public, you have to wait a few minutes before its available via api.";
@@ -104,6 +105,7 @@ func HttpReqValidateProf(c *gin.Context) {
 										RulesAccepted:			pPlayer.RulesAccepted,
 										Twitch:					pPlayer.Twitch,
 										CustomMapsConfirmed:	pPlayer.CustomMapsConfirmed,
+										LastCampaignsPlayed:	strings.Join(pPlayer.LastCampaignsPlayed, "|"),
 										});
 									go database.UpdateInitialGames(database.DatabasePlayer{
 										SteamID64:			pPlayer.SteamID64,

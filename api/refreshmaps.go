@@ -6,6 +6,7 @@ import (
 	"../players"
 	"../settings"
 	"time"
+	"../games"
 )
 
 
@@ -24,7 +25,9 @@ func HttpRefreshMaps(c *gin.Context) {
 			if (pPlayer.Access == 4) { //admin
 				mapResponse["success"] = true;
 				go func()() {
+					games.MuGames.Lock();
 					settings.RefreshMaps();
+					games.MuGames.Unlock();
 					players.I64LastPlayerlistUpdate = time.Now().UnixMilli();
 				}();
 			} else {

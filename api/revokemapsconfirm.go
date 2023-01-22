@@ -6,6 +6,7 @@ import (
 	"../players/auth"
 	"../database"
 	"time"
+	"strings"
 )
 
 
@@ -41,6 +42,7 @@ func HttpRevokeMapsConfirm(c *gin.Context) {
 					RulesAccepted:			pPlayer.RulesAccepted,
 					Twitch:					pPlayer.Twitch,
 					CustomMapsConfirmed:	pPlayer.CustomMapsConfirmed,
+					LastCampaignsPlayed:	strings.Join(pPlayer.LastCampaignsPlayed, "|"),
 					});
 				players.I64LastPlayerlistUpdate = time.Now().UnixMilli();
 			}		

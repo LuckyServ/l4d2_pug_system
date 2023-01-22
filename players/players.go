@@ -10,6 +10,7 @@ import (
 	"../smurf"
 	"strconv"
 	"encoding/base64"
+	"strings"
 )
 
 type EntPlayer struct {
@@ -45,7 +46,7 @@ type EntPlayer struct {
 	LastChatMessage			int64 //Last chat message //unix timestamp in milliseconds
 	LastTicketActivity		int64 //Last ticket activity //unix timestamp in milliseconds
 	GameServerPings			map[string]int
-	LastCampaignsPlayed		[]int //array of values from 0 to (len(settings.CampaignNames) - 1)
+	LastCampaignsPlayed		[]string
 	Twitch					string
 	DuoWith					string
 	DuoOffer				string
@@ -106,6 +107,7 @@ func RestorePlayers() bool { //no need to lock maps
 			RulesAccepted:			oDBPlayer.RulesAccepted,
 			Twitch:					oDBPlayer.Twitch,
 			CustomMapsConfirmed:	oDBPlayer.CustomMapsConfirmed,
+			LastCampaignsPlayed:	strings.Split(oDBPlayer.LastCampaignsPlayed, "|"),
 		};
 		MapPlayers[oDBPlayer.SteamID64] = pPlayer;
 		ArrayPlayers = append(ArrayPlayers, pPlayer);
@@ -184,6 +186,7 @@ func AddPlayerAuth(sSteamID64 string, sNicknameBase64 string, sAvatarSmall strin
 			RulesAccepted:			pPlayer.RulesAccepted,
 			Twitch:					pPlayer.Twitch,
 			CustomMapsConfirmed:	pPlayer.CustomMapsConfirmed,
+			LastCampaignsPlayed:	strings.Join(pPlayer.LastCampaignsPlayed, "|"),
 			});
 	}
 	MuPlayers.Unlock();

@@ -30,10 +30,10 @@ func Control(pGame *EntGame) {
 	//Choose maps
 	players.MuPlayers.Lock();
 	MuGames.Lock();
-	i64CmpgnIdx := ChooseCampaign(pGame.PlayersUnpaired);
-	pGame.CampaignName = settings.MapPool[i64CmpgnIdx].Name;
-	pGame.Maps = settings.MapPool[i64CmpgnIdx].Maps;
-	pGame.MapDownloadLink = settings.MapPool[i64CmpgnIdx].DownloadLink;
+	oCampaign := ChooseCampaign(pGame.PlayersUnpaired);
+	pGame.CampaignName = oCampaign.Name;
+	pGame.Maps = oCampaign.Maps;
+	pGame.MapDownloadLink = oCampaign.DownloadLink;
 	pGame.State = StateCampaignChosen;
 	SetLastUpdated(pGame.PlayersUnpaired);
 	MuGames.Unlock();
@@ -311,11 +311,11 @@ func Control(pGame *EntGame) {
 	for _, pPlayer := range pGame.PlayersUnpaired {
 
 		arCampaignsPlayed := pPlayer.LastCampaignsPlayed; //store played campaign
-		iBuffer := utils.GetIntIdxInArray(i64CmpgnIdx, arCampaignsPlayed);
+		iBuffer := utils.GetStringIdxInArray(pGame.CampaignName, arCampaignsPlayed);
 		if (iBuffer != -1) {
 			arCampaignsPlayed = append(arCampaignsPlayed[:iBuffer], arCampaignsPlayed[iBuffer+1:]...);
 		}
-		pPlayer.LastCampaignsPlayed = append([]int{i64CmpgnIdx}, arCampaignsPlayed...);
+		pPlayer.LastCampaignsPlayed = append([]string{pGame.CampaignName}, arCampaignsPlayed...);
 
 		if (strings.HasPrefix(pPlayer.SteamID64, "7")) {
 			go database.UpdatePlayer(database.DatabasePlayer{
@@ -331,6 +331,7 @@ func Control(pGame *EntGame) {
 				RulesAccepted:			pPlayer.RulesAccepted,
 				Twitch:					pPlayer.Twitch,
 				CustomMapsConfirmed:	pPlayer.CustomMapsConfirmed,
+				LastCampaignsPlayed:	strings.Join(pPlayer.LastCampaignsPlayed, "|"),
 				});
 		}
 	}

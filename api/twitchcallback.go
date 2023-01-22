@@ -12,6 +12,7 @@ import (
 	"../players"
 	"../players/auth"
 	"../database"
+	"strings"
 )
 
 
@@ -103,6 +104,7 @@ func HttpTwitchOpenIDCallback(c *gin.Context) {
 						RulesAccepted:			pPlayerSearch.RulesAccepted,
 						Twitch:					pPlayerSearch.Twitch,
 						CustomMapsConfirmed:	pPlayerSearch.CustomMapsConfirmed,
+						LastCampaignsPlayed:	strings.Join(pPlayerSearch.LastCampaignsPlayed, "|"),
 						});
 				}
 			}
@@ -121,6 +123,7 @@ func HttpTwitchOpenIDCallback(c *gin.Context) {
 				RulesAccepted:			pPlayer.RulesAccepted,
 				Twitch:					pPlayer.Twitch,
 				CustomMapsConfirmed:	pPlayer.CustomMapsConfirmed,
+				LastCampaignsPlayed:	strings.Join(pPlayer.LastCampaignsPlayed, "|"),
 				});
 			players.MuPlayers.Unlock();
 		}

@@ -142,6 +142,7 @@ func ApplyBanToPlayer(sSteamID64 string, iAccess int, sBanReason string, i64Bann
 			RulesAccepted:			pPlayer.RulesAccepted,
 			Twitch:					pPlayer.Twitch,
 			CustomMapsConfirmed:	pPlayer.CustomMapsConfirmed,
+			LastCampaignsPlayed:	strings.Join(pPlayer.LastCampaignsPlayed, "|"),
 			});
 		
 		players.I64LastPlayerlistUpdate = time.Now().UnixMilli();
@@ -240,6 +241,7 @@ func UnbanManual(sSteamID64 string) {
 			RulesAccepted:			pPlayer.RulesAccepted,
 			Twitch:					pPlayer.Twitch,
 			CustomMapsConfirmed:	pPlayer.CustomMapsConfirmed,
+			LastCampaignsPlayed:	strings.Join(pPlayer.LastCampaignsPlayed, "|"),
 			});
 	}
 	players.MuPlayers.Unlock();

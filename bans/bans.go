@@ -4,6 +4,7 @@ import (
 	"time"
 	"../players"
 	"../database"
+	"strings"
 )
 
 
@@ -75,6 +76,7 @@ func WatchUnbans() {
 					RulesAccepted:			pPlayer.RulesAccepted,
 					Twitch:					pPlayer.Twitch,
 					CustomMapsConfirmed:	pPlayer.CustomMapsConfirmed,
+					LastCampaignsPlayed:	strings.Join(pPlayer.LastCampaignsPlayed, "|"),
 					});
 
 				players.I64LastPlayerlistUpdate = i64CurTime;

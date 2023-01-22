@@ -12,6 +12,7 @@ import (
 	"../database"
 	"encoding/base64"
 	"github.com/buger/jsonparser"
+	"strings"
 )
 
 var sErr string = "Error retrieving nickname";
@@ -75,6 +76,7 @@ func HttpReqUpdateNameAvatar(c *gin.Context) {
 								RulesAccepted:			pPlayer.RulesAccepted,
 								Twitch:					pPlayer.Twitch,
 								CustomMapsConfirmed:	pPlayer.CustomMapsConfirmed,
+								LastCampaignsPlayed:	strings.Join(pPlayer.LastCampaignsPlayed, "|"),
 								});
 							players.MuPlayers.Unlock();
 

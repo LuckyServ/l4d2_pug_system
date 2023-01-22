@@ -5,6 +5,7 @@ import (
 	"../players"
 	"../database"
 	"../players/auth"
+	"strings"
 )
 
 
@@ -36,6 +37,7 @@ func HttpReqRemoveStream(c *gin.Context) {
 					RulesAccepted:			pPlayer.RulesAccepted,
 					Twitch:					pPlayer.Twitch,
 					CustomMapsConfirmed:	pPlayer.CustomMapsConfirmed,
+					LastCampaignsPlayed:	strings.Join(pPlayer.LastCampaignsPlayed, "|"),
 					});
 			} else {
 				mapResponse["error"] = "No stream attached";

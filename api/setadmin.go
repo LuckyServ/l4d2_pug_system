@@ -7,6 +7,7 @@ import (
 	"../database"
 	"strconv"
 	"time"
+	"strings"
 )
 
 
@@ -46,6 +47,7 @@ func HttpReqSetAdmin(c *gin.Context) {
 							RulesAccepted:			pPlayer.RulesAccepted,
 							Twitch:					pPlayer.Twitch,
 							CustomMapsConfirmed:	pPlayer.CustomMapsConfirmed,
+							LastCampaignsPlayed:	strings.Join(pPlayer.LastCampaignsPlayed, "|"),
 							});
 							players.I64LastPlayerlistUpdate = time.Now().UnixMilli();
 						mapResponse["success"] = true;

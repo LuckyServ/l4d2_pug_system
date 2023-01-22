@@ -49,6 +49,7 @@ func GetGameServers(arPlayersA []*players.EntPlayer, arPlayersB []*players.EntPl
 	var arPriority []int;
 
 	players.MuPlayers.RLock();
+	MuGames.RLock();
 	for _, oServer := range settings.GameServers {
 		var iTeamPingDiff, iAvgPing, iMaxPing, _ = CalcPings(arPlayersA, arPlayersB, oServer.IP);
 
@@ -59,6 +60,7 @@ func GetGameServers(arPlayersA []*players.EntPlayer, arPlayersB []*players.EntPl
 			arPriority = append(arPriority, iPriority);
 		}
 	}
+	MuGames.RUnlock();
 	players.MuPlayers.RUnlock();
 
 	SortByPriority(arGameServers, arPriority);
