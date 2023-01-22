@@ -166,12 +166,6 @@
 			"maps": ["dprm1_milltown_a", "dprm2_sugarmill_a", "dprm3_sugarmill_b", "dprm4_milltown_b"],
 			"download": "https://l4d2center.com/maps/downpour_1.zip",
 			"last_updated": 1
-		},
-		{
-			"name": "Open Road",
-			"maps": ["x1m1_cliffs", "x1m2_path", "x1m3_city", "x1m4_forest"],
-			"download": "https://l4d2center.com/maps/openroad_1.zip",
-			"last_updated": 1
 		}
 	],
 	"game_servers": [
