@@ -511,7 +511,14 @@ public void SWReqCompleted_UploadResults(Handle hRequest, bool bFailure, bool bR
 					}
 					for (int i = 1; i <= MaxClients; i++) {
 						if (IsClientConnected(i) && !IsFakeClient(i)) {
-							KickClient(i, "Game ended: Team %s won (%d-%d)", sWinner, iSettledScores[0], iSettledScores[1]);
+							int iLobbyTeam = GetClientLobbyTeam(i);
+							if ((iLobbyTeam == 0 && iSettledScores[0] > iSettledScores[1]) || (iLobbyTeam == 1 && iSettledScores[1] > iSettledScores[0])) {
+								KickClient(i, "Game ended: you won (%d-%d)", iSettledScores[0], iSettledScores[1]);
+							} else if ((iLobbyTeam == 1 && iSettledScores[0] > iSettledScores[1]) || (iLobbyTeam == 0 && iSettledScores[1] > iSettledScores[0])) {
+								KickClient(i, "Game ended: enemy won (%d-%d)", iSettledScores[0], iSettledScores[1]);
+							} else {
+								KickClient(i, "Game ended: team %s won (%d-%d)", sWinner, iSettledScores[0], iSettledScores[1]);
+							}
 						}
 					}
 					ClearReservation();
@@ -755,6 +762,23 @@ int GetClientLobbyParticipant(int client) {
 		for (int i = 0; i < 8; i++) {
 			if (StrEqual(arPlayersAll[i], sSteamID64)) {
 				return i;
+			}
+		}
+	}
+	return -1;
+}
+
+int GetClientLobbyTeam(int client) {
+	if (iServerReserved != 1) {
+		return -1;
+	}
+	char sSteamID64[20];
+	if (GetClientAuthId(client, AuthId_SteamID64, sSteamID64, sizeof(sSteamID64), false)) {
+		for (int i = 0; i < 4; i++) {
+			if (StrEqual(arPlayersA[i], sSteamID64)) {
+				return 0;
+			} else if (StrEqual(arPlayersB[i], sSteamID64)) {
+				return 1;
 			}
 		}
 	}
@@ -1027,6 +1051,9 @@ public Action Timer_CountAbsence(Handle timer) {
 					if (arPlayersAll[i][0] == '7') {
 						iAbsenceCounter[i] = iAbsenceCounter[i] + 1;
 						iSingleAbsence[i] = iSingleAbsence[i] + 1;
+						if (client > 0) {
+							PrintToChat(client, "[l4d2center.com] The game is paused because of you. If you don't !ready up in %d seconds, the game ends", MinVal(iMaxAbsent - iAbsenceCounter[i], iMaxSingleAbsent - iSingleAbsence[i]));
+						}
 					}
 				}
 				if (client > 0 && bResponsibleForPause[i]) {
@@ -1053,6 +1080,8 @@ public Action Timer_CountAbsence(Handle timer) {
 										if (!bPrinted[i]) {
 											bPrinted[i] = true;
 											PrintToChatAll("[l4d2center.com] %N is AFK. If he doesnt ready up in %d seconds, the game ends", client, MinVal(iMaxAbsent - iAbsenceCounter[i], iMaxSingleAbsent - iSingleAbsence[i]));
+										} else {
+											PrintToChat(client, "[l4d2center.com] You are AFK. If you don't ready up in %d seconds, the game ends", MinVal(iMaxAbsent - iAbsenceCounter[i], iMaxSingleAbsent - iSingleAbsence[i]));
 										}
 										return Plugin_Continue;
 									}
