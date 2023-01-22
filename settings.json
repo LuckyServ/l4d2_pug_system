@@ -162,6 +162,12 @@
 			"last_updated": 1
 		},
 		{
+			"name": "Suicide Blitz 2",
+			"maps": ["l4d2_stadium2_riverwalk", "l4d2_stadium3_city1", "l4d2_stadium4_city2"],
+			"download": "https://l4d2center.com/maps/suicideblitz2_1.zip",
+			"last_updated": 1
+		},
+		{
 			"name": "Hard Rain Downpour",
 			"maps": ["dprm1_milltown_a", "dprm2_sugarmill_a", "dprm3_sugarmill_b", "dprm4_milltown_b"],
 			"download": "https://l4d2center.com/maps/downpour_1.zip",
