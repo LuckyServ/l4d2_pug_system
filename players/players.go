@@ -107,7 +107,13 @@ func RestorePlayers() bool { //no need to lock maps
 			RulesAccepted:			oDBPlayer.RulesAccepted,
 			Twitch:					oDBPlayer.Twitch,
 			CustomMapsConfirmed:	oDBPlayer.CustomMapsConfirmed,
-			LastCampaignsPlayed:	strings.Split(oDBPlayer.LastCampaignsPlayed, "|"),
+			LastCampaignsPlayed:	func()([]string){
+				if (oDBPlayer.LastCampaignsPlayed == "") {
+					return []string{};
+				} else {
+					return strings.Split(oDBPlayer.LastCampaignsPlayed, "|");
+				}
+			}(),
 		};
 		MapPlayers[oDBPlayer.SteamID64] = pPlayer;
 		ArrayPlayers = append(ArrayPlayers, pPlayer);

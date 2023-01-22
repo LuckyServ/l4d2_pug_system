@@ -1,21 +1,19 @@
 - [ ] Personal backend auth keys
 - [ ] Remove delay before joining queue
-- [ ] Visible anticheat logs
+- [ ] An admin panel to show anticheat logs
+- [ ] Prevent kickspec
+- [ ] Limit number of tickets in history
 - [ ] Check cert expiration date on /ping/ page
 - [ ] Finish game if the scores difference is too big
 - [ ] Add match info to server gamerules
 - [ ] Fix readyup bug
 - [ ] Output side api requests stat
-- [ ] Limit number of tickets in history
 - [ ] Add check on protest page if a player can protest ban
 - [ ] Allow small pics in chat
 - [ ] IsClientTimingOut in the AFK detection in SM plugin, or solve AFKs some other way
 - [ ] An admin panel to show information about players
-- [ ] An admin panel to show anticheat logs
-- [ ] Shut down RU servers on non-EU playtime
 - [ ] Page with list of all players
 - [ ] If no ping info available, use the old info
-- [ ] Alerts on site that dont block scripts
 - [ ] Adapt to Cloudflare challenges
 - [ ] Allow dead survivors to rq games without ban on last map on 2nd chapter
 - [ ] Fix exploiting the initial ready up timelimit
@@ -23,8 +21,8 @@
 - [ ] Check double html escaping of names
 - [ ] Default config for the case when zonemod is broken
 - [ ] Automatically parse anticheat logs and ban based on them
-- [ ] Frontend: remove Accept button if already accepted
 
+- [x] Alerts on site that dont block scripts
 - [x] Save map history across reboots
 - [x] More chat messages about AFKing
 - [x] Test if anticheat logging works
