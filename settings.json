@@ -150,9 +150,21 @@
 			"last_updated": 1
 		},
 		{
+			"name": "Haunted Forest",
+			"maps": ["hf01_theforest", "hf02_thesteeple", "hf03_themansion", "hf04_escape"],
+			"download": "https://l4d2center.com/maps/hauntedforest_v3_1.zip",
+			"last_updated": 1
+		},
+		{
 			"name": "Detour Ahead",
 			"maps": ["cdta_01detour", "cdta_02road", "cdta_03warehouse", "cdta_04onarail"],
 			"download": "https://l4d2center.com/maps/detourahead_1.zip",
+			"last_updated": 1
+		},
+		{
+			"name": "Dead Before Dawn",
+			"maps": ["l4d_dbd2dc_anna_is_gone", "l4d_dbd2dc_the_mall", "l4d_dbd2dc_clean_up", "l4d_dbd2dc_undead_center"],
+			"download": "https://cdn.flxcs.ru/p/deadbeforedawn2_dc_1.zip",
 			"last_updated": 1
 		},
 		{
