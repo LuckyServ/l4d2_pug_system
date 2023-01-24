@@ -33,7 +33,7 @@ func HttpReqGSAntiCheatLogs(c *gin.Context) {
 
 			sResponse = fmt.Sprintf("%s\n	\"success\" \"1\"", sResponse);
 
-			sBuffer := fmt.Sprintf("Time: %s, game %s, log line: %s", time.Now().Format("01/Jan/2006 - 15:04:05.00 MST"), sGameID, sLogLine);
+			sBuffer := fmt.Sprintf("Time: %s, game %s, log line: %s", time.Now().Format("02/Jan/2006 - 15:04:05.00 MST"), sGameID, sLogLine);
 			go database.AntiCheatLog(base64.StdEncoding.EncodeToString([]byte(sBuffer)));
 
 		} else {

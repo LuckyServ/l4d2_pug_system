@@ -1,8 +1,10 @@
+- [ ] Option to delete ban from database
 - [ ] Personal backend auth keys
 - [ ] Remove delay before joining queue
 - [ ] An admin panel to show anticheat logs
 - [ ] Prevent kickspec
 - [ ] Limit number of tickets in history
+- [ ] Refresh streams logos sometimes
 - [ ] Check cert expiration date on /ping/ page
 - [ ] Finish game if the scores difference is too big
 - [ ] Add match info to server gamerules
