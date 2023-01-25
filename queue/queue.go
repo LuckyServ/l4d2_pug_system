@@ -18,9 +18,6 @@ var bWaitingForSinglePlayer bool;
 
 var MapDuoOffers = make(map[string]*players.EntPlayer, 0);
 
-var i64CooldownForReadyUpLeave int64 = 5 * 60 * 1000; //ms
-var i64CooldownForLeave int64 = 5 * 1000; //ms
-
 
 func OfferDuo(pPlayer *players.EntPlayer) { //Players must be locked outside
 	if (pPlayer.DuoOffer != "") {
@@ -115,16 +112,7 @@ func Leave(pPlayer *players.EntPlayer, bGameStart bool) { //Players must be lock
 			bWaitingForSinglePlayer = false;
 		}
 
-		i64CurTime := time.Now().UnixMilli();
-		if (bGameStart) {
-			pPlayer.NextQueueingAllowed = 0;
-		} else if (pPlayer.IsReadyUpRequested && !pPlayer.IsReadyConfirmed) {
-			pPlayer.NextQueueingAllowed = i64CurTime + i64CooldownForReadyUpLeave;
-			pPlayer.DuoWith = "";
-		} else {
-			pPlayer.NextQueueingAllowed = i64CurTime + i64CooldownForLeave;
-			pPlayer.DuoWith = "";
-		}
+		pPlayer.NextQueueingAllowed = time.Now().UnixMilli() + 500; //500ms delay
 
 		pPlayer.IsInQueue = false;
 		pPlayer.InQueueSince = 0;

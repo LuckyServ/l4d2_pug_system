@@ -1,9 +1,7 @@
+- [ ] Limit number of tickets in history
 - [ ] Option to delete ban from database
 - [ ] Personal backend auth keys
-- [ ] Remove delay before joining queue
 - [ ] An admin panel to show anticheat logs
-- [ ] Prevent kickspec
-- [ ] Limit number of tickets in history
 - [ ] Check cert expiration date on /ping/ page
 - [ ] Finish game if the scores difference is too big
 - [ ] Add match info to server gamerules
@@ -15,7 +13,6 @@
 - [ ] An admin panel to show information about players
 - [ ] Page with list of all players
 - [ ] If no ping info available, use the old info
-- [ ] Adapt to Cloudflare challenges
 - [ ] Allow dead survivors to rq games without ban on last map on 2nd chapter
 - [ ] Fix exploiting the initial ready up timelimit
 - [ ] T2 and T1 configs for lower tier players
@@ -23,6 +20,8 @@
 - [ ] Default config for the case when zonemod is broken
 - [ ] Automatically parse anticheat logs and ban based on them
 
+- [x] Remove delay before joining queue
+- [x] Adapt to Cloudflare challenges
 - [x] Refresh streams logos sometimes
 - [x] Alerts on site that dont block scripts
 - [x] Save map history across reboots
