@@ -66,7 +66,7 @@ func Watchers() {
 		StateCreated:			"Game created",
 		StateCampaignChosen:	"Campaign selected",
 		StateTeamsPicked:		"Players paired",
-		StateWaitPings:			"Pinging servers",
+		StateWaitPings:			"Pinging servers. Do not close the browser tab.",
 		StateSelectServer:		"Selecting best available server",
 		StateNoServers:			"No free servers available. If no server found in 5 minutes, the game ends.",
 		StateWaitPlayersJoin:	"The server is ready. You have "+fmt.Sprintf("%d", settings.FirstReadyUpExpire / 60)+" minutes to join the server and Ready Up.",

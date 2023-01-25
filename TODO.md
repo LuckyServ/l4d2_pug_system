@@ -4,7 +4,6 @@
 - [ ] An admin panel to show anticheat logs
 - [ ] Prevent kickspec
 - [ ] Limit number of tickets in history
-- [ ] Refresh streams logos sometimes
 - [ ] Check cert expiration date on /ping/ page
 - [ ] Finish game if the scores difference is too big
 - [ ] Add match info to server gamerules
@@ -24,6 +23,7 @@
 - [ ] Default config for the case when zonemod is broken
 - [ ] Automatically parse anticheat logs and ban based on them
 
+- [x] Refresh streams logos sometimes
 - [x] Alerts on site that dont block scripts
 - [x] Save map history across reboots
 - [x] More chat messages about AFKing
