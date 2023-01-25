@@ -113,6 +113,9 @@ func Leave(pPlayer *players.EntPlayer, bGameStart bool) { //Players must be lock
 		}
 
 		pPlayer.NextQueueingAllowed = time.Now().UnixMilli() + 500; //500ms delay
+		if (!bGameStart) {
+			pPlayer.DuoWith = "";
+		}
 
 		pPlayer.IsInQueue = false;
 		pPlayer.InQueueSince = 0;
