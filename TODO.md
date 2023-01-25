@@ -1,4 +1,3 @@
-- [ ] Limit number of tickets in history
 - [ ] Option to delete ban from database
 - [ ] Personal backend auth keys
 - [ ] An admin panel to show anticheat logs
@@ -20,6 +19,7 @@
 - [ ] Default config for the case when zonemod is broken
 - [ ] Automatically parse anticheat logs and ban based on them
 
+- [x] Limit number of tickets in history
 - [x] Remove delay before joining queue
 - [x] Adapt to Cloudflare challenges
 - [x] Refresh streams logos sometimes
