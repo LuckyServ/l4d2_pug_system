@@ -80,7 +80,7 @@ func GetOpenedTicketsOfPlayer(sSteamID64 string) []DatabaseTicket {
 func GetClosedTicketsOfPlayer(sSteamID64 string) []DatabaseTicket {
 	MuDatabase.RLock();
 	var arDBTickets []DatabaseTicket;
-	dbQuery, errDbQuery := dbConn.Query("SELECT ticket_id,ticket_type,cteated_at FROM tickets_list WHERE created_by = '76561198034909367' AND is_closed = true ORDER BY cteated_at DESC LIMIT 5;");
+	dbQuery, errDbQuery := dbConn.Query("SELECT ticket_id,ticket_type,cteated_at FROM tickets_list WHERE created_by = '"+sSteamID64+"' AND is_closed = true ORDER BY cteated_at DESC LIMIT 5;");
 	if (errDbQuery == nil) {
 
 		for (dbQuery.Next()) {
