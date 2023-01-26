@@ -39,6 +39,7 @@ var ChanBanManual = make(chan EntManualBanReq); //locks Players
 var ChanAcceptBan = make(chan string); //locks Players
 var ChanSearchBan = make(chan string); //locks Players
 var ChanUnbanManual = make(chan string); //locks Players
+var ChanDeleteBan = make(chan int64); //locks Players
 var ChanAutoBanSmurfs = make(chan []string); //locks Players
 var ChanLock = make(chan bool);
 var ChanUnlock = make(chan bool);
@@ -99,6 +100,8 @@ func WatchChannels() {
 			SearchBan(sSteamID64);
 		case sSteamID64 := <-ChanUnbanManual: //locks Players
 			UnbanManual(sSteamID64);
+		case i64CreatedAt := <-ChanDeleteBan:
+			DeleteBan(i64CreatedAt);
 		case arAccounts := <-ChanAutoBanSmurfs: //locks Players
 			BanExcessiveSmurfs(arAccounts);
 			BanIfSmurfBanned(arAccounts);

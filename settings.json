@@ -151,7 +151,7 @@
 		},
 		{
 			"name": "Haunted Forest",
-			"maps": ["hf01_theforest", "hf02_thesteeple", "hf03_themansion", "hf04_escape"],
+			"maps": ["hf01_theforest", "hf02_thesteeple", "hf03_themansion"],
 			"download": "https://l4d2center.com/maps/hauntedforest_v3_1.zip",
 			"last_updated": 1
 		},

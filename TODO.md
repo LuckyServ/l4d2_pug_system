@@ -1,4 +1,5 @@
 - [ ] Option to delete ban from database
+- [ ] If a player gets banned for not joining the game on custom map, his map confirmation resets
 - [ ] Personal backend auth keys
 - [ ] An admin panel to show anticheat logs
 - [ ] Check cert expiration date on /ping/ page

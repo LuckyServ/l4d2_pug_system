@@ -270,6 +270,19 @@ func UnbanManual(sSteamID64 string) {
 	}
 }
 
+func DeleteBan(i64CreatedAt int64) {
+
+	iSize := len(ArrayBanRecords);
+	for i := iSize - 1; i >= 0; i-- {
+		if (ArrayBanRecords[i].CreatedAt == i64CreatedAt) {
+			database.DeleteBanRecord(i64CreatedAt);
+			ApplyBanToPlayer(ArrayBanRecords[i].SteamID64, 0, "", 0, 0, 0);
+			ArrayBanRecords = append(ArrayBanRecords[:i], ArrayBanRecords[i+1:]...);
+			return;
+		}
+	}
+}
+
 func RestoreBans() bool {
 	arDatabaseBanRecords := database.RestoreBans();
 	i64CurTime := time.Now().UnixMilli();

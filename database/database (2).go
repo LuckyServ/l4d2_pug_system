@@ -188,10 +188,10 @@ func UpdateBanRecord(oBanRecord DatabaseBanRecord) {
 
 func DeleteBanRecord(i64CreatedAt int64) {
 	MuDatabase.Lock();
-	dbQuery, errDbQuery := dbConn.Query("UPDATE banlist SET steamid64 = '"+oBanRecord.SteamID64+"', access = "+fmt.Sprintf("%d", oBanRecord.Access)+", steam_name = '"+oBanRecord.NicknameBase64+"', banned_by = '"+oBanRecord.BannedBySteamID64+"', accepted_on = "+fmt.Sprintf("%d", oBanRecord.AcceptedAt)+", banlength = "+fmt.Sprintf("%d", oBanRecord.BanLength)+", banreason = '"+oBanRecord.BanReasonBase64+"' WHERE created_on = "+fmt.Sprintf("%d", oBanRecord.CreatedAt)+";");
+	dbQuery, errDbQuery := dbConn.Query("DELETE FROM banlist WHERE created_on = "+fmt.Sprintf("%d", i64CreatedAt)+";");
 	if (errDbQuery == nil) {
 		dbQuery.Close();
-	} else {LogToFile("Error updating ban at UpdateBanRecord: "+oBanRecord.SteamID64);};
+	} else {LogToFile("Error deleting ban at DeleteBanRecord: "+fmt.Sprintf("%d", i64CreatedAt));};
 	MuDatabase.Unlock();
 }
 
