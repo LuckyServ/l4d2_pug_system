@@ -1,6 +1,3 @@
-- [ ] Option to delete ban from database
-- [ ] If a player gets banned for not joining the game on custom map, his map confirmation resets
-- [ ] Personal backend auth keys
 - [ ] An admin panel to show anticheat logs
 - [ ] Check cert expiration date on /ping/ page
 - [ ] Finish game if the scores difference is too big
@@ -20,6 +17,9 @@
 - [ ] Default config for the case when zonemod is broken
 - [ ] Automatically parse anticheat logs and ban based on them
 
+- [x] Personal backend auth keys
+- [x] Option to delete ban from database
+- [x] If a player gets banned for not joining the game on custom map, his map confirmation resets
 - [x] Limit number of tickets in history
 - [x] Remove delay before joining queue
 - [x] Adapt to Cloudflare challenges

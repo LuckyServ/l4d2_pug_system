@@ -12,7 +12,7 @@ import (
 var FilePath string;
 var LogPath string;
 var ListenPort string;
-var BackendAuthKey string;
+var MapBackendAuthKeys map[string]bool;
 var DefaultMmrUncertainty float32;
 var IncreaseMmrUncertainty float32;
 var MmrStable float32;
@@ -128,12 +128,6 @@ func ConfigFile() bool {
 	var i64Buffer int64;
 
 	ListenPort, errError = jsonparser.GetString(byData, "listen_port");
-	if (errError != nil) {
-		fmt.Printf("Error reading config file: %s\n", errError);
-		return false;
-	}
-
-	BackendAuthKey, errError = jsonparser.GetString(byData, "backend_auth_key");
 	if (errError != nil) {
 		fmt.Printf("Error reading config file: %s\n", errError);
 		return false;
@@ -477,7 +471,38 @@ func ConfigFile() bool {
 	if (!UpdateServersFromJSON(byData)) {
 		return false;
 	}
+	
+	//Backend auth keys
+	if (!UpdateAuthKeysFromJSON(byData)) {
+		return false;
+	}
 
+	return true;
+}
+
+func RefreshAuthKeys() {
+	byData, errFile := ioutil.ReadFile(FilePath);
+	if (errFile != nil) {
+		fmt.Printf("Error reading config file: %s\n", errFile);
+		return;
+	}
+	UpdateAuthKeysFromJSON(byData);
+}
+
+func UpdateAuthKeysFromJSON(byData []byte) bool {
+	bErrorReadingAuthKeys := true;
+	MapBackendAuthKeys = make(map[string]bool, 0);
+	jsonparser.ArrayEach(byData, func(valueAuthKey []byte, dataType jsonparser.ValueType, offset int, err error) {
+		sAuthKey := string(valueAuthKey);
+		if (sAuthKey != "") {
+			MapBackendAuthKeys[sAuthKey] = true;
+			bErrorReadingAuthKeys = false;
+		}
+	}, "backend_auth_keys");
+	if (bErrorReadingAuthKeys) {
+		fmt.Printf("Error reading config file on auth keys section\n");
+		return false;
+	}
 	return true;
 }
 

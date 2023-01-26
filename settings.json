@@ -8,7 +8,7 @@
 		"client_id": "aaaaaaaa",
 		"client_secret": "bbbbbbbb"
 	},
-	"backend_auth_key": "Verystrongbackendauthorizationkey",
+	"backend_auth_keys": ["Verystrongbackendauthorizationkey"],
 	"broken_state": false,
 	"steam_api_key": "1AAA1AAA1AAA1AAA1AAA1AAAAAA",
 	"min_versus_games_played": 10,

@@ -96,7 +96,11 @@ func RestoreSessions() bool { //no need to lock maps
 }
 
 func Backend(sKey string) bool {
-	if (sKey == settings.BackendAuthKey) {
+	if (sKey == "") {
+		return false;
+	}
+	_, bKeyFound := settings.MapBackendAuthKeys[sKey];
+	if (bKeyFound) {
 		return true;
 	}
 	return false;
