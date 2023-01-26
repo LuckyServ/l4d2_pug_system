@@ -215,16 +215,36 @@ func Control(pGame *EntGame) {
 				//ban those who isnt ready
 				if (len(arReadyPlayers) >= 4) { //at least 4 players must be ready for bans to happen
 					var arBanReq []bans.EntAutoBanReq;
-					players.MuPlayers.RLock();
+					players.MuPlayers.Lock();
 					for _, pPlayer := range pGame.PlayersUnpaired {
 						if (utils.GetStringIdxInArray(pPlayer.SteamID64, arReadyPlayers) == -1) {
 							arBanReq = append(arBanReq, bans.EntAutoBanReq{
 								SteamID64:			pPlayer.SteamID64,
 								NicknameBase64:		pPlayer.NicknameBase64,
 							});
+							if (pGame.MapDownloadLink != "") {
+								pPlayer.CustomMapsConfirmed = 0;
+								go database.UpdatePlayer(database.DatabasePlayer{
+									SteamID64:				pPlayer.SteamID64,
+									NicknameBase64:			pPlayer.NicknameBase64,
+									AvatarSmall:			pPlayer.AvatarSmall,
+									AvatarBig:				pPlayer.AvatarBig,
+									Mmr:					pPlayer.Mmr,
+									MmrUncertainty:			pPlayer.MmrUncertainty,
+									LastGameResult:			pPlayer.LastGameResult,
+									Access:					pPlayer.Access,
+									ProfValidated:			pPlayer.ProfValidated,
+									RulesAccepted:			pPlayer.RulesAccepted,
+									Twitch:					pPlayer.Twitch,
+									CustomMapsConfirmed:	pPlayer.CustomMapsConfirmed,
+									LastCampaignsPlayed:	strings.Join(pPlayer.LastCampaignsPlayed, "|"),
+									});
+								players.I64LastPlayerlistUpdate = time.Now().UnixMilli();
+							}
 						}
 					}
-					players.MuPlayers.RUnlock();
+					players.MuPlayers.Unlock();
+					time.Sleep(5 * time.Second);
 					for _, oBanReq := range arBanReq {
 						bans.ChanBanRQ <- oBanReq;
 					}
