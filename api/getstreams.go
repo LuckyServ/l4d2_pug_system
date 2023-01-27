@@ -23,6 +23,7 @@ func HttpReqGetStreams(c *gin.Context) {
 			mapResponse["authorized"] = true;
 			players.MuPlayers.RLock();
 			pPlayer := players.MapPlayers[oSession.SteamID64];
+			mapResponse["steamid64"] = oSession.SteamID64;
 			mapResponse["my_stream"] = pPlayer.Twitch;
 			players.MuPlayers.RUnlock();
 		}
