@@ -9,39 +9,6 @@ import (
 	"../players/auth"
 )
 
-type PlayerResponse struct {
-	SteamID64				string		`json:"steamid64"`
-	NicknameBase64			string		`json:"nickname_base64"`
-	AvatarSmall				string		`json:"avatar_small"`
-	Mmr						int			`json:"mmr"`
-	Access					int 		`json:"access"` //-2 - completely banned, -1 - chat banned, 0 - regular player, 1 - behaviour moderator, 2 - cheat moderator, 3 - behaviour+cheat moderator, 4 - full admin access
-	IsInGame				bool		`json:"is_ingame"`
-	IsInQueue				bool		`json:"is_inqueue"`
-	MmrGrade				int			`json:"mmr_grade"`
-	CustomMapsState			int			`json:"custom_maps"` //1 - never confirmed, 2 - update required, 3 - confirmed
-	IsInDuo					bool		`json:"in_duo"`
-}
-
-type PlayerResponseMe struct {
-	SteamID64				string		`json:"steamid64"`
-	NicknameBase64			string		`json:"nickname_base64"`
-	AvatarSmall				string		`json:"avatar_small"`
-	AvatarBig				string		`json:"avatar_big"`
-	Mmr						int			`json:"mmr"`
-	Access					int 		`json:"access"` //-2 - completely banned, -1 - chat banned, 0 - regular player, 1 - behaviour moderator, 2 - cheat moderator, 3 - behaviour+cheat moderator, 4 - full admin access
-	BanReason				string 		`json:"banreason"`
-	BanAcceptedAt			int64 		`json:"ban_accepted_at"`
-	BanLength				int64 		`json:"ban_length"`
-	IsInGame				bool		`json:"is_ingame"`
-	IsInQueue				bool		`json:"is_inqueue"`
-	MmrGrade				int			`json:"mmr_grade"`
-	ProfValidated			bool		`json:"profile_validated"` //Steam profile validated
-	RulesAccepted			bool		`json:"rules_accepted"` //Rules accepted
-	DuoOffer				string		`json:"duo_offer"`
-	CustomMapsState			int			`json:"custom_maps"` //1 - never confirmed, 2 - update required, 3 - confirmed
-	IsInDuo					bool		`json:"in_duo"`
-}
-
 
 func HttpReqGetOnlinePlayers(c *gin.Context) {
 

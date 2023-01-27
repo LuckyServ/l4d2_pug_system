@@ -44,6 +44,7 @@ func GinInit() {
 	r.GET("/logout", HttpReqLogout);
 
 	r.GET("/getonlineplayers", HttpReqGetOnlinePlayers);
+	r.GET("/getplayers", HttpReqGetPlayers);
 
 	r.GET("/getbanrecords", HttpReqGetBanRecords);
 
