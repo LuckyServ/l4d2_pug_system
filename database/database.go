@@ -67,6 +67,11 @@ type DatabaseGameLog struct {
 	Pings				string
 }
 
+type DatabaseAnticheatLog struct {
+	Index				int			`json:"idx"`
+	LogLineBase64		string		`json:"logline"`
+}
+
 var MuDatabase sync.RWMutex;
 
 
@@ -205,6 +210,7 @@ func RemoveSession(sSessID string) {
 }
 
 func LogGame(oGame DatabaseGameLog) {
+	MuDatabase.Lock();
 	//Delete if already logged (shouldn't happen, but just in case)
 	dbQueryDelete, errQueryDelete := dbConn.Query("DELETE FROM games_log WHERE game_id = '"+oGame.ID+"';");
 	if (errQueryDelete == nil) {
@@ -215,27 +221,34 @@ func LogGame(oGame DatabaseGameLog) {
 	if (errDbQuery == nil) {
 		dbQuery.Close();
 	} else {LogToFile("Error inserting game log at LogGame: "+oGame.ID);};
+	MuDatabase.Unlock();
 }
 
 func AntiCheatLog(sLogLineBase64 string) {
+	MuDatabase.Lock();
 	dbQuery, errDbQuery := dbConn.Query("INSERT INTO cheat_log(clogline) VALUES ('"+sLogLineBase64+"');");
 	if (errDbQuery == nil) {
 		dbQuery.Close();
 	} else {LogToFile("Error inserting anticheat log at AntiCheatLog: "+sLogLineBase64);};
+	MuDatabase.Unlock();
 }
 
 func GameServerChatLog(i64Time int64, sGameID string, sSteamID64 string, sTextBase64 string) {
+	MuDatabase.Lock();
 	dbQuery, errDbQuery := dbConn.Query("INSERT INTO gs_chat_log(created_at, gameid, steamid64, logline) VALUES ("+fmt.Sprintf("%d", i64Time)+", '"+sGameID+"', '"+sSteamID64+"', '"+sTextBase64+"');");
 	if (errDbQuery == nil) {
 		dbQuery.Close();
 	} else {LogToFile("Error inserting chat log at GameServerChatLog: "+sSteamID64);};
+	MuDatabase.Unlock();
 }
 
 func PublicChatLog(i64Time int64, sNicknameBase64 string, sSteamID64 string, sTextBase64 string) {
+	MuDatabase.Lock();
 	dbQuery, errDbQuery := dbConn.Query("INSERT INTO pub_chat_log(created_at, nickname, steamid64, logline) VALUES ("+fmt.Sprintf("%d", i64Time)+", '"+sNicknameBase64+"', '"+sSteamID64+"', '"+sTextBase64+"');");
 	if (errDbQuery == nil) {
 		dbQuery.Close();
 	} else {LogToFile("Error inserting chat log at PublicChatLog: "+sSteamID64);};
+	MuDatabase.Unlock();
 }
 
 func SaveVPNInfo(oVPNInfo DatabaseVPNInfo) {
@@ -321,6 +334,24 @@ func RestoreVPNInfo() []DatabaseVPNInfo {
 	}
 	MuDatabase.RUnlock();
 	return arDBVPNInfos;
+}
+
+func GetAnticheatLogs() []DatabaseAnticheatLog {
+	MuDatabase.RLock();
+	var arDBAnticheatLogs []DatabaseAnticheatLog;
+	dbQueryRetrieve, errQueryRetrieve := dbConn.Query("SELECT cidx,clogline FROM cheat_log ORDER BY cidx DESC LIMIT 10000;");
+	if (errQueryRetrieve == nil) {
+
+		for (dbQueryRetrieve.Next()) {
+			oDBAnticheatLog := DatabaseAnticheatLog{};
+			dbQueryRetrieve.Scan(&oDBAnticheatLog.Index, &oDBAnticheatLog.LogLineBase64);
+			arDBAnticheatLogs = append(arDBAnticheatLogs, oDBAnticheatLog);
+		}
+
+		dbQueryRetrieve.Close();
+	}
+	MuDatabase.RUnlock();
+	return arDBAnticheatLogs;
 }
 
 func LogToFile(sText string) {
