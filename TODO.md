@@ -4,7 +4,6 @@
 - [ ] Add match info to server gamerules
 - [ ] Fix readyup bug
 - [ ] Output side api requests stat
-- [ ] Add check on protest page if a player can protest ban
 - [ ] Allow small pics in chat
 - [ ] IsClientTimingOut in the AFK detection in SM plugin, or solve AFKs some other way
 - [ ] An admin panel to show information about players
