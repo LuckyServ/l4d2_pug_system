@@ -8,6 +8,7 @@ import (
 	_ "github.com/lib/pq"
 	"log"
 	"os"
+	"encoding/base64"
 )
 
 var dbConn *sql.DB;
@@ -345,6 +346,8 @@ func GetAnticheatLogs() []DatabaseAnticheatLog {
 		for (dbQueryRetrieve.Next()) {
 			oDBAnticheatLog := DatabaseAnticheatLog{};
 			dbQueryRetrieve.Scan(&oDBAnticheatLog.Index, &oDBAnticheatLog.LogLineBase64);
+			byDecoded, _ := base64.StdEncoding.DecodeString(oDBAnticheatLog.LogLineBase64);
+			oDBAnticheatLog.LogLineBase64 = string(byDecoded);
 			arDBAnticheatLogs = append(arDBAnticheatLogs, oDBAnticheatLog);
 		}
 
