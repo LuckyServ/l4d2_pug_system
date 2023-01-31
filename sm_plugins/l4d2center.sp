@@ -14,6 +14,7 @@ Handle hForwardGameEnded;
 Handle hMaxPlayers;
 bool ReadyUpLoaded;
 Handle mapConnected;
+Handle hCvarL4D2CReservation;
 //bool bRQDeclared;
 
 bool bWaitFirstReadyUp = true;
@@ -36,7 +37,7 @@ int iMaxSpecs;
 int iMaxPauses = 5;
 
 //GameInfo
-int iServerReserved = -1; //-2 - check failed, -1 - not checked, 0 - not reserved, 1 - reserved
+//int iServerReserved = -1; //-2 - check failed, -1 - not checked, 0 - not reserved, 1 - reserved
 int iPrevReserved = -1;
 char sGameID[32];
 char sPrevGameID[32];
@@ -82,6 +83,8 @@ public OnPluginStart() {
 	}
 	Format(sPublicIP, sizeof(sPublicIP), "%s:%d", sPublicIP, GetConVarInt(FindConVar("hostport")));
 
+	hCvarL4D2CReservation = CreateConVar("l4d2center_reservation_dont_change", "-1", "Current L4D2Center reservation status", FCVAR_NOTIFY);
+
 	hMaxPlayers = FindConVar("sv_maxplayers");
 	mapConnected = CreateTrie();
 	ReadyUpLoaded = LibraryExists("readyup");
@@ -90,6 +93,7 @@ public OnPluginStart() {
 	HookEvent("player_team", Event_PlayerTeam);
 	HookEvent("player_connect", Event_PlayerConnect);
 	HookEvent("player_disconnect", Event_PlayerDisconnect);
+	HookEvent("server_cvar", Event_CvarChanged, EventHookMode_Pre);
 
 	//AFK
 	AddCommandListener(OnCommandExecute, "spec_mode");
@@ -146,7 +150,7 @@ public Action Cmd_TestLogging(int client, int args) {
 }
 
 public Action Status_Cmd(int client, int args) {
-	PrintToChatAll("Server reservation: %d", iServerReserved);
+	PrintToChatAll("Server reservation: %d", GetConVarInt(hCvarL4D2CReservation));
 	PrintToChatAll("Requesting https://api.l4d2center.com/gs/getgame?auth_key=<hidden>");
 	PrintToChatAll("Server IP %s", sPublicIP);
 	char sUrl[256];
@@ -185,7 +189,7 @@ public void SWReqCompleted_TestRequest(Handle hRequest, bool bFailure, bool bReq
 }
 
 public Action GameID_Cmd(int client, int args) {
-	if (iServerReserved == 1) {
+	if (GetConVarInt(hCvarL4D2CReservation) == 1) {
 		ReplyToCommand(client, "L4D2Center: current Game ID is %s", sGameID);
 	}
 	return Plugin_Handled;
@@ -231,7 +235,7 @@ public Action SuicideRequestTimer(Handle timer, any userid) {
 }*/
 
 public Action Timer_AutoTeam(Handle timer) {
-	if (iServerReserved == 1) {
+	if (GetConVarInt(hCvarL4D2CReservation) == 1) {
 		bool bSomeoneSpecced;
 		for (int i = 1; i <= MaxClients; i++) {
 			if (IsClientInGame(i) && !IsFakeClient(i) && GetClientTeam(i) > 1) {
@@ -274,7 +278,7 @@ public Action Timer_UpdateGameState(Handle timer) {
 }
 
 public OnRoundIsLive() {
-	if (iServerReserved == 1) {
+	if (GetConVarInt(hCvarL4D2CReservation) == 1) {
 		bInRound = true;
 		bInMapTransition = false;
 		bTankKilled = false;
@@ -287,7 +291,7 @@ public OnRoundIsLive() {
 }
 
 public Action GameInfoReceived(Handle timer) {
-	if (iServerReserved == 1) {
+	if (GetConVarInt(hCvarL4D2CReservation) == 1) {
 
 		if (!StrEqual(sGameID, sPrevGameID)) {
 			if (!StrEqual(sPrevGameID, "")) {
@@ -311,7 +315,7 @@ public Action GameInfoReceived(Handle timer) {
 			ServerCommand("sm_resetmatch");
 			return Plugin_Continue;
 		}
-		iPrevReserved = iServerReserved;
+		iPrevReserved = GetConVarInt(hCvarL4D2CReservation);
 
 		//Maximum sv_maxplayers-8 spectators allowed
 		int iCurMaxSpecs = GetConVarInt(hMaxPlayers) - 8;
@@ -375,7 +379,7 @@ public Action GameInfoReceived(Handle timer) {
 		}
 
 
-	} else if (iServerReserved == 0) {
+	} else if (GetConVarInt(hCvarL4D2CReservation) == 0) {
 		if (iPrevReserved == 1) {
 			ClearReservation();
 			PrintToChatAll("[L4D2Center] Connection to the backend API died");
@@ -654,8 +658,8 @@ public void SWReqCompleted_GameInfo(Handle hRequest, bool bFailure, bool bReques
 		//PrintToServer("%s", sResponse);
 		Handle kvResponse = CreateKeyValues("VDFresponse");
 		if (StrContains(sResponse, "VDFresponse", true) > -1 && StringToKeyValues(kvResponse, sResponse)) {
-			iServerReserved = KvGetNum(kvResponse, "success", -1);
-			if (iServerReserved == 1) {
+			SetConVarInt(hCvarL4D2CReservation, KvGetNum(kvResponse, "success", -1));
+			if (GetConVarInt(hCvarL4D2CReservation) == 1) {
 
 				char sKeyBuffer[16];
 				for (int i = 0; i < 4; i++) {
@@ -686,7 +690,7 @@ public void SWReqCompleted_GameInfo(Handle hRequest, bool bFailure, bool bReques
 			}
 			Call_StartForward(hForwardGameInfoReceived);
 			Call_Finish();
-			if (iServerReserved > -1) {
+			if (GetConVarInt(hCvarL4D2CReservation) > -1) {
 				CreateTimer(1.0, GameInfoReceived);
 			}
 		}
@@ -694,8 +698,8 @@ public void SWReqCompleted_GameInfo(Handle hRequest, bool bFailure, bool bReques
 	}
 	CloseHandle(hRequest);
 
-	if (iServerReserved == -1) {
-		iServerReserved = -2;
+	if (GetConVarInt(hCvarL4D2CReservation) == -1) {
+		SetConVarInt(hCvarL4D2CReservation, -2);
 	}
 }
 
@@ -754,7 +758,7 @@ public void SWReqCompleted_Dummy(Handle hRequest, bool bFailure, bool bRequestSu
 }
 
 int GetClientLobbyParticipant(int client) {
-	if (iServerReserved != 1) {
+	if (GetConVarInt(hCvarL4D2CReservation) != 1) {
 		return -1;
 	}
 	char sSteamID64[20];
@@ -769,7 +773,7 @@ int GetClientLobbyParticipant(int client) {
 }
 
 int GetClientLobbyTeam(int client) {
-	if (iServerReserved != 1) {
+	if (GetConVarInt(hCvarL4D2CReservation) != 1) {
 		return -1;
 	}
 	char sSteamID64[20];
@@ -820,7 +824,7 @@ int GetPlayerCorrectTeam(int client) {
 }
 
 public void OnClientAuthorized(int client, const char[] auth) {
-	if (iServerReserved == 1 && !IsFakeClient(client)) {
+	if (GetConVarInt(hCvarL4D2CReservation) == 1 && !IsFakeClient(client)) {
 		if (GetClientLobbyParticipant(client) == -1) {
 			KickOnSpecsExceed(client);
 		}
@@ -829,7 +833,7 @@ public void OnClientAuthorized(int client, const char[] auth) {
 }
 
 public void OnClientPutInServer(int client) {
-	if (iServerReserved == 1 && !IsFakeClient(client) && !IsClientAuthorized(client)) {
+	if (GetConVarInt(hCvarL4D2CReservation) == 1 && !IsFakeClient(client) && !IsClientAuthorized(client)) {
 		if (GetClientLobbyParticipant(client) == -1) {
 			KickOnSpecsExceed(client);
 		}
@@ -907,7 +911,7 @@ public void Event_RoundEnd(Event event, const char[] name, bool dontBroadcast) {
 }
 
 void ClearReservation() {
-	iServerReserved = 0;
+	SetConVarInt(hCvarL4D2CReservation, 0);
 	iPrevReserved = 0;
 	strcopy(sGameID, sizeof(sGameID), "");
 	strcopy(sPrevGameID, sizeof(sPrevGameID), "");
@@ -978,7 +982,7 @@ KickOnSpecsExceed(client) {
 
 //AFK part
 public void OnPlayerRunCmdPost(int client, int buttons, int impulse, const float vel[3], const float angles[3], int weapon, int subtype, int cmdnum, int tickcount, int seed, const int mouse[2]) {
-	if (iServerReserved == 1 && client > 0 && client <= MaxClients && (iPrevButtons[client] != buttons || iPrevMouse[client][0] != mouse[0] || iPrevMouse[client][1] != mouse[1]) && IsClientInGame(client) && !IsFakeClient(client)) {
+	if (client > 0 && client <= MaxClients && (iPrevButtons[client] != buttons || iPrevMouse[client][0] != mouse[0] || iPrevMouse[client][1] != mouse[1]) && IsClientInGame(client) && !IsFakeClient(client)) {
 		iPrevButtons[client] = buttons;
 		iPrevMouse[client][0] = mouse[0];
 		iPrevMouse[client][1] = mouse[1];
@@ -990,7 +994,8 @@ Action OnBlockedCommand(int client, const char[] command, int argc) {
 	if (client > 0 && IsClientInGame(client) && !IsFakeClient(client)) {
 		iLastActivity[client] = GetTime();
 	}
-	if (iServerReserved == 1 || iServerReserved == -1) {
+	int iBuffer = GetConVarInt(hCvarL4D2CReservation);
+	if (iBuffer == 1 || iBuffer == -1) {
 		return Plugin_Handled;
 	}
 	return Plugin_Continue;
@@ -1004,7 +1009,7 @@ Action OnCommandExecute(int client, const char[] command, int argc) {
 }
 
 Action OnSayCommand(int client, const char[] command, int argc) {
-	if (iServerReserved == 1 && client > 0 && IsClientInGame(client) && !IsFakeClient(client)) {
+	if (GetConVarInt(hCvarL4D2CReservation) == 1 && client > 0 && IsClientInGame(client) && !IsFakeClient(client)) {
 		char sText[256];
 		GetCmdArgString(sText, sizeof(sText));
 		StripQuotes(sText);
@@ -1148,13 +1153,13 @@ SetResponsibleForPause(int iLobbyPlayer) {
 }
 
 public OnUnpause() {
-	if (iServerReserved == 1) {
+	if (GetConVarInt(hCvarL4D2CReservation) == 1) {
 		iLastUnpause = GetTime();
 	}
 }
 
 public void OnReadyCountdownCancelled(int client) {
-	if (iServerReserved == 1) {
+	if (GetConVarInt(hCvarL4D2CReservation) == 1) {
 		KickClient(client, "Please come back on the server when you are ready");
 	}
 }
@@ -1233,6 +1238,15 @@ void GoLogSteamAuthIssue(char[] sSteamID) {
 	SteamWorks_SendHTTPRequest(hSWReq);
 }
 
+Action Event_CvarChanged(Event event, const char[] name, bool dontBroadcast) {
+	char sCvar[64];
+	GetEventString(event, "cvarname", sCvar, sizeof(sCvar));
+	if (StrEqual(sCvar, "l4d2center_reservation_dont_change")) {
+		event.BroadcastDisabled = true;
+	}
+	return Plugin_Continue;
+}
+
 
 
 
@@ -1243,7 +1257,7 @@ void GoLogSteamAuthIssue(char[] sSteamID) {
 
 
 public int Native_GetServerReservation(Handle plugin, int numParams) {
-	return iServerReserved;
+	return GetConVarInt(hCvarL4D2CReservation);
 }
 
 public int Native_IsPlayerGameParticipant(Handle plugin, int numParams) {
