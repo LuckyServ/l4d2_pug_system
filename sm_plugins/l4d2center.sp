@@ -1067,7 +1067,7 @@ public Action Timer_CountAbsence(Handle timer) {
 				if (client > 0) {
 					int iTeam = GetClientTeam(client);
 					if (bInRound) {
-						if (iTeam > 1) {
+						if (iTeam > 0) {
 							if (iTime - iLastActivity[client] >= 30 && !(iTeam == 2 && !IsPlayerAlive(client))) {
 								if (arPlayersAll[i][0] == '7') {
 									iAbsenceCounter[i] = iAbsenceCounter[i] + 1;
@@ -1092,22 +1092,6 @@ public Action Timer_CountAbsence(Handle timer) {
 								}
 								if (iSingleAbsence[i] != 0) {
 									iSingleAbsence[i] = 0;
-								}
-							}
-						} else if (iTeam == 1) { //redundant, l4d2center players cant spectate
-							if (arPlayersAll[i][0] == '7') {
-								iAbsenceCounter[i] = iAbsenceCounter[i] + 1;
-								iSingleAbsence[i] = iSingleAbsence[i] + 1;
-								if (iTime - iLastUnpause >= 5) {
-									if (IsGoodTimeForPause()) {
-										ServerCommand("sm_forcepause");
-										SetResponsibleForPause(i);
-									}
-									if (!bPrinted[i]) {
-										bPrinted[i] = true;
-										PrintToChatAll("[l4d2center.com] %N left the game. If he doesnt come back and ready up in %d seconds, the game ends", client, MinVal(iMaxAbsent - iAbsenceCounter[i], iMaxSingleAbsent - iSingleAbsence[i]));
-									}
-									return Plugin_Continue;
 								}
 							}
 						} else {
