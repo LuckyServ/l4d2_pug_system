@@ -84,6 +84,7 @@ public OnPluginStart() {
 	Format(sPublicIP, sizeof(sPublicIP), "%s:%d", sPublicIP, GetConVarInt(FindConVar("hostport")));
 
 	hCvarL4D2CReservation = CreateConVar("l4d2center_reservation_dont_change", "-1", "Current L4D2Center reservation status", FCVAR_NOTIFY);
+	SetConVarInt(hCvarL4D2CReservation, -1);
 
 	hMaxPlayers = FindConVar("sv_maxplayers");
 	mapConnected = CreateTrie();
