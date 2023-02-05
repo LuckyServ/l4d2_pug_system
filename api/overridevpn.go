@@ -5,7 +5,6 @@ import (
 	"../players/auth"
 	"../players"
 	"../smurf"
-	"../database"
 	"time"
 )
 
@@ -37,11 +36,6 @@ func HttpReqOverrideVPN(c *gin.Context) {
 						UpdatedAt:	time.Now().Unix(),
 					};
 					smurf.MapVPNs[sIP] = oNewVPNInfo;
-					go database.SaveVPNInfo(database.DatabaseVPNInfo{
-						IsVPN:			oNewVPNInfo.IsVPN,
-						IP:				sIP,
-						UpdatedAt:		oNewVPNInfo.UpdatedAt,
-					});
 					smurf.MuVPN.Unlock();
 
 					mapResponse["success"] = true;

@@ -62,9 +62,6 @@
 		"external_api_cooldown_sec": 60,
 		"auth_per_hour": 5
 	},
-	"getipintel": {
-		"contact_email": "123456789@pogmail.com"
-	},
 	"smurf_detector": {
 		"host": "https://api.smurf.detector",
 		"auth_key": "verystrongauthkey"

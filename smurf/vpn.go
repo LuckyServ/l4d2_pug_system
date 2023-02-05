@@ -7,9 +7,7 @@ import (
 	"github.com/buger/jsonparser"
 	"net/http"
 	"fmt"
-	"strconv"
 	"../settings"
-	"../database"
 )
 
 type EntVPNInfo struct {
@@ -29,42 +27,7 @@ var i64Day int64 = 24*60*60*1000000000;
 
 
 func Watchers() {
-	go HandleLimits();
 	go ClearOutdated();
-}
-
-func HandleLimits() {
-	for {
-		select {
-		case chNewVPNReqAllowed <- func()(bool) {
-			iCount := len(arGetIPIntelRequests);
-			oNow := time.Now();
-			iCutAt := -1;
-			iPerDay, iPerMin := 0, 0;
-			for i := iCount - 1; i >= 0; i-- {
-				i64TimeDiff := int64(oNow.Sub(arGetIPIntelRequests[i]));
-				if (i64TimeDiff <= i64Minute) {
-					iPerMin++;
-				}
-				if (i64TimeDiff <= i64Day) {
-					iPerDay++;
-				} else {
-					iCutAt = i;
-					break;
-				}
-			}
-			if (iCutAt >= 0) {
-				arGetIPIntelRequests = arGetIPIntelRequests[(iCutAt + 1):];
-			}
-			if (iPerMin < 15 && iPerDay < 500) {
-				arGetIPIntelRequests = append(arGetIPIntelRequests, time.Now());
-				return true;
-			}
-			return false;
-		}():
-		}
-
-	}
 }
 
 func ClearOutdated() {
@@ -74,7 +37,7 @@ func ClearOutdated() {
 		MuVPN.RLock();
 		i64CurTime := time.Now().Unix();
 		for sIP, oVPNInfo := range MapVPNs {
-			if (oVPNInfo.UpdatedAt + 5356800000/*2 month*/ <= i64CurTime) {
+			if (oVPNInfo.UpdatedAt + 604800/*1week*/ <= i64CurTime) {
 				arRemoveIP = append(arRemoveIP, sIP);
 			}
 		}
@@ -93,7 +56,7 @@ func CheckVPN(sIP string) {
 	oVPNInfo, bFound := MapVPNs[sIP];
 	if (bFound) {
 		i64CurTimeSec := time.Now().Unix();
-		if (oVPNInfo.IsInCheck && oVPNInfo.UpdatedAt + 60/*1min*/ > i64CurTimeSec) {
+		if (oVPNInfo.IsInCheck && oVPNInfo.UpdatedAt + 20/*20sec*/ > i64CurTimeSec) {
 			bShouldCheck = false;
 		} else if (!oVPNInfo.IsInCheck && oVPNInfo.UpdatedAt + 604800/*1week*/ > i64CurTimeSec) {
 			bShouldCheck = false;
@@ -101,7 +64,7 @@ func CheckVPN(sIP string) {
 	}
 	MuVPN.RUnlock();
 
-	if (bShouldCheck && <-chNewVPNReqAllowed) {
+	if (bShouldCheck) {
 		MuVPN.Lock();
 		MapVPNs[sIP] = EntVPNInfo{
 			IsVPN:		false,
@@ -116,7 +79,7 @@ func CheckVPN(sIP string) {
 	clientHttp := http.Client{
 		Timeout: 15 * time.Second,
 	}
-	respHttp, errHttp := clientHttp.Get(fmt.Sprintf("http://check.getipintel.net/check.php?ip=%s&contact=%s&format=json&flags=f", sIP, settings.GetIPIntelContact));
+	respHttp, errHttp := clientHttp.Get(fmt.Sprintf("%s/isvpn?auth_key=%s&ip=%s", settings.SmurfHost, settings.SmurfAuthKey, sIP));
 	if (errHttp != nil) {
 		return;
 	}
@@ -129,18 +92,18 @@ func CheckVPN(sIP string) {
 		return;
 	}
 
-	sStatus, errStatus := jsonparser.GetString(byRespBody, "status");
-	if (errStatus != nil || sStatus != "success") {
+	bSuccess, errSuccess := jsonparser.GetBoolean(byRespBody, "success");
+	if (errSuccess != nil || bSuccess != true) {
 		return;
 	}
-	sResult, errResult := jsonparser.GetString(byRespBody, "result");
-	f64Result, errParseFloat := strconv.ParseFloat(sResult, 64);
-	if (errResult != nil || errParseFloat != nil || f64Result < 0.0 || f64Result > 1.0) {
+	i64Result, errResult := jsonparser.GetInt(byRespBody, "isvpn");
+	if (errResult != nil || i64Result == 0) {
 		return;
 	}
+	iResult := int(i64Result);
 	MuVPN.Lock();
 	var oNewVPNInfo EntVPNInfo;
-	if (f64Result >= 1.0) {
+	if (iResult == 2) {
 		oNewVPNInfo = EntVPNInfo{
 			IsVPN:		true,
 			IsInCheck:	false,
@@ -154,11 +117,6 @@ func CheckVPN(sIP string) {
 		};
 	}
 	MapVPNs[sIP] = oNewVPNInfo;
-	go database.SaveVPNInfo(database.DatabaseVPNInfo{
-		IsVPN:			oNewVPNInfo.IsVPN,
-		IP:				sIP,
-		UpdatedAt:		oNewVPNInfo.UpdatedAt,
-	});
 	MuVPN.Unlock();
 }
 
@@ -182,16 +140,4 @@ func IsNotVPN(sIP string) bool { //true if checked and not vpn, false otherwise
 	}
 	MuVPN.RUnlock();
 	return false;
-}
-
-func RestoreVPNInfo() bool { //no need to lock anything
-	arDBVpnInfo := database.RestoreVPNInfo();
-	for _, oDBVpnInfo := range arDBVpnInfo {
-		MapVPNs[oDBVpnInfo.IP] = EntVPNInfo{
-			IsVPN:			oDBVpnInfo.IsVPN,
-			IsInCheck:		false,
-			UpdatedAt:		oDBVpnInfo.UpdatedAt,
-		};
-	}
-	return true;
 }

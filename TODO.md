@@ -1,7 +1,5 @@
-- [ ] Check cert expiration date on /ping/ page
-- [ ] Finish game if the scores difference is too big
+- [ ] Fix ordering of streams
 - [ ] Fix readyup bug
-- [ ] Output side api requests stat
 - [ ] Allow small pics in chat
 - [ ] IsClientTimingOut in the AFK detection in SM plugin, or solve AFKs some other way
 - [ ] An admin panel to show information about players
@@ -14,6 +12,7 @@
 - [ ] Default config for the case when zonemod is broken
 - [ ] Automatically parse anticheat logs and ban based on them
 
+- [x] SEO optimization + cloudflare
 - [x] Add match info to server gamerules
 - [x] SM plugin: remove penalty for spectating
 - [x] Increase the 50 players threshold

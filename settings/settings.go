@@ -64,8 +64,6 @@ var BanRQReason string;
 
 var BanListPagination int;
 
-var GetIPIntelContact string;
-
 var SmurfHost string;
 var SmurfAuthKey string;
 
@@ -395,12 +393,6 @@ func ConfigFile() bool {
 		return false;
 	}
 	BanListPagination = int(i64Buffer);
-
-	GetIPIntelContact, errError = jsonparser.GetString(byData, "getipintel", "contact_email");
-	if (errError != nil) {
-		fmt.Printf("Error reading config file: %s\n", errError);
-		return false;
-	}
 
 	SmurfHost, errError = jsonparser.GetString(byData, "smurf_detector", "host");
 	if (errError != nil) {

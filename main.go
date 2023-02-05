@@ -59,9 +59,6 @@ func main() {
 	if (!auth.RestoreSessions()) {
 		return;
 	}
-	if (!smurf.RestoreVPNInfo()) {
-		return;
-	}
 	i64CurTime := time.Now().UnixMilli();
 	players.I64LastPlayerlistUpdate = i64CurTime;
 	rating.GeneratePairingVariants();

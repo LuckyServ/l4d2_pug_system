@@ -47,12 +47,6 @@ type DatabaseBanRecord struct {
 	BanReasonBase64		string
 }
 
-type DatabaseVPNInfo struct {
-	IsVPN			bool
-	IP				string
-	UpdatedAt		int64 //unix time in seconds
-}
-
 type DatabaseGameLog struct {
 	ID					string
 	Valid				bool
@@ -251,19 +245,6 @@ func PublicChatLog(i64Time int64, sNicknameBase64 string, sSteamID64 string, sTe
 	MuDatabase.Unlock();
 }
 
-func SaveVPNInfo(oVPNInfo DatabaseVPNInfo) {
-	MuDatabase.Lock();
-	dbQueryDelete, errQueryDelete := dbConn.Query("DELETE FROM vpn_info WHERE ipaddress = '"+oVPNInfo.IP+"';");
-	if (errQueryDelete == nil) {
-		dbQueryDelete.Close();
-	} else {LogToFile("Error deleting vpn info at SaveVPNInfo: "+oVPNInfo.IP);};
-	dbQuery, errDbQuery := dbConn.Query("INSERT INTO vpn_info(ipaddress, updated_at, is_vpn) VALUES ('"+oVPNInfo.IP+"', "+fmt.Sprintf("%d", oVPNInfo.UpdatedAt)+", "+fmt.Sprintf("%v", oVPNInfo.IsVPN)+");");
-	if (errDbQuery == nil) {
-		dbQuery.Close();
-	} else {LogToFile("Error inserting vpn info at SaveVPNInfo: "+oVPNInfo.IP);};
-	MuDatabase.Unlock();
-}
-
 func RestorePlayers() []DatabasePlayer {
 	MuDatabase.RLock();
 	var arDBPlayers []DatabasePlayer;
@@ -316,24 +297,6 @@ func RestoreSessions() []DatabaseSession {
 	}
 	MuDatabase.RUnlock();
 	return arDBSessions;
-}
-
-func RestoreVPNInfo() []DatabaseVPNInfo {
-	MuDatabase.RLock();
-	var arDBVPNInfos []DatabaseVPNInfo;
-	dbQueryRetrieve, errQueryRetrieve := dbConn.Query("SELECT ipaddress,updated_at,is_vpn FROM vpn_info ORDER BY updated_at;");
-	if (errQueryRetrieve == nil) {
-
-		for (dbQueryRetrieve.Next()) {
-			oDBVPNInfo := DatabaseVPNInfo{};
-			dbQueryRetrieve.Scan(&oDBVPNInfo.IP, &oDBVPNInfo.UpdatedAt, &oDBVPNInfo.IsVPN);
-			arDBVPNInfos = append(arDBVPNInfos, oDBVPNInfo);
-		}
-
-		dbQueryRetrieve.Close();
-	}
-	MuDatabase.RUnlock();
-	return arDBVPNInfos;
 }
 
 func GetAnticheatLogs() []DatabaseAnticheatLog {
