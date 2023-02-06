@@ -1,4 +1,3 @@
-- [ ] Fix ordering of streams
 - [ ] Fix readyup bug
 - [ ] Allow small pics in chat
 - [ ] IsClientTimingOut in the AFK detection in SM plugin, or solve AFKs some other way
@@ -12,6 +11,7 @@
 - [ ] Default config for the case when zonemod is broken
 - [ ] Automatically parse anticheat logs and ban based on them
 
+- [x] Fix ordering of streams
 - [x] SEO optimization + cloudflare
 - [x] Add match info to server gamerules
 - [x] SM plugin: remove penalty for spectating

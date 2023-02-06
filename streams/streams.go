@@ -56,7 +56,10 @@ func UpdateOnlineStreams() {
 	players.MuPlayers.RUnlock();
 
 	arStreams := GetTwitchStreams(arPrioritizedTwitchIDs);
-	arStreams = append(arStreams, GetTwitchStreams(arOtherTwitchIDs)...);
+	arStreams2 := GetTwitchStreams(arOtherTwitchIDs);
+	arStreams = SortStreams(arStreams);
+	arStreams2 = SortStreams(arStreams2);
+	arStreams = append(arStreams, arStreams2...);
 
 	MuStreams.Lock();
 	if (!StreamlistEqual(arStreams)) {
@@ -199,4 +202,30 @@ func StreamlistEqual(arStreams []TwitchStream) bool {
 		}
 	}
 	return true;
+}
+
+func SortStreams(arStreams []TwitchStream) []TwitchStream {
+	iSize := len(arStreams);
+	if (iSize > 1) {
+		bSorted := false;
+		for !bSorted {
+			bSorted = true;
+			for i := 1; i < iSize; i++ {
+				if (arStreams[i].ViewersCount > arStreams[i - 1].ViewersCount) {
+					arStreams[i], arStreams[i - 1] = arStreams[i - 1], arStreams[i]; //switch
+					if (bSorted) {
+						bSorted = false;
+					}
+				}
+			}
+			if (!bSorted) {
+				for i := iSize - 2; i >= 0; i-- {
+					if (arStreams[i].ViewersCount < arStreams[i + 1].ViewersCount) {
+						arStreams[i], arStreams[i + 1] = arStreams[i + 1], arStreams[i]; //switch
+					}
+				}
+			}
+		}
+	}
+	return arStreams;
 }
