@@ -26,6 +26,7 @@ func GinInit() {
 	r.GET("/unban", HttpReqUnban);
 	r.GET("/deleteban", HttpReqDeleteBan);
 	r.GET("/setadmin", HttpReqSetAdmin);
+	r.GET("/setmmr", HttpReqSetMmr);
 	r.GET("/getknownaccs", HttpReqGetKnownAccs);
 	r.GET("/getanticheatlogs", HttpReqGetAntiCheatLogs);
 
