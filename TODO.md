@@ -1,7 +1,9 @@
+- [ ] Set player mmr
+- [ ] An admin panel to show information about players
+- [ ] Improve smurf detection
 - [ ] Fix readyup bug
 - [ ] Allow small pics in chat
 - [ ] IsClientTimingOut in the AFK detection in SM plugin, or solve AFKs some other way
-- [ ] An admin panel to show information about players
 - [ ] Page with list of all players
 - [ ] If no ping info available, use the old info
 - [ ] Allow dead survivors to rq games without ban on last map on 2nd chapter

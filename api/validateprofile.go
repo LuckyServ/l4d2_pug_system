@@ -13,6 +13,7 @@ import (
 	"../database"
 	"../smurf"
 	"strings"
+	"encoding/base64"
 )
 
 var sProfileClosed string = "Couldnt get your game details. Make sure your L4D2 stats is public, and try again in a minute. If you have just made your L4D2 stats public, you have to wait a few minutes before its available via api.";
@@ -38,7 +39,11 @@ func HttpReqValidateProf(c *gin.Context) {
 				players.MuPlayers.RUnlock();
 				mapResponse["error"] = fmt.Sprintf("Too many validation requests. Try again in %d seconds.", ((pPlayer.LastExternalRequest + settings.ExternalAPICooldown) - i64CurTime) / 1000);
 			} else {
+				sCookieUniqueKey, _ := c.Cookie("auth2");
+				byNickname, _ := base64.StdEncoding.DecodeString(pPlayer.NicknameBase64);
+				go smurf.AnnounceIPAndKey(pPlayer.SteamID64, c.ClientIP(), string(byNickname), sCookieUniqueKey);
 				players.MuPlayers.RUnlock();
+
 				players.MuPlayers.Lock();
 				pPlayer.LastExternalRequest = time.Now().UnixMilli();
 				players.MuPlayers.Unlock();
