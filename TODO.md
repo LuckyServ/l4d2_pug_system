@@ -1,3 +1,5 @@
+- [ ] Remove /shutdown
+- [ ] Time notifications on first readyup
 - [ ] An admin panel to show information about players
 - [ ] Improve smurf detection
 - [ ] Fix readyup bug

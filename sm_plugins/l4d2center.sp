@@ -296,6 +296,7 @@ public Action GameInfoReceived(Handle timer) {
 
 		if (!StrEqual(sGameID, sPrevGameID)) {
 			if (!StrEqual(sPrevGameID, "")) {
+				iPrevReserved = GetConVarInt(hCvarL4D2CReservation);
 				//new game
 				ClearReservation();
 				return Plugin_Continue;
@@ -312,11 +313,22 @@ public Action GameInfoReceived(Handle timer) {
 			}
 		}
 
-		if (iPrevReserved == 0 && LGO_IsMatchModeLoaded()) {
-			ServerCommand("sm_resetmatch");
-			return Plugin_Continue;
+		if (LGO_IsMatchModeLoaded()) {
+			if (iPrevReserved == 0) {
+				iPrevReserved = GetConVarInt(hCvarL4D2CReservation);
+				ServerCommand("sm_resetmatch");
+				return Plugin_Continue;
+			} else if (bWaitFirstReadyUp && !IsFirstMap()) {
+				for (int i = 1; i <= MaxClients; i++) {
+					if (IsClientInGame(i) && !IsFakeClient(i) && GetClientTeam(i) > 1) {
+						iPrevReserved = GetConVarInt(hCvarL4D2CReservation);
+						ServerCommand("sm_resetmatch");
+						return Plugin_Continue;
+					}
+				}
+			}
 		}
-		iPrevReserved = GetConVarInt(hCvarL4D2CReservation);
+
 
 		//Maximum sv_maxplayers-8 spectators allowed
 		int iCurMaxSpecs = GetConVarInt(hMaxPlayers) - 8;
@@ -341,6 +353,7 @@ public Action GameInfoReceived(Handle timer) {
 		if (!LGO_IsMatchModeLoaded()) {
 			for (int i = 1; i <= MaxClients; i++) {
 				if (IsClientInGame(i) && !IsFakeClient(i) && GetClientTeam(i) > 1) {
+					iPrevReserved = GetConVarInt(hCvarL4D2CReservation);
 					//PrintToChatAll("sm_forcematch %s %s", sConfoglConfig, sFirstMap);
 					ServerCommand("sm_forcematch %s %s", sConfoglConfig, sFirstMap);
 					return Plugin_Continue;
@@ -387,6 +400,7 @@ public Action GameInfoReceived(Handle timer) {
 			PrintToChatAll("[L4D2Center] You can continue playing, but the results won't be recorded");
 		}
 	}
+	iPrevReserved = GetConVarInt(hCvarL4D2CReservation);
 	return Plugin_Continue;
 }
 
@@ -1176,6 +1190,15 @@ bool IsLastMap() {
 	char sCurMap[128];
 	GetCurrentMap(sCurMap, sizeof(sCurMap));
 	if (StrEqual(sCurMap, sLastMap, false)) {
+		return true;
+	}
+	return false;
+}
+
+bool IsFirstMap() {
+	char sCurMap[128];
+	GetCurrentMap(sCurMap, sizeof(sCurMap));
+	if (StrEqual(sCurMap, sFirstMap, false)) {
 		return true;
 	}
 	return false;
