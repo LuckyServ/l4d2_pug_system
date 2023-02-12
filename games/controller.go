@@ -145,6 +145,7 @@ func Control(pGame *EntGame) {
 
 	chFullRUpReceived := make(chan bool);
 	MuGames.Lock();
+	pGame.FirstRUPExpiresAt = time.Now().Unix() + settings.FirstReadyUpExpire;
 	pGame.ReceiverFullRUP = chFullRUpReceived;
 	MuGames.Unlock();
 	select {

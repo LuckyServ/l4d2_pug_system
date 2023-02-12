@@ -48,6 +48,7 @@ char sConfoglConfig[32];
 char sFirstMap[128];
 char sLastMap[128];
 char sGameState[32];
+int iWaitFirstRUPExpiresIn; //informational only, doesnt affect functionality
 int iMaxAbsent = 420;
 int iMaxSingleAbsent = 240;
 
@@ -367,7 +368,9 @@ public Action GameInfoReceived(Handle timer) {
 					int iParticipant = GetClientLobbyParticipant(i);
 					if (iParticipant >= 0) {
 						PrintToChat(i, "[l4d2center.com] Please !ready up");
-						if (!bWaitFirstReadyUp) {
+						if (bWaitFirstReadyUp) {
+							PrintToChat(i, "[l4d2center.com] You have %d seconds left before game ends because of you", iWaitFirstRUPExpiresIn);
+						} else {
 							int iLeftSingleAbsence = iMaxSingleAbsent - iSingleAbsence[iParticipant];
 							int iLeftMaxAbsence = iMaxAbsent - iAbsenceCounter[iParticipant];
 							PrintToChat(i, "[l4d2center.com] You have %d (%d) seconds left before game ends because of you", MinVal(iLeftSingleAbsence, iLeftMaxAbsence), iLeftMaxAbsence);
@@ -699,6 +702,7 @@ public void SWReqCompleted_GameInfo(Handle hRequest, bool bFailure, bool bReques
 				KvGetString(kvResponse, "first_map", sFirstMap, sizeof(sFirstMap), "unknown");
 				KvGetString(kvResponse, "last_map", sLastMap, sizeof(sLastMap), "unknown");
 				KvGetString(kvResponse, "game_state", sGameState, sizeof(sGameState), "unknown");
+				iWaitFirstRUPExpiresIn = KvGetNum(kvResponse, "wait_readyup_expires_in", 0) - 10;
 				iMaxAbsent = KvGetNum(kvResponse, "max_absent", 420);
 				iMaxSingleAbsent = KvGetNum(kvResponse, "max_single_absent", 240);
 
@@ -928,6 +932,7 @@ public void Event_RoundEnd(Event event, const char[] name, bool dontBroadcast) {
 void ClearReservation() {
 	SetConVarInt(hCvarL4D2CReservation, 0);
 	iPrevReserved = 0;
+	iWaitFirstRUPExpiresIn = 0;
 	strcopy(sGameID, sizeof(sGameID), "");
 	strcopy(sPrevGameID, sizeof(sPrevGameID), "");
 	for (int i = 0; i < 4; i++) {

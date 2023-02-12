@@ -7,6 +7,7 @@ import (
 	"../games"
 	"../players"
 	"../settings"
+	"time"
 )
 
 
@@ -49,6 +50,7 @@ func HttpReqGSGetGame(c *gin.Context) {
 				} else {
 					sResponse = fmt.Sprintf("%s\n	\"game_state\" \"other\"", sResponse);
 				}
+				sResponse = fmt.Sprintf("%s\n	\"wait_readyup_expires_in\" \"%d\"", sResponse, pGame.FirstRUPExpiresAt - time.Now().Unix());
 
 			} else {
 				sResponse = fmt.Sprintf("%s\n	\"success\" \"0\"", sResponse);

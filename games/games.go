@@ -24,6 +24,7 @@ type EntGame struct {
 	State				int
 	ServerIP			string
 	GameResult			rating.EntGameResult
+	FirstRUPExpiresAt	int64 //seconds //informational only, doesnt affect functionality
 	ReceiverFullRUP		chan bool
 	ReceiverReadyList	chan []string
 	ReceiverResult		chan rating.EntGameResult
