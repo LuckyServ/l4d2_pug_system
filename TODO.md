@@ -1,4 +1,3 @@
-- [ ] Remove /shutdown
 - [ ] Time notifications on first readyup
 - [ ] An admin panel to show information about players
 - [ ] Improve smurf detection
@@ -14,6 +13,7 @@
 - [ ] Default config for the case when zonemod is broken
 - [ ] Automatically parse anticheat logs and ban based on them
 
+- [x] Remove /shutdown
 - [x] Set player mmr
 - [x] Fix ordering of streams
 - [x] SEO optimization + cloudflare

@@ -89,8 +89,8 @@ func main() {
 	//go TestingCreateBansFromMain();
 
 
-	//Block until shutdown command is received
-	fmt.Printf("End: %v\n", <-api.ChShutdown);
+	//Block
+	select{};
 }
 
 /*func TestingCreateBansFromMain() {
