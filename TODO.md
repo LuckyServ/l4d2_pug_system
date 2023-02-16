@@ -1,4 +1,5 @@
 - [ ] An admin panel to show information about players
+- [ ] New serverlist format: different priorities on same machine
 - [ ] Improve smurf detection
 - [ ] Fix readyup bug
 - [ ] Allow small pics in chat
@@ -8,10 +9,10 @@
 - [ ] Allow dead survivors to rq games without ban on last map on 2nd chapter
 - [ ] Fix exploiting the initial ready up timelimit
 - [ ] T2 and T1 configs for lower tier players
-- [ ] Check double html escaping of names
 - [ ] Default config for the case when zonemod is broken
 - [ ] Automatically parse anticheat logs and ban based on them
 
+- [x] Steam API calls on authorization instead on xml parse
 - [x] Time notifications on first readyup
 - [x] Remove /shutdown
 - [x] Set player mmr

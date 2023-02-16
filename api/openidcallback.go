@@ -10,11 +10,10 @@ import (
 	"../bans"
 	"github.com/yohcop/openid-go"
 	"regexp"
-	"github.com/antchfx/xmlquery"
+	"github.com/buger/jsonparser"
 	"encoding/base64"
 	"net/http"
 	"net/url"
-	"strings"
 	"sync"
 	"../smurf"
 	"crypto/sha256"
@@ -120,14 +119,11 @@ func HttpReqOpenID(c *gin.Context) {
 	//Here is authorized SteamID64
 	sSteamID64 := string(bySteamID64);
 
-	//Get nickname
-	sNickname := "unknown";
-	sAvatarSmall := "https://l4d2center.com/blank_avatar_small.jpg";
-	sAvatarBig := "https://l4d2center.com/blank_avatar_big.jpg";
+	//Get nickname and avatar
 	clientSteam := http.Client{
-		Timeout: 15 * time.Second,
+		Timeout: 10 * time.Second,
 	}
-	respSteam, errSteam := clientSteam.Get("https://steamcommunity.com/profiles/"+sSteamID64+"/?xml=1");
+	respSteam, errSteam := clientSteam.Get("https://api.steampowered.com/ISteamUser/GetPlayerSummaries/v0002/?key="+settings.SteamApiKey+"&steamids="+sSteamID64);
 	if (errSteam != nil) {
 		c.Redirect(303, sHomepage);
 		return;
@@ -138,25 +134,19 @@ func HttpReqOpenID(c *gin.Context) {
 		return;
 	}
 	byResult, errBody := ioutil.ReadAll(respSteam.Body);
-	sResult := string(byResult);
-	if (errBody != nil || sResult == "") {
+	if (errBody != nil) {
 		c.Redirect(303, sHomepage);
 		return;
 	}
-	doc, errXML := xmlquery.Parse(strings.NewReader(sResult));
-	if (errXML != nil) {
-		c.Redirect(303, sHomepage);
-		return;
-	}
-	root := xmlquery.FindOne(doc, "//profile");
-	if n := root.SelectElement("//steamID"); n != nil {
-		sNickname = n.InnerText();
-	}
-	if n := root.SelectElement("//avatarMedium"); n != nil {
-		sAvatarSmall = n.InnerText();
-	}
-	if n := root.SelectElement("//avatarFull"); n != nil {
-		sAvatarBig = n.InnerText();
+	sNickname, errNickname := jsonparser.GetString(byResult, "response", "players", "[0]", "personaname");
+	sAvatarSmall, errAvatarSmall := jsonparser.GetString(byResult, "response", "players", "[0]", "avatarmedium");
+	sAvatarBig, errAvatarBig := jsonparser.GetString(byResult, "response", "players", "[0]", "avatarfull");
+	sCheckedSteamID64, _ := jsonparser.GetString(byResult, "response", "players", "[0]", "steamid");
+
+	if (sCheckedSteamID64 != sSteamID64 || errNickname != nil || sNickname == "" || errAvatarSmall != nil || sAvatarSmall == "" || errAvatarBig != nil || sAvatarBig == "") {
+		sNickname = "unknown";
+		sAvatarSmall = "https://l4d2center.com/blank_avatar_small.jpg";
+		sAvatarBig = "https://l4d2center.com/blank_avatar_big.jpg";
 	}
 
 	//Add auth to the database
