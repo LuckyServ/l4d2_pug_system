@@ -129,12 +129,6 @@
 			"last_updated": 1
 		},
 		{
-			"name": "Blood Harvest",
-			"maps": ["c12m1_hilltop", "c12m2_traintunnel", "c12m3_bridge", "c12m4_barn"],
-			"download": "",
-			"last_updated": 1
-		},
-		{
 			"name": "Carried Off",
 			"maps": ["cwm1_intro", "cwm2_warehouse", "cwm3_drain", "cwm4_building"],
 			"download": "https://l4d2center.com/maps/carriedoff_1.zip",

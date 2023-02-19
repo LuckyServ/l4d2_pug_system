@@ -1,3 +1,5 @@
+- [ ] If no ping info available, use the old info
+- [ ] If no ping info available for server, exclude it from selection
 - [ ] An admin panel to show information about players
 - [ ] New serverlist format: different priorities on same machine
 - [ ] Improve smurf detection
@@ -5,7 +7,6 @@
 - [ ] Allow small pics in chat
 - [ ] IsClientTimingOut in the AFK detection in SM plugin, or solve AFKs some other way
 - [ ] Page with list of all players
-- [ ] If no ping info available, use the old info
 - [ ] Allow dead survivors to rq games without ban on last map on 2nd chapter
 - [ ] Fix exploiting the initial ready up timelimit
 - [ ] T2 and T1 configs for lower tier players
