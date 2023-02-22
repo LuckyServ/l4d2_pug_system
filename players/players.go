@@ -46,6 +46,7 @@ type EntPlayer struct {
 	LastChatMessage			int64 //Last chat message //unix timestamp in milliseconds
 	LastTicketActivity		int64 //Last ticket activity //unix timestamp in milliseconds
 	GameServerPings			map[string]int
+	GameServerPingsStored	map[string]int
 	LastCampaignsPlayed		[]string
 	Twitch					string
 	DuoWith					string
@@ -107,6 +108,7 @@ func RestorePlayers() bool { //no need to lock maps
 			RulesAccepted:			oDBPlayer.RulesAccepted,
 			Twitch:					oDBPlayer.Twitch,
 			CustomMapsConfirmed:	oDBPlayer.CustomMapsConfirmed,
+			GameServerPingsStored:	make(map[string]int),
 			LastCampaignsPlayed:	func()([]string){
 				if (oDBPlayer.LastCampaignsPlayed == "") {
 					return []string{};
@@ -138,8 +140,9 @@ func AddPlayerAuth(sSteamID64 string, sNicknameBase64 string, sAvatarSmall strin
 	if _, ok := MapPlayers[sSteamID64]; !ok {
 
 		pPlayer := &EntPlayer{
-			SteamID64:			sSteamID64,
-			MmrUncertainty:		settings.DefaultMmrUncertainty,
+			SteamID64:				sSteamID64,
+			MmrUncertainty:			settings.DefaultMmrUncertainty,
+			GameServerPingsStored:	make(map[string]int),
 		};
 		MapPlayers[sSteamID64] = pPlayer;
 		ArrayPlayers = append(ArrayPlayers, pPlayer);

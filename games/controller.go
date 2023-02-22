@@ -71,6 +71,16 @@ func Control(pGame *EntGame) {
 	//Cancel the ping request
 	players.MuPlayers.Lock();
 	MuGames.Lock();
+
+	for _, pPlayer := range pGame.PlayersUnpaired {
+		for sKey, iValue := range pPlayer.GameServerPings {
+			pPlayer.GameServerPingsStored[sKey] = iValue;
+		}
+		for sKey, iValue := range pPlayer.GameServerPingsStored {
+			pPlayer.GameServerPings[sKey] = iValue;
+		}
+	}
+
 	pGame.State = StateSelectServer;
 	SetLastUpdated(pGame.PlayersUnpaired);
 	MuGames.Unlock();
