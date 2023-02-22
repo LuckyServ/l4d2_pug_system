@@ -1,4 +1,3 @@
-- [ ] If no ping info available for server, exclude it from selection
 - [ ] An admin panel to show information about players
 - [ ] New serverlist format: different priorities on same machine
 - [ ] Improve smurf detection
@@ -12,6 +11,7 @@
 - [ ] Default config for the case when zonemod is broken
 - [ ] Automatically parse anticheat logs and ban based on them
 
+- [x] If no ping info available for server, exclude it from selection
 - [x] If no ping info available, use the old info
 - [x] Steam API calls on authorization instead on xml parse
 - [x] Time notifications on first readyup

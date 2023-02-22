@@ -52,12 +52,14 @@ func GetGameServers(arPlayersA []*players.EntPlayer, arPlayersB []*players.EntPl
 	MuGames.RLock();
 	for _, oServer := range settings.GameServers {
 		var iTeamPingDiff, iAvgPing, iMaxPing, _ = CalcPings(arPlayersA, arPlayersB, oServer.IP);
+		if (iAvgPing > 0) {
 
-		iPriority := ((iTeamPingDiff + iAvgPing + (iMaxPing / 2)) / 3) + oServer.LowerPriority;
+			iPriority := ((iTeamPingDiff + iAvgPing + (iMaxPing / 2)) / 3) + oServer.LowerPriority;
 
-		for _, sPort := range oServer.Ports {
-			arGameServers = append(arGameServers, oServer.IP+":"+sPort);
-			arPriority = append(arPriority, iPriority);
+			for _, sPort := range oServer.Ports {
+				arGameServers = append(arGameServers, oServer.IP+":"+sPort);
+				arPriority = append(arPriority, iPriority);
+			}
 		}
 	}
 	MuGames.RUnlock();
