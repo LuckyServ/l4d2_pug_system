@@ -32,7 +32,6 @@ int iSingleAbsence[8]; //parallel with arPlayersAll[]
 
 char sAuthKey[64];
 char sPublicIP[32];
-int iMaxSpecs;
 
 int iMaxPauses = 5;
 
@@ -332,23 +331,19 @@ public Action GameInfoReceived(Handle timer) {
 
 
 		//Maximum sv_maxplayers-8 spectators allowed
-		int iCurMaxSpecs = GetConVarInt(hMaxPlayers) - 8;
-		if (iCurMaxSpecs < iMaxSpecs) {
-			int iCurSpecs;
+		int iCurSpecs;
+		for (int i = 1; i <= MaxClients; i++) {
+			if (IsClientConnected(i) && !IsFakeClient(i) && GetClientLobbyParticipant(i) == -1 && (IsClientAuthorized(i) || IsClientInGame(i)) && !IsClientInKickQueue(i)) {
+				iCurSpecs++;
+			}
+		}
+		if (iCurSpecs > GetConVarInt(hMaxPlayers) - 8) {
 			for (int i = 1; i <= MaxClients; i++) {
 				if (IsClientConnected(i) && !IsFakeClient(i) && GetClientLobbyParticipant(i) == -1) {
-					iCurSpecs++;
-				}
-			}
-			if (iCurSpecs > iCurMaxSpecs) {
-				for (int i = 1; i <= MaxClients; i++) {
-					if (IsClientConnected(i) && !IsFakeClient(i) && GetClientLobbyParticipant(i) == -1) {
-						KickClient(i, "The players have limited slots for spectators");
-					}
+					KickClient(i, "The players have limited slots for spectators");
 				}
 			}
 		}
-		iMaxSpecs = iCurMaxSpecs;
 
 		//Autostart Confogl
 		if (!LGO_IsMatchModeLoaded()) {
@@ -988,7 +983,7 @@ KickOnSpecsExceed(client) {
 			iCurSpecs++;
 		}
 	}
-	if (iCurSpecs > iMaxSpecs) {
+	if (iCurSpecs > GetConVarInt(hMaxPlayers) - 8) {
 		KickClient(client, "No more slots left for spectators");
 	}
 }
