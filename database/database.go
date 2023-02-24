@@ -48,17 +48,17 @@ type DatabaseBanRecord struct {
 }
 
 type DatabaseGameLog struct {
-	ID					string
-	Valid				bool
-	CreatedAt			int64
-	PlayersA			string
-	PlayersB			string
-	TeamAScores			int
-	TeamBScores			int
-	ConfoglConfig		string
-	CampaignName		string
-	ServerIP			string
-	Pings				string
+	ID					string		`json:"id"`
+	Valid				bool		`json:"is_valid"`
+	CreatedAt			int64		`json:"created_at"`
+	PlayersA			string		`json:"players_a"`
+	PlayersB			string		`json:"players_b"`
+	TeamAScores			int			`json:"team_a_scores"`
+	TeamBScores			int			`json:"team_b_scores"`
+	ConfoglConfig		string		`json:"confogl_config"`
+	CampaignName		string		`json:"campaign_name"`
+	ServerIP			string		`json:"server_ip"`
+	Pings				string		`json:"pings"`
 }
 
 type DatabaseAnticheatLog struct {
@@ -315,6 +315,36 @@ func GetAnticheatLogs() []DatabaseAnticheatLog {
 	}
 	MuDatabase.RUnlock();
 	return arDBAnticheatLogs;
+}
+
+func GetGameHistory(sSteamID64 string) ([]DatabaseGameLog, int) {
+	MuDatabase.RLock();
+	var arDBGameHistory []DatabaseGameLog;
+	dbQueryRetrieve, errQueryRetrieve := dbConn.Query("SELECT game_id,game_valid,created_at,players_a,players_b,team_a_scores,team_b_scores,confogl_config,campaign_name,server_ip,glpings FROM games_log WHERE players_a LIKE '%"+sSteamID64+"%' OR players_b LIKE '%"+sSteamID64+"%' ORDER BY created_at DESC LIMIT 500;");
+	if (errQueryRetrieve == nil) {
+
+		for (dbQueryRetrieve.Next()) {
+			oDBGame := DatabaseGameLog{};
+			dbQueryRetrieve.Scan(&oDBGame.ID, &oDBGame.Valid, &oDBGame.CreatedAt, &oDBGame.PlayersA, &oDBGame.PlayersB, &oDBGame.TeamAScores, &oDBGame.TeamBScores, &oDBGame.ConfoglConfig, &oDBGame.CampaignName, &oDBGame.ServerIP, &oDBGame.Pings);
+			arDBGameHistory = append(arDBGameHistory, oDBGame);
+		}
+
+		dbQueryRetrieve.Close();
+	}
+	MuDatabase.RUnlock();
+
+	MuDatabase.RLock();
+	var iGamesPlayed int;
+	dbQueryGamesCount, errQueryGamesCount := dbConn.Query("SELECT COUNT(*) FROM games_log WHERE players_a LIKE '%"+sSteamID64+"%' OR players_b LIKE '%"+sSteamID64+"%';");
+	if (errQueryGamesCount == nil) {
+		for (dbQueryGamesCount.Next()) {
+			dbQueryGamesCount.Scan(&iGamesPlayed);
+		}
+		dbQueryGamesCount.Close();
+	}
+	MuDatabase.RUnlock();
+
+	return arDBGameHistory, iGamesPlayed;
 }
 
 func LogToFile(sText string) {

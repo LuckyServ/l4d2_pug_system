@@ -12,6 +12,16 @@ import (
 	"github.com/buger/jsonparser"
 )
 
+type IPInfo struct {
+	IP				string			`json:"ip"`
+	FirstUsed		int64			`json:"first_used"`
+	GeoIPDate		int64			`json:"geoip_date"`
+	Location		string			`json:"location"`
+	ISP				string			`json:"isp"`
+	IsVPN			int				`json:"is_vpn"`
+}
+
+
 func AnnounceIP(sIP string) {
 	go CheckVPN(sIP);
 }
@@ -55,4 +65,47 @@ func GetKnownAccounts(sSteamID64 string) []string { //validate steam id string o
 		respHttp.Body.Close();
 	}
 	return []string{};
+}
+
+func GetIPInfo(sSteamID64 string) []IPInfo {
+	var arIPInfo []IPInfo;
+
+	clientHttp := http.Client{
+		Timeout: 15 * time.Second,
+	}
+	respHttp, errHttp := clientHttp.Get(fmt.Sprintf("%s/getusedips?auth_key=%s&steamid64=%s", settings.SmurfHost, settings.SmurfAuthKey, sSteamID64));
+	if (errHttp == nil) {
+		if (respHttp.StatusCode == 200) {
+			byRespBody, errRespBody := io.ReadAll(respHttp.Body);
+			if (errRespBody == nil) {
+				bSuccess, _ := jsonparser.GetBoolean(byRespBody, "success");
+				if (bSuccess) {
+					jsonparser.ArrayEach(byRespBody, func(valueIP []byte, dataType jsonparser.ValueType, offset int, err error) {
+
+
+						sIP, _ := jsonparser.GetString(valueIP, "ip");
+						i64FirstUsed, _ := jsonparser.GetInt(valueIP, "first_used");
+						i64GeoIPDate, _ := jsonparser.GetInt(valueIP, "geoip_date");
+						sLocation, _ := jsonparser.GetString(valueIP, "location");
+						sISP, _ := jsonparser.GetString(valueIP, "isp");
+						i64IsVPN, _ := jsonparser.GetInt(valueIP, "is_vpn");
+
+						arIPInfo = append(arIPInfo, IPInfo{
+							IP:				sIP,
+							FirstUsed:		i64FirstUsed,
+							GeoIPDate:		i64GeoIPDate,
+							Location:		sLocation,
+							ISP:			sISP,
+							IsVPN:			int(i64IsVPN),
+						});
+
+
+					}, "ips");
+				}
+			}
+		}
+		respHttp.Body.Close();
+	}
+
+	return arIPInfo;
 }

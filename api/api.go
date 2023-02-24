@@ -28,6 +28,7 @@ func GinInit() {
 	r.GET("/setmmr", HttpReqSetMmr);
 	r.GET("/getknownaccs", HttpReqGetKnownAccs);
 	r.GET("/getanticheatlogs", HttpReqGetAntiCheatLogs);
+	r.GET("/admininfoonplayer", HttpReqAdminInfoOnPlayer);
 
 	r.GET("/overridevpn", HttpReqOverrideVPN);
 
@@ -44,7 +45,6 @@ func GinInit() {
 	r.GET("/updatenameavatar", HttpReqUpdateNameAvatar);
 	r.GET("/logout", HttpReqLogout);
 
-	r.GET("/getonlineplayers", HttpReqGetOnlinePlayers);
 	r.GET("/getplayers", HttpReqGetPlayers);
 
 	r.GET("/getbanrecords", HttpReqGetBanRecords);

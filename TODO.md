@@ -1,4 +1,5 @@
 - [ ] An admin panel to show information about players
+- [ ] Remove information of players in queue and custom maps confirmation
 - [ ] New serverlist format: different priorities on same machine
 - [ ] Improve smurf detection
 - [ ] Fix readyup bug

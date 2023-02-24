@@ -199,7 +199,7 @@ public Action GameID_Cmd(int client, int args) {
 public Action Suicide_Cmd(int client, int args) {
 	if (bInRound && client > 0 && IsClientInGame(client) && GetClientTeam(client) == 3 && IsPlayerAlive(client) && GetEntProp(client, Prop_Send, "m_isGhost") != 1 && GetEntProp(client, Prop_Send, "m_zombieClass") != 8) {
 		CreateTimer(7.0, SuicideRequestTimer, GetClientUserId(client));
-		PrintToChat(client, "[l4d2center.com] You will die in 7 deconds");
+		PrintToChat(client, "[l4d2center.com] You will die in 7 seconds");
 	}
 	return Plugin_Handled;
 }
