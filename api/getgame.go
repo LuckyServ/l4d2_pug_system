@@ -53,9 +53,6 @@ func HttpReqGetGame(c *gin.Context) {
 						Access:				pGamePlayer.Access,
 						IsInGame:			pGamePlayer.IsInGame,
 						MmrGrade:			players.GetMmrGrade(pGamePlayer),
-						IsInQueue:			pGamePlayer.IsInQueue,
-						IsInDuo:			(pGamePlayer.DuoWith != ""),
-						CustomMapsState:	players.CustomMapsConfirmState(pGamePlayer),
 					});
 				}
 				for _, pGamePlayer := range pGame.PlayersB {
@@ -67,9 +64,6 @@ func HttpReqGetGame(c *gin.Context) {
 						Access:				pGamePlayer.Access,
 						IsInGame:			pGamePlayer.IsInGame,
 						MmrGrade:			players.GetMmrGrade(pGamePlayer),
-						IsInQueue:			pGamePlayer.IsInQueue,
-						IsInDuo:			(pGamePlayer.DuoWith != ""),
-						CustomMapsState:	players.CustomMapsConfirmState(pGamePlayer),
 					});
 				}
 

@@ -16,10 +16,7 @@ type PlayerResponse struct {
 	Mmr						int			`json:"mmr"`
 	Access					int 		`json:"access"` //-2 - completely banned, -1 - chat banned, 0 - regular player, 1 - behaviour moderator, 2 - cheat moderator, 3 - behaviour+cheat moderator, 4 - full admin access
 	IsInGame				bool		`json:"is_ingame"`
-	IsInQueue				bool		`json:"is_inqueue"`
 	MmrGrade				int			`json:"mmr_grade"`
-	CustomMapsState			int			`json:"custom_maps"` //1 - never confirmed, 2 - update required, 3 - confirmed
-	IsInDuo					bool		`json:"in_duo"`
 }
 
 type PlayerResponseMe struct {
@@ -159,10 +156,7 @@ func AppendPlayerResponse(arPlayers []PlayerResponse, pPlayer *players.EntPlayer
 		Mmr:					pPlayer.Mmr,
 		Access:					pPlayer.Access,
 		IsInGame:				pPlayer.IsInGame,
-		IsInQueue:				pPlayer.IsInQueue,
 		MmrGrade:				players.GetMmrGrade(pPlayer),
-		IsInDuo:				(pPlayer.DuoWith != ""),
-		CustomMapsState:		players.CustomMapsConfirmState(pPlayer),
 	});
 	return arBuffer;
 }
