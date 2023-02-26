@@ -2,7 +2,6 @@ package chat
 
 import (
 	"../settings"
-	"time"
 	"../database"
 	"encoding/base64"
 )
@@ -17,7 +16,6 @@ type EntChatMsg struct {
 
 var ArrayChatMsgs []EntChatMsg;
 var ChanSend = make(chan EntChatMsg);
-var ChanGetUniqTime = make(chan int64);
 var ChanRead = make(chan []EntChatMsg);
 var I64LastGlobalChatUpdate int64;
 
@@ -39,10 +37,6 @@ func ChannelWatchers() {
 			arChatMsgs := make([]EntChatMsg, len(ArrayChatMsgs));
 			copy(arChatMsgs, ArrayChatMsgs);
 			return arChatMsgs;
-		}():
-		case ChanGetUniqTime <- func()(int64) {
-			time.Sleep(1 * time.Millisecond);
-			return time.Now().UnixMilli();
 		}():
 		}
 	}

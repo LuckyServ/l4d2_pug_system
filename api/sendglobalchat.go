@@ -45,7 +45,7 @@ func HttpReqSendGlobalChat(c *gin.Context) {
 				if (iTextLen > 0 && iTextLen <= settings.ChatMaxChars) {
 					mapResponse["success"] = true;
 					oMessage := chat.EntChatMsg{
-						TimeStamp:		<-chat.ChanGetUniqTime,
+						TimeStamp:		time.Now().UnixMilli(),
 						Text:			sChatMsg,
 						SteamID64:		pPlayer.SteamID64,
 						NicknameBase64:	pPlayer.NicknameBase64,
