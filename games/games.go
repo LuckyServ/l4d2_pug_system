@@ -9,6 +9,7 @@ import (
 	"../settings"
 	"../rating"
 	"../utils"
+	"math/big"
 )
 
 type EntGame struct {
@@ -81,8 +82,7 @@ func HandleUniqID() {
 	for {
 		select {
 			case ChanNewGameID <- func()(string) {
-				sRand, _ := utils.GenerateRandomString(3, "abcdefghkmnpqrstuvwxyz");
-				return fmt.Sprintf("%d%s", time.Now().UnixNano(), sRand);
+				return strings.ToUpper(fmt.Sprintf("GAME%s", big.NewInt(time.Now().UnixNano()).Text(36)));
 			}():
 		}
 		time.Sleep(1 * time.Nanosecond);
