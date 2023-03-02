@@ -95,7 +95,7 @@ func DuoOfferIDGenerator() {
 	for {
 		select {
 		case GenInviteCode <- func()(string) {
-			return strings.ToUpper(fmt.Sprintf("L4D2C%s", big.NewInt(time.Now().UnixNano()).Text(36)));
+			return strings.ToUpper(fmt.Sprintf("DUOQ%s", big.NewInt(time.Now().UnixNano()).Text(36)));
 		}():
 		}
 		time.Sleep(1 * time.Nanosecond);

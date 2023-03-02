@@ -1,4 +1,5 @@
 - [ ] New serverlist format: different priorities on same machine
+- [ ] A page to search for smurfs of non-l4d2center players
 - [ ] Improve smurf detection
 - [ ] Fix readyup bug
 - [ ] Allow small pics in chat
