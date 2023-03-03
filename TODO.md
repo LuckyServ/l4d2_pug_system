@@ -4,6 +4,7 @@
 - [ ] Fix readyup bug
 - [ ] Allow small pics in chat
 - [ ] IsClientTimingOut in the AFK detection in SM plugin, or solve AFKs some other way
+- [ ] Solve the tank passing problem
 - [ ] Page with list of all players
 - [ ] Allow dead survivors to rq games without ban on last map on 2nd chapter
 - [ ] Fix exploiting the initial ready up timelimit

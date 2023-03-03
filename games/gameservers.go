@@ -243,7 +243,7 @@ func IsPingInfoValid(pPlayer *players.EntPlayer) bool {
 	mapPings := pPlayer.GameServerPings;
 	if (mapPings != nil) {
 		for _, iPing := range mapPings {
-			if (iPing >= 450) {
+			if (iPing >= 600) {
 				return false;
 			}
 		}
