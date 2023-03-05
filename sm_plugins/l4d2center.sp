@@ -35,6 +35,8 @@ char sPublicIP[32];
 
 int iMaxPauses = 5;
 
+int iCrashCounter[MAXPLAYERS + 1];
+
 //GameInfo
 //int iServerReserved = -1; //-2 - check failed, -1 - not checked, 0 - not reserved, 1 - reserved
 int iPrevReserved = -1;
@@ -112,6 +114,7 @@ public OnPluginStart() {
 	RegConsoleCmd("sm_ready", Ready_Cmd);
 	RegConsoleCmd("sm_r", Ready_Cmd);
 	CreateTimer(1.0, Timer_CountAbsence, 0, TIMER_REPEAT);
+	CreateTimer(1.0, Timer_CountCrashes, 0, TIMER_REPEAT);
 	CreateTimer(0.9876, Timer_AutoTeam, 0, TIMER_REPEAT);
 
 	//suicide
@@ -1078,7 +1081,7 @@ public Action Timer_CountAbsence(Handle timer) {
 				}
 				if (client > 0 && bResponsibleForPause[i]) {
 					int iTeam = GetClientTeam(client);
-					if (iTeam == 0 || (iTeam > 0 && iTime - iLastActivity[client] < 30)) {
+					if (iTeam == 0 || (iTeam > 0 && iTime - iLastActivity[client] < 30 && iCrashCounter[client] < 5)) {
 						ServerCommand("sm_forceunpause");
 						SetResponsibleForPause(-1);
 					}
@@ -1092,7 +1095,7 @@ public Action Timer_CountAbsence(Handle timer) {
 								if (arPlayersAll[i][0] == '7') {
 									iAbsenceCounter[i] = iAbsenceCounter[i] + 1;
 									iSingleAbsence[i] = iSingleAbsence[i] + 1;
-									if (iTime - iLastUnpause >= 5) {
+									if (iTime - iLastUnpause >= 7) {
 										if (IsGoodTimeForPause()) {
 											ServerCommand("sm_forcepause");
 											SetResponsibleForPause(i);
@@ -1102,6 +1105,22 @@ public Action Timer_CountAbsence(Handle timer) {
 											PrintToChatAll("[l4d2center.com] %N is AFK. If he doesnt ready up in %d seconds, the game ends", client, MinVal(iMaxAbsent - iAbsenceCounter[i], iMaxSingleAbsent - iSingleAbsence[i]));
 										} else {
 											PrintToChat(client, "[l4d2center.com] You are AFK. If you don't ready up in %d seconds, the game ends", MinVal(iMaxAbsent - iAbsenceCounter[i], iMaxSingleAbsent - iSingleAbsence[i]));
+										}
+										return Plugin_Continue;
+									}
+								}
+							} else if (iCrashCounter[client] >= 5 && !(iTeam == 2 && !IsPlayerAlive(client))) {
+								if (arPlayersAll[i][0] == '7') {
+									iAbsenceCounter[i] = iAbsenceCounter[i] + 1;
+									iSingleAbsence[i] = iSingleAbsence[i] + 1;
+									if (iTime - iLastUnpause >= 7) {
+										if (IsGoodTimeForPause()) {
+											ServerCommand("sm_forcepause");
+											SetResponsibleForPause(i);
+										}
+										if (!bPrinted[i]) {
+											bPrinted[i] = true;
+											PrintToChatAll("[l4d2center.com] %N has crashed. If he doesnt reconnect in %d seconds, the game ends", client, MinVal(iMaxAbsent - iAbsenceCounter[i], iMaxSingleAbsent - iSingleAbsence[i]));
 										}
 										return Plugin_Continue;
 									}
@@ -1118,7 +1137,7 @@ public Action Timer_CountAbsence(Handle timer) {
 							if (arPlayersAll[i][0] == '7') {
 								iAbsenceCounter[i] = iAbsenceCounter[i] + 1;
 								iSingleAbsence[i] = iSingleAbsence[i] + 1;
-								if (iTime - iLastUnpause >= 5) {
+								if (iTime - iLastUnpause >= 7) {
 									if (!bPrinted[i]) {
 										bPrinted[i] = true;
 										PrintToChatAll("[l4d2center.com] %N is loading. If he doesnt join in %d seconds, the game ends", client, MinVal(iMaxAbsent - iAbsenceCounter[i], iMaxSingleAbsent - iSingleAbsence[i]));
@@ -1137,7 +1156,7 @@ public Action Timer_CountAbsence(Handle timer) {
 					if (arPlayersAll[i][0] == '7') {
 						iAbsenceCounter[i] = iAbsenceCounter[i] + 1;
 						iSingleAbsence[i] = iSingleAbsence[i] + 1;
-						if (bInRound && (iTime - iLastUnpause) >= 5) {
+						if (bInRound && (iTime - iLastUnpause) >= 7) {
 							if (IsGoodTimeForPause()) {
 								ServerCommand("sm_forcepause");
 								SetResponsibleForPause(i);
@@ -1165,6 +1184,19 @@ SetResponsibleForPause(int iLobbyPlayer) {
 		bResponsibleForPause[iLobbyPlayer] = true;
 		iResponsibleForPauseCounter[iLobbyPlayer] = iResponsibleForPauseCounter[iLobbyPlayer] + 1;
 	}
+}
+
+public Action Timer_CountCrashes(Handle timer) {
+	for (int i = 1; i <= MaxClients; i++) {
+		if (IsClientInGame(i) && !IsFakeClient(i) && GetClientTeam(i) > 0 && IsClientTimingOut(i)) {
+			iCrashCounter[i] = iCrashCounter[i] + 1;
+		} else {
+			if (iCrashCounter[i] != 0) {
+				iCrashCounter[i] = 0;
+			}
+		}
+	}
+	return Plugin_Continue;
 }
 
 public OnUnpause() {

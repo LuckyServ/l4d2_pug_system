@@ -1,4 +1,3 @@
-- [ ] IsClientTimingOut in the AFK detection in SM plugin, or solve AFKs some other way
 - [ ] A page to search for smurfs of non-l4d2center players
 - [ ] Delete chat on ban
 - [ ] Improve smurf detection
@@ -12,6 +11,7 @@
 - [ ] Default config for the case when zonemod is broken
 - [ ] Automatically parse anticheat logs and ban based on them
 
+- [x] IsClientTimingOut in the AFK detection in SM plugin, or solve AFKs some other way
 - [x] New serverlist format: different priorities on same machine
 - [x] 80 online players before quick queues
 - [x] Remove information of players in queue and custom maps confirmation
