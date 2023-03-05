@@ -54,11 +54,11 @@ func GetGameServers(arPlayersA []*players.EntPlayer, arPlayersB []*players.EntPl
 		var iTeamPingDiff, iAvgPing, iMaxPing, _ = CalcPings(arPlayersA, arPlayersB, oServer.IP);
 		if (iAvgPing > 0) {
 
-			iPriority := ((iTeamPingDiff + iAvgPing + (iMaxPing / 2)) / 3) + oServer.LowerPriority;
+			iPriority := ((iTeamPingDiff + iAvgPing + (iMaxPing / 2)) / 3);
 
-			for _, sPort := range oServer.Ports {
-				arGameServers = append(arGameServers, oServer.IP+":"+sPort);
-				arPriority = append(arPriority, iPriority);
+			for i, _ := range oServer.Ports {
+				arGameServers = append(arGameServers, oServer.IP+":"+oServer.Ports[i]);
+				arPriority = append(arPriority, iPriority + oServer.LowerPriority[i]);
 			}
 		}
 	}

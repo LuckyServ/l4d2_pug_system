@@ -75,7 +75,7 @@ type GameServer struct {
 	IP				string		`json:"ip"`
 	Domain			string		`json:"domain"`
 	Ports			[]string	`json:"ports"`
-	LowerPriority	int			`json:"lower_priority"`
+	LowerPriority	[]int		`json:"lower_priority"`
 }
 var MapProxies = make(map[string]string);
 
@@ -556,7 +556,7 @@ func RefreshServers() {
 }
 
 func UpdateServersFromJSON(byData []byte) bool {
-	bErrorReadingGameServers := true;
+	bErrorReadingGameServers := false;
 	GameServers = make([]GameServer, 0);
 	MapProxies = make(map[string]string);
 	jsonparser.ArrayEach(byData, func(valueServer []byte, dataType jsonparser.ValueType, offset int, err error) {
@@ -564,12 +564,9 @@ func UpdateServersFromJSON(byData []byte) bool {
 		sDomain, _ := jsonparser.GetString(valueServer, "domain");
 		sServIP, _ := jsonparser.GetString(valueServer, "ip");
 		sProxyIP, _ := jsonparser.GetString(valueServer, "proxy");
-		i64LowerPriority, _ := jsonparser.GetInt(valueServer, "lower_priority");
-		iLowerPriority := int(i64LowerPriority);
 		oGameServer := GameServer{
 			IP:				sServIP,
 			Domain:			sDomain,
-			LowerPriority:	iLowerPriority,
 		};
 		
 		jsonparser.ArrayEach(valueServer, func(valuePort []byte, dataType jsonparser.ValueType, offset int, err error) {
@@ -579,11 +576,19 @@ func UpdateServersFromJSON(byData []byte) bool {
 				if (sProxyIP != "") {
 					MapProxies[sServIP + ":" + sPORT] = sProxyIP + ":" + sPORT;
 				}
-				if (bErrorReadingGameServers == true) {
-					bErrorReadingGameServers = false;
-				}
 			}
 		}, "ports");
+		
+		jsonparser.ArrayEach(valueServer, func(valuePriority []byte, dataType jsonparser.ValueType, offset int, err error) {
+			i64LowerPriority, errLowerPriority := jsonparser.GetInt(valuePriority);
+			if (errLowerPriority == nil) {
+				oGameServer.LowerPriority = append(oGameServer.LowerPriority, int(i64LowerPriority));
+			}
+		}, "lower_priority");
+
+		if (len(oGameServer.Ports) != len(oGameServer.LowerPriority)) {
+			bErrorReadingGameServers = true;
+		}
 
 		GameServers = append(GameServers, oGameServer);
 

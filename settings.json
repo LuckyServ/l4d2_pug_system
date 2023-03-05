@@ -131,44 +131,44 @@
 		{
 			"name": "Carried Off",
 			"maps": ["cwm1_intro", "cwm2_warehouse", "cwm3_drain", "cwm4_building"],
-			"download": "https://l4d2center.com/maps/carriedoff_1.zip",
-			"last_updated": 1
+			"download": "https://l4d2center.com/maps/carriedoff_2.zip",
+			"last_updated": 1673087023000
 		},
 		{
 			"name": "Dark Carnival Remix",
 			"maps": ["dkr_m1_motel", "dkr_m2_carnival", "dkr_m3_tunneloflove", "dkr_m4_ferris"],
-			"download": "https://l4d2center.com/maps/dark carnival remix_1.zip",
-			"last_updated": 1
+			"download": "https://l4d2center.com/maps/dark carnival remix_2.zip",
+			"last_updated": 1673087023000
 		},
 		{
 			"name": "Haunted Forest",
 			"maps": ["hf01_theforest", "hf02_thesteeple", "hf03_themansion"],
-			"download": "https://l4d2center.com/maps/hauntedforest_v3_1.zip",
-			"last_updated": 1
+			"download": "https://l4d2center.com/maps/hauntedforest_v3_2.zip",
+			"last_updated": 1674471473000
 		},
 		{
 			"name": "Detour Ahead",
 			"maps": ["cdta_01detour", "cdta_02road", "cdta_03warehouse", "cdta_04onarail"],
-			"download": "https://l4d2center.com/maps/detourahead_1.zip",
-			"last_updated": 1
+			"download": "https://l4d2center.com/maps/detourahead_2.zip",
+			"last_updated": 1673087023000
 		},
 		{
 			"name": "Dead Before Dawn",
 			"maps": ["l4d_dbd2dc_anna_is_gone", "l4d_dbd2dc_the_mall", "l4d_dbd2dc_clean_up", "l4d_dbd2dc_undead_center"],
-			"download": "https://cdn.flxcs.ru/p/deadbeforedawn2_dc_1.zip",
-			"last_updated": 1
+			"download": "https://cdn.flxcs.ru/p/deadbeforedawn2_dc_2.zip",
+			"last_updated": 1674471473000
 		},
 		{
 			"name": "Diescraper Redux",
 			"maps": ["l4d2_diescraper1_apartment_361", "l4d2_diescraper2_streets_361", "l4d2_diescraper3_mid_361"],
-			"download": "https://l4d2center.com/maps/l4d2_diescraper_362_1.zip",
-			"last_updated": 1
+			"download": "https://l4d2center.com/maps/l4d2_diescraper_362_2.zip",
+			"last_updated": 1673087023000
 		},
 		{
 			"name": "Hard Rain Downpour",
 			"maps": ["dprm1_milltown_a", "dprm2_sugarmill_a", "dprm3_sugarmill_b", "dprm4_milltown_b"],
-			"download": "https://l4d2center.com/maps/downpour_1.zip",
-			"last_updated": 1
+			"download": "https://l4d2center.com/maps/downpour_2.zip",
+			"last_updated": 1673087023000
 		}
 	],
 	"game_servers": [
@@ -177,21 +177,21 @@
 			"ip": "127.0.0.1",
 			"proxy": "",
 			"ports": ["27016", "27017"],
-			"lower_priority": 0
+			"lower_priority": [0, 0]
 		},
 		{
 			"domain": "srv.domain2.com",
 			"ip": "127.0.0.2",
 			"proxy": "",
 			"ports": ["27016"],
-			"lower_priority": 0
+			"lower_priority": [0]
 		},
 		{
 			"domain": "srv.domain3.com",
 			"ip": "127.0.0.3",
 			"proxy": "",
 			"ports": ["27016"],
-			"lower_priority": 0
+			"lower_priority": [0]
 		}
 	]
 }
