@@ -80,7 +80,7 @@ func Join(pPlayer *players.EntPlayer) { //Players must be locked outside
 		}
 	}
 
-	if (iOnline >= 60) {
+	if (iOnline >= 80) {
 		pPlayer.InQueueSince = i64CurTime;
 	} else {
 		pPlayer.InQueueSince = i64CurTime - I64MaxQueueWait;

@@ -1,9 +1,10 @@
 - [ ] New serverlist format: different priorities on same machine
+- [ ] IsClientTimingOut in the AFK detection in SM plugin, or solve AFKs some other way
 - [ ] A page to search for smurfs of non-l4d2center players
+- [ ] Delete chat on ban
 - [ ] Improve smurf detection
 - [ ] Fix readyup bug
 - [ ] Allow small pics in chat
-- [ ] IsClientTimingOut in the AFK detection in SM plugin, or solve AFKs some other way
 - [ ] Solve the tank passing problem
 - [ ] Page with list of all players
 - [ ] Allow dead survivors to rq games without ban on last map on 2nd chapter
@@ -12,6 +13,7 @@
 - [ ] Default config for the case when zonemod is broken
 - [ ] Automatically parse anticheat logs and ban based on them
 
+- [x] 80 online players before quick queues
 - [x] Remove information of players in queue and custom maps confirmation
 - [x] An admin panel to show information about players
 - [x] If no ping info available for server, exclude it from selection
