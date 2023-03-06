@@ -6,6 +6,7 @@ import (
 	"../players"
 	"../utils"
 	"../smurf"
+	"../chat"
 	"encoding/base64"
 	"time"
 	"strings"
@@ -115,6 +116,7 @@ func BanManual(oBanReq EntManualBanReq) {
 		AddRecord(oBanRecord);
 
 		ApplyBanToPlayer(oBanReq.SteamID64, oBanReq.Access, sBanReason, i64BannedAt, oBanReq.BanLength, 0);
+		chat.ChanDelete <- oBanReq.SteamID64;
 		time.Sleep(2 * time.Millisecond);
 	}
 }

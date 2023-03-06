@@ -17,6 +17,7 @@ type EntChatMsg struct {
 var ArrayChatMsgs []EntChatMsg;
 var ChanSend = make(chan EntChatMsg);
 var ChanRead = make(chan []EntChatMsg);
+var ChanDelete = make(chan string);
 var I64LastGlobalChatUpdate int64;
 
 
@@ -38,6 +39,18 @@ func ChannelWatchers() {
 			copy(arChatMsgs, ArrayChatMsgs);
 			return arChatMsgs;
 		}():
+		case sSteamID64 := <-ChanDelete:
+			bNoneLeft := false;
+			for !bNoneLeft {
+				bNoneLeft = true;
+				for i, oChatSmg := range ArrayChatMsgs {
+					if (oChatSmg.SteamID64 == sSteamID64) {
+						bNoneLeft = false;
+						ArrayChatMsgs = append(ArrayChatMsgs[:i], ArrayChatMsgs[i+1:]...);
+						break;
+					}
+				}
+			}
 		}
 	}
 }

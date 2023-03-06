@@ -1,6 +1,4 @@
 - [ ] A page to search for smurfs of non-l4d2center players
-- [ ] DuoWith into /playerinfo/
-- [ ] Delete chat on ban
 - [ ] SM plugin: name instead of steamid64 in notification
 - [ ] Improve smurf detection
 - [ ] Fix readyup bug
@@ -13,6 +11,8 @@
 - [ ] Default config for the case when zonemod is broken
 - [ ] Automatically parse anticheat logs and ban based on them
 
+- [x] Delete chat on ban
+- [x] DuoWith into /playerinfo/
 - [x] Fix bWaitingForSinglePlayer if more playes joined during Queue readyup
 - [x] IsClientTimingOut in the AFK detection in SM plugin, or solve AFKs some other way
 - [x] New serverlist format: different priorities on same machine
