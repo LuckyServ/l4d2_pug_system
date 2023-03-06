@@ -51,7 +51,7 @@ func WatchQueue() {
 						arTrimmedQueue = SortTrimmedByMmr(arTrimmedQueue);
 
 						//create games
-						iNewGames := len(arTrimmedQueue) / 8;
+						iNewGames := iGamePlayers / 8;
 						for iG := 0; iG < iNewGames; iG++ {
 
 							pGame := &games.EntGame{

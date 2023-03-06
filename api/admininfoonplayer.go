@@ -26,6 +26,9 @@ type PlayerStatusResponse struct {
 	IsInQueue				bool			`json:"is_inqueue"`
 	InQueueSince			int64			`json:"in_queue_since"`
 	GameID					string			`json:"game_id"`
+	DuoWith					string			`json:"duo_with"`
+	DuoOffer				string			`json:"duo_offer"`
+	Twitch					string			`json:"twitch"`
 	GameServerPingsStored	map[string]int	`json:"gameserver_pings"`
 }
 
@@ -66,6 +69,9 @@ func HttpReqAdminInfoOnPlayer(c *gin.Context) {
 						IsInQueue:					pPlayer.IsInQueue,
 						InQueueSince:				pPlayer.InQueueSince,
 						GameID:						pPlayer.GameID,
+						DuoWith:					pPlayer.DuoWith,
+						DuoOffer:					pPlayer.DuoOffer,
+						Twitch:						pPlayer.Twitch,
 						GameServerPingsStored:		pPlayer.GameServerPingsStored,
 					};
 					players.MuPlayers.RUnlock();
