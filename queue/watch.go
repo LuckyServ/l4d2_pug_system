@@ -41,9 +41,12 @@ func WatchQueue() {
 
 				//check if longest wait player is still there
 				if (len(arReadyOnly) >= 8 && pPlayerReadyUpReason == PLongestWaitPlayer) {
-					arTrimmedQueue := TrimQueue(arReadyOnly);
+					arTrimmedQueue, iGamePlayers := TrimQueue(arReadyOnly);
 					if (len(arTrimmedQueue) == 0) {
-						bWaitingForSinglePlayer = true;
+						iNewerSinglePlayer := GetNewerSinglePlayer(arQueue, iGamePlayers);
+						if (iNewerSinglePlayer == -1) {
+							bWaitingForSinglePlayer = true;
+						}
 					} else {
 						arTrimmedQueue = SortTrimmedByMmr(arTrimmedQueue);
 

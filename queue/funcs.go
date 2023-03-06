@@ -34,7 +34,7 @@ func GetLongestWaitPlayer() (*players.EntPlayer) { //Players must be locked outs
 	return pOldestWaitPlayer;
 }
 
-func TrimQueue(arReadyOnly []*players.EntPlayer) ([]*players.EntPlayer) { //IPlayersCount must be >= 8 and arQueue sorted by wait time
+func TrimQueue(arReadyOnly []*players.EntPlayer) ([]*players.EntPlayer, int) { //IPlayersCount must be >= 8 and arQueue sorted by wait time
 	var arTrimmedQueue []*players.EntPlayer;
 	iSize := len(arReadyOnly);
 	iGamePlayers := iSize - (iSize % 8);
@@ -44,7 +44,7 @@ func TrimQueue(arReadyOnly []*players.EntPlayer) ([]*players.EntPlayer) { //IPla
 		iNewerSinglePlayer := GetNewerSinglePlayer(arReadyOnly, iGamePlayers);
 		if (iNewerSinglePlayer == -1) {
 			//cant move, return failure
-			return arTrimmedQueue;
+			return arTrimmedQueue, iGamePlayers;
 		} else {
 			//move single player in queue
 			pNewerSinglePlayer := arReadyOnly[iNewerSinglePlayer];
@@ -56,7 +56,7 @@ func TrimQueue(arReadyOnly []*players.EntPlayer) ([]*players.EntPlayer) { //IPla
 	for i := 0; i < iGamePlayers; i++ {
 		arTrimmedQueue = append(arTrimmedQueue, arReadyOnly[i]);
 	}
-	return arTrimmedQueue;
+	return arTrimmedQueue, iGamePlayers;
 }
 
 func GetReadyPlayersOnly() ([]*players.EntPlayer) {
@@ -198,10 +198,10 @@ func GetNearestByMmrSinglePlayer(arTrimmedQueue []*players.EntPlayer, iFirstInDu
 	return -1;
 }
 
-func GetNewerSinglePlayer(arReadyOnly []*players.EntPlayer, iGamePlayers int) int {
-	iSize := len(arReadyOnly);
-	for i := iGamePlayers + 1; i < iSize; i++ {
-		if (arReadyOnly[i].DuoWith == "") {
+func GetNewerSinglePlayer(arPlayers []*players.EntPlayer, iPlayer int) int {
+	iSize := len(arPlayers);
+	for i := iPlayer + 1; i < iSize; i++ {
+		if (arPlayers[i].DuoWith == "") {
 			return i;
 		}
 	}
