@@ -1,3 +1,4 @@
+- [ ] Do not make all team responsible for rq of 1 player
 - [ ] A page to search for smurfs of non-l4d2center players
 - [ ] SM plugin: name instead of steamid64 in notification
 - [ ] Improve smurf detection
@@ -11,6 +12,7 @@
 - [ ] Default config for the case when zonemod is broken
 - [ ] Automatically parse anticheat logs and ban based on them
 
+- [x] Improve validation of ping info (76561198047257214)
 - [x] Delete chat on ban
 - [x] DuoWith into /playerinfo/
 - [x] Fix bWaitingForSinglePlayer if more playes joined during Queue readyup

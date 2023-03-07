@@ -242,10 +242,19 @@ func GameRuleExists(vHandle *a2s.Client, sRule string) int { //-1 - error, 0 - d
 func IsPingInfoValid(pPlayer *players.EntPlayer) bool {
 	mapPings := pPlayer.GameServerPings;
 	if (mapPings != nil) {
+		var iAvgPing int;
 		for _, iPing := range mapPings {
 			if (iPing >= 600) {
 				return false;
 			}
+			iAvgPing = iAvgPing + iPing;
+		}
+		iSize := len(mapPings);
+		if (iSize > 0) {
+			iAvgPing = iAvgPing / iSize;
+		}
+		if (iAvgPing > 260) {
+			return false;
 		}
 	} else {
 		return false;
