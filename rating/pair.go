@@ -66,10 +66,10 @@ func Pair(arUnpairedPlayers []*players.EntPlayer) ([]*players.EntPlayer, []*play
 		}
 	}
 
-	//Cut them by mmr diff of 500
+	//Cut them by max mmr diff
 	var arTryCut [][2][]*players.EntPlayer;
 	for i, _ := range arVariantsP {
-		if (GetMmrDiff(arVariantsP[i]) >= int(settings.MmrDiffGuaranteedWin) / 2) {
+		if (GetMmrDiff(arVariantsP[i]) >= int(settings.MmrDiffGuaranteedWin) / 3) {
 			arTryCut = arVariantsP[:i];
 			break;
 		}
