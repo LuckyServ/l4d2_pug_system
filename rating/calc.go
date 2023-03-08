@@ -27,9 +27,9 @@ type EntGameResult struct {
 }
 
 
-func UpdateMmr(oResult EntGameResult, arFinalScores [2]int, arPlayers [2][]*players.EntPlayer) { //Players must be locked outside
+func UpdateMmr(oResult EntGameResult, arPlayers [2][]*players.EntPlayer) { //Players must be locked outside
 
-	if (oResult.MapsFinished == 0) { //dont touch mmr if didnt even play a single map
+	if (oResult.SettledScores[0] == 0 && oResult.SettledScores[1] == 0) { //dont touch mmr if scores are zero
 		return;
 	} else if (oResult.SomeoneBanned) { //dont touch mmr if game stopped due to a ban
 		return;
@@ -38,19 +38,19 @@ func UpdateMmr(oResult EntGameResult, arFinalScores [2]int, arPlayers [2][]*play
 	//Get winner and winning coef
 	var f32WinCoef float32;
 	var iWinner int = -1; //-1 == draw
-	if (arFinalScores[0] > arFinalScores[1]) {
+	if (oResult.SettledScores[0] > oResult.SettledScores[1]) {
 		iWinner = 0;
-		f32WinCoef = (float32(arFinalScores[0]) / (float32(arFinalScores[1]) + 0.001/*in case if scores are 0*/)) - 1.0;
-	} else if (arFinalScores[1] > arFinalScores[0]) {
+		f32WinCoef = (float32(oResult.SettledScores[0]) / (float32(oResult.SettledScores[1]) + 0.001/*in case if scores are 0*/)) - 1.0;
+	} else if (oResult.SettledScores[1] > oResult.SettledScores[0]) {
 		iWinner = 1;
-		f32WinCoef = (float32(arFinalScores[1]) / (float32(arFinalScores[0]) + 0.001/*in case if scores are 0*/)) - 1.0;
+		f32WinCoef = (float32(oResult.SettledScores[1]) / (float32(oResult.SettledScores[0]) + 0.001/*in case if scores are 0*/)) - 1.0;
 	}
 	//twice as high scores of a winner = absolute win
 	if (f32WinCoef > 1.0) {
 		f32WinCoef = 1.0;
 	}
 	//Prevent too high mmr gains (and losses) if played 1 map only
-	if ((oResult.MapsFinished == 1 && (oResult.InMapTransition || (oResult.CurrentHalf == 1 && oResult.InRound))) && f32WinCoef > 0.0) {
+	if (oResult.MapsFinished == 1 && f32WinCoef > 0.0) {
 		f32WinCoef = 0.0;
 	}
 
@@ -99,41 +99,65 @@ func UpdateMmr(oResult EntGameResult, arFinalScores [2]int, arPlayers [2][]*play
 		f32TeamAgets = settings.MmrAbsoluteWin * -1.0;
 	}
 
+	//check what team did RQ
+	var iRQTeam int = -1; //A (0) or B (1) or both (2), or nonr (-1)
+	for _, pPlayer := range arPlayers[0] {
+		if (utils.GetStringIdxInArray(pPlayer.SteamID64, oResult.AbsentPlayers) != -1) {
+			iRQTeam = 0;
+			break;
+		}
+	}
+	for _, pPlayer := range arPlayers[1] {
+		if (utils.GetStringIdxInArray(pPlayer.SteamID64, oResult.AbsentPlayers) != -1) {
+			if (iRQTeam == -1) {
+				iRQTeam = 1;
+				break;
+			} else {
+				iRQTeam = 2;
+				break;
+			}
+		}
+	}
+
 	//Apply new mmr
 	iTeamAgets := int(math.Round(float64(f32TeamAgets)));
 	if (iTeamAgets > 0) {
 		for iP := 0; iP < 4; iP++ {
-			if (arPlayers[0][iP].SteamID64 != oResult.Inferior[0] &&
-				utils.GetStringIdxInArray(arPlayers[0][iP].SteamID64, oResult.AbsentPlayers) == -1) {
-				arPlayers[0][iP].Mmr = arPlayers[0][iP].Mmr + (iTeamAgets + int(f32TeamAgets * arPlayers[0][iP].MmrUncertainty));
-				arPlayers[0][iP].MmrUncertainty = arPlayers[0][iP].MmrUncertainty * 0.8; //reduce uncertainty
-			}
 			arPlayers[0][iP].LastGameResult = 3; //won
+			if (utils.GetStringIdxInArray(arPlayers[0][iP].SteamID64, oResult.AbsentPlayers) != -1) {
+				continue;
+			} else if (iRQTeam == 0 && utils.GetDifferenceInt(oResult.SettledScores[0], oResult.SettledScores[1]) < 800) {
+				continue;
+			}
+			arPlayers[0][iP].Mmr = arPlayers[0][iP].Mmr + (iTeamAgets + int(f32TeamAgets * arPlayers[0][iP].MmrUncertainty));
+			arPlayers[0][iP].MmrUncertainty = arPlayers[0][iP].MmrUncertainty * 0.8; //reduce uncertainty
 		}
 		for iP := 0; iP < 4; iP++ {
-			if (arPlayers[1][iP].SteamID64 != oResult.Dominator[1] ||
-				utils.GetStringIdxInArray(arPlayers[1][iP].SteamID64, oResult.AbsentPlayers) != -1) {
-				arPlayers[1][iP].Mmr = arPlayers[1][iP].Mmr - (iTeamAgets + int(f32TeamAgets * arPlayers[1][iP].MmrUncertainty));
-				arPlayers[1][iP].MmrUncertainty = arPlayers[1][iP].MmrUncertainty * 0.8; //reduce uncertainty
-			}
 			arPlayers[1][iP].LastGameResult = 2; //lost
+			if (iRQTeam == 0 && utils.GetDifferenceInt(oResult.SettledScores[0], oResult.SettledScores[1]) < 800) {
+				continue;
+			}
+			arPlayers[1][iP].Mmr = arPlayers[1][iP].Mmr - (iTeamAgets + int(f32TeamAgets * arPlayers[1][iP].MmrUncertainty));
+			arPlayers[1][iP].MmrUncertainty = arPlayers[1][iP].MmrUncertainty * 0.8; //reduce uncertainty
 		}
 	} else if (iTeamAgets < 0) {
 		for iP := 0; iP < 4; iP++ {
-			if (arPlayers[0][iP].SteamID64 != oResult.Dominator[0] ||
-				utils.GetStringIdxInArray(arPlayers[0][iP].SteamID64, oResult.AbsentPlayers) != -1) {
-				arPlayers[0][iP].Mmr = arPlayers[0][iP].Mmr + (iTeamAgets + int(f32TeamAgets * arPlayers[0][iP].MmrUncertainty));
-				arPlayers[0][iP].MmrUncertainty = arPlayers[0][iP].MmrUncertainty * 0.8; //reduce uncertainty
-			}
 			arPlayers[0][iP].LastGameResult = 2; //lost
+			if (iRQTeam == 1 && utils.GetDifferenceInt(oResult.SettledScores[0], oResult.SettledScores[1]) < 800) {
+				continue;
+			}
+			arPlayers[0][iP].Mmr = arPlayers[0][iP].Mmr + (iTeamAgets + int(f32TeamAgets * arPlayers[0][iP].MmrUncertainty));
+			arPlayers[0][iP].MmrUncertainty = arPlayers[0][iP].MmrUncertainty * 0.8; //reduce uncertainty
 		}
 		for iP := 0; iP < 4; iP++ {
-			if (arPlayers[1][iP].SteamID64 != oResult.Inferior[1] &&
-				utils.GetStringIdxInArray(arPlayers[1][iP].SteamID64, oResult.AbsentPlayers) == -1) {
-				arPlayers[1][iP].Mmr = arPlayers[1][iP].Mmr - (iTeamAgets + int(f32TeamAgets * arPlayers[1][iP].MmrUncertainty));
-				arPlayers[1][iP].MmrUncertainty = arPlayers[1][iP].MmrUncertainty * 0.8; //reduce uncertainty
-			}
 			arPlayers[1][iP].LastGameResult = 3; //won
+			if (utils.GetStringIdxInArray(arPlayers[1][iP].SteamID64, oResult.AbsentPlayers) != -1) {
+				continue;
+			} else if (iRQTeam == 1 && utils.GetDifferenceInt(oResult.SettledScores[0], oResult.SettledScores[1]) < 800) {
+				continue;
+			}
+			arPlayers[1][iP].Mmr = arPlayers[1][iP].Mmr - (iTeamAgets + int(f32TeamAgets * arPlayers[1][iP].MmrUncertainty));
+			arPlayers[1][iP].MmrUncertainty = arPlayers[1][iP].MmrUncertainty * 0.8; //reduce uncertainty
 		}
 	} else { //draw
 		for iT := 0; iT < 2; iT++ {
@@ -146,7 +170,7 @@ func UpdateMmr(oResult EntGameResult, arFinalScores [2]int, arPlayers [2][]*play
 }
 
 
-func DetermineFinalScores(oResult EntGameResult, arPlayers [2][]*players.EntPlayer) [2]int { //Players must be locked outside
+/*func DetermineFinalScores(oResult EntGameResult, arPlayers [2][]*players.EntPlayer) [2]int { //Players must be locked outside
 	if (len(oResult.AbsentPlayers) > 0) {
 
 		//check what team did RQ (whole team gets responsible for one player RQ)
@@ -184,4 +208,4 @@ func DetermineFinalScores(oResult EntGameResult, arPlayers [2][]*players.EntPlay
 		return oResult.SettledScores;
 	}
 	return [2]int{0, 0};
-}
+}*/

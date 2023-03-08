@@ -50,8 +50,6 @@ var MaxAbsentSeconds int64;
 var MaxSingleAbsentSeconds int64;
 var MinPlayersCount int;
 
-var RQDefaultPenalty int;
-
 var ChatStoreMaxMsgs int;
 var ChatMsgDelay int64;
 var ChatMaxChars int;
@@ -324,13 +322,6 @@ func ConfigFile() bool {
 		return false;
 	}
 	MinPlayersCount = 8 - int(i64Buffer);
-
-	i64Buffer, errError = jsonparser.GetInt(byData, "game", "ragequit_penalty", "default");
-	if (errError != nil) {
-		fmt.Printf("Error reading config file: %s\n", errError);
-		return false;
-	}
-	RQDefaultPenalty = int(i64Buffer);
 
 	i64Buffer, errError = jsonparser.GetInt(byData, "chat", "store_n_messages");
 	if (errError != nil) {

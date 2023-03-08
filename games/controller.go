@@ -336,8 +336,7 @@ func Control(pGame *EntGame) {
 
 	pGame.State = StateGameEnded;
 	oResult := pGame.GameResult;
-	arFinalScores := rating.DetermineFinalScores(oResult, [2][]*players.EntPlayer{pGame.PlayersA, pGame.PlayersB});
-	rating.UpdateMmr(oResult, arFinalScores, [2][]*players.EntPlayer{pGame.PlayersA, pGame.PlayersB});
+	rating.UpdateMmr(oResult, [2][]*players.EntPlayer{pGame.PlayersA, pGame.PlayersB});
 
 	for _, pPlayer := range pGame.PlayersUnpaired {
 
@@ -377,8 +376,8 @@ func Control(pGame *EntGame) {
 		CreatedAt:			pGame.CreatedAt,
 		PlayersA:			Implode4Players(pGame.PlayersA),
 		PlayersB:			Implode4Players(pGame.PlayersB),
-		TeamAScores:		arFinalScores[0],
-		TeamBScores:		arFinalScores[1],
+		TeamAScores:		oResult.SettledScores[0],
+		TeamBScores:		oResult.SettledScores[1],
 		ConfoglConfig:		pGame.GameConfig.CodeName,
 		CampaignName:		pGame.CampaignName,
 		ServerIP:			pGame.ServerIP,

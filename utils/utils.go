@@ -116,3 +116,11 @@ func InsertDots(s string, n int) string {
 func StringContainsCI(sSearch string, sHeystack string) bool {
 	return strings.Contains(strings.ToLower(sHeystack), strings.ToLower(sSearch));
 }
+
+func GetDifferenceInt(val1 int, val2 int) int {
+	iDiff := val1 - val2;
+	if (iDiff >= 0) {
+		return iDiff;
+	}
+	return iDiff * -1;
+}
