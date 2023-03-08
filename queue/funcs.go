@@ -7,7 +7,7 @@ import (
 
 func SetLastUpdated() { //Players must be locked outside
 	i64CurTime := time.Now().UnixMilli();
-	for _, pPlayer := range arQueue {
+	for _, pPlayer := range ArQueue {
 		pPlayer.LastQueueChanged = i64CurTime;
 	}
 	players.I64LastPlayerlistUpdate = i64CurTime;
@@ -22,10 +22,10 @@ func FindPlayerInArray(pPlayer *players.EntPlayer, arPlayers []*players.EntPlaye
 	return -1;
 }
 
-func GetLongestWaitPlayer() (*players.EntPlayer) { //Players must be locked outside, len(arQueue) is guaranteed to be > 0
+func GetLongestWaitPlayer() (*players.EntPlayer) { //Players must be locked outside, len(ArQueue) is guaranteed to be > 0
 	var i64OldestJoin int64 = 9000000000000000000;
 	var pOldestWaitPlayer *players.EntPlayer;
-	for _, pPlayer := range arQueue {
+	for _, pPlayer := range ArQueue {
 		if (pPlayer.InQueueSince < i64OldestJoin) {
 			i64OldestJoin = pPlayer.InQueueSince;
 			pOldestWaitPlayer = pPlayer;
@@ -34,7 +34,7 @@ func GetLongestWaitPlayer() (*players.EntPlayer) { //Players must be locked outs
 	return pOldestWaitPlayer;
 }
 
-func TrimQueue(arReadyOnly []*players.EntPlayer) ([]*players.EntPlayer, int) { //IPlayersCount must be >= 8 and arQueue sorted by wait time
+func TrimQueue(arReadyOnly []*players.EntPlayer) ([]*players.EntPlayer, int) { //IPlayersCount must be >= 8 and ArQueue sorted by wait time
 	var arTrimmedQueue []*players.EntPlayer;
 	iSize := len(arReadyOnly);
 	iGamePlayers := iSize - (iSize % 8);
@@ -61,7 +61,7 @@ func TrimQueue(arReadyOnly []*players.EntPlayer) ([]*players.EntPlayer, int) { /
 
 func GetReadyPlayersOnly() ([]*players.EntPlayer) {
 	var arReadyQueue []*players.EntPlayer;
-	for _, pPlayer := range arQueue {
+	for _, pPlayer := range ArQueue {
 		if (pPlayer.IsReadyUpRequested && pPlayer.IsReadyConfirmed) {
 			arReadyQueue = append(arReadyQueue, pPlayer);
 		}

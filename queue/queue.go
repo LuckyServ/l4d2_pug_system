@@ -6,7 +6,7 @@ import (
 	"errors"
 )
 
-var arQueue []*players.EntPlayer;
+var ArQueue []*players.EntPlayer;
 var NewGamesBlocked bool;
 var IPlayersCount int;
 var BIsInReadyUp bool;
@@ -69,7 +69,7 @@ func CancelDuo(pPlayer *players.EntPlayer) { //Players must be locked outside
 func Join(pPlayer *players.EntPlayer) { //Players must be locked outside
 
 	i64CurTime := time.Now().UnixMilli();
-	arQueue = append(arQueue, pPlayer);
+	ArQueue = append(ArQueue, pPlayer);
 	IPlayersCount++;
 	pPlayer.IsInQueue = true;
 
@@ -101,9 +101,9 @@ func Join(pPlayer *players.EntPlayer) { //Players must be locked outside
 }
 
 func Leave(pPlayer *players.EntPlayer, bGameStart bool) { //Players must be locked outside
-	iPlayer := FindPlayerInArray(pPlayer, arQueue);
+	iPlayer := FindPlayerInArray(pPlayer, ArQueue);
 	if (iPlayer != -1) {
-		arQueue = append(arQueue[:iPlayer], arQueue[iPlayer+1:]...);
+		ArQueue = append(ArQueue[:iPlayer], ArQueue[iPlayer+1:]...);
 		IPlayersCount--;
 		if (pPlayer.IsReadyUpRequested && pPlayer.IsReadyConfirmed) {
 			IReadyPlayers--;
@@ -147,7 +147,7 @@ func RequestReadyUp() { //queue is >= 8 players
 	i64InReadyUpSince = time.Now().UnixMilli();
 	pPlayerReadyUpReason = PLongestWaitPlayer;
 	IReadyPlayers = 0;
-	for _, pPlayer := range arQueue {
+	for _, pPlayer := range ArQueue {
 		pPlayer.IsReadyUpRequested = true;
 		pPlayer.IsReadyConfirmed = false;
 	}
@@ -159,7 +159,7 @@ func StopReadyUp() {
 	i64InReadyUpSince = 0;
 	IReadyPlayers = 0;
 	pPlayerReadyUpReason = nil;
-	for _, pPlayer := range arQueue {
+	for _, pPlayer := range ArQueue {
 		pPlayer.IsReadyUpRequested = false;
 		pPlayer.IsReadyConfirmed = false;
 	}
@@ -167,7 +167,7 @@ func StopReadyUp() {
 
 func KickUnready() {
 	var arKickPlayers []*players.EntPlayer;
-	for _, pPlayer := range arQueue {
+	for _, pPlayer := range ArQueue {
 		if (pPlayer.IsReadyUpRequested && !pPlayer.IsReadyConfirmed) {
 			arKickPlayers = append(arKickPlayers, pPlayer);
 			if (pPlayer.DuoWith != "") {
@@ -185,7 +185,7 @@ func KickUnready() {
 
 func KickOffline() {
 	var arKickPlayers []*players.EntPlayer;
-	for _, pPlayer := range arQueue {
+	for _, pPlayer := range ArQueue {
 		if (!pPlayer.IsOnline) {
 			arKickPlayers = append(arKickPlayers, pPlayer);
 			if (pPlayer.DuoWith != "") {

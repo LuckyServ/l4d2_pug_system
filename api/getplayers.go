@@ -7,6 +7,7 @@ import (
 	//"fmt"
 	"time"
 	"../players/auth"
+	"../queue"
 )
 
 type PlayerResponse struct {
@@ -50,6 +51,7 @@ func HttpReqGetPlayers(c *gin.Context) {
 
 	sSearchSteamID := c.Query("steamid64");
 	bOnlyOnline := c.Query("online") == "true";
+	bInQueue := false;
 
 	mapResponse["authorized"] = false;
 	if (errCookieSessID == nil && sCookieSessID != "") {
@@ -60,6 +62,10 @@ func HttpReqGetPlayers(c *gin.Context) {
 			players.MuPlayers.RLock();
 
 			pPlayer := players.MapPlayers[oSession.SteamID64];
+
+			if (pPlayer.IsInQueue) {
+				bInQueue = true;
+			}
 
 			mapResponse["me"] = PlayerResponseMe{
 				SteamID64:				pPlayer.SteamID64,
@@ -97,11 +103,18 @@ func HttpReqGetPlayers(c *gin.Context) {
 	bAuthorized := mapResponse["authorized"] == true;
 
 	if (bOnlyOnline) {
-		for _, pPlayer := range players.ArrayPlayers {
-			if (pPlayer.ProfValidated && pPlayer.RulesAccepted && pPlayer.Access >= -1 && (pPlayer.IsOnline || pPlayer.IsInGame || pPlayer.IsInQueue)) {
+		if (bInQueue) {
+			for i := len(queue.ArQueue) - 1; i >= 0; i-- {
+				pPlayer := queue.ArQueue[i];
 				arPlayers = AppendPlayerResponse(arPlayers, pPlayer);
-				if (!bAuthorized && len(arPlayers) >= 15) {
-					break;
+			}
+		} else {
+			for _, pPlayer := range players.ArrayPlayers {
+				if (pPlayer.ProfValidated && pPlayer.RulesAccepted && pPlayer.Access >= -1 && (pPlayer.IsOnline || pPlayer.IsInGame || pPlayer.IsInQueue)) {
+					arPlayers = AppendPlayerResponse(arPlayers, pPlayer);
+					if (!bAuthorized && len(arPlayers) >= 15) {
+						break;
+					}
 				}
 			}
 		}

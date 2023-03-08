@@ -43,7 +43,7 @@ func WatchQueue() {
 				if (len(arReadyOnly) >= 8 && pPlayerReadyUpReason == PLongestWaitPlayer) {
 					arTrimmedQueue, iGamePlayers := TrimQueue(arReadyOnly);
 					if (len(arTrimmedQueue) == 0) {
-						iNewerSinglePlayer := GetNewerSinglePlayer(arQueue, iGamePlayers);
+						iNewerSinglePlayer := GetNewerSinglePlayer(ArQueue, iGamePlayers);
 						if (iNewerSinglePlayer == -1) {
 							bWaitingForSinglePlayer = true;
 						}
