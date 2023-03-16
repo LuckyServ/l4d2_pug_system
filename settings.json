@@ -150,6 +150,12 @@
 			"last_updated": 1673087023000
 		},
 		{
+			"name": "Haunted Forest",
+			"maps": ["hf01_theforest", "hf02_thesteeple", "hf03_themansion", "hf04_escape"],
+			"download": "https://l4d2center.com/maps/hauntedforest_v3_2.zip",
+			"last_updated": 1674471473000
+		},
+		{
 			"name": "Detour Ahead",
 			"maps": ["cdta_01detour", "cdta_02road", "cdta_03warehouse", "cdta_04onarail"],
 			"download": "https://l4d2center.com/maps/detourahead_2.zip",
