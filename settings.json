@@ -132,16 +132,22 @@
 			"last_updated": 1673087023000
 		},
 		{
+			"name": "Suicide Blitz 2",
+			"maps": ["l4d2_stadium1_apartment", "l4d2_stadium2_riverwalk", "l4d2_stadium3_city1", "l4d2_stadium4_city2"],
+			"download": "https://l4d2center.com/maps/suicideblitz2_2.zip",
+			"last_updated": 1678467000000
+		},
+		{
+			"name": "Open Road",
+			"maps": ["x1m1_cliffs", "x1m2_path", "x1m3_city", "x1m4_forest"],
+			"download": "https://l4d2center.com/maps/openroad_2.zip",
+			"last_updated": 1678467000000
+		},
+		{
 			"name": "Dark Carnival Remix",
 			"maps": ["dkr_m1_motel", "dkr_m2_carnival", "dkr_m3_tunneloflove", "dkr_m4_ferris"],
 			"download": "https://l4d2center.com/maps/dark carnival remix_2.zip",
 			"last_updated": 1673087023000
-		},
-		{
-			"name": "Haunted Forest",
-			"maps": ["hf01_theforest", "hf02_thesteeple", "hf03_themansion"],
-			"download": "https://l4d2center.com/maps/hauntedforest_v3_2.zip",
-			"last_updated": 1674471473000
 		},
 		{
 			"name": "Detour Ahead",
