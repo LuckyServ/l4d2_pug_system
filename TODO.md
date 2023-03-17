@@ -1,16 +1,19 @@
+- [ ] "Ready" mark near player in queue
+- [ ] api to quickly remove maps and servers
 - [ ] A page to search for smurfs of non-l4d2center players
+- [ ] Page with ongoing games
 - [ ] SM plugin: name instead of steamid64 in notification
-- [ ] Improve smurf detection
+- [ ] Fix exploiting the initial ready up timelimit
 - [ ] Fix readyup bug
 - [ ] Allow small pics in chat
 - [ ] Solve the tank passing problem
 - [ ] Page with list of all players
 - [ ] Allow dead survivors to rq games without ban on last map on 2nd chapter
-- [ ] Fix exploiting the initial ready up timelimit
 - [ ] T2 and T1 configs for lower tier players
 - [ ] Default config for the case when zonemod is broken
 - [ ] Automatically parse anticheat logs and ban based on them
 
+- [x] Improve smurf detection
 - [x] See who is in queue
 - [x] Reduce balanced mmr gap
 - [x] Do not make all team responsible for rq of 1 player

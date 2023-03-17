@@ -19,6 +19,9 @@ type PlayerResponse struct {
 	Access					int 		`json:"access"` //-2 - completely banned, -1 - chat banned, 0 - regular player, 1 - behaviour moderator, 2 - cheat moderator, 3 - behaviour+cheat moderator, 4 - full admin access
 	IsInGame				bool		`json:"is_ingame"`
 	MmrGrade				int			`json:"mmr_grade"`
+	IsInQueue				bool		`json:"is_inqueue"`
+	IsReadyUpRequested		bool		`json:"is_ready_requested"`
+	IsReadyConfirmed		bool		`json:"is_ready_confirmed"`
 }
 
 type PlayerResponseMe struct {
@@ -40,6 +43,8 @@ type PlayerResponseMe struct {
 	DuoOffer				string		`json:"duo_offer"`
 	CustomMapsState			int			`json:"custom_maps"` //1 - never confirmed, 2 - update required, 3 - confirmed
 	IsInDuo					bool		`json:"in_duo"`
+	IsReadyUpRequested		bool		`json:"is_ready_requested"`
+	IsReadyConfirmed		bool		`json:"is_ready_confirmed"`
 }
 
 
@@ -86,6 +91,8 @@ func HttpReqGetPlayers(c *gin.Context) {
 				DuoOffer:				pPlayer.DuoOffer,
 				IsInDuo:				(pPlayer.DuoWith != ""),
 				CustomMapsState:		players.CustomMapsConfirmState(pPlayer),
+				IsReadyUpRequested:		pPlayer.IsReadyUpRequested,
+				IsReadyConfirmed:		pPlayer.IsReadyConfirmed,
 			};
 
 			players.MuPlayers.RUnlock();
@@ -174,6 +181,9 @@ func AppendPlayerResponse(arPlayers []PlayerResponse, pPlayer *players.EntPlayer
 		Access:					pPlayer.Access,
 		IsInGame:				pPlayer.IsInGame,
 		MmrGrade:				players.GetMmrGrade(pPlayer),
+		IsInQueue:				pPlayer.IsInQueue,
+		IsReadyUpRequested:		pPlayer.IsReadyUpRequested,
+		IsReadyConfirmed:		pPlayer.IsReadyConfirmed,
 	});
 	return arBuffer;
 }
