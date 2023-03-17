@@ -74,6 +74,7 @@ type GameServer struct {
 	Domain			string		`json:"domain"`
 	Ports			[]string	`json:"ports"`
 	LowerPriority	[]int		`json:"lower_priority"`
+	Admin			string		`json:"admin"`
 }
 var MapProxies = make(map[string]string);
 
@@ -555,9 +556,11 @@ func UpdateServersFromJSON(byData []byte) bool {
 		sDomain, _ := jsonparser.GetString(valueServer, "domain");
 		sServIP, _ := jsonparser.GetString(valueServer, "ip");
 		sProxyIP, _ := jsonparser.GetString(valueServer, "proxy");
+		sAdmin, _ := jsonparser.GetString(valueServer, "admin");
 		oGameServer := GameServer{
 			IP:				sServIP,
 			Domain:			sDomain,
+			Admin:			sAdmin,
 		};
 		
 		jsonparser.ArrayEach(valueServer, func(valuePort []byte, dataType jsonparser.ValueType, offset int, err error) {
