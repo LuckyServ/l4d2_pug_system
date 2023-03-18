@@ -60,6 +60,7 @@ func HttpReqAdminInfoOnPlayer(c *gin.Context) {
 
 					//Current player status (all info from players.EntPlayer)
 					if (bPlayerExists) {
+						players.MuPlayers.RLock();
 						mapResponse["status"] = PlayerStatusResponse{
 							PlayerExists:				bPlayerExists,
 							NicknameBase64:				pPlayer.NicknameBase64,
@@ -81,6 +82,7 @@ func HttpReqAdminInfoOnPlayer(c *gin.Context) {
 							Twitch:						pPlayer.Twitch,
 							GameServerPingsStored:		pPlayer.GameServerPingsStored,
 						};
+						players.MuPlayers.RUnlock();
 					} else {
 						mapResponse["status"] = PlayerStatusResponse{};
 					}
