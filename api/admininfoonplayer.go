@@ -8,10 +8,12 @@ import (
 	"../bans"
 	"../utils"
 	"../database"
+	"regexp"
 )
 
 
 type PlayerStatusResponse struct {
+	PlayerExists			bool			`json:"player_exists"`
 	NicknameBase64			string			`json:"nickname_base64"`
 	Mmr						int				`json:"mmr"`
 	MmrUncertainty			float32			`json:"mmr_uncertainty"`
@@ -41,41 +43,48 @@ func HttpReqAdminInfoOnPlayer(c *gin.Context) {
 
 	sSteamID64 := c.Query("steamid64");
 
+	bSteamIDValid, _ := regexp.MatchString(`^[0-9]{17}$`, sSteamID64);
+
 	mapResponse["success"] = false;
-	if (errCookieSessID == nil && sCookieSessID != "") {
-		oSession, bAuthorized := auth.GetSession(sCookieSessID, c.Query("csrf"));
-		if (bAuthorized) {
-			players.MuPlayers.RLock();
-			iAdminAccess := players.MapPlayers[oSession.SteamID64].Access;
-			players.MuPlayers.RUnlock();
-			if (iAdminAccess > 0) {
+	if (bSteamIDValid) {
+		if (errCookieSessID == nil && sCookieSessID != "") {
+			oSession, bAuthorized := auth.GetSession(sCookieSessID, c.Query("csrf"));
+			if (bAuthorized) {
 				players.MuPlayers.RLock();
-				pPlayer := players.MapPlayers[sSteamID64];
-				if (pPlayer != nil) {
+				iAdminAccess := players.MapPlayers[oSession.SteamID64].Access;
+				players.MuPlayers.RUnlock();
+				if (iAdminAccess > 0) {
+					players.MuPlayers.RLock();
+					pPlayer, bPlayerExists := players.MapPlayers[sSteamID64];
+					players.MuPlayers.RUnlock();
 
 					//Current player status (all info from players.EntPlayer)
-					mapResponse["status"] = PlayerStatusResponse{
-						NicknameBase64:				pPlayer.NicknameBase64,
-						Mmr:						pPlayer.Mmr,
-						MmrUncertainty:				pPlayer.MmrUncertainty,
-						LastGameResult:				pPlayer.LastGameResult,
-						Access:						pPlayer.Access,
-						ProfValidated:				pPlayer.ProfValidated,
-						RulesAccepted:				pPlayer.RulesAccepted,
-						LastActivity:				pPlayer.LastActivity,
-						IsOnline:					pPlayer.IsOnline,
-						OnlineSince:				pPlayer.OnlineSince,
-						IsInGame:					pPlayer.IsInGame,
-						IsInQueue:					pPlayer.IsInQueue,
-						InQueueSince:				pPlayer.InQueueSince,
-						GameID:						pPlayer.GameID,
-						DuoWith:					pPlayer.DuoWith,
-						DuoOffer:					pPlayer.DuoOffer,
-						Twitch:						pPlayer.Twitch,
-						GameServerPingsStored:		pPlayer.GameServerPingsStored,
-					};
-					players.MuPlayers.RUnlock();
-	
+					if (bPlayerExists) {
+						mapResponse["status"] = PlayerStatusResponse{
+							PlayerExists:				bPlayerExists,
+							NicknameBase64:				pPlayer.NicknameBase64,
+							Mmr:						pPlayer.Mmr,
+							MmrUncertainty:				pPlayer.MmrUncertainty,
+							LastGameResult:				pPlayer.LastGameResult,
+							Access:						pPlayer.Access,
+							ProfValidated:				pPlayer.ProfValidated,
+							RulesAccepted:				pPlayer.RulesAccepted,
+							LastActivity:				pPlayer.LastActivity,
+							IsOnline:					pPlayer.IsOnline,
+							OnlineSince:				pPlayer.OnlineSince,
+							IsInGame:					pPlayer.IsInGame,
+							IsInQueue:					pPlayer.IsInQueue,
+							InQueueSince:				pPlayer.InQueueSince,
+							GameID:						pPlayer.GameID,
+							DuoWith:					pPlayer.DuoWith,
+							DuoOffer:					pPlayer.DuoOffer,
+							Twitch:						pPlayer.Twitch,
+							GameServerPingsStored:		pPlayer.GameServerPingsStored,
+						};
+					} else {
+						mapResponse["status"] = PlayerStatusResponse{};
+					}
+
 					//List of smurfs
 					arSmurfs := smurf.GetKnownAccounts(sSteamID64); //slow, makes connections outside
 					mapResponse["accounts"] = arSmurfs;
@@ -113,25 +122,27 @@ func HttpReqAdminInfoOnPlayer(c *gin.Context) {
 					
 
 					//Game history
-					arGameHistory, iGamesPlayed := database.GetGameHistory(sSteamID64);
-					mapGameHistory := make(map[string]interface{});
-					mapGameHistory["count"] = iGamesPlayed;
-					mapGameHistory["history"] = arGameHistory;
-					mapResponse["games"] = mapGameHistory;
+					if (bPlayerExists) {
+						arGameHistory, iGamesPlayed := database.GetGameHistory(sSteamID64);
+						mapGameHistory := make(map[string]interface{});
+						mapGameHistory["count"] = iGamesPlayed;
+						mapGameHistory["history"] = arGameHistory;
+						mapResponse["games"] = mapGameHistory;
+					}
 
 					mapResponse["success"] = true;
+
 				} else {
-					players.MuPlayers.RUnlock();
-					mapResponse["error"] = "Player not found";
+					mapResponse["error"] = "You dont have access to this information";
 				}
 			} else {
-				mapResponse["error"] = "You dont have access to this information";
+				mapResponse["error"] = "Please authorize first";
 			}
 		} else {
 			mapResponse["error"] = "Please authorize first";
 		}
 	} else {
-		mapResponse["error"] = "Please authorize first";
+		mapResponse["error"] = "Bad parameters";
 	}
 	
 	c.Header("Access-Control-Allow-Origin", c.Request.Header.Get("origin"));
