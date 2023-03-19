@@ -280,8 +280,11 @@ func GetMmrGrade(pPlayer *EntPlayer) int { //Players must be locked outside
 	if (pPlayer.MmrUncertainty > settings.MmrStable) {
 		return 0;
 	}
-	if (pPlayer.Mmr < iMinStableMmr || pPlayer.Mmr > iMaxStableMmr) {
-		return 0;
+	if (pPlayer.Mmr < iMinStableMmr) {
+		return 1;
+	}
+	if (pPlayer.Mmr > iMaxStableMmr) {
+		return settings.MmrGrades;
 	}
 	if (iMmrDiff < 1) {
 		return 0;

@@ -1,6 +1,4 @@
-- [ ] "Ready" mark near player in queue
-- [ ] api to quickly remove maps and servers
-- [ ] A page to search for smurfs of non-l4d2center players
+- [ ] Force game end api
 - [ ] Page with ongoing games
 - [ ] SM plugin: name instead of steamid64 in notification
 - [ ] Fix exploiting the initial ready up timelimit
@@ -13,6 +11,9 @@
 - [ ] Default config for the case when zonemod is broken
 - [ ] Automatically parse anticheat logs and ban based on them
 
+- [x] A page to search for smurfs of non-l4d2center players
+- [x] api to quickly remove maps and servers
+- [x] "Ready" mark near player in queue
 - [x] Improve smurf detection
 - [x] See who is in queue
 - [x] Reduce balanced mmr gap
