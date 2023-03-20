@@ -84,12 +84,6 @@
 			"last_updated": 1
 		},
 		{
-			"name": "Swamp Fever",
-			"maps": ["c3m1_plankcountry", "c3m2_swamp", "c3m3_shantytown"],
-			"download": "",
-			"last_updated": 1
-		},
-		{
 			"name": "Hard Rain",
 			"maps": ["c4m1_milltown_a", "c4m2_sugarmill_a", "c4m3_sugarmill_b", "c4m4_milltown_b"],
 			"download": "",
@@ -132,12 +126,6 @@
 			"last_updated": 1673087023000
 		},
 		{
-			"name": "Open Road",
-			"maps": ["x1m1_cliffs", "x1m2_path", "x1m3_city", "x1m4_forest"],
-			"download": "https://l4d2center.com/maps/openroad_2.zip",
-			"last_updated": 1678467000000
-		},
-		{
 			"name": "Dark Carnival Remix",
 			"maps": ["dkr_m1_motel", "dkr_m2_carnival", "dkr_m3_tunneloflove", "dkr_m4_ferris"],
 			"download": "https://l4d2center.com/maps/dark carnival remix_2.zip",
@@ -163,7 +151,7 @@
 		},
 		{
 			"name": "Diescraper Redux",
-			"maps": ["l4d2_diescraper1_apartment_361", "l4d2_diescraper2_streets_361", "l4d2_diescraper3_mid_361"],
+			"maps": ["l4d2_diescraper1_apartment_361", "l4d2_diescraper2_streets_361", "l4d2_diescraper3_mid_361", "l4d2_diescraper4_top_361"],
 			"download": "https://l4d2center.com/maps/l4d2_diescraper_362_2.zip",
 			"last_updated": 1673087023000
 		},
