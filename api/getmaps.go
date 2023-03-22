@@ -5,6 +5,7 @@ import (
 	"../players"
 	"../players/auth"
 	"../settings"
+	"../games"
 )
 
 
@@ -27,8 +28,10 @@ func HttpGetMaps(c *gin.Context) {
 		}
 	}
 
+	games.MuGames.RLock();
 	mapResponse["campaigns"] = settings.MapPool;
 	mapResponse["newest_map"] = settings.NewestCustomMap;
+	games.MuGames.RUnlock();
 
 	c.Header("Access-Control-Allow-Origin", c.Request.Header.Get("origin"));
 	c.Header("Access-Control-Allow-Credentials", "true");
