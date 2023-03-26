@@ -1,4 +1,3 @@
-- [ ] Serverlist link to site header
 - [ ] Force game end api
 - [ ] Page with ongoing games
 - [ ] SM plugin: name instead of steamid64 in notification
@@ -12,6 +11,8 @@
 - [ ] Default config for the case when zonemod is broken
 - [ ] Automatically parse anticheat logs and ban based on them
 
+- [x] Ability to unban for moderators
+- [x] Serverlist link to site header
 - [x] Mutex protection in /getgameservers and /getmaps
 - [x] A page to search for smurfs of non-l4d2center players
 - [x] api to quickly remove maps and servers

@@ -37,14 +37,15 @@ type DatabaseSession struct {
 }
 
 type DatabaseBanRecord struct {
-	NicknameBase64		string //permanent nickname
-	Access				int
-	SteamID64			string
-	BannedBySteamID64	string
-	CreatedAt			int64 //unix timestamp in milliseconds
-	AcceptedAt			int64 //unix timestamp in milliseconds
-	BanLength			int64 //unix time in milliseconds
-	BanReasonBase64		string
+	NicknameBase64			string //permanent nickname
+	Access					int
+	SteamID64				string
+	BannedBySteamID64		string
+	CreatedAt				int64 //unix timestamp in milliseconds
+	AcceptedAt				int64 //unix timestamp in milliseconds
+	BanLength				int64 //unix time in milliseconds
+	BanReasonBase64			string
+	UnbannedBySteamID64		string
 }
 
 type DatabaseGameLog struct {
@@ -169,7 +170,7 @@ func IncreaseUncertainty() {
 
 func AddBanRecord(oBanRecord DatabaseBanRecord) {
 	MuDatabase.Lock();
-	dbQuery, errDbQuery := dbConn.Query("INSERT INTO banlist(steamid64, access, steam_name, banned_by, created_on, accepted_on, banlength, banreason) VALUES ('"+oBanRecord.SteamID64+"', "+fmt.Sprintf("%d", oBanRecord.Access)+", '"+oBanRecord.NicknameBase64+"', '"+oBanRecord.BannedBySteamID64+"', "+fmt.Sprintf("%d", oBanRecord.CreatedAt)+", "+fmt.Sprintf("%d", oBanRecord.AcceptedAt)+", "+fmt.Sprintf("%d", oBanRecord.BanLength)+", '"+oBanRecord.BanReasonBase64+"');");
+	dbQuery, errDbQuery := dbConn.Query("INSERT INTO banlist(steamid64, access, steam_name, banned_by, created_on, accepted_on, banlength, banreason, unbanned_by) VALUES ('"+oBanRecord.SteamID64+"', "+fmt.Sprintf("%d", oBanRecord.Access)+", '"+oBanRecord.NicknameBase64+"', '"+oBanRecord.BannedBySteamID64+"', "+fmt.Sprintf("%d", oBanRecord.CreatedAt)+", "+fmt.Sprintf("%d", oBanRecord.AcceptedAt)+", "+fmt.Sprintf("%d", oBanRecord.BanLength)+", '"+oBanRecord.BanReasonBase64+"', '');");
 	if (errDbQuery == nil) {
 		dbQuery.Close();
 	} else {LogToFile("Error adding ban at AddBanRecord: "+oBanRecord.SteamID64);};
@@ -178,7 +179,7 @@ func AddBanRecord(oBanRecord DatabaseBanRecord) {
 
 func UpdateBanRecord(oBanRecord DatabaseBanRecord) {
 	MuDatabase.Lock();
-	dbQuery, errDbQuery := dbConn.Query("UPDATE banlist SET steamid64 = '"+oBanRecord.SteamID64+"', access = "+fmt.Sprintf("%d", oBanRecord.Access)+", steam_name = '"+oBanRecord.NicknameBase64+"', banned_by = '"+oBanRecord.BannedBySteamID64+"', accepted_on = "+fmt.Sprintf("%d", oBanRecord.AcceptedAt)+", banlength = "+fmt.Sprintf("%d", oBanRecord.BanLength)+", banreason = '"+oBanRecord.BanReasonBase64+"' WHERE created_on = "+fmt.Sprintf("%d", oBanRecord.CreatedAt)+";");
+	dbQuery, errDbQuery := dbConn.Query("UPDATE banlist SET steamid64 = '"+oBanRecord.SteamID64+"', access = "+fmt.Sprintf("%d", oBanRecord.Access)+", steam_name = '"+oBanRecord.NicknameBase64+"', banned_by = '"+oBanRecord.BannedBySteamID64+"', accepted_on = "+fmt.Sprintf("%d", oBanRecord.AcceptedAt)+", banlength = "+fmt.Sprintf("%d", oBanRecord.BanLength)+", banreason = '"+oBanRecord.BanReasonBase64+"', unbanned_by = '"+oBanRecord.UnbannedBySteamID64+"' WHERE created_on = "+fmt.Sprintf("%d", oBanRecord.CreatedAt)+";");
 	if (errDbQuery == nil) {
 		dbQuery.Close();
 	} else {LogToFile("Error updating ban at UpdateBanRecord: "+oBanRecord.SteamID64);};
@@ -266,12 +267,12 @@ func RestorePlayers() []DatabasePlayer {
 func RestoreBans() []DatabaseBanRecord {
 	MuDatabase.RLock();
 	var arDBBanRecords []DatabaseBanRecord;
-	dbQueryRetrieve, errQueryRetrieve := dbConn.Query("SELECT steamid64,access,steam_name,banned_by,created_on,accepted_on,banlength,banreason FROM banlist ORDER BY created_on;"); //ordering is important
+	dbQueryRetrieve, errQueryRetrieve := dbConn.Query("SELECT steamid64,access,steam_name,banned_by,created_on,accepted_on,banlength,banreason,unbanned_by FROM banlist ORDER BY created_on;"); //ordering is important
 	if (errQueryRetrieve == nil) {
 
 		for (dbQueryRetrieve.Next()) {
 			oDBBanRecord := DatabaseBanRecord{};
-			dbQueryRetrieve.Scan(&oDBBanRecord.SteamID64, &oDBBanRecord.Access, &oDBBanRecord.NicknameBase64, &oDBBanRecord.BannedBySteamID64, &oDBBanRecord.CreatedAt, &oDBBanRecord.AcceptedAt, &oDBBanRecord.BanLength, &oDBBanRecord.BanReasonBase64);
+			dbQueryRetrieve.Scan(&oDBBanRecord.SteamID64, &oDBBanRecord.Access, &oDBBanRecord.NicknameBase64, &oDBBanRecord.BannedBySteamID64, &oDBBanRecord.CreatedAt, &oDBBanRecord.AcceptedAt, &oDBBanRecord.BanLength, &oDBBanRecord.BanReasonBase64, &oDBBanRecord.UnbannedBySteamID64);
 			arDBBanRecords = append(arDBBanRecords, oDBBanRecord);
 		}
 

@@ -23,9 +23,12 @@ func HttpReqUnban(c *gin.Context) {
 				players.MuPlayers.RLock();
 				iAccess := players.MapPlayers[oSession.SteamID64].Access;
 				players.MuPlayers.RUnlock();
-				if (iAccess == 4) { //only admin can unban
+				if (iAccess >= 1) { //only moderators can unban
 
-					bans.ChanUnbanManual <- sSteamID64;
+					bans.ChanUnbanManual <- bans.EntManualUnbanReq{
+						SteamID64:			sSteamID64,
+						RequestedBy:		oSession.SteamID64,
+					};
 
 					mapResponse["success"] = true;
 				} else {

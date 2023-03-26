@@ -9,14 +9,15 @@ import (
 
 
 type EntBanRecord struct {
-	NicknameBase64		string
-	SteamID64			string
-	Access				int
-	BannedBySteamID64	string
-	CreatedAt			int64 //unix timestamp in milliseconds //must keep it unique (which means 1 new ban record per 1ms at most)
-	AcceptedAt			int64 //unix timestamp in milliseconds
-	BanLength			int64 //unix time in milliseconds
-	BanReasonBase64		string
+	NicknameBase64			string
+	SteamID64				string
+	Access					int
+	BannedBySteamID64		string
+	CreatedAt				int64 //unix timestamp in milliseconds //must keep it unique (which means 1 new ban record per 1ms at most)
+	AcceptedAt				int64 //unix timestamp in milliseconds
+	BanLength				int64 //unix time in milliseconds
+	BanReasonBase64			string
+	UnbannedBySteamID64		string
 }
 
 type EntAutoBanReq struct {
@@ -33,12 +34,17 @@ type EntManualBanReq struct {
 	RequestedBy			string
 }
 
+type EntManualUnbanReq struct {
+	SteamID64			string
+	RequestedBy			string
+}
+
 var ArrayBanRecords []EntBanRecord;
 var ChanBanRQ = make(chan EntAutoBanReq); //locks Players
 var ChanBanManual = make(chan EntManualBanReq); //locks Players
 var ChanAcceptBan = make(chan string); //locks Players
 var ChanSearchBan = make(chan string); //locks Players
-var ChanUnbanManual = make(chan string); //locks Players
+var ChanUnbanManual = make(chan EntManualUnbanReq); //locks Players
 var ChanDeleteBan = make(chan int64); //locks Players
 var ChanAutoBanSmurfs = make(chan []string); //locks Players
 var ChanLock = make(chan bool);
@@ -98,8 +104,8 @@ func WatchChannels() {
 			AcceptBan(sSteamID64);
 		case sSteamID64 := <-ChanSearchBan: //locks Players
 			SearchBan(sSteamID64);
-		case sSteamID64 := <-ChanUnbanManual: //locks Players
-			UnbanManual(sSteamID64);
+		case oUnbanReq := <-ChanUnbanManual: //locks Players
+			UnbanManual(oUnbanReq);
 		case i64CreatedAt := <-ChanDeleteBan:
 			DeleteBan(i64CreatedAt);
 		case arAccounts := <-ChanAutoBanSmurfs: //locks Players

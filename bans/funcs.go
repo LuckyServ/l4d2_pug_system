@@ -170,14 +170,15 @@ func AcceptBan(sSteamID64 string) { //expensive, locks Players
 				ArrayBanRecords[i] = oBanRecord;
 
 				go database.UpdateBanRecord(database.DatabaseBanRecord{
-					NicknameBase64:		oBanRecord.NicknameBase64,
-					Access:				oBanRecord.Access,
-					SteamID64:			oBanRecord.SteamID64,
-					BannedBySteamID64:	oBanRecord.BannedBySteamID64,
-					CreatedAt:			oBanRecord.CreatedAt,
-					AcceptedAt:			oBanRecord.AcceptedAt,
-					BanLength:			oBanRecord.BanLength,
-					BanReasonBase64:	oBanRecord.BanReasonBase64,
+					NicknameBase64:			oBanRecord.NicknameBase64,
+					Access:					oBanRecord.Access,
+					SteamID64:				oBanRecord.SteamID64,
+					BannedBySteamID64:		oBanRecord.BannedBySteamID64,
+					CreatedAt:				oBanRecord.CreatedAt,
+					AcceptedAt:				oBanRecord.AcceptedAt,
+					BanLength:				oBanRecord.BanLength,
+					BanReasonBase64:		oBanRecord.BanReasonBase64,
+					UnbannedBySteamID64:	oBanRecord.UnbannedBySteamID64,
 					});
 
 				players.I64LastPlayerlistUpdate = time.Now().UnixMilli();
@@ -219,10 +220,10 @@ func SearchBan(sSteamID64 string) {
 	}
 }
 
-func UnbanManual(sSteamID64 string) {
+func UnbanManual(oUnbanReq EntManualUnbanReq) {
 
 	players.MuPlayers.Lock();
-	pPlayer, bFound := players.MapPlayers[sSteamID64];
+	pPlayer, bFound := players.MapPlayers[oUnbanReq.SteamID64];
 	if (bFound && pPlayer.Access <= -2) {
 		pPlayer.Access = 0;
 		pPlayer.BanReason = "";
@@ -252,19 +253,25 @@ func UnbanManual(sSteamID64 string) {
 	iSize := len(ArrayBanRecords);
 	i64CurTime := time.Now().UnixMilli();
 	for i := iSize - 1; i >= 0; i-- {
-		if (ArrayBanRecords[i].SteamID64 == sSteamID64) {
+		if (ArrayBanRecords[i].SteamID64 == oUnbanReq.SteamID64) {
 			if (ArrayBanRecords[i].AcceptedAt == 0 || ArrayBanRecords[i].AcceptedAt + ArrayBanRecords[i].BanLength > i64CurTime) {
-				ArrayBanRecords[i].AcceptedAt = i64CurTime - 1;
-				ArrayBanRecords[i].BanLength = 1;
+				if (ArrayBanRecords[i].AcceptedAt == 0) {
+					ArrayBanRecords[i].AcceptedAt = i64CurTime - 1;
+					ArrayBanRecords[i].BanLength = 1;
+				} else {
+					ArrayBanRecords[i].BanLength = i64CurTime - ArrayBanRecords[i].AcceptedAt;
+				}
+				ArrayBanRecords[i].UnbannedBySteamID64 = oUnbanReq.RequestedBy;
 				go database.UpdateBanRecord(database.DatabaseBanRecord{
-					NicknameBase64:		ArrayBanRecords[i].NicknameBase64,
-					Access:				ArrayBanRecords[i].Access,
-					SteamID64:			ArrayBanRecords[i].SteamID64,
-					BannedBySteamID64:	ArrayBanRecords[i].BannedBySteamID64,
-					CreatedAt:			ArrayBanRecords[i].CreatedAt,
-					AcceptedAt:			ArrayBanRecords[i].AcceptedAt,
-					BanLength:			ArrayBanRecords[i].BanLength,
-					BanReasonBase64:	ArrayBanRecords[i].BanReasonBase64,
+					NicknameBase64:			ArrayBanRecords[i].NicknameBase64,
+					Access:					ArrayBanRecords[i].Access,
+					SteamID64:				ArrayBanRecords[i].SteamID64,
+					BannedBySteamID64:		ArrayBanRecords[i].BannedBySteamID64,
+					CreatedAt:				ArrayBanRecords[i].CreatedAt,
+					AcceptedAt:				ArrayBanRecords[i].AcceptedAt,
+					BanLength:				ArrayBanRecords[i].BanLength,
+					BanReasonBase64:		ArrayBanRecords[i].BanReasonBase64,
+					UnbannedBySteamID64:	ArrayBanRecords[i].UnbannedBySteamID64,
 					});
 				return;
 			}
@@ -290,14 +297,15 @@ func RestoreBans() bool {
 	i64CurTime := time.Now().UnixMilli();
 	for _, oDBBanRecord := range arDatabaseBanRecords {
 		oBanRecord := EntBanRecord{
-			NicknameBase64:		oDBBanRecord.NicknameBase64,
-			SteamID64:			oDBBanRecord.SteamID64,
-			Access:				oDBBanRecord.Access,
-			BannedBySteamID64:	oDBBanRecord.BannedBySteamID64,
-			CreatedAt:			oDBBanRecord.CreatedAt,
-			AcceptedAt:			oDBBanRecord.AcceptedAt,
-			BanLength:			oDBBanRecord.BanLength,
-			BanReasonBase64:	oDBBanRecord.BanReasonBase64,
+			NicknameBase64:			oDBBanRecord.NicknameBase64,
+			SteamID64:				oDBBanRecord.SteamID64,
+			Access:					oDBBanRecord.Access,
+			BannedBySteamID64:		oDBBanRecord.BannedBySteamID64,
+			CreatedAt:				oDBBanRecord.CreatedAt,
+			AcceptedAt:				oDBBanRecord.AcceptedAt,
+			BanLength:				oDBBanRecord.BanLength,
+			BanReasonBase64:		oDBBanRecord.BanReasonBase64,
+			UnbannedBySteamID64:	oDBBanRecord.UnbannedBySteamID64,
 		};
 		ArrayBanRecords = append(ArrayBanRecords, oBanRecord);
 
