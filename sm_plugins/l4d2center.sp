@@ -1032,6 +1032,15 @@ Action OnSayCommand(int client, const char[] command, int argc) {
 		GetCmdArgString(sText, sizeof(sText));
 		StripQuotes(sText);
 
+		//Block tankspawn command on Dark Carnival Remix
+		if (StrContains(sText, "tankspawn", false) == 0) {
+			char sCurMap[128];
+			GetCurrentMap(sCurMap, sizeof(sCurMap));
+			if (StrContains(sCurMap, "dkr", true) == 0) {
+				return Plugin_Handled;
+			}
+		}
+
 		char sSteamID64[20];
 		if (GetClientAuthId(client, AuthId_SteamID64, sSteamID64, sizeof(sSteamID64), false)) {
 			char sUrl[256];
