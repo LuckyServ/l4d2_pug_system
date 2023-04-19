@@ -1,3 +1,4 @@
+- [ ] Set player Twitch
 - [ ] Force game end api
 - [ ] Page with ongoing games
 - [ ] SM plugin: name instead of steamid64 in notification
